@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 /**
- * 商品
+ * Goods Entity
  *
  * @author lry
  */
@@ -20,44 +20,46 @@ public class Goods extends MicroEntity<Goods> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 商品类别ID
+     * Goods category id
+     * <p>
      * {@link GoodsCategory#id}
      */
     private Long categoryId;
     /**
-     * 商品品牌ID
+     * Goods brand id
+     * <p>
      * {@link GoodsBrand#id}
      */
     private Long brandId;
     /**
-     * 商品默认规格ID
+     * Goods default specification id
+     * <p>
      * {@link GoodsSpecification#id}
      */
     private Long specificationId;
 
     /**
-     * 商品标题(用于商品列表显示)
+     * Goods title(Used for goods list display)
      */
     private String title;
     /**
-     * 商品LOGO图片url
+     * Goods LOGO image link url
      **/
     private String logoUrl;
-
     /**
-     * 商品名称(用于描述商品真实名称)
+     * Goods name(Used to describe the real name of a goods)
      **/
     private String name;
     /**
-     * 商品代码
+     * Goods code(Fixed unique identification)
      */
     private String code;
     /**
-     * 状态(下架/上架/预售)
+     * Goods status(Off-shelf,on-shelf,pre-sale etc.)
      **/
     private Integer status;
     /**
-     * 商品备注
+     * Goods remark
      **/
     private String remark;
 

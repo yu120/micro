@@ -7,7 +7,7 @@ import lombok.*;
 import java.math.BigDecimal;
 
 /**
- * 商品-统计
+ * Goods Statistics Entity
  *
  * @author lry
  */
@@ -22,44 +22,45 @@ public class GoodsStatistics extends MicroEntity<GoodsStatistics> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 商品ID
+     * Goods id
+     * <p>
      * {@link Goods#id}
      **/
     private Long goodsId;
 
     /**
-     * 浏览次数
+     * Visit count number
      **/
-    private Integer visitCount;
+    private Integer visit;
     /**
-     * 评论次数
+     * Reply count number
      **/
     private Integer replyCount;
 
     /**
-     * 销售总量
+     * Sale quantity
      **/
     private Integer saleQuantity;
     /**
-     * 销售总额
+     * Sale amount
      **/
     private BigDecimal saleAmount;
 
     /**
-     * 进货总量
+     * Purchase quantity
      **/
     private Integer purchaseQuantity;
     /**
-     * 进货总额
+     * Purchase amount
      **/
     private BigDecimal purchaseAmount;
 
     /**
-     * 成本均价
+     * Cost price
      **/
     private BigDecimal costPrice;
     /**
-     * 毛利润金额
+     * Gross profit
      **/
     private BigDecimal grossProfit;
 

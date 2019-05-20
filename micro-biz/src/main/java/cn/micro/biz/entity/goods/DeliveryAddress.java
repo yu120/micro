@@ -2,11 +2,12 @@ package cn.micro.biz.entity.goods;
 
 import cn.micro.biz.commons.mybatis.entity.MicroEntity;
 import cn.micro.biz.entity.member.Member;
+import cn.micro.biz.entity.member.Area;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 /**
- * 收货地址
+ * Delivery Address Entity
  *
  * @author lry
  */
@@ -19,52 +20,85 @@ import lombok.*;
 public class DeliveryAddress extends MicroEntity<DeliveryAddress> {
 
     /**
-     * 用户ID
+     * Member id
+     * <p>
      * {@link Member#id}
      **/
     private Long memberId;
 
     /**
-     * 收件人姓名
+     * Delivery member name
      **/
     private String name;
     /**
-     * 联系电话
+     * Tel
      **/
     private String tel;
     /**
-     * 备用联系电话
+     * Backup tel
      **/
     private String telBackup;
 
     /**
-     * 邮政编码
+     * Zip code
      **/
     private String zip;
     /**
-     * 是否默认收货地址
+     * Default delivery address
      **/
     private Integer defaultAddress;
 
     /**
-     * 国家
+     * Country code
+     * <p>
+     * {@link Area#getCode()}
      **/
-    private String country;
+    private String countryCode;
     /**
-     * 省份
+     * Country name
+     * <p>
+     * {@link Area#getName()}
      **/
-    private String province;
+    private String countryName;
     /**
-     * 城市
+     * Province code
+     * <p>
+     * {@link Area#getCode()}
      **/
-    private String city;
+    private String provinceCode;
     /**
-     * 地区
+     * Province name
+     * <p>
+     * {@link Area#getName()}
      **/
-    private String area;
+    private String provinceName;
     /**
-     * 街道/详细收货地址
+     * City code
+     * <p>
+     * {@link Area#getCode()}
      **/
-    private String street;
+    private String cityCode;
+    /**
+     * City name
+     * <p>
+     * {@link Area#getName()}
+     **/
+    private String cityName;
+    /**
+     * District code
+     * <p>
+     * {@link Area#getCode()}
+     **/
+    private String districtCode;
+    /**
+     * District name
+     * <p>
+     * {@link Area#getName()}
+     **/
+    private String districtName;
+    /**
+     * Address
+     **/
+    private String address;
 
 }

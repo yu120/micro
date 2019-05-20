@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 /**
- * 商品品牌
+ * Goods Brand Entity
  *
  * @author lry
  */
@@ -20,15 +20,15 @@ public class GoodsBrand extends MicroEntity<GoodsBrand> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 品牌名称
+     * Goods brand name
      **/
     private String name;
     /**
-     * 品牌LOGO图片url
+     * Brand LOGO image link url
      **/
     private String logoUrl;
     /**
-     * 状态
+     * Goods brand status
      **/
     private Integer status;
 

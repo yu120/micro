@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 /**
- * 商品-评论-用户
+ * Goods Comment Member Entity
  *
  * @author lry
  */
@@ -21,22 +21,25 @@ public class GoodsCommentMember extends MicroEntity<GoodsCommentMember> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 商品ID
+     * Comment goods id
+     * <p>
      * {@link Goods#id}
      **/
     private Long goodsId;
     /**
-     * 商品评论ID
+     * Goods comment id
+     * <p>
      * {@link GoodsComment#id}
      **/
     private Long commentId;
     /**
-     * 操作用户ID
+     * Comment member id
+     * <p>
      * {@link Member#id}
      **/
     private Long memberId;
     /**
-     * 动作类型(支持/反对)
+     * Comment category(support/oppose)
      **/
     private Integer category;
 

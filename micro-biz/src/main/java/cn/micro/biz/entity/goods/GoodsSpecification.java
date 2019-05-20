@@ -7,7 +7,7 @@ import lombok.*;
 import java.math.BigDecimal;
 
 /**
- * 商品-规格
+ * Goods Specification Entity
  *
  * @author lry
  */
@@ -22,21 +22,22 @@ public class GoodsSpecification extends MicroEntity<GoodsSpecification> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 商品ID
+     * Goods id
+     *
      * {@link Goods#id}
      **/
     private Long goodsId;
 
     /**
-     * 状态
+     * Goods specification status
      **/
     private Integer status;
     /**
-     * 排序
+     * Specification sort
      */
     private Integer sort;
     /**
-     * 规格名称
+     * Specification name
      **/
     private String name;
     /**
@@ -44,33 +45,33 @@ public class GoodsSpecification extends MicroEntity<GoodsSpecification> {
      */
     private String tip;
     /**
-     * 规格图片url
+     * Specification image link url
      **/
     private String imageUrl;
     /**
-     * 介绍
+     * Specification intro
      */
     private String intro;
 
     /**
-     * 库存量
+     * stock
      **/
     private Integer stock;
     /**
-     * 告警库存
+     * Warn stock
      **/
     private Integer warnStock;
 
     /**
-     * 商品价格(销售价格)
+     * Goods price(Selling price)
      **/
     private BigDecimal price;
     /**
-     * 成本价格(进货价格)
+     * Cost price(Purchase price)
      **/
     private BigDecimal costPrice;
     /**
-     * 市场价格
+     * Market price
      **/
     private BigDecimal marketPrice;
 

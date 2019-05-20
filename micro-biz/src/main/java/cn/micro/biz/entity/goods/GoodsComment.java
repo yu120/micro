@@ -8,7 +8,7 @@ import lombok.*;
 import java.util.Date;
 
 /**
- * 商品-评论
+ * Goods Comment Entity
  *
  * @author lry
  */
@@ -23,51 +23,55 @@ public class GoodsComment extends MicroEntity<GoodsComment> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 商品ID
+     * Goods id
+     * <p>
      * {@link Goods#id}
      **/
     private Long goodsId;
     /**
-     * 用户ID（评论人）
+     * Comment member id
+     * <p>
      * {@link Member#id}
      **/
     private Long memberId;
     /**
-     * 父级评论ID
+     * Parent comment id
+     * <p>
      * {@link GoodsComment#id}
      **/
     private Long parentId;
 
     /**
-     * 评论内容
+     * Comment content
      **/
     private String content;
     /**
-     * 状态(待审核/显示/隐藏)
+     * Comment status(Wait-audit/displayed/hidden)
      **/
     private Integer status;
 
     /**
-     * 审核员ID
+     * Auditor member id
+     * <p>
      * {@link Member#id}
      **/
     private Long auditorId;
     /**
-     * 审核时间
+     * Audit time
      **/
-    private Date auditorTime;
+    private Date auditTime;
     /**
-     * 审核备注
+     * Audit remark
      **/
-    private String remark;
+    private String auditRemark;
 
     /**
-     * 支持数量
+     * Support count number
      **/
-    private Integer supportCount;
+    private Integer support;
     /**
-     * 反对数量
+     * Oppose count number
      **/
-    private Integer opposeCount;
+    private Integer oppose;
 
 }

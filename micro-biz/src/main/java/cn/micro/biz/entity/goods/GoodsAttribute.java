@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 /**
- * 商品-属性
+ * Goods Attribute Entity
  *
  * @author lry
  */
@@ -20,60 +20,62 @@ public class GoodsAttribute extends MicroEntity<GoodsAttribute> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 商品ID
+     * Goods id
+     * <p>
      * {@link Goods#id}
      **/
     private Long goodsId;
     /**
-     * 商品规格ID
+     * Goods specification id
+     * <p>
      * {@link GoodsSpecification#id}
      **/
     private Long specificationId;
 
     /**
-     * 图片类别（联动Banner/详情属性）
+     * Goods attribute category（Banner/details etc.）
      */
     private Integer category;
     /**
-     * 属性代码
+     * Goods attribute code
      **/
     private String code;
     /**
-     * 状态
+     * Attribute status
      **/
     private Integer status;
     /**
-     * 排列次序
+     * Attribute sort
      **/
     private Integer sort;
 
-    // === 基本属性
+    // === Basic Attributes
 
     /**
-     * 属性名称
+     * Attributes name
      **/
     private String name;
     /**
-     * 属性值(如：图片url等)
+     * Attributes value(eg：image url etc.)
      **/
     private String value;
     /**
-     * 属性介绍
+     * Attributes intro
      **/
     private String intro;
 
-    // === 图片类型属性
+    // === Image Attributes
 
     /**
-     * 图片大小
+     * Image size
      **/
     private Double size;
     /**
-     * 图片宽度
+     * Image width
      **/
     private Double width;
     /**
-     * 图片高度
+     * Image height
      **/
     private Double height;
 

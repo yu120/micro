@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 /**
- * 商品-类别
+ * Goods Category Entity
  *
  * @author lry
  */
@@ -20,46 +20,49 @@ public class GoodsCategory extends MicroEntity<GoodsCategory> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 类别名称
+     * Goods category title
      **/
     private String title;
     /**
-     * 类别代码
+     * Goods category code
      **/
     private String code;
     /**
-     * 类别关键词(多个关键词使用英文逗号分隔)
+     * Goods category keywords list(Multiple keywords are separated by ',' in English)
      **/
     private String keywords;
     /**
-     * 类别描述
+     * Goods category intro
      **/
     private String intro;
     /**
-     * 封面图片url
+     * Goods category image url
      **/
     private String imageUrl;
     /**
-     * 排列次序
+     * Goods category sort
      **/
     private Integer sort;
     /**
-     * 状态
+     * Goods category status
      **/
     private Integer status;
 
     /**
-     * 父1级编号（直接父级）
+     * Level 1 parent goods category id(Direct parent)
+     * <p>
      * {@link GoodsCategory#id}
      **/
     private Long parent1Id;
     /**
-     * 父2级编号
+     * Level 2 parent goods category id
+     * <p>
      * {@link GoodsCategory#id}
      **/
     private Long parent2Id;
     /**
-     * 父3级编号
+     * Level 3 parent goods category id
+     * <p>
      * {@link GoodsCategory#id}
      **/
     private Long parent3Id;
