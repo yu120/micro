@@ -9,10 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
- * 角色权限
+ * Role Permission Entity
  *
  * @author lry
- * @since 2018-10-19
  */
 @Data
 @NoArgsConstructor
@@ -25,10 +24,14 @@ public class RolePermission extends MicroEntity<RolePermission> {
     private static final long serialVersionUID = 1L;
 
     /**
+     * Role id
+     * <p>
      * {@link Role#id}
      */
     private Long roleId;
     /**
+     * Permission id
+     * <p>
      * {@link Permission#id}
      */
     private Long permissionId;

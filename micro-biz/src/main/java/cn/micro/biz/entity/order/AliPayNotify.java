@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * 支付宝异步回调记录表
+ * Ali Pay Notify Entity
  * <p>
  * 通知触发条件:
  * 触发条件名	        触发条件描述	触发条件默认值

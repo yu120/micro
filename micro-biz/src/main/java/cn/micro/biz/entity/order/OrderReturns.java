@@ -23,7 +23,8 @@ import java.util.Date;
 public class OrderReturns extends MicroEntity<OrderReturns> {
 
     /**
-     * 订单编号 (订单表自动编号)
+     * Order id
+     * <p>
      * {@link Order#id}
      **/
     private Long orderId;

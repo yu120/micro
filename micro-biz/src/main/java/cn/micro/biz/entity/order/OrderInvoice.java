@@ -23,7 +23,8 @@ public class OrderInvoice extends MicroEntity<OrderInvoice> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 订单ID
+     * Order id
+     * <p>
      * {@link Order#id}
      **/
     private Long orderId;

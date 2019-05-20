@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
- * Member Account
+ * Member Account Entity
  *
  * @author lry
  */

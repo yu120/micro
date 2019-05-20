@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * 订单-物流
+ * Order logistics entity
  *
  * @author lry
  */
@@ -23,7 +23,8 @@ public class OrderLogistics extends MicroEntity<OrderLogistics> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 订单ID
+     * Order id
+     * <p>
      * {@link Order#id}
      **/
     private Long orderId;

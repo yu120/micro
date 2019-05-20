@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 /**
- * Member Group to Member
+ * Member Group to Member Entity
  *
  * @author lry
  */

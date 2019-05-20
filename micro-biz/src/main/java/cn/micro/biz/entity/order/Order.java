@@ -9,6 +9,9 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
+/**
+ * @author lry
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,37 +23,41 @@ public class Order extends MicroEntity<Order> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 客户ID
+     * Member id
+     * <p>
      * {@link Member#id}
      **/
     private Long memberId;
     /**
-     * 收货地址ID
+     * Delivery address id
+     * <p>
      * {@link DeliveryAddress#id}
      **/
     private Long addressId;
     /**
-     * 订单物流ID
+     * Order logistics id
+     * <p>
      * {@link OrderLogistics#id}
      **/
     private Long logisticsId;
     /**
-     * 订单发票ID
+     * Order invoice id
+     * <p>
      * {@link OrderInvoice#id}
      **/
     private Long invoiceId;
 
     /**
-     * 商品数量
+     * Goods count
      **/
     private Integer goodsCount;
     /**
-     * 商品总价
+     * Goods amount total
      **/
     private BigDecimal goodsAmountTotal;
 
     /**
-     * 订单状态(未付款,已付款,已发货,已签收,退货申请,退货中,已退货,取消交易)
+     * Order status(未付款,已付款,已发货,已签收,退货申请,退货中,已退货,取消交易)
      **/
     private Integer orderStatus;
     /**

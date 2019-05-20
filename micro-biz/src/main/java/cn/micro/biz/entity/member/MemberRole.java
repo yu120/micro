@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
- * 会员-角色
+ * Member Role Entity
  *
  * @author lry
  */
@@ -24,11 +24,15 @@ public class MemberRole extends MicroEntity<MemberRole> {
     private static final long serialVersionUID = 1L;
 
     /**
+     * Member id
+     * <p>
      * {@link Member#id}
      */
     private Long memberId;
 
     /**
+     * Role id
+     * <p>
      * {@link Role#id}
      */
     private Long roleId;

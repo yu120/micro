@@ -27,8 +27,6 @@ public class Member extends MicroEntity<Member> {
 
     private static final long serialVersionUID = 1L;
 
-    private Integer status;
-
     /**
      * Member name
      */
@@ -47,7 +45,6 @@ public class Member extends MicroEntity<Member> {
      * Age
      */
     private Integer age;
-
     /**
      * Email
      */
@@ -69,6 +66,10 @@ public class Member extends MicroEntity<Member> {
      * Member address
      */
     private String address;
+    /**
+     * Member enable status
+     */
+    private Integer status;
     /**
      * Password random salt
      */

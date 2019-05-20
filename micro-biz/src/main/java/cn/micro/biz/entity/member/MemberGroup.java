@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 /**
- * Member Group
+ * Member Group Entity
  *
  * @author lry
  */
@@ -20,6 +20,8 @@ public class MemberGroup extends MicroEntity<MemberGroup> {
     private static final long serialVersionUID = 1L;
 
     /**
+     * Parent member group id
+     * <p>
      * {@link MemberGroup#id}
      */
     private Long parentId;

@@ -27,12 +27,14 @@ public class OrderGoods extends MicroEntity<OrderGoods> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 订单ID
+     * Order id
+     * <p>
      * {@link Order#id}
      **/
     private Long orderId;
     /**
-     * 商品ID
+     * Goods id
+     * <p>
      * {@link Goods#id}
      **/
     private Long goodsId;
