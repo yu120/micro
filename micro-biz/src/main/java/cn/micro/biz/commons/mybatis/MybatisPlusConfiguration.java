@@ -5,13 +5,22 @@ import cn.micro.biz.commons.mybatis.extension.TraceExpendInterceptor;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import com.baomidou.mybatisplus.core.injector.DefaultSqlInjector;
+import com.baomidou.mybatisplus.core.parser.ISqlParser;
+import com.baomidou.mybatisplus.core.parser.ISqlParserFilter;
+import com.baomidou.mybatisplus.core.parser.SqlParserHelper;
 import com.baomidou.mybatisplus.extension.plugins.OptimisticLockerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.tenant.TenantHandler;
+import com.baomidou.mybatisplus.extension.plugins.tenant.TenantSqlParser;
 import io.seata.rm.datasource.DataSourceProxy;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.expression.LongValue;
 import org.apache.ibatis.builder.xml.XMLMapperEntityResolver;
+import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.parsing.XNode;
 import org.apache.ibatis.parsing.XPathParser;
+import org.apache.ibatis.reflection.MetaObject;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -31,7 +40,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.annotation.Nullable;
 import javax.sql.DataSource;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -46,8 +57,10 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
 
     private static final String MAPPER_LOCATIONS = "mybatis-plus.mapper-locations";
     private static final ResourcePatternResolver RESOURCE_RESOLVER = new PathMatchingResourcePatternResolver();
+    private static final String DEFAULT_TENANT_TABLE_NAME = "tenant";
 
     private String mapperPackage;
+    private String tenantIdColumn = "tenant_id";
 
     /**
      * Read environment config
@@ -161,14 +174,56 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
 
     // ============ IBatis Trace Interceptor
 
+    @Bean
+    @ConfigurationProperties(prefix = "micro.tenant")
+    public MicroTenantProperties microTenantProperties() {
+        return new MicroTenantProperties();
+    }
+
     /**
      * Paging interceptor
      *
      * @return {@link PaginationInterceptor}
      */
     @Bean
-    public PaginationInterceptor paginationInterceptor() {
-        return new PaginationInterceptor();
+    public PaginationInterceptor paginationInterceptor(MicroTenantProperties microTenantProperties) {
+        PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
+        if (!microTenantProperties.isEnable()) {
+            return paginationInterceptor;
+        }
+
+        // build tenant id column
+        if (microTenantProperties.getColumn() != null && microTenantProperties.getColumn().length() > 0) {
+            tenantIdColumn = microTenantProperties.getColumn();
+        }
+        List<String> excludeTables = microTenantProperties.getExcludeTables();
+        excludeTables.add(DEFAULT_TENANT_TABLE_NAME);
+
+        List<ISqlParser> sqlParserList = new ArrayList<>();
+        sqlParserList.add(new TenantSqlParser()
+                .setTenantHandler(new TenantHandler() {
+                    @Override
+                    public Expression getTenantId() {
+                        return new LongValue(1L);
+                    }
+
+                    @Override
+                    public String getTenantIdColumn() {
+                        return tenantIdColumn;
+                    }
+
+                    @Override
+                    public boolean doTableFilter(String tableName) {
+                        return excludeTables.contains(tableName);
+                    }
+                }));
+        paginationInterceptor.setSqlParserList(sqlParserList);
+        paginationInterceptor.setSqlParserFilter(metaObject -> {
+            MappedStatement mappedStatement = SqlParserHelper.getMappedStatement(metaObject);
+            return microTenantProperties.getSkipMapperIds().contains(mappedStatement.getId());
+        });
+
+        return paginationInterceptor;
     }
 
     /**

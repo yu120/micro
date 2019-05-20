@@ -53,6 +53,8 @@ mybatis-plus:
 # Custom Config
 micro:
   swagger: true
+  tenant:
+    enable: true
   auth:
     auth-refresh: true
     auth-refresh-sec: 120

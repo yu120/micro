@@ -60,6 +60,8 @@ public class MicroEntity<T extends Model<T>> extends Model<T> {
     protected String editor;
 
     /**
+     * Logic deleted
+     * <p>
      * {@link DeletedEnum}
      */
     @TableLogic
