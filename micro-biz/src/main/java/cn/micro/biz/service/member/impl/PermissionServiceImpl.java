@@ -14,7 +14,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * 权限 服务实现类
+ * Permission Service Implements
  *
  * @author lry
  */

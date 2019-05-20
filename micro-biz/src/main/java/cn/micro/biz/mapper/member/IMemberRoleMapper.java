@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import java.util.List;
 
 /**
- * 会员-角色 Mapper 接口
+ * Member Role Mapper
  *
  * @author lry
  */

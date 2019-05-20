@@ -7,7 +7,7 @@ import cn.micro.biz.model.add.RegisterMemberAdd;
 import cn.micro.biz.model.query.LoginAccountQuery;
 
 /**
- * 账号 服务类
+ * Account Service
  *
  * @author lry
  */

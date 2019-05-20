@@ -4,7 +4,7 @@ import cn.micro.biz.entity.member.Permission;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
-  * 权限 Mapper 接口
+ * Permission Mapper
  *
  * @author lry
  */

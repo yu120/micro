@@ -6,6 +6,11 @@ import cn.micro.biz.mapper.order.IOrderInvoiceMapper;
 import cn.micro.biz.service.order.IOrderInvoiceService;
 import org.springframework.stereotype.Service;
 
+/**
+ * Order Invoice Service Implements
+ *
+ * @author lry
+ */
 @Service
 public class OrderInvoiceServiceImpl extends MicroServiceImpl<IOrderInvoiceMapper, OrderInvoice> implements IOrderInvoiceService {
 

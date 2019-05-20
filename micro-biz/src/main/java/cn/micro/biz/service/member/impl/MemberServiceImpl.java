@@ -7,7 +7,7 @@ import cn.micro.biz.service.member.IMemberService;
 import org.springframework.stereotype.Service;
 
 /**
- * 用户信息 服务实现类
+ * Member Service Implements
  *
  * @author lry
  */

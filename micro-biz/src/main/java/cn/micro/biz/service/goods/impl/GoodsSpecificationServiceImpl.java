@@ -6,6 +6,11 @@ import cn.micro.biz.mapper.goods.IGoodsSpecificationMapper;
 import cn.micro.biz.service.goods.IGoodsSpecificationService;
 import org.springframework.stereotype.Service;
 
+/**
+ * Goods Specification Service Implements
+ *
+ * @author lry
+ */
 @Service
 public class GoodsSpecificationServiceImpl extends MicroServiceImpl<IGoodsSpecificationMapper, GoodsSpecification> implements IGoodsSpecificationService {
 

@@ -6,6 +6,11 @@ import cn.micro.biz.mapper.order.IOrderMapper;
 import cn.micro.biz.service.order.IOrderService;
 import org.springframework.stereotype.Service;
 
+/**
+ * Order Service Implements
+ *
+ * @author lry
+ */
 @Service
 public class OrderServiceImpl extends MicroServiceImpl<IOrderMapper, Order> implements IOrderService {
 

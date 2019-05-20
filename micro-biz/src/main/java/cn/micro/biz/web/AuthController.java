@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
- * Role Permission Controller
+ * Auth Controller
  *
  * @author lry
  */

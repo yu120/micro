@@ -4,7 +4,7 @@ import cn.micro.biz.entity.member.Account;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
- * 账号表 Mapper 接口
+ * Account Mapper
  *
  * @author lry
  */

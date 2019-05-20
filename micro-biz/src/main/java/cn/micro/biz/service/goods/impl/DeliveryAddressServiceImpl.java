@@ -6,6 +6,11 @@ import cn.micro.biz.mapper.goods.IDeliveryAddressMapper;
 import cn.micro.biz.service.goods.IDeliveryAddressService;
 import org.springframework.stereotype.Service;
 
+/**
+ * Delivery Address Service Implements
+ *
+ * @author lry
+ */
 @Service
 public class DeliveryAddressServiceImpl extends MicroServiceImpl<IDeliveryAddressMapper, DeliveryAddress> implements IDeliveryAddressService {
 

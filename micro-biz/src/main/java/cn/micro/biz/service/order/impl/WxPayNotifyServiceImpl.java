@@ -6,6 +6,11 @@ import cn.micro.biz.mapper.order.IWxPayNotifyMapper;
 import cn.micro.biz.service.order.IWxPayNotifyService;
 import org.springframework.stereotype.Service;
 
+/**
+ * Wx Pay Notify Service Implements
+ *
+ * @author lry
+ */
 @Service
 public class WxPayNotifyServiceImpl extends MicroServiceImpl<IWxPayNotifyMapper, WxPayNotify> implements IWxPayNotifyService {
 

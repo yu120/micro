@@ -4,7 +4,7 @@ import cn.micro.biz.commons.mybatis.extension.IMicroService;
 import cn.micro.biz.entity.member.Area;
 
 /**
- * 行政区域 服务类
+ * Area Service
  *
  * @author lry
  */

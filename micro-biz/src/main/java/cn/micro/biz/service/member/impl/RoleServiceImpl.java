@@ -7,7 +7,7 @@ import cn.micro.biz.service.member.IRoleService;
 import org.springframework.stereotype.Service;
 
 /**
- * 角色 服务实现类
+ * Role Service Implements
  *
  * @author lry
  */

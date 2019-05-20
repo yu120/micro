@@ -7,7 +7,7 @@ import cn.micro.biz.service.member.IAreaService;
 import org.springframework.stereotype.Service;
 
 /**
- * 行政区域 服务实现类
+ * Area Service Implements
  *
  * @author lry
  */

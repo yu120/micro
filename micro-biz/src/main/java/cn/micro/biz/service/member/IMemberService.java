@@ -4,7 +4,7 @@ import cn.micro.biz.commons.mybatis.extension.IMicroService;
 import cn.micro.biz.entity.member.Member;
 
 /**
- * 用户信息 服务类
+ * Member Service
  *
  * @author lry
  */

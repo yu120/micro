@@ -5,7 +5,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * 用户信息 前端控制器
+ * Member Controller
  *
  * @author lry
  */
