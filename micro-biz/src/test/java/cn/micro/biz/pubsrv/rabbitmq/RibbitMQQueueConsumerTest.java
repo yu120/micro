@@ -1,0 +1,45 @@
+package cn.micro.biz.pubsrv.rabbitmq;
+
+import com.rabbitmq.jms.admin.RMQConnectionFactory;
+
+import javax.jms.*;
+
+public class RibbitMQQueueConsumerTest {
+
+    public static void main(String[] args) throws JMSException, Exception {
+        //1.创建连接工厂
+        RMQConnectionFactory connectionFactory = new RMQConnectionFactory();
+        connectionFactory.setUri("amqp://192.168.2.56:5672");
+        connectionFactory.setUsername("sxw_demo");
+        connectionFactory.setPassword("sxw_demo");
+        //2.获取连接对象
+        Connection connection = connectionFactory.createConnection();
+        //3.启动连接
+        connection.start();
+        //4.获取session
+        Session session = connection.createSession(false,Session.AUTO_ACKNOWLEDGE);
+        //5.创建队列对象
+        Queue queue = session.createQueue("test-queue");
+        //6.创建消费者
+        MessageConsumer consumer = session.createConsumer(queue);
+        //7.监听消息
+        consumer.setMessageListener(new MessageListener() {
+
+            public void onMessage(Message message) {
+                TextMessage textMessage=(TextMessage) message;
+                try {
+                    System.out.println("接受消息: "+textMessage.getText());
+                } catch (JMSException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        //8.等待键盘输入
+        System.in.read();
+        //9.关闭资源
+        consumer.close();
+        session.close();
+        connection.close();
+    }
+
+}

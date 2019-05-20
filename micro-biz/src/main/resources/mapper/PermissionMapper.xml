@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.micro.biz.mapper.member.IPermissionMapper">
+
+    <!-- 关联查询全部用户权限列表 -->
+    <select id="queryAllPermissions" resultType="cn.micro.biz.entity.member.Permission">
+        SELECT mr.member_id,p.* FROM role_permission rp
+        LEFT JOIN member_role mr ON rp.role_id=mr.role_id
+        LEFT JOIN permission p ON rp.permission_id=p.id
+        WHERE rp.deleted=0 AND mr.deleted=0 AND p.deleted=0
+    </select>
+
+</mapper>

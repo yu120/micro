@@ -1,0 +1,168 @@
+# Spring
+spring:
+  profiles:
+    active: dev
+  application:
+    name: @project.artifactId@-${spring.profiles.active}
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+    #property-naming-strategy: CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES
+    parser:
+      ALLOW_SINGLE_QUOTES: true
+      ALLOW_UNQUOTED_CONTROL_CHARS: true
+    serialization:
+      INDENT_OUTPUT: true
+  thymeleaf:
+    cache: false
+    prefix: classpath:/static/
+  datasource:
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://127.0.0.1:3306/micro?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    druid:
+      time-between-log-stats-millis: 600000
+      stat-view-servlet:
+        login-username: admin
+        login-password: admin
+
+# Server
+server:
+  port: 7777
+  servlet:
+    context-path: /api
+  compression:
+    enabled: true
+    min-response-size: 2048
+
+# Encrypted
+jasypt:
+  encryptor:
+    password: LFkbe45D46fb9210
+
+# Mybatis Plus
+mybatis-plus:
+  type-aliases-package: cn.micro.biz.entity
+  mapper-locations: classpath*:mapper/*Mapper.xml
+  global-config:
+    db-config:
+      id-type: AUTO
+
+# Custom Config
+micro:
+  swagger: true
+  auth:
+    auth-refresh: true
+    auth-refresh-sec: 120
+    token-expires-sec: 7200
+    refresh-token-sec: 86400
+    request-expire: false
+    token-expire: false
+    check-token: true
+    check-time: true
+    check-sign: true
+    fault-tolerant-mills: 60000
+  trace:
+    enable: true
+    print-args: true
+    threshold-millis: 0
+    dump-period-sec: 60
+    default-expressions: true
+    cache-enable: true
+    cache-maximum-size: 500
+    cache-expire-after-write-sec: 600
+  oss:
+    qi-niu:
+      enable: true
+      bucket: oss-eye
+      token-expires-sec: 3600
+      access-url: http://oss.eyehh.com/
+      access-key: L1CPuG6UxjQQ05QXEb3HhAE5uQCzlqcSBVlgfYCU
+      secret-key: vCZAtB4wie0kdM_x7R3GfZ2-DxCJB6fkNQSPRtMa
+    ali-yun:
+      enable: false
+      bucket-name: xxxx
+      access-key-id: xxxx
+      access-key-secret: xxxx
+      endpoint: xxxx
+      access-url: xxxx
+  sms:
+    ali-yun:
+      enable: true
+      access-key: LTAIpdCalQmXwJuz
+      secret-key: qOTV30SLxPoQdzTOezUj0Usg99NuAu
+      templates:
+        REGISTER: [xxx, SMS_151232xxx, code]
+        UPDATE_PW: [xxx, SMS_151232xxx, code]
+        UPDATE_TEL: [xxx, SMS_151232xxx, code]
+  pay:
+    enable: false
+    ali-pay:
+      seller-id: xxx
+      app-id: xxx
+      return-url: xxx
+      notify-url: xxx
+      private-key: xxx
+      ali-pay-public-key: xxx
+    wx-pay:
+      mch-id: xxx
+      app-id: xxx
+      key: xxx
+      app-secret: xxx
+      redirect-url: xxx
+      notify-url: xxx
+      http-connect-timeout-ms: 8000
+      http-read-timeout-ms: 10000
+  transaction:
+    enable: false
+    application-id: ${spring.application.name}
+    tx-service-group: my_tx_group
+  email:
+    enable: true
+    port: 465
+    host: smtp.163.com
+    personal: 木子李
+    username: lry2017@163.com
+    password: xxx
+  mq:
+    enable: false
+    uri: amqp://192.168.2.56:5672
+    username: xxx
+    password: xxx
+  redis:
+    enable: false
+    timeout: 60
+    uri: redis://127.0.0.1:6379
+    min-idle: 0
+    max-idle: 8
+    max-total: 8
+  cache:
+    enable: false
+    key-prefix: MICRO:CACHE
+    # local config
+    local-type: LINKED_HASH_MAP
+    # remote config
+    remote-type: REDIS_LETTUCE
+    remote-serializer: FASTJSON
+    protocol: redis
+    host: 127.0.0.1
+    port: 6379
+    timeout: 60
+    min-idle: 0
+    max-idle: 8
+    max-total: 8
+    # async reload config
+    reload-core: 5
+    reload-max: 30
+    reload-queue: 200
+    # global cache rule config
+    local-limit: 200
+    local-expire: 60
+    local-time-unit: SECONDS
+    remote-expire: 60
+    remote-time-unit: SECONDS
+    # cache rule list
+    cache-rules:
+      MEMBER_INFO: {cache-type: BOTH, time-unit: SECONDS, token: false, limit: 200, local-expire: 60, remote-expire: 60}
