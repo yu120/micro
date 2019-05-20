@@ -8,8 +8,10 @@ import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import com.baomidou.mybatisplus.core.injector.DefaultSqlInjector;
 import com.baomidou.mybatisplus.core.parser.ISqlParser;
 import com.baomidou.mybatisplus.core.parser.SqlParserHelper;
+import com.baomidou.mybatisplus.extension.parsers.BlockAttackSqlParser;
 import com.baomidou.mybatisplus.extension.plugins.OptimisticLockerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.PerformanceInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.tenant.TenantHandler;
 import com.baomidou.mybatisplus.extension.plugins.tenant.TenantSqlParser;
 import io.seata.rm.datasource.DataSourceProxy;
@@ -29,6 +31,7 @@ import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -110,6 +113,12 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
         log.info("Scan to mapper packages: {}", mapperPackage);
     }
 
+    @Bean
+    @ConfigurationProperties(prefix = "micro.mybatis")
+    public MicroMybatisProperties microTenantProperties() {
+        return new MicroMybatisProperties();
+    }
+
     /**
      * Druid data source druid data source.
      *
@@ -137,13 +146,15 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
     /**
      * Global transaction configuration
      *
-     * @param druidDataSource {@link DataSource}
+     * @param druidDataSource        {@link DataSource}
+     * @param microMybatisProperties {@link MicroMybatisProperties}
      * @return {@link PlatformTransactionManager}
      */
     @Bean
-    public PlatformTransactionManager platformTransactionManager(DataSource druidDataSource) {
+    public PlatformTransactionManager platformTransactionManager(DataSource druidDataSource, MicroMybatisProperties microMybatisProperties) {
         DataSourceTransactionManager manager = new DataSourceTransactionManager(druidDataSource);
-        manager.setDefaultTimeout(60);
+        MicroMybatisProperties.MicroTransactionProperties properties = microMybatisProperties.getTransaction();
+        manager.setDefaultTimeout(properties.getDefaultTimeout());
         return manager;
     }
 
@@ -171,54 +182,66 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
 
     // ============ IBatis Trace Interceptor
 
-    @Bean
-    @ConfigurationProperties(prefix = "micro.tenant")
-    public MicroTenantProperties microTenantProperties() {
-        return new MicroTenantProperties();
-    }
-
     /**
      * Paging interceptor
      *
      * @return {@link PaginationInterceptor}
      */
     @Bean
-    public PaginationInterceptor paginationInterceptor(MicroTenantProperties microTenantProperties) {
+    public PaginationInterceptor paginationInterceptor(MicroMybatisProperties microMybatisProperties) {
         PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
-        if (!microTenantProperties.isEnable()) {
-            return paginationInterceptor;
-        }
-
         List<ISqlParser> sqlParserList = new ArrayList<>();
-        sqlParserList.add(new TenantSqlParser()
-                .setTenantHandler(new TenantHandler() {
-                    @Override
-                    public Expression getTenantId() {
-                        Long tenantId = MicroAuthContext.getTenantId();
-                        if (tenantId != null) {
-                            return new LongValue(tenantId);
+        if (microMybatisProperties.isBlockAttack()) {
+            // 攻击 SQL 阻断解析器、加入解析链
+            sqlParserList.add(new BlockAttackSqlParser());
+        }
+        MicroMybatisProperties.MicroTenantProperties tenantProperties = microMybatisProperties.getTenant();
+        if (tenantProperties.isEnable()) {
+            sqlParserList.add(new TenantSqlParser()
+                    .setTenantHandler(new TenantHandler() {
+                        @Override
+                        public Expression getTenantId() {
+                            Long tenantId = MicroAuthContext.getTenantId();
+                            if (tenantId != null) {
+                                return new LongValue(tenantId);
+                            }
+
+                            return null;
                         }
 
-                        return null;
-                    }
+                        @Override
+                        public String getTenantIdColumn() {
+                            return tenantProperties.getColumn();
+                        }
 
-                    @Override
-                    public String getTenantIdColumn() {
-                        return microTenantProperties.getColumn();
-                    }
+                        @Override
+                        public boolean doTableFilter(String tableName) {
+                            return tenantProperties.getExcludeTables().contains(tableName);
+                        }
+                    }));
 
-                    @Override
-                    public boolean doTableFilter(String tableName) {
-                        return microTenantProperties.getExcludeTables().contains(tableName);
-                    }
-                }));
-        paginationInterceptor.setSqlParserList(sqlParserList);
-        paginationInterceptor.setSqlParserFilter(metaObject -> {
-            MappedStatement mappedStatement = SqlParserHelper.getMappedStatement(metaObject);
-            return microTenantProperties.getSkipMapperIds().contains(mappedStatement.getId());
-        });
+            paginationInterceptor.setSqlParserFilter(metaObject -> {
+                MappedStatement mappedStatement = SqlParserHelper.getMappedStatement(metaObject);
+                return tenantProperties.getSkipMapperIds().contains(mappedStatement.getId());
+            });
+        }
 
+        if (sqlParserList.size() > 0) {
+            paginationInterceptor.setSqlParserList(sqlParserList);
+        }
         return paginationInterceptor;
+    }
+
+    /**
+     * SQL Performance Interceptor
+     * <p>
+     * tip: dev,test environment enable=true
+     */
+    @Bean
+    @Profile({"dev", "test"})
+    @ConditionalOnProperty(prefix = "micro.mybatis", name = "performance", havingValue = "true")
+    public PerformanceInterceptor performanceInterceptor() {
+        return new PerformanceInterceptor();
     }
 
     /**
@@ -227,6 +250,7 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
      * @return {@link OptimisticLockerInterceptor}
      */
     @Bean
+    @ConditionalOnProperty(prefix = "micro.mybatis", name = {"optimisticLocker", "optimistic-locker"}, havingValue = "true")
     public OptimisticLockerInterceptor optimisticLockerInterceptor() {
         return new OptimisticLockerInterceptor();
     }
@@ -237,6 +261,7 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
      * @return {@link TraceExpendInterceptor}
      */
     @Bean
+    @ConditionalOnProperty(prefix = "micro.mybatis", name = {"traceExpend", "trace-expend"}, havingValue = "true")
     public TraceExpendInterceptor iBatisTraceInterceptor() {
         return new TraceExpendInterceptor();
     }
