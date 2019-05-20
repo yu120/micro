@@ -5,6 +5,7 @@ import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -25,11 +26,15 @@ public class MicroTenantProperties implements Serializable {
     /**
      * Tenant id db column(default: tenant_id)
      */
-    private String column;
+    private String column = "tenant_id";
+    /**
+     * Tenant default value
+     */
+    private Long defaultValue = 1L;
     /**
      * Exclude table name list
      */
-    private List<String> excludeTables = new ArrayList<>();
+    private List<String> excludeTables = Arrays.asList("tenant", "area");
     /**
      * Skip mapper id list(Mapper method name list)
      * <p>

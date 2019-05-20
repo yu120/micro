@@ -25,17 +25,17 @@ public class GlobalAutoFillHandler implements MetaObjectHandler {
     public void insertFill(MetaObject metaObject) {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         String operator = this.getOperator();
-        Long tenantId = MicroAuthContext.getTenantId();
-        if (tenantId == null) {
-            tenantId = 1L;
-        }
 
         this.setFieldValByName(MicroEntity.CREATED_FIELD, timestamp, metaObject);
         this.setFieldValByName(MicroEntity.CREATOR_FIELD, operator, metaObject);
         this.setFieldValByName(MicroEntity.EDITED_FIELD, timestamp, metaObject);
         this.setFieldValByName(MicroEntity.EDITOR_FIELD, operator, metaObject);
         this.setFieldValByName(MicroEntity.DELETED_FIELD, DeletedEnum.UN_DELETE.getValue(), metaObject);
-        this.setFieldValByName(MicroEntity.TENANT_ID_FIELD, tenantId, metaObject);
+
+        Long tenantId = MicroAuthContext.getTenantId();
+        if (tenantId != null) {
+            this.setFieldValByName(MicroEntity.TENANT_ID_FIELD, tenantId, metaObject);
+        }
     }
 
     @Override

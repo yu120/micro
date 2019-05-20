@@ -1,12 +1,12 @@
 package cn.micro.biz.commons.mybatis;
 
+import cn.micro.biz.commons.auth.MicroAuthContext;
 import cn.micro.biz.commons.exception.MicroErrorException;
 import cn.micro.biz.commons.mybatis.extension.TraceExpendInterceptor;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import com.baomidou.mybatisplus.core.injector.DefaultSqlInjector;
 import com.baomidou.mybatisplus.core.parser.ISqlParser;
-import com.baomidou.mybatisplus.core.parser.ISqlParserFilter;
 import com.baomidou.mybatisplus.core.parser.SqlParserHelper;
 import com.baomidou.mybatisplus.extension.plugins.OptimisticLockerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
@@ -20,7 +20,6 @@ import org.apache.ibatis.builder.xml.XMLMapperEntityResolver;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.parsing.XNode;
 import org.apache.ibatis.parsing.XPathParser;
-import org.apache.ibatis.reflection.MetaObject;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -57,10 +56,8 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
 
     private static final String MAPPER_LOCATIONS = "mybatis-plus.mapper-locations";
     private static final ResourcePatternResolver RESOURCE_RESOLVER = new PathMatchingResourcePatternResolver();
-    private static final String DEFAULT_TENANT_TABLE_NAME = "tenant";
 
     private String mapperPackage;
-    private String tenantIdColumn = "tenant_id";
 
     /**
      * Read environment config
@@ -192,29 +189,27 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
             return paginationInterceptor;
         }
 
-        // build tenant id column
-        if (microTenantProperties.getColumn() != null && microTenantProperties.getColumn().length() > 0) {
-            tenantIdColumn = microTenantProperties.getColumn();
-        }
-        List<String> excludeTables = microTenantProperties.getExcludeTables();
-        excludeTables.add(DEFAULT_TENANT_TABLE_NAME);
-
         List<ISqlParser> sqlParserList = new ArrayList<>();
         sqlParserList.add(new TenantSqlParser()
                 .setTenantHandler(new TenantHandler() {
                     @Override
                     public Expression getTenantId() {
-                        return new LongValue(1L);
+                        Long tenantId = MicroAuthContext.getTenantId();
+                        if (tenantId != null) {
+                            return new LongValue(tenantId);
+                        }
+
+                        return null;
                     }
 
                     @Override
                     public String getTenantIdColumn() {
-                        return tenantIdColumn;
+                        return microTenantProperties.getColumn();
                     }
 
                     @Override
                     public boolean doTableFilter(String tableName) {
-                        return excludeTables.contains(tableName);
+                        return microTenantProperties.getExcludeTables().contains(tableName);
                     }
                 }));
         paginationInterceptor.setSqlParserList(sqlParserList);

@@ -3,6 +3,7 @@ package cn.micro.biz.commons.auth;
 import cn.micro.biz.commons.exception.MicroBadRequestException;
 import cn.micro.biz.commons.exception.MicroErrorException;
 import cn.micro.biz.commons.exception.MicroSignInException;
+import cn.micro.biz.commons.mybatis.MicroTenantProperties;
 import cn.micro.biz.commons.utils.IPUtils;
 import cn.micro.biz.pubsrv.redis.RedisService;
 import com.auth0.jwt.JWT;
@@ -61,12 +62,15 @@ public class MicroAuthContext implements InitializingBean {
     private static Algorithm ALGORITHM;
     private static JWTVerifier VERIFIER;
     private static MicroAuthProperties properties;
+    private static Long defaultTenantValue;
 
     private final MicroAuthProperties microAuthProperties;
+    private final MicroTenantProperties microTenantProperties;
 
     @Override
     public void afterPropertiesSet() {
         MicroAuthContext.properties = microAuthProperties;
+        MicroAuthContext.defaultTenantValue = microTenantProperties.getDefaultValue();
 
         try {
             ALGORITHM = Algorithm.HMAC256(SECRET);
@@ -339,8 +343,17 @@ public class MicroAuthContext implements InitializingBean {
     }
 
     public static Long getTenantId() {
-        MicroTokenBody microTokenBody = getContextAccessToken();
-        return microTokenBody.getMemberId();
+        MicroTokenBody microTokenBody;
+        try {
+            microTokenBody = getContextAccessToken();
+            if (microTokenBody == null) {
+                return defaultTenantValue;
+            }
+        } catch (Exception e) {
+            return defaultTenantValue;
+        }
+
+        return microTokenBody.getTenantId();
     }
 
     public static List<String> getAuthorities() {
