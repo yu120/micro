@@ -25,7 +25,13 @@ spring:
       characterEncoding=UTF-8&useUnicode=true&useSSL=false&rewriteBatchedStatements=true&
       autoReconnect=true&failOverReadOnly=false&connectTimeout=60000&socketTimeout=60000
     druid:
+      min-idle: 10
+      max-active: 100
+      max-wait: 60000
+      initial-size: 10
+      validation-query: SELECT 1 FROM DUAL
       time-between-log-stats-millis: 600000
+      connection-properties: druid.stat.slowSqlMillis=200;druid.stat.logSlowSql=true;config.decrypt=true
       stat-view-servlet:
         login-username: admin
         login-password: admin
