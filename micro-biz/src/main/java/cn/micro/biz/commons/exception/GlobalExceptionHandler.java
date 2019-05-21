@@ -2,9 +2,11 @@ package cn.micro.biz.commons.exception;
 
 import cn.micro.biz.commons.response.MetaData;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -36,39 +38,32 @@ public class GlobalExceptionHandler {
 
         // Custom exception
         if (e instanceof AbstractMicroException) {
-            if (!(e instanceof MicroErrorException)) {
-                AbstractMicroException ex = (AbstractMicroException) e;
-                return MetaData.build(traceId, ex.getCode(), ex.getMessage(), null);
-            }
+            AbstractMicroException ex = (AbstractMicroException) e;
+            return MetaData.build(traceId, ex.getCode(), ex.getMessage(), e.getMessage());
         }
 
         // Third party exception
         if (e instanceof NoHandlerFoundException) {
-            return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase(), e.getMessage());
-        }
-        if (e instanceof HttpRequestMethodNotSupportedException) {
-            return MetaData.build(traceId, HttpStatus.METHOD_NOT_ALLOWED.value(), HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase(), null);
+            return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), "Bad Request", e.getMessage());
         }
         if (e instanceof MaxUploadSizeExceededException) {
-            return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), "Upload file size should not exceed 1M", null);
+            return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), "Bad Request", "Upload file size should not exceed 1M");
         }
         if (e instanceof ConstraintViolationException) {
             Iterator<ConstraintViolation<?>> iterator = ((ConstraintViolationException) e).getConstraintViolations().iterator();
             if (iterator.hasNext()) {
-                return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), iterator.next().getMessageTemplate(), null);
+                return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), iterator.next().getMessageTemplate(), e.getMessage());
             }
-
-            return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase(), e.getMessage());
+            return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), "Bad Request", e.getMessage());
         }
         if (e instanceof MethodArgumentNotValidException) {
             Iterator<ObjectError> iterator = ((MethodArgumentNotValidException) e).getBindingResult().getAllErrors().iterator();
             if (iterator.hasNext()) {
                 return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), iterator.next().getDefaultMessage(), null);
             }
-
-            return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase(), e.getMessage());
+            return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), "Bad Request", e.getMessage());
         }
-
+        // Illegal Body by JSON Parse Fail
         if (e instanceof HttpMessageNotReadableException) {
             if (e.getCause() != null) {
                 if (e.getCause() instanceof JsonParseException
@@ -77,14 +72,32 @@ public class GlobalExceptionHandler {
                     return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), "Illegal Body by JSON Parse Fail", e.getMessage());
                 }
             }
+            return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), "Message Not Readable", e.getMessage());
         }
-
+        // Illegal Argument Type
         if (e instanceof MethodArgumentTypeMismatchException) {
             return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), "Illegal Argument Type", e.getMessage());
         }
+        // Method Not Allowed
+        if (e instanceof HttpRequestMethodNotSupportedException) {
+            return MetaData.build(traceId, HttpStatus.METHOD_NOT_ALLOWED.value(), "Method Not Allowed", null);
+        }
 
         log.error("Internal Server Error", e);
-        return MetaData.build(traceId, HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), e.getMessage());
+
+        // SQL Exception
+        if (e instanceof BadSqlGrammarException) {
+            if (e.getCause() != null) {
+                // SQL Syntax Error Exception
+                if (e.getCause() instanceof MySQLSyntaxErrorException) {
+                    return MetaData.build(traceId, HttpStatus.INTERNAL_SERVER_ERROR.value(), "SQL Syntax Error Exception", e.getCause().getMessage());
+                }
+            }
+            return MetaData.build(traceId, HttpStatus.INTERNAL_SERVER_ERROR.value(), "Bad SQL Exception", e.getMessage());
+        }
+
+        // Unknown Internal Server Error
+        return MetaData.build(traceId, HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal Server Error", e.getMessage());
     }
 
 }

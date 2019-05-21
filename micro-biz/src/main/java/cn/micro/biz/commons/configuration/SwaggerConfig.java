@@ -26,7 +26,7 @@ import java.util.List;
  */
 @Configuration
 @EnableSwagger2
-@ConditionalOnProperty(prefix = "micro.config", name = "swagger", havingValue = "true")
+@ConditionalOnProperty(prefix = "micro", name = "swagger", havingValue = "true")
 public class SwaggerConfig {
 
     @Value("${spring.application.name}")

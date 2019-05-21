@@ -8,13 +8,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
+import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
@@ -41,6 +44,16 @@ public class MicroSpringConfiguration implements ApplicationContextAware, WebMvc
 
     private final MicroProperties microProperties;
     private final GlobalAuthHandlerInterceptor globalAuthHandlerInterceptor;
+
+    @Bean
+    public WebMvcRegistrations customWebMvcRegistrations() {
+        return new WebMvcRegistrations() {
+            @Override
+            public RequestMappingHandlerMapping getRequestMappingHandlerMapping() {
+                return new MicroRequestMappingHandlerMapping();
+            }
+        };
+    }
 
     @Override
     public void setApplicationContext(@Nullable ApplicationContext applicationContext) throws BeansException {

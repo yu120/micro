@@ -1,6 +1,7 @@
 package cn.micro.biz.web;
 
 import cn.micro.biz.commons.auth.*;
+import cn.micro.biz.commons.configuration.ApiVersion;
 import cn.micro.biz.commons.mybatis.entity.MicroEntity;
 import cn.micro.biz.commons.mybatis.entity.PageQuery;
 import cn.micro.biz.commons.exception.MicroBadRequestException;
@@ -36,6 +37,7 @@ import java.util.List;
  *
  * @author lry
  */
+@ApiVersion("v2")
 @PreAuth
 @Validated
 @RestController
