@@ -27,7 +27,6 @@ import java.util.Set;
  * @author lry
  */
 @Slf4j
-
 @Configuration
 @EnableConfigurationProperties(MicroProperties.class)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))

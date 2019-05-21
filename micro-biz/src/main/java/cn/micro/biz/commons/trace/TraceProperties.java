@@ -19,7 +19,7 @@ import java.util.List;
 public class TraceProperties implements Serializable {
 
     /**
-     * 调用链开关
+     * Trace enable
      */
     private boolean enable;
     /**
@@ -59,24 +59,5 @@ public class TraceProperties implements Serializable {
      * 缓存写入后过期时间
      */
     private long cacheExpireAfterWriteSec = 600;
-
-    /**
-     * The Trace Event Type
-     *
-     * @author lry
-     */
-    public enum TraceEventType {
-
-        /**
-         * The Spring
-         */
-        SPG,
-
-        /**
-         * SQL
-         */
-        SQL;
-
-    }
 
 }

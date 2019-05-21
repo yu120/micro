@@ -3,6 +3,7 @@ package cn.micro.biz.commons.trace;
 import cn.micro.biz.commons.configuration.MicroSpringConfiguration;
 import cn.micro.biz.commons.mybatis.extension.IMicroService;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -10,6 +11,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.AntPathMatcher;
@@ -18,7 +20,6 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,13 +31,14 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Configuration
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SpringTraceInterceptor implements MethodInterceptor {
 
     private static final PathMatcher PATH_MATCHER = new AntPathMatcher();
     private List<String> expressions = new ArrayList<>();
 
-    @Resource
-    private TraceProperties properties;
+    private final TraceProperties properties;
+    private final MicroSpringConfiguration microSpringConfiguration;
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
@@ -81,7 +83,7 @@ public class SpringTraceInterceptor implements MethodInterceptor {
      * @return {@link Advisor}
      */
     @Bean
-    public Advisor traceAdvisor(MicroSpringConfiguration microSpringConfiguration) {
+    public Advisor traceAdvisor() {
         if (properties.isDefaultExpressions()) {
             expressions.add("@annotation(" + Trace.class.getName() + ")");
             expressions.add("execution(* " + BaseMapper.class.getName() + ".*(..))");
