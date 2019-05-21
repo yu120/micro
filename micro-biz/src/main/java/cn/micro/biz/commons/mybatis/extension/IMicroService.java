@@ -1,5 +1,6 @@
 package cn.micro.biz.commons.mybatis.extension;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -9,11 +10,6 @@ import java.util.List;
 /**
  * Micro Service
  * <p>
- * IN和EXISTS的区别:
- * 1.如果查询的两个表大小相当，那么用IN和EXISTS差别不大
- * 2.如果两个表中一个较小，一个是大表
- * 2.1 子查询表大的用EXISTS：SELECT * FROM a WHERE EXISTS (SELECT * FROM b WHERE b.id = a.id);
- * 2.2 子查询表小的用IN：SELECT * FROM a WHERE a.id IN (SELECT id FROM b);
  *
  * @param <T>
  * @author lry
@@ -29,7 +25,9 @@ public interface IMicroService<T> extends IService<T> {
      * @param value  eg: "Tom"
      * @return {@link T }
      */
-    T getOneEqs(SFunction<T, ?> column, Object value);
+    default T getOneEqs(SFunction<T, ?> column, Object value) {
+        return getOneEqs(column, value, null, null);
+    }
 
     /**
      * The get one object by 2 equals(eq) bean field
@@ -40,7 +38,9 @@ public interface IMicroService<T> extends IService<T> {
      * @param value2  eg: "STUDENT"
      * @return {@link T }
      */
-    T getOneEqs(SFunction<T, ?> column1, Object value1, SFunction<T, ?> column2, Object value2);
+    default T getOneEqs(SFunction<T, ?> column1, Object value1, SFunction<T, ?> column2, Object value2) {
+        return getOne(buildEqQuery(column1, value1, column2, value2));
+    }
 
     // ====== lambda equals(eq) to list object
 
@@ -51,7 +51,9 @@ public interface IMicroService<T> extends IService<T> {
      * @param value  eg: "Tom"
      * @return {@link T }
      */
-    List<T> listEqs(SFunction<T, ?> column, Object value);
+    default List<T> listEqs(SFunction<T, ?> column, Object value) {
+        return listEqs(column, value, null, null);
+    }
 
     /**
      * The get list object by 1 equals(eq) bean field
@@ -62,7 +64,9 @@ public interface IMicroService<T> extends IService<T> {
      * @param value2  eg: "STUDENT"
      * @return {@link T }
      */
-    List<T> listEqs(SFunction<T, ?> column1, Object value1, SFunction<T, ?> column2, Object value2);
+    default List<T> listEqs(SFunction<T, ?> column1, Object value1, SFunction<T, ?> column2, Object value2) {
+        return list(buildEqQuery(column1, value1, column2, value2));
+    }
 
     // ====== lambda in to list object
 
@@ -73,7 +77,9 @@ public interface IMicroService<T> extends IService<T> {
      * @param values eg: "Tom", "Jack"
      * @return {@link List<T> }
      */
-    List<T> listIns(SFunction<T, ?> column, Object... values);
+    default List<T> listIns(SFunction<T, ?> column, Object... values) {
+        return list(new LambdaQueryWrapper<T>().in(column, values));
+    }
 
     /**
      * The get list by in bean field
@@ -82,7 +88,9 @@ public interface IMicroService<T> extends IService<T> {
      * @param values eg: Arrays.asList("Tom", "Jack")
      * @return {@link List<T> }
      */
-    List<T> listIns(SFunction<T, ?> column, Collection<?> values);
+    default List<T> listIns(SFunction<T, ?> column, Collection<?> values) {
+        return list(new LambdaQueryWrapper<T>().in(column, values));
+    }
 
     // ====== lambda equals(eq) and in to list object
 
@@ -95,8 +103,11 @@ public interface IMicroService<T> extends IService<T> {
      * @param inValues eg: "beijing", "shanghai"
      * @return {@link List<T> }
      */
-    List<T> listEqAndIn(SFunction<T, ?> eqColumn, Object eqValue,
-                        SFunction<T, ?> inColumn, Object... inValues);
+    default List<T> listEqAndIn(
+            SFunction<T, ?> eqColumn, Object eqValue,
+            SFunction<T, ?> inColumn, Object... inValues) {
+        return listEqAndIn(eqColumn, eqValue, null, null, inColumn, inValues);
+    }
 
     /**
      * The get list object by 2 equals(eq) and in bean field
@@ -109,9 +120,12 @@ public interface IMicroService<T> extends IService<T> {
      * @param inValues  eg: "beijing", "shanghai"
      * @return {@link List<T> }
      */
-    List<T> listEqAndIn(SFunction<T, ?> eqColumn1, Object eqValue1,
-                        SFunction<T, ?> eqColumn2, Object eqValue2,
-                        SFunction<T, ?> inColumn, Object... inValues);
+    default List<T> listEqAndIn(
+            SFunction<T, ?> eqColumn1, Object eqValue1,
+            SFunction<T, ?> eqColumn2, Object eqValue2,
+            SFunction<T, ?> inColumn, Object... inValues) {
+        return list(buildEqQuery(eqColumn1, eqValue1, eqColumn2, eqValue2).in(inColumn, inValues));
+    }
 
     /**
      * The get list object by 1 equals(eq) and in bean field
@@ -122,8 +136,11 @@ public interface IMicroService<T> extends IService<T> {
      * @param inValues eg: Arrays.asList("beijing", "shanghai")
      * @return {@link List<T> }
      */
-    List<T> listEqAndIn(SFunction<T, ?> eqColumn, Object eqValue,
-                        SFunction<T, ?> inColumn, Collection<?> inValues);
+    default List<T> listEqAndIn(
+            SFunction<T, ?> eqColumn, Object eqValue,
+            SFunction<T, ?> inColumn, Collection<?> inValues) {
+        return listEqAndIn(eqColumn, eqValue, null, null, inColumn, inValues);
+    }
 
     /**
      * The get list object by 2 equals(eq) and in bean field
@@ -136,8 +153,30 @@ public interface IMicroService<T> extends IService<T> {
      * @param inValues  eg: Arrays.asList("beijing", "shanghai")
      * @return {@link List<T> }
      */
-    List<T> listEqAndIn(SFunction<T, ?> eqColumn1, Object eqValue1,
-                        SFunction<T, ?> eqColumn2, Object eqValue2,
-                        SFunction<T, ?> inColumn, Collection<?> inValues);
+    default List<T> listEqAndIn(
+            SFunction<T, ?> eqColumn1, Object eqValue1,
+            SFunction<T, ?> eqColumn2, Object eqValue2,
+            SFunction<T, ?> inColumn, Collection<?> inValues) {
+        return list(buildEqQuery(eqColumn1, eqValue1, eqColumn2, eqValue2).in(inColumn, inValues));
+    }
+
+    /**
+     * Build eq in
+     *
+     * @param column1 eg: User::getName
+     * @param value1  eg: "Tom"
+     * @param column2 eg: User::getCategory
+     * @param value2  eg: "STUDENT"
+     * @return {@link LambdaQueryWrapper<T>}
+     */
+    default LambdaQueryWrapper<T> buildEqQuery(SFunction<T, ?> column1, Object value1,
+                                               SFunction<T, ?> column2, Object value2) {
+        LambdaQueryWrapper<T> wrapper = new LambdaQueryWrapper<T>().eq(column1, value1);
+        if (column2 != null && value2 != null) {
+            wrapper.eq(column2, value2);
+        }
+
+        return wrapper;
+    }
 
 }
