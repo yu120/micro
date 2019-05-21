@@ -40,6 +40,7 @@ server:
     enabled: true
     min-response-size: 2048
   tomcat:
+    uri-encoding: UTF-8
     max-threads: 200
     accept-count: 100
     min-spare-threads: 10
