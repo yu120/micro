@@ -41,7 +41,7 @@ public enum TraceStatistic {
      */
     public void initialize(TraceProperties properties) {
         dumpScheduled = new ScheduledThreadPoolExecutor(1,
-                new ThreadFactoryBuilder().setNameFormat("micro-trace").setDaemon(true).build());
+                new ThreadFactoryBuilder().setNameFormat("micro-trace-task").setDaemon(true).build());
         dumpScheduled.scheduleAtFixedRate(() -> {
             try {
                 TraceStatistic.INSTANCE.dump();
