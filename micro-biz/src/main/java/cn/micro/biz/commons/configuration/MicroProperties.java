@@ -24,6 +24,10 @@ public class MicroProperties implements Serializable {
      */
     private boolean swagger;
     /**
+     * Stack max length
+     */
+    private int stackMaxLength = 2000;
+    /**
      * 自动包装响应结构的扫描包路径
      */
     private String[] metaPackages;

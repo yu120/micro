@@ -1,5 +1,6 @@
 package cn.micro.biz.commons.response;
 
+import cn.micro.biz.commons.configuration.MicroSpringConfiguration;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -45,8 +46,17 @@ public class MetaData implements Serializable {
             headers = new LinkedHashMap<>();
         }
         headers.put(TRACE_KEY, traceId);
-        headers.put(STACK_KEY, stack == null ? "" : stack);
         headers.put(TIME_KEY, new SimpleDateFormat(SDF_PATTERN).format(new Date()));
+        if (stack == null) {
+            headers.put(STACK_KEY, "");
+        } else {
+            if (stack.length() > MicroSpringConfiguration.STACK_MAX_LENGTH) {
+                headers.put(STACK_KEY, stack.substring(0, MicroSpringConfiguration.STACK_MAX_LENGTH));
+            } else {
+                headers.put(STACK_KEY, stack);
+            }
+        }
+
         return new MetaData(code, message, obj, headers);
     }
 
