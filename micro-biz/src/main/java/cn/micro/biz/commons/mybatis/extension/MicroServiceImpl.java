@@ -10,14 +10,14 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Micro Service Impl
+ * Micro Service Implements
  *
  * @param <M>
  * @param <T>
  * @author lry
  */
-public class MicroServiceImpl<M extends BaseMapper<T>, T extends Model<T>> extends ServiceImpl<M, T>
-        implements IMicroService<T> {
+public class MicroServiceImpl<M extends BaseMapper<T>, T extends Model<T>>
+        extends ServiceImpl<M, T> implements IMicroService<T> {
 
     // ====== lambda equals(eq) to one object
 
@@ -29,14 +29,7 @@ public class MicroServiceImpl<M extends BaseMapper<T>, T extends Model<T>> exten
     @Override
     public T getOneEqs(SFunction<T, ?> column1, Object value1,
                        SFunction<T, ?> column2, Object value2) {
-        return getOneEqs(column1, value1, column2, value2, null, null);
-    }
-
-    @Override
-    public T getOneEqs(SFunction<T, ?> column1, Object value1,
-                       SFunction<T, ?> column2, Object value2,
-                       SFunction<T, ?> column3, Object value3) {
-        return getOne(buildEq(column1, value1, column2, value2, column3, value3));
+        return getOne(buildEq(column1, value1, column2, value2));
     }
 
     // ====== lambda equals(eq) to list object
@@ -47,16 +40,8 @@ public class MicroServiceImpl<M extends BaseMapper<T>, T extends Model<T>> exten
     }
 
     @Override
-    public List<T> listEqs(SFunction<T, ?> column1, Object value1,
-                           SFunction<T, ?> column2, Object value2) {
-        return listEqs(column1, value1, column2, value2, null, null);
-    }
-
-    @Override
-    public List<T> listEqs(SFunction<T, ?> column1, Object value1,
-                           SFunction<T, ?> column2, Object value2,
-                           SFunction<T, ?> column3, Object value3) {
-        return list(buildEq(column1, value1, column2, value2, column3, value3));
+    public List<T> listEqs(SFunction<T, ?> column1, Object value1, SFunction<T, ?> column2, Object value2) {
+        return list(buildEq(column1, value1, column2, value2));
     }
 
     // ====== lambda in to list object
@@ -103,24 +88,18 @@ public class MicroServiceImpl<M extends BaseMapper<T>, T extends Model<T>> exten
         return list(buildEqIn(eqColumn1, eqValue1, eqColumn2, eqValue2).in(inColumn, inValues));
     }
 
-    private LambdaQueryWrapper<T> buildEq(
-            SFunction<T, ?> column1, Object value1,
-            SFunction<T, ?> column2, Object value2,
-            SFunction<T, ?> column3, Object value3) {
+    private LambdaQueryWrapper<T> buildEq(SFunction<T, ?> column1, Object value1,
+                                          SFunction<T, ?> column2, Object value2) {
         LambdaQueryWrapper<T> wrapper = new LambdaQueryWrapper<T>().eq(column1, value1);
-        if (!(column2 == null || value2 == null)) {
+        if (column2 != null && value2 != null) {
             wrapper.eq(column2, value2);
-        }
-        if (!(column3 == null || value3 == null)) {
-            wrapper.eq(column3, value3);
         }
 
         return wrapper;
     }
 
-    private LambdaQueryWrapper<T> buildEqIn(
-            SFunction<T, ?> eqColumn1, Object eqValue1,
-            SFunction<T, ?> eqColumn2, Object eqValue2) {
+    private LambdaQueryWrapper<T> buildEqIn(SFunction<T, ?> eqColumn1, Object eqValue1,
+                                            SFunction<T, ?> eqColumn2, Object eqValue2) {
         LambdaQueryWrapper<T> wrapper = new LambdaQueryWrapper<T>().eq(eqColumn1, eqValue1);
         if (!(eqColumn2 == null || eqValue2 == null)) {
             wrapper.eq(eqColumn2, eqValue2);

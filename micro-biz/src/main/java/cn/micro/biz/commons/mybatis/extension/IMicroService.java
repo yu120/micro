@@ -40,23 +40,7 @@ public interface IMicroService<T> extends IService<T> {
      * @param value2  eg: "STUDENT"
      * @return {@link T }
      */
-    T getOneEqs(SFunction<T, ?> column1, Object value1,
-                SFunction<T, ?> column2, Object value2);
-
-    /**
-     * The get one object by 3 equals(eq) bean field
-     *
-     * @param column1 eg: User::getName
-     * @param value1  eg: "Tom"
-     * @param column2 eg: User::getCategory
-     * @param value2  eg: "STUDENT"
-     * @param column3 eg: User::getArea
-     * @param value3  eg: "beijing"
-     * @return {@link T }
-     */
-    T getOneEqs(SFunction<T, ?> column1, Object value1,
-                SFunction<T, ?> column2, Object value2,
-                SFunction<T, ?> column3, Object value3);
+    T getOneEqs(SFunction<T, ?> column1, Object value1, SFunction<T, ?> column2, Object value2);
 
     // ====== lambda equals(eq) to list object
 
@@ -78,23 +62,7 @@ public interface IMicroService<T> extends IService<T> {
      * @param value2  eg: "STUDENT"
      * @return {@link T }
      */
-    List<T> listEqs(SFunction<T, ?> column1, Object value1,
-                    SFunction<T, ?> column2, Object value2);
-
-    /**
-     * The get list object by 1 equals(eq) bean field
-     *
-     * @param column1 eg: User::getName
-     * @param value1  eg: "Tom"
-     * @param column2 eg: User::getCategory
-     * @param value2  eg: "STUDENT"
-     * @param column3 eg: User::getArea
-     * @param value3  eg: "beijing"
-     * @return {@link T }
-     */
-    List<T> listEqs(SFunction<T, ?> column1, Object value1,
-                    SFunction<T, ?> column2, Object value2,
-                    SFunction<T, ?> column3, Object value3);
+    List<T> listEqs(SFunction<T, ?> column1, Object value1, SFunction<T, ?> column2, Object value2);
 
     // ====== lambda in to list object
 
@@ -123,8 +91,8 @@ public interface IMicroService<T> extends IService<T> {
      *
      * @param eqColumn eg: User::getName
      * @param eqValue  eg: "Tom"
-     * @param inColumn  eg: User::getArea
-     * @param inValues  eg: "beijing", "shanghai"
+     * @param inColumn eg: User::getArea
+     * @param inValues eg: "beijing", "shanghai"
      * @return {@link List<T> }
      */
     List<T> listEqAndIn(SFunction<T, ?> eqColumn, Object eqValue,
@@ -150,8 +118,8 @@ public interface IMicroService<T> extends IService<T> {
      *
      * @param eqColumn eg: User::getName
      * @param eqValue  eg: "Tom"
-     * @param inColumn  eg: User::getArea
-     * @param inValues  eg: Arrays.asList("beijing", "shanghai")
+     * @param inColumn eg: User::getArea
+     * @param inValues eg: Arrays.asList("beijing", "shanghai")
      * @return {@link List<T> }
      */
     List<T> listEqAndIn(SFunction<T, ?> eqColumn, Object eqValue,
