@@ -114,9 +114,14 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
         log.info("Scan to mapper packages: {}", mapperPackage);
     }
 
+    /**
+     * Micro mybatis properties
+     *
+     * @return {@link MicroMybatisProperties}
+     */
     @Bean
     @ConfigurationProperties(prefix = "micro.mybatis")
-    public MicroMybatisProperties microTenantProperties() {
+    public MicroMybatisProperties microMybatisProperties() {
         return new MicroMybatisProperties();
     }
 
@@ -163,6 +168,7 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
     /**
      * Global transaction scanner
      *
+     * @param microMybatisProperties {@link MicroMybatisProperties}
      * @return global transaction scanner
      */
     @Bean
@@ -194,11 +200,14 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
         return new DefaultSqlInjector();
     }
 
-    // ============ IBatis Trace Interceptor
+
+    // ============ Custom Mybatis Interceptor ==============
+
 
     /**
-     * Paging interceptor
+     * Pagination interceptor
      *
+     * @param microMybatisProperties {@link MicroMybatisProperties}
      * @return {@link PaginationInterceptor}
      */
     @Bean
