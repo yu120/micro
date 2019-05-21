@@ -1,8 +1,7 @@
 package cn.micro.biz;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
@@ -10,8 +9,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  *
  * @author lry
  */
-@Configuration
-@EnableAutoConfiguration
+@SpringBootApplication
 @EnableTransactionManagement
 public class Main {
 
