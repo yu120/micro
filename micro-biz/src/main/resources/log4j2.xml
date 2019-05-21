@@ -9,11 +9,9 @@
         <property name="LOG_COLOR">FATAL=white, ERROR=red, WARN=blue, INFO=black, DEBUG=green, TRACE=blue</property>
         <!-- %L为行号显示,影响日志输出性能 -->
         <!-- http://logging.apache.org/log4j/2.x/manual/layouts.html#PatternLayout -->
-        <property name="CONSOLE_LOG_PATTERN">[%d{yyyy-MM-dd'T'HH:mm:ss.SSS}] [%highlight{%-5level}] [%yellow{%L}]%notEmpty{ [%magenta{%mdc{X-Trace-ID}}]} [%blue{%t}] [%highlight{%c{4.}}] - %msg%n%throwable</property>
+        <property name="CONSOLE_LOG_PATTERN">[%d{yyyy-MM-dd'T'HH:mm:ss.SSS}] [%highlight{%-5level}] [%yellow{%L}]%notEmpty{ [%magenta{%X{X-Trace-ID}}]} [%blue{%t}] [%highlight{%c}] - %msg%n%throwable</property>
         <!-- 不带行号输出(行号显示会影响日志输出性能) -->
-        <property name="LOG_PATTERN">[%d{yyyy-MM-dd'T'HH:mm:ss.SSS}] [%-5level] [%X{X-Trace-ID}] [%t] [%logger{36}] -
-            %m%n
-        </property>
+        <property name="LOG_PATTERN">[%d{yyyy-MM-dd'T'HH:mm:ss.SSS}] [%-5level]%notEmpty{ [%X{X-Trace-ID}]} [%t] [%c{4.}] - %msg%n%throwable</property>
     </Properties>
 
     <appenders>
