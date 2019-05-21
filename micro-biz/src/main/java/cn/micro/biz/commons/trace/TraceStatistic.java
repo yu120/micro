@@ -25,12 +25,14 @@ public enum TraceStatistic {
     private static final Map<String, LongAdder[]> REQUESTS = new ConcurrentHashMap<>();
 
     private static final String STATISTIC = ">>>>> Request Statistic[{}]:" +
-            "[0-49ms:{}][50-199ms:{}][200-499ms:{}][500-2999ms:{}][3000ms+:{}]";
+            "[0-49ms:{}][50-199ms:{}][200-499ms:{}][500-999ms:{}][1000-1999ms:{}][2000-2999ms:{}][3000ms+:{}]";
 
     private static final int SECTION2 = 50;
     private static final int SECTION3 = 200;
     private static final int SECTION4 = 500;
-    private static final int SECTION5 = 3000;
+    private static final int SECTION5 = 1000;
+    private static final int SECTION6 = 2000;
+    private static final int SECTION7 = 3000;
 
     private ScheduledExecutorService dumpScheduled;
 
@@ -55,7 +57,7 @@ public enum TraceStatistic {
             return;
         }
 
-        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Begin dump request statistic info <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Begin dump request statistic info <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
         for (Map.Entry<String, LongAdder[]> entry : REQUESTS.entrySet()) {
             LongAdder[] sectionArr = entry.getValue();
             if (sectionArr == null) {
@@ -67,13 +69,15 @@ public enum TraceStatistic {
             long num3 = sectionArr[2].sumThenReset();
             long num4 = sectionArr[3].sumThenReset();
             long num5 = sectionArr[4].sumThenReset();
-            if (num5 > 0) {
-                log.warn(STATISTIC, entry.getKey(), num1, num2, num3, num4, num5);
+            long num6 = sectionArr[5].sumThenReset();
+            long num7 = sectionArr[6].sumThenReset();
+            if (num7 > 0) {
+                log.warn(STATISTIC, entry.getKey(), num1, num2, num3, num4, num5, num6, num7);
             } else {
-                log.info(STATISTIC, entry.getKey(), num1, num2, num3, num4, num5);
+                log.info(STATISTIC, entry.getKey(), num1, num2, num3, num4, num5, num6, num7);
             }
         }
-        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> End dump request statistic info <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> End dump request statistic info <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 
         // dump完成后清理map记录
         REQUESTS.clear();
@@ -88,12 +92,14 @@ public enum TraceStatistic {
     public synchronized void put(String requestURI, int duration) {
         LongAdder[] sectionArr = REQUESTS.get(requestURI);
         if (sectionArr == null) {
-            sectionArr = new LongAdder[5];
+            sectionArr = new LongAdder[7];
             sectionArr[0] = new LongAdder();
             sectionArr[1] = new LongAdder();
             sectionArr[2] = new LongAdder();
             sectionArr[3] = new LongAdder();
             sectionArr[4] = new LongAdder();
+            sectionArr[5] = new LongAdder();
+            sectionArr[6] = new LongAdder();
             REQUESTS.put(requestURI, sectionArr);
         }
 
@@ -105,8 +111,12 @@ public enum TraceStatistic {
             sectionArr[2].increment();
         } else if (duration < SECTION5) {
             sectionArr[3].increment();
-        } else {
+        } else if (duration < SECTION6) {
             sectionArr[4].increment();
+        } else if (duration < SECTION7) {
+            sectionArr[5].increment();
+        } else {
+            sectionArr[6].increment();
         }
     }
 
