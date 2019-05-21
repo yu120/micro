@@ -2,7 +2,6 @@ package cn.micro.biz.commons.exception;
 
 import cn.micro.biz.commons.response.MetaData;
 import com.fasterxml.jackson.core.JsonParseException;
-import com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -20,6 +19,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.sql.SQLException;
 import java.util.Iterator;
 
 /**
@@ -89,11 +89,13 @@ public class GlobalExceptionHandler {
         if (e instanceof BadSqlGrammarException) {
             if (e.getCause() != null) {
                 // SQL Syntax Error Exception
-                if (e.getCause() instanceof MySQLSyntaxErrorException) {
-                    return MetaData.build(traceId, HttpStatus.INTERNAL_SERVER_ERROR.value(), "SQL Syntax Error Exception", e.getCause().getMessage());
+                if (e.getCause() instanceof SQLException) {
+                    SQLException se = ((SQLException) e.getCause());
+                    String stack = String.format("%s(%s) %s", se.getErrorCode(), se.getSQLState(), se.getMessage());
+                    return MetaData.build(traceId, HttpStatus.INTERNAL_SERVER_ERROR.value(), "Bad SQL Exception", stack);
                 }
             }
-            return MetaData.build(traceId, HttpStatus.INTERNAL_SERVER_ERROR.value(), "Bad SQL Exception", e.getMessage());
+            return MetaData.build(traceId, HttpStatus.INTERNAL_SERVER_ERROR.value(), "Unknown SQL Exception", e.getMessage());
         }
 
         // Unknown Internal Server Error
