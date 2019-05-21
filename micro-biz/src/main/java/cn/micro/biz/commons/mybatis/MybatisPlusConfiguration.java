@@ -15,6 +15,7 @@ import com.baomidou.mybatisplus.extension.plugins.PerformanceInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.tenant.TenantHandler;
 import com.baomidou.mybatisplus.extension.plugins.tenant.TenantSqlParser;
 import io.seata.rm.datasource.DataSourceProxy;
+import io.seata.spring.annotation.GlobalTransactionScanner;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
@@ -151,11 +152,24 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
      * @return {@link PlatformTransactionManager}
      */
     @Bean
+    @ConditionalOnProperty(prefix = "micro.transaction", name = "enable", havingValue = "true")
     public PlatformTransactionManager platformTransactionManager(DataSource druidDataSource, MicroMybatisProperties microMybatisProperties) {
         DataSourceTransactionManager manager = new DataSourceTransactionManager(druidDataSource);
         MicroMybatisProperties.MicroTransactionProperties properties = microMybatisProperties.getTransaction();
         manager.setDefaultTimeout(properties.getDefaultTimeout());
         return manager;
+    }
+
+    /**
+     * Global transaction scanner
+     *
+     * @return global transaction scanner
+     */
+    @Bean
+    @ConditionalOnProperty(prefix = "micro.transaction", name = "seata", havingValue = "true")
+    public GlobalTransactionScanner globalTransactionScanner(MicroMybatisProperties microMybatisProperties) {
+        MicroMybatisProperties.MicroTransactionProperties properties = microMybatisProperties.getTransaction();
+        return new GlobalTransactionScanner(properties.getApplicationId(), properties.getTxServiceGroup());
     }
 
     /**

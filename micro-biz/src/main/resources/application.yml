@@ -62,6 +62,12 @@ micro:
     trace-expend: true
     tenant:
       enable: true
+    transaction:
+      enable: true
+      default-timeout: 60
+      seata: false
+      application-id: ${spring.application.name}
+      tx-service-group: my_tx_group
   auth:
     auth-refresh: true
     auth-refresh-sec: 120
@@ -124,10 +130,6 @@ micro:
       notify-url: xxx
       http-connect-timeout-ms: 8000
       http-read-timeout-ms: 10000
-  transaction:
-    enable: false
-    application-id: ${spring.application.name}
-    tx-service-group: my_tx_group
   email:
     enable: true
     port: 465

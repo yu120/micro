@@ -75,9 +75,26 @@ public class MicroMybatisProperties implements Serializable {
     @ToString
     public static class MicroTransactionProperties implements Serializable {
         /**
+         * Transaction enable
+         */
+        private boolean enable = true;
+        /**
          * Default timeout
          */
         private int defaultTimeout = 60;
+
+        /**
+         * Distributed transaction: seata
+         */
+        private boolean seata = false;
+        /**
+         * Application id
+         */
+        private String applicationId;
+        /**
+         * Transaction service group
+         */
+        private String txServiceGroup = "my_tx_group";
     }
 
 }
