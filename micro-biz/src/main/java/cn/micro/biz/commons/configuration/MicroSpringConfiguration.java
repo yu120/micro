@@ -2,7 +2,6 @@ package cn.micro.biz.commons.configuration;
 
 import cn.micro.biz.commons.auth.GlobalAuthHandlerInterceptor;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
@@ -34,13 +33,8 @@ import java.util.Set;
 public class MicroSpringConfiguration implements ApplicationContextAware, InitializingBean, WebMvcConfigurer {
 
     public static int STACK_MAX_LENGTH;
-
-    @Getter
-    private static ApplicationContext applicationContext;
-    @Getter
-    private static List<String> basePackages;
-
-    private List<String> instanceBasePackages;
+    private static ApplicationContext APPLICATION_CONTEXT;
+    private static List<String> BASE_PACKAGES;
 
     private final MicroProperties microProperties;
     private final GlobalAuthHandlerInterceptor globalAuthHandlerInterceptor;
@@ -48,9 +42,8 @@ public class MicroSpringConfiguration implements ApplicationContextAware, Initia
     @Override
     public void setApplicationContext(@Nullable ApplicationContext applicationContext) throws BeansException {
         if (applicationContext != null) {
-            MicroSpringConfiguration.applicationContext = applicationContext;
-            this.instanceBasePackages = AutoConfigurationPackages.get(applicationContext);
-            MicroSpringConfiguration.basePackages = instanceBasePackages;
+            MicroSpringConfiguration.APPLICATION_CONTEXT = applicationContext;
+            MicroSpringConfiguration.BASE_PACKAGES = AutoConfigurationPackages.get(applicationContext);
         }
     }
 
@@ -71,8 +64,8 @@ public class MicroSpringConfiguration implements ApplicationContextAware, Initia
 
     public static Set<String> copyBasePackages() {
         Set<String> tempBasePackages = new HashSet<>();
-        if (basePackages != null && !basePackages.isEmpty()) {
-            tempBasePackages.addAll(basePackages);
+        if (BASE_PACKAGES != null && !BASE_PACKAGES.isEmpty()) {
+            tempBasePackages.addAll(BASE_PACKAGES);
         }
 
         return tempBasePackages;
@@ -80,11 +73,11 @@ public class MicroSpringConfiguration implements ApplicationContextAware, Initia
 
     public Set<String> copyInstanceBasePackages() {
         Set<String> basePackages = new HashSet<>();
-        if (instanceBasePackages == null || instanceBasePackages.isEmpty()) {
+        if (BASE_PACKAGES == null || BASE_PACKAGES.isEmpty()) {
             return basePackages;
         }
 
-        basePackages.addAll(instanceBasePackages);
+        basePackages.addAll(BASE_PACKAGES);
         return basePackages;
     }
 
