@@ -125,3 +125,5 @@ java -jar rocketmq-console-ng-1.0.1.jar --server.port=12581 --rocketmq.config.na
 - 优化注解@SpringBootApplication
 - 将Servlet容器由Tomcat变成Undertow(Tomcat的吞吐量5000左右,Undertow的吞吐量8000左右)
 - JVM调优
+memory = heap + non-heap
+non-heap = threads x stack + classes x 7/1000

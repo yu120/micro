@@ -1,7 +1,6 @@
 package cn.micro.biz.web;
 
 import cn.micro.biz.commons.auth.MicroToken;
-import cn.micro.biz.commons.configuration.ApiVersion;
 import cn.micro.biz.model.add.RegisterMemberAdd;
 import cn.micro.biz.model.query.LoginAccountQuery;
 import cn.micro.biz.service.member.IAccountService;
@@ -18,7 +17,6 @@ import javax.annotation.Resource;
  *
  * @author lry
  */
-@ApiVersion
 @Validated
 @RestController
 @RequestMapping("account")
