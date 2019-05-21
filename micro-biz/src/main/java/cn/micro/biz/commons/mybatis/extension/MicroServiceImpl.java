@@ -88,6 +88,8 @@ public class MicroServiceImpl<M extends BaseMapper<T>, T extends Model<T>>
         return list(buildEqIn(eqColumn1, eqValue1, eqColumn2, eqValue2).in(inColumn, inValues));
     }
 
+    // ==================== Internal method
+
     private LambdaQueryWrapper<T> buildEq(SFunction<T, ?> column1, Object value1,
                                           SFunction<T, ?> column2, Object value2) {
         LambdaQueryWrapper<T> wrapper = new LambdaQueryWrapper<T>().eq(column1, value1);
@@ -98,11 +100,11 @@ public class MicroServiceImpl<M extends BaseMapper<T>, T extends Model<T>>
         return wrapper;
     }
 
-    private LambdaQueryWrapper<T> buildEqIn(SFunction<T, ?> eqColumn1, Object eqValue1,
-                                            SFunction<T, ?> eqColumn2, Object eqValue2) {
-        LambdaQueryWrapper<T> wrapper = new LambdaQueryWrapper<T>().eq(eqColumn1, eqValue1);
-        if (!(eqColumn2 == null || eqValue2 == null)) {
-            wrapper.eq(eqColumn2, eqValue2);
+    private LambdaQueryWrapper<T> buildEqIn(SFunction<T, ?> column1, Object value1,
+                                            SFunction<T, ?> column2, Object value2) {
+        LambdaQueryWrapper<T> wrapper = new LambdaQueryWrapper<T>().eq(column1, value1);
+        if (column2 != null && value2 != null) {
+            wrapper.eq(column2, value2);
         }
 
         return wrapper;
