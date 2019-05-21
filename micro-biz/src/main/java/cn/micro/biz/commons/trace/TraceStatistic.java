@@ -24,8 +24,8 @@ public enum TraceStatistic {
 
     private static final Map<String, LongAdder[]> REQUESTS = new ConcurrentHashMap<>();
 
-    private static final String STATISTIC = "Request Statistic[{}]:" +
-            "[0-49ms->{}][50-199ms->{}][200-499ms->{}][500-2999ms->{}][3000ms+->{}]";
+    private static final String STATISTIC = ">>>>> Request Statistic[{}]:" +
+            "[0-49ms:{}][50-199ms:{}][200-499ms:{}][500-2999ms:{}][3000ms+:{}]";
 
     private static final int SECTION2 = 50;
     private static final int SECTION3 = 200;
@@ -55,7 +55,7 @@ public enum TraceStatistic {
             return;
         }
 
-        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Begin dump request statistic info <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Begin dump request statistic info <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
         for (Map.Entry<String, LongAdder[]> entry : REQUESTS.entrySet()) {
             LongAdder[] sectionArr = entry.getValue();
             if (sectionArr == null) {
@@ -73,7 +73,7 @@ public enum TraceStatistic {
                 log.info(STATISTIC, entry.getKey(), num1, num2, num3, num4, num5);
             }
         }
-        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> End dump request statistic info <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> End dump request statistic info <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 
         // dump完成后清理map记录
         REQUESTS.clear();
