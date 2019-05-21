@@ -119,4 +119,9 @@ java -jar rocketmq-console-ng-1.0.1.jar --server.port=12581 --rocketmq.config.na
 ### SMS
 1.最多可验证3次后过期
 2.有效期为2分钟
-3.判断用户可信度[风险识别]，不可信用户添加发短信前验证码校验 
+3.判断用户可信度[风险识别]，不可信用户添加发短信前验证码校验
+
+### SpringBoot性能优化项
+- 优化注解@SpringBootApplication
+- 将Servlet容器由Tomcat变成Undertow(Tomcat的吞吐量5000左右,Undertow的吞吐量8000左右)
+- JVM调优

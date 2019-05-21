@@ -33,11 +33,13 @@ spring:
 # Server
 server:
   port: 7777
-#  servlet:
-#    context-path: /api
+  servlet:
+    context-path: /api
   compression:
     enabled: true
     min-response-size: 2048
+  tomcat:
+    max-connections: 10000
 
 # Encrypted
 jasypt:
