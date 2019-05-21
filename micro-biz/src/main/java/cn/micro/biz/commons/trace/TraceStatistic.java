@@ -50,6 +50,35 @@ public enum TraceStatistic {
         }, 5000L, properties.getDumpPeriodSec() * 1000L, TimeUnit.MILLISECONDS);
     }
 
+    private synchronized void dump() {
+        if (REQUESTS.isEmpty()) {
+            return;
+        }
+
+        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Begin dump request statistic info <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+        for (Map.Entry<String, LongAdder[]> entry : REQUESTS.entrySet()) {
+            LongAdder[] sectionArr = entry.getValue();
+            if (sectionArr == null) {
+                return;
+            }
+
+            long num1 = sectionArr[0].sumThenReset();
+            long num2 = sectionArr[1].sumThenReset();
+            long num3 = sectionArr[2].sumThenReset();
+            long num4 = sectionArr[3].sumThenReset();
+            long num5 = sectionArr[4].sumThenReset();
+            if (num5 > 0) {
+                log.warn(STATISTIC, entry.getKey(), num1, num2, num3, num4, num5);
+            } else {
+                log.info(STATISTIC, entry.getKey(), num1, num2, num3, num4, num5);
+            }
+        }
+        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> End dump request statistic info <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+
+        // dump完成后清理map记录
+        REQUESTS.clear();
+    }
+
     /**
      * 记录统计信息
      *
@@ -79,35 +108,6 @@ public enum TraceStatistic {
         } else {
             sectionArr[4].increment();
         }
-    }
-
-    private synchronized void dump() {
-        if (REQUESTS.isEmpty()) {
-            return;
-        }
-
-        log.info("*********************************** Begin dump request statistic info ***********************************");
-        for (Map.Entry<String, LongAdder[]> entry : REQUESTS.entrySet()) {
-            LongAdder[] sectionArr = entry.getValue();
-            if (sectionArr == null) {
-                return;
-            }
-
-            long num1 = sectionArr[0].sumThenReset();
-            long num2 = sectionArr[1].sumThenReset();
-            long num3 = sectionArr[2].sumThenReset();
-            long num4 = sectionArr[3].sumThenReset();
-            long num5 = sectionArr[4].sumThenReset();
-            if (num5 > 0) {
-                log.warn(STATISTIC, entry.getKey(), num1, num2, num3, num4, num5);
-            } else {
-                log.info(STATISTIC, entry.getKey(), num1, num2, num3, num4, num5);
-            }
-        }
-        log.info("*********************************** End dump request statistic info ***********************************");
-
-        // dump完成后清理map记录
-        REQUESTS.clear();
     }
 
     public void destroy() {
