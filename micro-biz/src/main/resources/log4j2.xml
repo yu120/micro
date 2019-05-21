@@ -9,7 +9,7 @@
         <!-- %L为行号显示,影响日志输出性能。http://logging.apache.org/log4j/2.x/manual/layouts.html#PatternLayout -->
         <property name="CONSOLE_LOG_PATTERN">[%d{yyyy-MM-dd'T'HH:mm:ss.SSS}] [%highlight{%-5level}] [%yellow{%L}]%notEmpty{ [%magenta{%X{X-Trace-ID}}]} [%blue{%t}] [%highlight{%c}] - %msg%n%throwable</property>
         <!-- 不带行号输出(行号显示会影响日志输出性能) -->
-        <property name="LOG_PATTERN">[%d{yyyy-MM-dd'T'HH:mm:ss.SSS}] [%-5level]%notEmpty{ [%X{X-Trace-ID}]} [%t] [%c{4.}] - %msg%n%throwable</property>
+        <property name="LOG_PATTERN">[%d{yyyy-MM-dd'T'HH:mm:ss.SSS}] [%-5level]%notEmpty{ [%X{X-Trace-ID}]} [%t] [%c] - %msg%n%throwable</property>
     </Properties>
 
     <appenders>
@@ -54,6 +54,13 @@
         </RollingFile>
     </appenders>
 
+    <asyncLogger name="cn.micro" level="INFO" includeLocation="true">
+        <AppenderRef ref="APP_LOG"/>
+    </asyncLogger>
+    <asyncLogger name="cn.micro" level="ERROR" includeLocation="true">
+        <AppenderRef ref="ERROR_LOG"/>
+    </asyncLogger>
+
     <loggers>
         <!-- 过滤第三方应用日志 -->
         <logger name="org.mybatis" level="WARN"/>
@@ -71,7 +78,7 @@
         <logger name="cn.micro.biz.mapper.member.IPermissionMapper.selectList" level="INFO"/>
         <logger name="cn.micro.biz.commons.mybatis.extension.TraceExpendInterceptor" level="DEBUG"/>
 
-        <root level="INFO">
+        <root level="INFO" includeLocation="true">
             <appender-ref ref="Console"/>
             <appender-ref ref="APP_LOG"/>
             <appender-ref ref="ERROR_LOG"/>
