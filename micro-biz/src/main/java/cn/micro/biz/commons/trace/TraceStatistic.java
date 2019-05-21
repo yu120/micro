@@ -46,8 +46,7 @@ public enum TraceStatistic {
             try {
                 TraceStatistic.INSTANCE.dump();
             } catch (Exception e) {
-                //do nothing
-                //catch all exception
+                //catch all exception: do nothing
             }
         }, 5000L, properties.getDumpPeriodSec() * 1000L, TimeUnit.MILLISECONDS);
     }
