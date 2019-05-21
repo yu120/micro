@@ -91,7 +91,7 @@ public class GlobalExceptionHandler {
                 // SQL Syntax Error Exception
                 if (e.getCause() instanceof SQLException) {
                     SQLException se = ((SQLException) e.getCause());
-                    String stack = String.format("Bad SQL: %s(%s) %s", se.getErrorCode(), se.getSQLState(), se.getMessage());
+                    String stack = String.format("Bad SQL[Code:%s(State:%s)] %s", se.getErrorCode(), se.getSQLState(), se.getMessage());
                     return MetaData.build(traceId, HttpStatus.INTERNAL_SERVER_ERROR.value(), "Bad SQL Exception", stack);
                 }
             }
