@@ -44,7 +44,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
     @Override
     public Boolean addRegister(RegisterMemberAdd registerMemberAdd) throws Exception {
         // 账号唯一性校验
-        Account account = super.getOneEqs(Account::getCode, registerMemberAdd.getAccount());
+        Account account = super.getOne(Account::getCode, registerMemberAdd.getAccount());
         if (account != null) {
             throw new MicroBadRequestException("账号已存在");
         }
