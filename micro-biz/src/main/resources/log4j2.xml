@@ -39,6 +39,7 @@
         <!-- Startup Logger -->
         <!-- Business Logger -->
         <!-- Task Logger -->
+        <!-- JSON Logger -->
 
         <!-- Error Logger -->
         <RollingRandomAccessFile name="ERROR_LOG" fileName="${LOG_HOME}/error.log" immediateFlush="false"
@@ -48,16 +49,12 @@
                 <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
             </Filters>
             <Policies>
-                <!-- 基于指定文件大小的滚动策略，size属性用来定义每个日志文件的大小 -->
                 <SizeBasedTriggeringPolicy size="${LOG_FILE_SIZE}"/>
-                <!-- 基于时间的滚动策略，interval属性用来指定多久滚动一次，即24hour -->
-                <TimeBasedTriggeringPolicy interval="24" modulate="true"/>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
             </Policies>
-            <!-- 最多保存MAX_FILE_NUM文件 -->
             <DefaultRolloverStrategy max="${MAX_FILE_NUM}">
                 <Delete basePath="${LOG_HOME}" maxDepth="2">
                     <IfFileName glob="*/error-*.log.gz"/>
-                    <!-- 最多保存MAX_AGE天 -->
                     <IfLastModified age="${MAX_AGE}"/>
                 </Delete>
             </DefaultRolloverStrategy>
@@ -71,22 +68,23 @@
                 <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
             </Filters>
             <Policies>
-                <!-- 基于指定文件大小的滚动策略，size属性用来定义每个日志文件的大小 -->
                 <SizeBasedTriggeringPolicy size="${LOG_FILE_SIZE}"/>
-                <!-- 基于时间的滚动策略，interval属性用来指定多久滚动一次，即24hour -->
-                <TimeBasedTriggeringPolicy interval="24" modulate="true"/>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
             </Policies>
-            <!-- 最多保存MAX_FILE_NUM文件 -->
             <DefaultRolloverStrategy max="${MAX_FILE_NUM}">
                 <Delete basePath="${LOG_HOME}" maxDepth="2">
                     <IfFileName glob="*/all-*.log.gz"/>
-                    <!-- 最多保存MAX_AGE天 -->
                     <IfLastModified age="${MAX_AGE}"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
 
-        <!-- JSON Logger -->
+        <Async name="ASYNC_ERROR_LOG">
+            <AppenderRef ref="ERROR_LOG"/>
+        </Async>
+        <Async name="ASYNC_ALL_LOG">
+            <AppenderRef ref="ALL_LOG"/>
+        </Async>
     </appenders>
 
     <loggers>
@@ -99,19 +97,19 @@
         <logger name="org.apache.catalina.core.ContainerBase" level="OFF"/>
         <logger name="org.mybatis.spring.mapper.ClassPathMapperScanner" level="ERROR"/>
 
-        <!-- DEBUG: print SQL、TRACE: SQL+ResultSet-->
-        <!--<logger name="cn.micro.biz.mapper" level="DEBUG"/>-->
-        <!--<logger name="cn.micro.biz.mapper.member.IRoleMapper.selectList" level="INFO"/>-->
-        <!--<logger name="cn.micro.biz.mapper.member.IRolePermissionMapper.selectList" level="INFO"/>-->
-        <!--<logger name="cn.micro.biz.mapper.member.IPermissionMapper.selectList" level="INFO"/>-->
-        <!--<logger name="cn.micro.biz.commons.mybatis.extension.TraceExpendInterceptor" level="DEBUG"/>-->
+        <!-- DEBUG: print SQL、TRACE: SQL+ResultSet
+        <logger name="cn.micro.biz.mapper" level="DEBUG"/>
+        <logger name="cn.micro.biz.mapper.member.IRoleMapper.selectList" level="INFO"/>
+        <logger name="cn.micro.biz.mapper.member.IRolePermissionMapper.selectList" level="INFO"/>
+        <logger name="cn.micro.biz.mapper.member.IPermissionMapper.selectList" level="INFO"/>
+        <logger name="cn.micro.biz.commons.mybatis.extension.TraceExpendInterceptor" level="DEBUG"/>
+        -->
 
-        <AsyncLogger name="cn.micro.biz" level="ERROR" additivity="true">
-            <AppenderRef ref="ERROR_LOG"/>
-        </AsyncLogger>
-        <AsyncLogger name="cn.micro.biz" level="INFO" additivity="true">
-            <AppenderRef ref="ALL_LOG"/>
-        </AsyncLogger>
+        <!-- BIZ Logger -->
+        <Logger name="cn.micro" level="DEBUG" additivity="true">
+            <AppenderRef ref="ASYNC_ERROR_LOG"/>
+            <AppenderRef ref="ASYNC_ALL_LOG"/>
+        </Logger>
 
         <!-- Others Logger Level -->
         <Root level="INFO" includeLocation="true">
