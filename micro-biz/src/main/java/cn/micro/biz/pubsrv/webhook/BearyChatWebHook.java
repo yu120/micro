@@ -38,7 +38,7 @@ public class BearyChatWebHook implements IWebHook<BearyChatWebHook.RobotSendRequ
         BearyChatWebHook bearyChatWebHook = new BearyChatWebHook("fe3901f23862dca2e15f4695bf845bdd");
         RobotSendRequest robotSendRequest = new RobotSendRequest();
         robotSendRequest.setText("看看快快快dddddd22222");
-        boolean flag = bearyChatWebHook.incoming(robotSendRequest);
+        boolean flag = bearyChatWebHook.push(robotSendRequest);
         System.out.println(flag);
     }
 
@@ -49,7 +49,7 @@ public class BearyChatWebHook implements IWebHook<BearyChatWebHook.RobotSendRequ
      * @return success true
      */
     @Override
-    public boolean incoming(RobotSendRequest robotSendRequest) {
+    public boolean push(RobotSendRequest robotSendRequest) {
         String url = SERVER_URL + accessToken;
         Connection.Response response;
         try {

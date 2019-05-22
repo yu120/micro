@@ -48,7 +48,7 @@ public class DingTalkWebHook implements IWebHook<DingTalkWebHook.RobotSendReques
      * @return success true
      */
     @Override
-    public boolean incoming(RobotSendRequest robotSendRequest) {
+    public boolean push(RobotSendRequest robotSendRequest) {
         String url = SERVER_URL + accessToken;
         Connection.Response response;
         try {
@@ -109,7 +109,7 @@ public class DingTalkWebHook implements IWebHook<DingTalkWebHook.RobotSendReques
         request.setText(text);
 
         this.wrapperAtMobiles(request, atMobiles);
-        return this.incoming(request);
+        return this.push(request);
     }
 
     public boolean sendLink(String title, String text, String picUrl, String messageUrl, List<String> atMobiles) throws Exception {
@@ -124,7 +124,7 @@ public class DingTalkWebHook implements IWebHook<DingTalkWebHook.RobotSendReques
         request.setLink(link);
 
         this.wrapperAtMobiles(request, atMobiles);
-        return this.incoming(request);
+        return this.push(request);
     }
 
     public boolean sendMarkdown(String title, String text, List<String> atMobiles) throws Exception {
@@ -137,7 +137,7 @@ public class DingTalkWebHook implements IWebHook<DingTalkWebHook.RobotSendReques
         request.setMarkdown(markdown);
 
         this.wrapperAtMobiles(request, atMobiles);
-        return this.incoming(request);
+        return this.push(request);
     }
 
     public boolean sendFeedCard(List<Links> links, List<String> atMobiles) throws Exception {
@@ -149,7 +149,7 @@ public class DingTalkWebHook implements IWebHook<DingTalkWebHook.RobotSendReques
         request.setFeedCard(feedCard);
 
         this.wrapperAtMobiles(request, atMobiles);
-        return this.incoming(request);
+        return this.push(request);
     }
 
     /**

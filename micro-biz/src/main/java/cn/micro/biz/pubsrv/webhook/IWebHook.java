@@ -13,6 +13,8 @@ public interface IWebHook<T extends IRobotSendRequest> {
      * @param robotSendRequest {@link IRobotSendRequest}
      * @return success true
      */
-    boolean incoming(T robotSendRequest);
+    boolean push(T robotSendRequest);
+
+    // boolean hook(T robotSendRequest);
 
 }
