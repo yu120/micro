@@ -224,6 +224,14 @@
             <version>${seata.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.taobao</groupId>
+            <artifactId>taobao-sdk-java-auto</artifactId>
+            <version>1479188381469-20190517</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/taobao-sdk-java-auto_1479188381469-20190517.jar</systemPath>
+        </dependency>
+
         <!-- Qi Niu OSS -->
         <dependency>
             <groupId>com.qiniu</groupId>

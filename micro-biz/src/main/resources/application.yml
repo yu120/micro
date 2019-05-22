@@ -101,6 +101,9 @@ micro:
     cache-enable: true
     cache-maximum-size: 500
     cache-expire-after-write: 600s
+  ding-talk:
+    enable: true
+    accessToken: 0044bea6737e89921d27495e5d57592ccd10a74ab04a4b39b1ec7ff87db6106c
   oss:
     qi-niu:
       enable: true
