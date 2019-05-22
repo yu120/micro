@@ -5,15 +5,21 @@ import lombok.Data;
 import lombok.ToString;
 
 import java.io.Serializable;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 @Data
 @ToString
 public class MicroCacheRuleProperties implements Serializable {
 
+    /**
+     * Cache type
+     * <p>
+     * {@link CacheType}
+     */
     private CacheType cacheType = CacheType.LOCAL;
-    private TimeUnit timeUnit = TimeUnit.SECONDS;
-    private TimeUnit remoteTimeUnit = TimeUnit.SECONDS;
+    /**
+     * Token auth
+     */
     private boolean token;
     /**
      * Local cache limit number
@@ -22,10 +28,10 @@ public class MicroCacheRuleProperties implements Serializable {
     /**
      * Local expire after write
      */
-    private long localExpire = 2000;
+    private Duration localExpire = Duration.ofSeconds(60L);
     /**
      * Remote expire after write
      */
-    private long remoteExpire = 2000;
+    private Duration remoteExpire = Duration.ofSeconds(60L);
 
 }

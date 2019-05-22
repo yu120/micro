@@ -215,11 +215,11 @@ public class TraceStackContext {
             }
 
             // 大于阈值才需要warn
-            if (TraceStackContext.properties.getThresholdMillis() <= 0L) {
+            if (TraceStackContext.properties.getThreshold().toMillis() <= 0L) {
                 log.info("Response time [{}ms], stack info:\n[{}]", this.duration(), sb.toString());
-            } else if (dur > TraceStackContext.properties.getThresholdMillis()) {
+            } else if (dur > TraceStackContext.properties.getThreshold().toMillis()) {
                 log.warn("Response time [{}ms] exceed thresholdMillis [{}ms], stack info:\n[{}]",
-                        this.duration(), TraceStackContext.properties.getThresholdMillis(), sb.toString());
+                        this.duration(), TraceStackContext.properties.getThreshold().toMillis(), sb.toString());
             } else {
                 log.debug("Response time [{}ms], stack info:\n[{}]", this.duration(), sb.toString());
             }

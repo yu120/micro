@@ -4,9 +4,6 @@ import lombok.Data;
 import lombok.ToString;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Micro Mybatis Properties
@@ -35,66 +32,5 @@ public class MicroMybatisProperties implements Serializable {
      * Trace expend interceptor enable
      */
     private boolean traceExpend = false;
-    /**
-     * Micro tenant properties
-     */
-    private MicroTenantProperties tenant = new MicroTenantProperties();
-    /**
-     * Micro transaction properties
-     */
-    private MicroTransactionProperties transaction = new MicroTransactionProperties();
-
-    @Data
-    @ToString
-    public static class MicroTenantProperties implements Serializable {
-        /**
-         * Tenant enable
-         */
-        private boolean enable = true;
-        /**
-         * Tenant id db column(default: tenant_id)
-         */
-        private String column = "tenant_id";
-        /**
-         * Tenant default value
-         */
-        private Long defaultValue = 1L;
-        /**
-         * Exclude table name list
-         */
-        private List<String> excludeTables = Arrays.asList("tenant", "area");
-        /**
-         * Skip mapper id list(Mapper method name list)
-         * <p>
-         * eg: cn.micro.biz.mapper.member.IMemberMapper.selectInfo
-         */
-        private List<String> skipMapperIds = new ArrayList<>();
-    }
-
-    @Data
-    @ToString
-    public static class MicroTransactionProperties implements Serializable {
-        /**
-         * Transaction enable
-         */
-        private boolean enable = true;
-        /**
-         * Default timeout
-         */
-        private int defaultTimeout = 60;
-
-        /**
-         * Distributed transaction: seata
-         */
-        private boolean seata = false;
-        /**
-         * Application id
-         */
-        private String applicationId;
-        /**
-         * Transaction service group
-         */
-        private String txServiceGroup = "my_tx_group";
-    }
 
 }

@@ -8,6 +8,7 @@ import lombok.ToString;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -72,9 +73,9 @@ public class MicroCacheProperties extends GenericObjectPoolConfig {
      */
     private String password;
     /**
-     * Remote connection timeout(seconds)
+     * Remote connection timeout
      */
-    private int timeout = 60;
+    private Duration timeout = Duration.ofSeconds(60L);
 
     // ===== Async reload cache config
 
@@ -100,19 +101,11 @@ public class MicroCacheProperties extends GenericObjectPoolConfig {
     /**
      * Global local expire after write
      */
-    private long localExpire = 60;
-    /**
-     * Global local cache time unit
-     */
-    private TimeUnit localTimeUnit = TimeUnit.SECONDS;
+    private Duration localExpire = Duration.ofSeconds(60L);
     /**
      * Global remote expire after write
      */
-    private long remoteExpire = 60;
-    /**
-     * Global remote cache time unit
-     */
-    private TimeUnit remoteTimeUnit = TimeUnit.SECONDS;
+    private Duration remoteExpire = Duration.ofSeconds(60L);
 
     /**
      * Cache rule config list

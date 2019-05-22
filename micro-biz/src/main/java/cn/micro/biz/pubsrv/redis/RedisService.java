@@ -38,7 +38,7 @@ public class RedisService implements InitializingBean, DisposableBean {
         }
 
         lettuceRedisClient = RedisClient.create(redisProperties.getUri());
-        lettuceRedisClient.setDefaultTimeout(redisProperties.getTimeout(), TimeUnit.SECONDS);
+        lettuceRedisClient.setDefaultTimeout(redisProperties.getTimeout().getSeconds(), TimeUnit.SECONDS);
 
         GenericObjectPoolConfig poolConfig = new GenericObjectPoolConfig();
         poolConfig.setMinIdle(redisProperties.getMinIdle());

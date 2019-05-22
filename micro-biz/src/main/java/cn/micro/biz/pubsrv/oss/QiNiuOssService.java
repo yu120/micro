@@ -46,7 +46,7 @@ public class QiNiuOssService implements InitializingBean {
     @Trace
     public String getUploadToken() {
         return qiNuiAuth.uploadToken(properties.getBucket(),
-                null, properties.getTokenExpiresSec(), null, true);
+                null, properties.getTokenExpires().getSeconds(), null, true);
     }
 
     public OssTokenVO uploadToken() {

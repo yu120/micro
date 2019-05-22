@@ -62,7 +62,7 @@ public class GlobalAuthHandlerInterceptor extends HandlerInterceptorAdapter impl
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        if (!properties.isAuthRefresh()) {
+        if (!properties.isAutoAuthRefresh()) {
             this.refresh();
             return;
         }
@@ -74,7 +74,7 @@ public class GlobalAuthHandlerInterceptor extends HandlerInterceptorAdapter impl
             return t;
         });
         scheduledThreadPoolExecutor.scheduleWithFixedDelay(this::refresh,
-                0, properties.getAuthRefreshSec(), TimeUnit.SECONDS);
+                0, properties.getAuthRefresh().getSeconds(), TimeUnit.SECONDS);
     }
 
     @Override
@@ -113,7 +113,7 @@ public class GlobalAuthHandlerInterceptor extends HandlerInterceptorAdapter impl
         String timestamp = request.getHeader(MicroAuthProperties.TIMESTAMP_KEY);
         String accessTokenValue = MicroAuthContext.getAndSetAccessToken(request);
         String sign = request.getHeader(MicroAuthProperties.SIGN_KEY);
-        MicroAuthContext.verify(timestamp, accessTokenValue, sign,request.getContextPath());
+        MicroAuthContext.verify(timestamp, accessTokenValue, sign, request.getContextPath());
 
         // === Check Role Permission
         MicroTokenBody microTokenBody = MicroAuthContext.getContextAccessToken();

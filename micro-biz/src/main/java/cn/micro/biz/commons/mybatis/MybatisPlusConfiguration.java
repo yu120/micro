@@ -126,6 +126,28 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
     }
 
     /**
+     * Micro tenant properties
+     *
+     * @return {@link MicroTenantProperties}
+     */
+    @Bean
+    @ConfigurationProperties(prefix = "micro.tenant")
+    public MicroTenantProperties microTenantProperties() {
+        return new MicroTenantProperties();
+    }
+
+    /**
+     * Micro transaction properties
+     *
+     * @return {@link MicroTransactionProperties}
+     */
+    @Bean
+    @ConfigurationProperties(prefix = "micro.transaction")
+    public MicroTransactionProperties microTransactionProperties() {
+        return new MicroTransactionProperties();
+    }
+
+    /**
      * Druid data source druid data source.
      *
      * @return the druid data source
@@ -152,30 +174,31 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
     /**
      * Global transaction configuration
      *
-     * @param druidDataSource        {@link DataSource}
-     * @param microMybatisProperties {@link MicroMybatisProperties}
+     * @param druidDataSource            {@link DataSource}
+     * @param microTransactionProperties {@link MicroTransactionProperties}
      * @return {@link PlatformTransactionManager}
      */
     @Bean
     @ConditionalOnProperty(prefix = "micro.transaction", name = "enable", havingValue = "true")
-    public PlatformTransactionManager platformTransactionManager(DataSource druidDataSource, MicroMybatisProperties microMybatisProperties) {
+    public PlatformTransactionManager platformTransactionManager(
+            DataSource druidDataSource,
+            MicroTransactionProperties microTransactionProperties) {
         DataSourceTransactionManager manager = new DataSourceTransactionManager(druidDataSource);
-        MicroMybatisProperties.MicroTransactionProperties properties = microMybatisProperties.getTransaction();
-        manager.setDefaultTimeout(properties.getDefaultTimeout());
+        manager.setDefaultTimeout((int) microTransactionProperties.getDefaultTimeout().getSeconds());
         return manager;
     }
 
     /**
      * Global transaction scanner
      *
-     * @param microMybatisProperties {@link MicroMybatisProperties}
+     * @param microTransactionProperties {@link MicroTransactionProperties}
      * @return global transaction scanner
      */
     @Bean
     @ConditionalOnProperty(prefix = "micro.transaction", name = "seata", havingValue = "true")
-    public GlobalTransactionScanner globalTransactionScanner(MicroMybatisProperties microMybatisProperties) {
-        MicroMybatisProperties.MicroTransactionProperties properties = microMybatisProperties.getTransaction();
-        return new GlobalTransactionScanner(properties.getApplicationId(), properties.getTxServiceGroup());
+    public GlobalTransactionScanner globalTransactionScanner(MicroTransactionProperties microTransactionProperties) {
+        return new GlobalTransactionScanner(microTransactionProperties.getApplicationId(),
+                microTransactionProperties.getTxServiceGroup());
     }
 
     /**
@@ -207,19 +230,20 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
     /**
      * Pagination interceptor
      *
-     * @param microMybatisProperties {@link MicroMybatisProperties}
+     * @param microTenantProperties {@link MicroTenantProperties}
      * @return {@link PaginationInterceptor}
      */
     @Bean
-    public PaginationInterceptor paginationInterceptor(MicroMybatisProperties microMybatisProperties) {
+    public PaginationInterceptor paginationInterceptor(
+            MicroMybatisProperties microMybatisProperties,
+            MicroTenantProperties microTenantProperties) {
         PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
         List<ISqlParser> sqlParserList = new ArrayList<>();
         if (microMybatisProperties.isBlockAttack()) {
             // 攻击 SQL 阻断解析器、加入解析链
             sqlParserList.add(new BlockAttackSqlParser());
         }
-        MicroMybatisProperties.MicroTenantProperties tenantProperties = microMybatisProperties.getTenant();
-        if (tenantProperties.isEnable()) {
+        if (microTenantProperties.isEnable()) {
             sqlParserList.add(new TenantSqlParser()
                     .setTenantHandler(new TenantHandler() {
                         @Override
@@ -234,18 +258,18 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
 
                         @Override
                         public String getTenantIdColumn() {
-                            return tenantProperties.getColumn();
+                            return microTenantProperties.getColumn();
                         }
 
                         @Override
                         public boolean doTableFilter(String tableName) {
-                            return tenantProperties.getExcludeTables().contains(tableName);
+                            return microTenantProperties.getExcludeTables().contains(tableName);
                         }
                     }));
 
             paginationInterceptor.setSqlParserFilter(metaObject -> {
                 MappedStatement mappedStatement = SqlParserHelper.getMappedStatement(metaObject);
-                return tenantProperties.getSkipMapperIds().contains(mappedStatement.getId());
+                return microTenantProperties.getSkipMapperIds().contains(mappedStatement.getId());
             });
         }
 

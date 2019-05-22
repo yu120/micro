@@ -64,7 +64,7 @@ public class GlobalTraceInterceptor implements InitializingBean, DisposableBean,
         if (properties.isCacheEnable()) {
             cache = CacheBuilder.newBuilder()
                     .maximumSize(properties.getCacheMaximumSize())
-                    .expireAfterWrite(properties.getCacheExpireAfterWriteSec(), TimeUnit.SECONDS).build();
+                    .expireAfterWrite(properties.getCacheExpireAfterWrite().getSeconds(), TimeUnit.SECONDS).build();
         }
 
         TraceStackContext.initialize(properties);

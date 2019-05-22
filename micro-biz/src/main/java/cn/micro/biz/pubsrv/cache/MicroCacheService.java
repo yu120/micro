@@ -74,7 +74,7 @@ public class MicroCacheService implements InitializingBean, DisposableBean {
         poolConfig.setMaxIdle(properties.getMaxIdle());
         poolConfig.setMaxTotal(properties.getMaxTotal());
         this.redisClient = RedisClient.create(properties.getUri());
-        redisClient.setDefaultTimeout(properties.getTimeout(), TimeUnit.SECONDS);
+        redisClient.setDefaultTimeout(properties.getTimeout().getSeconds(), TimeUnit.SECONDS);
         if (!properties.getCacheRules().isEmpty()) {
             for (Map.Entry<CacheKey, MicroCacheRuleProperties> entry : properties.getCacheRules().entrySet()) {
                 cacheMap.put(entry.getKey(), this.buildCache(entry.getValue()));
@@ -226,39 +226,29 @@ public class MicroCacheService implements InitializingBean, DisposableBean {
      * @return {@link Cache}
      */
     private Cache<Object, Object> buildCache(MicroCacheRuleProperties microCacheRuleProperties) {
-        // local time unit
-        TimeUnit localTimeUnit = microCacheRuleProperties.getTimeUnit();
-        if (localTimeUnit == null) {
-            localTimeUnit = properties.getLocalTimeUnit();
-        }
         // local limit
         int localLimit = microCacheRuleProperties.getLimit();
         if (localLimit == 0) {
             localLimit = properties.getLocalLimit();
         }
         // local expire after write
-        long localExpire = microCacheRuleProperties.getLocalExpire();
-        if (localExpire == 0) {
-            localExpire = properties.getLocalExpire();
-        }
-        // remote time unit
-        TimeUnit remoteTimeUnit = microCacheRuleProperties.getRemoteTimeUnit();
-        if (remoteTimeUnit == null) {
-            remoteTimeUnit = properties.getRemoteTimeUnit();
+        long localExpireMillis = microCacheRuleProperties.getLocalExpire().toMillis();
+        if (localExpireMillis == 0) {
+            localExpireMillis = properties.getLocalExpire().toMillis();
         }
         // remote expire after write
-        long remoteExpire = microCacheRuleProperties.getRemoteExpire();
-        if (remoteExpire == 0) {
-            remoteExpire = properties.getRemoteExpire();
+        long remoteExpireMillis = microCacheRuleProperties.getRemoteExpire().toMillis();
+        if (remoteExpireMillis == 0) {
+            remoteExpireMillis = properties.getRemoteExpire().toMillis();
         }
 
         switch (microCacheRuleProperties.getCacheType()) {
             case LOCAL:
-                return this.buildCache(properties.getLocalType(), localExpire, localTimeUnit, remoteTimeUnit, localLimit);
+                return this.buildCache(properties.getLocalType(), localExpireMillis, localLimit);
             case REMOTE:
-                return this.buildCache(properties.getRemoteType(), remoteExpire, remoteTimeUnit, remoteTimeUnit, localLimit);
+                return this.buildCache(properties.getRemoteType(), remoteExpireMillis, localLimit);
             case BOTH:
-                return this.buildCache(MicroCacheType.BOTH, remoteExpire, remoteTimeUnit, remoteTimeUnit, localLimit);
+                return this.buildCache(MicroCacheType.BOTH, remoteExpireMillis, localLimit);
             default:
                 throw new MicroErrorException("Illegal Cache Type");
         }
@@ -269,21 +259,18 @@ public class MicroCacheService implements InitializingBean, DisposableBean {
      *
      * @param microCacheType   {@link MicroCacheType}
      * @param expireAfterWrite expireAfterWrite
-     * @param localTimeUnit    {@link TimeUnit}
-     * @param remoteTimeUnit   {@link TimeUnit}
      * @param localLimit       local limit
      * @return {@link Cache}
      */
-    private Cache<Object, Object> buildCache(MicroCacheType microCacheType, long expireAfterWrite,
-                                             TimeUnit localTimeUnit, TimeUnit remoteTimeUnit, Integer localLimit) {
+    private Cache<Object, Object> buildCache(MicroCacheType microCacheType, long expireAfterWrite, Integer localLimit) {
         switch (microCacheType) {
             case LINKED_HASH_MAP:
-                return this.buildLinkedHashMapCache(expireAfterWrite, localTimeUnit, localLimit);
+                return this.buildLinkedHashMapCache(expireAfterWrite, TimeUnit.MILLISECONDS, localLimit);
             case REDIS_LETTUCE:
-                return this.buildRedisLettuceCache(expireAfterWrite, remoteTimeUnit);
+                return this.buildRedisLettuceCache(expireAfterWrite, TimeUnit.MILLISECONDS);
             case BOTH:
-                Cache<Object, Object> level1Cache = this.buildLinkedHashMapCache(expireAfterWrite, localTimeUnit, localLimit);
-                Cache<Object, Object> level2Cache = this.buildRedisLettuceCache(expireAfterWrite, remoteTimeUnit);
+                Cache<Object, Object> level1Cache = this.buildLinkedHashMapCache(expireAfterWrite, TimeUnit.MILLISECONDS, localLimit);
+                Cache<Object, Object> level2Cache = this.buildRedisLettuceCache(expireAfterWrite, TimeUnit.MILLISECONDS);
                 return MultiLevelCacheBuilder.createMultiLevelCacheBuilder().addCache(level1Cache, level2Cache).buildCache();
             default:
                 throw new IllegalArgumentException("Illegal micro cache type.");

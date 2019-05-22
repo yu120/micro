@@ -54,13 +54,6 @@
         </RollingFile>
     </appenders>
 
-    <asyncLogger name="cn.micro" level="INFO" includeLocation="true">
-        <AppenderRef ref="APP_LOG"/>
-    </asyncLogger>
-    <asyncLogger name="cn.micro" level="ERROR" includeLocation="true">
-        <AppenderRef ref="ERROR_LOG"/>
-    </asyncLogger>
-
     <loggers>
         <!-- 过滤第三方应用日志 -->
         <logger name="org.mybatis" level="WARN"/>

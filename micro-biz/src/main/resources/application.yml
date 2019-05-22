@@ -73,39 +73,39 @@ micro:
     performance: true
     optimistic-locker: true
     trace-expend: true
-    tenant:
-      enable: true
-    transaction:
-      enable: true
-      default-timeout: 60
-      seata: false
-      application-id: ${spring.application.name}
-      tx-service-group: my_tx_group
+  tenant:
+    enable: true
+  transaction:
+    enable: true
+    default-timeout: 60s
+    seata: false
+    application-id: ${spring.application.name}
+    tx-service-group: my_tx_group
   auth:
-    auth-refresh: true
-    auth-refresh-sec: 120
-    token-expires-sec: 7200
-    refresh-token-sec: 86400
+    auto-auth-refresh: true
+    auth-refresh: 120s
+    token-expires: 7200s
+    refresh-token: 86400s
     request-expire: false
     token-expire: false
     check-token: true
-    check-time: true
-    check-sign: true
-    fault-tolerant-mills: 60000
+    check-time: false
+    check-sign: false
+    fault-tolerant: 60s
   trace:
     enable: true
     print-args: true
-    threshold-millis: 0
-    dump-period-sec: 60
+    threshold: 0ms
+    dump-period: 60s
     default-expressions: true
     cache-enable: true
     cache-maximum-size: 500
-    cache-expire-after-write-sec: 600
+    cache-expire-after-write: 600s
   oss:
     qi-niu:
       enable: true
       bucket: oss-eye
-      token-expires-sec: 3600
+      token-expires: 3600s
       access-url: http://oss.eyehh.com/
       access-key: L1CPuG6UxjQQ05QXEb3HhAE5uQCzlqcSBVlgfYCU
       secret-key: vCZAtB4wie0kdM_x7R3GfZ2-DxCJB6fkNQSPRtMa
@@ -157,7 +157,7 @@ micro:
     password: xxx
   redis:
     enable: false
-    timeout: 60
+    timeout: 60s
     uri: redis://127.0.0.1:6379
     min-idle: 0
     max-idle: 8
@@ -173,7 +173,7 @@ micro:
     protocol: redis
     host: 127.0.0.1
     port: 6379
-    timeout: 60
+    timeout: 60s
     min-idle: 0
     max-idle: 8
     max-total: 8
@@ -183,10 +183,8 @@ micro:
     reload-queue: 200
     # global cache rule config
     local-limit: 200
-    local-expire: 60
-    local-time-unit: SECONDS
-    remote-expire: 60
-    remote-time-unit: SECONDS
+    local-expire: 60s
+    remote-expire: 60s
     # cache rule list
     cache-rules:
-      MEMBER_INFO: {cache-type: BOTH, time-unit: SECONDS, token: false, limit: 200, local-expire: 60, remote-expire: 60}
+      MEMBER_INFO: {cache-type: BOTH, token: false, limit: 200, local-expire: 60s, remote-expire: 60s}

@@ -4,6 +4,7 @@ import cn.micro.biz.commons.exception.MicroBadRequestException;
 import cn.micro.biz.commons.exception.MicroErrorException;
 import cn.micro.biz.commons.exception.MicroSignInException;
 import cn.micro.biz.commons.mybatis.MicroMybatisProperties;
+import cn.micro.biz.commons.mybatis.MicroTenantProperties;
 import cn.micro.biz.commons.utils.IPUtils;
 import cn.micro.biz.pubsrv.redis.RedisService;
 import com.auth0.jwt.JWT;
@@ -65,12 +66,12 @@ public class MicroAuthContext implements InitializingBean {
     private static Long defaultTenantValue;
 
     private final MicroAuthProperties microAuthProperties;
-    private final MicroMybatisProperties microMybatisProperties;
+    private final MicroTenantProperties microTenantProperties;
 
     @Override
     public void afterPropertiesSet() {
         MicroAuthContext.properties = microAuthProperties;
-        MicroAuthContext.defaultTenantValue = microMybatisProperties.getTenant().getDefaultValue();
+        MicroAuthContext.defaultTenantValue = microTenantProperties.getDefaultValue();
 
         try {
             ALGORITHM = Algorithm.HMAC256(SECRET);
@@ -94,7 +95,7 @@ public class MicroAuthContext implements InitializingBean {
             builder.withJWTId(jti);
             builder.withIssuer(ISSUER);
             builder.withArrayClaim(SCOPE, SCOPE_TYPES);
-            builder.withExpiresAt(new Date(System.currentTimeMillis() + properties.getTokenExpiresSec() * 1000));
+            builder.withExpiresAt(new Date(System.currentTimeMillis() + properties.getTokenExpires().toMillis()));
 
             builder.withClaim(MicroTokenBody.TENANT_ID, tenantId);
             builder.withClaim(MicroTokenBody.MEMBER_ID, memberId);
@@ -108,20 +109,20 @@ public class MicroAuthContext implements InitializingBean {
 
             String accessTokenStr = builder.sign(ALGORITHM);
             builder.withClaim(ATI_KEY, UUID.randomUUID().toString());
-            builder.withExpiresAt(new Date(System.currentTimeMillis() + properties.getRefreshTokenSec() * 1000));
+            builder.withExpiresAt(new Date(System.currentTimeMillis() + properties.getRefreshToken().toMillis()));
             String refreshTokenStr = builder.sign(ALGORITHM);
 
             if (properties.isTokenExpire()) {
                 try {
-                    RedisService.commandSetSec(MicroAuthContext.buildAccessTokenKey(memberId), accessTokenStr, properties.getTokenExpiresSec());
-                    RedisService.commandSetSec(MicroAuthContext.buildRefreshTokenKey(memberId), refreshTokenStr, properties.getRefreshTokenSec());
+                    RedisService.commandSetSec(MicroAuthContext.buildAccessTokenKey(memberId), accessTokenStr, properties.getTokenExpires().getSeconds());
+                    RedisService.commandSetSec(MicroAuthContext.buildRefreshTokenKey(memberId), refreshTokenStr, properties.getRefreshToken().getSeconds());
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                 }
             }
 
-            return new MicroToken(BEARER_TYPE, accessTokenStr, properties.getTokenExpiresSec(),
-                    refreshTokenStr, properties.getRefreshTokenSec(), SCOPE_TYPE, jti);
+            return new MicroToken(BEARER_TYPE, accessTokenStr, properties.getTokenExpires().getSeconds(),
+                    refreshTokenStr, properties.getRefreshToken().getSeconds(), SCOPE_TYPE, jti);
         } catch (JWTCreationException e) {
             throw new MicroErrorException(e.getMessage(), e);
         }
@@ -240,11 +241,11 @@ public class MicroAuthContext implements InitializingBean {
         long currentTimeMillis = System.currentTimeMillis();
         long timeSize = currentTimeMillis - clientTimestamp;
         if (currentTimeMillis > clientTimestamp) {
-            if (timeSize > properties.getFaultTolerantMills()) {
+            if (timeSize > properties.getFaultTolerant().toMillis()) {
                 throw new MicroBadRequestException("Illegal Request");
             }
         } else {
-            if (-timeSize > properties.getFaultTolerantMills()) {
+            if (-timeSize > properties.getFaultTolerant().toMillis()) {
                 throw new MicroBadRequestException("Illegal Request");
             }
         }
@@ -274,7 +275,7 @@ public class MicroAuthContext implements InitializingBean {
         String key = DigestUtils.md5Hex(sign + path);
         String tempSign = RedisService.commandGet(key);
         if (tempSign == null || tempSign.length() == 0) {
-            RedisService.commandSet(key, sign, properties.getFaultTolerantMills());
+            RedisService.commandSet(key, sign, properties.getFaultTolerant().getSeconds());
         } else {
             throw new MicroBadRequestException("Repeated requests");
         }

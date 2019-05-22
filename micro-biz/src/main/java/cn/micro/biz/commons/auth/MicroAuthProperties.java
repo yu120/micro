@@ -5,6 +5,7 @@ import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.io.Serializable;
+import java.time.Duration;
 
 /**
  * Micro Properties
@@ -20,21 +21,21 @@ public class MicroAuthProperties implements Serializable {
     public static final String SIGN_KEY = "sign";
 
     /**
-     * 访问Token过期时间(单位：秒)
+     * 访问Token过期时间
      */
-    private long tokenExpiresSec = 7200L;
+    private Duration tokenExpires = Duration.ofSeconds(7200L);
     /**
-     * 刷新Token过期时间(单位：秒)
+     * 刷新Token过期时间
      */
-    private long refreshTokenSec = 86400L;
+    private Duration refreshToken = Duration.ofSeconds(86400L);
     /**
      * 是否自动刷新鉴权资源配置
      */
-    private boolean authRefresh = true;
+    private boolean autoAuthRefresh = true;
     /**
-     * 授权资源配置刷新周期时间(单位：秒)
+     * 授权资源配置刷新周期时间
      */
-    private long authRefreshSec = 60L;
+    private Duration authRefresh = Duration.ofSeconds(60L);
 
     /**
      * 使用Redis校验请求过期
@@ -59,8 +60,8 @@ public class MicroAuthProperties implements Serializable {
     private boolean checkSign = true;
 
     /**
-     * 容错时间差(毫秒)
+     * 容错时间差
      */
-    private long faultTolerantMills = 60000L;
+    private Duration faultTolerant = Duration.ofSeconds(60L);
 
 }

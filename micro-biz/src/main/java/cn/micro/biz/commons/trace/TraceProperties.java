@@ -5,6 +5,7 @@ import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.io.Serializable;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,9 +24,9 @@ public class TraceProperties implements Serializable {
      */
     private boolean enable;
     /**
-     * 多少毫秒会打印耗时日志的时间阀值(单位：毫秒)
+     * 多少毫秒会打印耗时日志的时间阀值
      */
-    private long thresholdMillis = 300L;
+    private Duration threshold = Duration.ofMillis(300L);
     /**
      * 是否打印输入与输出参数
      */
@@ -33,7 +34,7 @@ public class TraceProperties implements Serializable {
     /**
      * 打印日志的时间间隔，默认为60秒(单位：秒)
      */
-    private long dumpPeriodSec = 60L;
+    private Duration dumpPeriod = Duration.ofSeconds(60L);
     /**
      * 是否启用默认规则
      */
@@ -58,6 +59,6 @@ public class TraceProperties implements Serializable {
     /**
      * 缓存写入后过期时间
      */
-    private long cacheExpireAfterWriteSec = 600;
+    private Duration cacheExpireAfterWrite = Duration.ofSeconds(600L);
 
 }

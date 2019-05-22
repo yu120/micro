@@ -6,6 +6,7 @@ import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.io.Serializable;
+import java.time.Duration;
 
 /**
  * Oss Properties
@@ -20,9 +21,9 @@ public class QiNiuOssProperties implements Serializable {
     private boolean enable;
     private String bucket;
     /**
-     * 有效时长，单位秒
+     * 有效时长
      */
-    private long tokenExpiresSec;
+    private Duration tokenExpires = Duration.ofSeconds(3600);
     private String accessUrl;
     private String accessKey;
     private String secretKey;
