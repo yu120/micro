@@ -20,7 +20,7 @@ import java.util.List;
  * @author lry
  */
 @Slf4j
-public class DingTalkWebHook {
+public class DingTalkWebHook implements IWebHook<DingTalkWebHook.RobotSendRequest> {
 
     private static final int SUCCESS_STATUS_CODE = 200;
     private static final int RESPONSE_CODE_OK = 0;
@@ -47,6 +47,7 @@ public class DingTalkWebHook {
      * @param robotSendRequest {@link RobotSendRequest}
      * @return success true
      */
+    @Override
     public boolean incoming(RobotSendRequest robotSendRequest) {
         String url = SERVER_URL + accessToken;
         Connection.Response response;
@@ -158,7 +159,7 @@ public class DingTalkWebHook {
      */
     @Data
     @ToString
-    public static class RobotSendRequest implements Serializable {
+    public static class RobotSendRequest implements IRobotSendRequest {
         /**
          * 消息类型
          */

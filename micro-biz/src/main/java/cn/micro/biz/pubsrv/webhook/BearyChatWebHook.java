@@ -19,7 +19,7 @@ import java.util.List;
  * @author lry
  */
 @Slf4j
-public class BearyChatWebHook {
+public class BearyChatWebHook implements IWebHook<BearyChatWebHook.RobotSendRequest> {
 
     private static final int SUCCESS_STATUS_CODE = 200;
     private static final int RESPONSE_CODE_OK = 0;
@@ -48,6 +48,7 @@ public class BearyChatWebHook {
      * @param robotSendRequest {@link RobotSendRequest}
      * @return success true
      */
+    @Override
     public boolean incoming(RobotSendRequest robotSendRequest) {
         String url = SERVER_URL + accessToken;
         Connection.Response response;
@@ -88,7 +89,7 @@ public class BearyChatWebHook {
 
     @Data
     @ToString
-    public static class RobotSendRequest implements Serializable {
+    public static class RobotSendRequest implements IRobotSendRequest {
         /**
          * 必须字段。支持 inline md 的文本内容
          */
