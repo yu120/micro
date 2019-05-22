@@ -60,9 +60,9 @@
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
 
-        <!-- All Logger -->
-        <RollingRandomAccessFile name="ALL_LOG" fileName="${LOG_HOME}/all.log" immediateFlush="false"
-                                 filePattern="${LOG_HOME}/all-%d{yyyy-MM-dd}-%i.log.gz" append="true">
+        <!-- App Logger -->
+        <RollingRandomAccessFile name="APP_LOG" fileName="${LOG_HOME}/app.log" immediateFlush="false"
+                                 filePattern="${LOG_HOME}/app-%d{yyyy-MM-dd}-%i.log.gz" append="true">
             <PatternLayout pattern="${LOG_PATTERN}"/>
             <Filters>
                 <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
@@ -73,7 +73,7 @@
             </Policies>
             <DefaultRolloverStrategy max="${MAX_FILE_NUM}">
                 <Delete basePath="${LOG_HOME}" maxDepth="2">
-                    <IfFileName glob="*/all-*.log.gz"/>
+                    <IfFileName glob="*/app-*.log.gz"/>
                     <IfLastModified age="${MAX_AGE}"/>
                 </Delete>
             </DefaultRolloverStrategy>
@@ -82,8 +82,8 @@
         <Async name="ASYNC_ERROR_LOG">
             <AppenderRef ref="ERROR_LOG"/>
         </Async>
-        <Async name="ASYNC_ALL_LOG">
-            <AppenderRef ref="ALL_LOG"/>
+        <Async name="ASYNC_APP_LOG">
+            <AppenderRef ref="APP_LOG"/>
         </Async>
     </appenders>
 
@@ -108,7 +108,7 @@
         <!-- BIZ Logger -->
         <Logger name="cn.micro" level="DEBUG" additivity="true">
             <AppenderRef ref="ASYNC_ERROR_LOG"/>
-            <AppenderRef ref="ASYNC_ALL_LOG"/>
+            <AppenderRef ref="ASYNC_APP_LOG"/>
         </Logger>
 
         <!-- Others Logger Level -->
