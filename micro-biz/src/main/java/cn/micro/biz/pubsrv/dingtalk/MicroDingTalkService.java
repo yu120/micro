@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -72,6 +73,28 @@ public class MicroDingTalkService implements InitializingBean {
         markdown.setTitle(title);
         markdown.setText(text);
         request.setMarkdown(markdown);
+
+        // @相关人
+        this.wrapperAtMobiles(request, atMobiles);
+        return this.sendRequest(request);
+    }
+
+    public boolean sendFeedCard(List<DingTalkLinks> links, List<String> atMobiles) throws Exception {
+        OapiRobotSendRequest request = new OapiRobotSendRequest();
+        request.setMsgtype("feedCard");
+
+        List<OapiRobotSendRequest.Links> linksList = new ArrayList<>();
+        for (DingTalkLinks dingTalkLinks : links) {
+            OapiRobotSendRequest.Links sendLinks = new OapiRobotSendRequest.Links();
+            sendLinks.setTitle(dingTalkLinks.getTitle());
+            sendLinks.setPicURL(dingTalkLinks.getPicURL());
+            sendLinks.setMessageURL(dingTalkLinks.getMessageURL());
+            linksList.add(sendLinks);
+        }
+
+        OapiRobotSendRequest.Feedcard feedCard = new OapiRobotSendRequest.Feedcard();
+        feedCard.setLinks(linksList);
+        request.setFeedCard(feedCard);
 
         // @相关人
         this.wrapperAtMobiles(request, atMobiles);
