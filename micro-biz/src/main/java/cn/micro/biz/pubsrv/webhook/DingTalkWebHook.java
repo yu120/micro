@@ -3,8 +3,7 @@ package cn.micro.biz.pubsrv.webhook;
 import cn.micro.biz.commons.exception.MicroErrorException;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Connection;
 import org.jsoup.helper.HttpConnection;
@@ -37,7 +36,10 @@ public class DingTalkWebHook implements IWebHook<DingTalkWebHook.RobotSendReques
 
     public static void main(String[] args) throws Exception {
         DingTalkWebHook dingTalkWebHook = new DingTalkWebHook("0044bea6737e89921d27495e5d57592ccd10a74ab04a4b39b1ec7ff87db6106c");
-        boolean flag = dingTalkWebHook.sendText("对对对", Arrays.asList("15828252029"));
+        RobotSendRequestText robotSendRequestText = new RobotSendRequestText();
+        robotSendRequestText.setText(new Text("测试机器人功能的消息"));
+        robotSendRequestText.setAt(new At(Arrays.asList("15828252029"), true));
+        boolean flag = dingTalkWebHook.push(robotSendRequestText);
         System.out.println(flag);
     }
 
@@ -61,10 +63,11 @@ public class DingTalkWebHook implements IWebHook<DingTalkWebHook.RobotSendReques
             // setter post request method
             request.method(Connection.Method.POST);
             // setter post request body
-            request.requestBody(JSON.toJSONString(robotSendRequest));
+            String requestBody = JSON.toJSONString(robotSendRequest);
+            request.requestBody(requestBody);
 
-            log.debug("Ding Talk request url:[{}], method:[{}], headers:[{}], body:[{}]",
-                    url, request.method(), request.headers(), JSON.toJSONString(request.data()));
+            log.info("Ding Talk request url:[{}], method:[{}], headers:[{}], body:[{}]",
+                    url, request.method(), request.headers(), requestBody);
             response = connection.execute();
         } catch (Exception e) {
             throw new MicroErrorException(e.getMessage(), e);
@@ -100,58 +103,6 @@ public class DingTalkWebHook implements IWebHook<DingTalkWebHook.RobotSendReques
         }
     }
 
-    public boolean sendText(String content, List<String> atMobiles) throws Exception {
-        RobotSendRequest request = new RobotSendRequest();
-        request.setMsgtype("text");
-
-        Text text = new Text();
-        text.setContent(content);
-        request.setText(text);
-
-        this.wrapperAtMobiles(request, atMobiles);
-        return this.push(request);
-    }
-
-    public boolean sendLink(String title, String text, String picUrl, String messageUrl, List<String> atMobiles) throws Exception {
-        RobotSendRequest request = new RobotSendRequest();
-        request.setMsgtype("link");
-
-        Link link = new Link();
-        link.setMessageUrl(messageUrl);
-        link.setPicUrl(picUrl);
-        link.setTitle(title);
-        link.setText(text);
-        request.setLink(link);
-
-        this.wrapperAtMobiles(request, atMobiles);
-        return this.push(request);
-    }
-
-    public boolean sendMarkdown(String title, String text, List<String> atMobiles) throws Exception {
-        RobotSendRequest request = new RobotSendRequest();
-        request.setMsgtype("markdown");
-
-        Markdown markdown = new Markdown();
-        markdown.setTitle(title);
-        markdown.setText(text);
-        request.setMarkdown(markdown);
-
-        this.wrapperAtMobiles(request, atMobiles);
-        return this.push(request);
-    }
-
-    public boolean sendFeedCard(List<Links> links, List<String> atMobiles) throws Exception {
-        RobotSendRequest request = new RobotSendRequest();
-        request.setMsgtype("feedCard");
-
-        FeedCard feedCard = new FeedCard();
-        feedCard.setLinks(links);
-        request.setFeedCard(feedCard);
-
-        this.wrapperAtMobiles(request, atMobiles);
-        return this.push(request);
-    }
-
     /**
      * Robot Send Request
      *
@@ -159,77 +110,108 @@ public class DingTalkWebHook implements IWebHook<DingTalkWebHook.RobotSendReques
      */
     @Data
     @ToString
+    @AllArgsConstructor
     public static class RobotSendRequest implements IRobotSendRequest {
         /**
          * 消息类型
          */
         private String msgtype;
-
         /**
          * 被@人的手机号
          */
         private At at;
-        /**
-         * text类型
-         */
-        private Text text;
-        /**
-         * 消息类型，此时固定为:link
-         */
-        private Link link;
-        /**
-         * 此消息类型为固定feedCard
-         */
-        private FeedCard feedCard;
-        /**
-         * 此消息类型为固定markdown
-         */
-        private Markdown markdown;
-        /**
-         * 此消息类型为固定actionCard
-         */
-        private ActionCard actionCard;
+
     }
 
-    /**
-     * Text
-     *
-     * @author lry
-     */
+    @Data
+    @ToString(callSuper = true)
+    @EqualsAndHashCode(callSuper = true)
+    public static class RobotSendRequestText extends RobotSendRequest {
+
+        private Text text;
+
+        public RobotSendRequestText() {
+            super("text", null);
+        }
+
+    }
+
+    @Data
+    @ToString(callSuper = true)
+    @EqualsAndHashCode(callSuper = true)
+    public static class RobotSendRequestLink extends RobotSendRequest {
+
+        private Link link;
+
+        public RobotSendRequestLink() {
+            super("link", null);
+        }
+
+    }
+
+    @Data
+    @ToString(callSuper = true)
+    @EqualsAndHashCode(callSuper = true)
+    public static class RobotSendRequestFeedCard extends RobotSendRequest {
+
+        private FeedCard feedCard;
+
+        public RobotSendRequestFeedCard() {
+            super("feedCard", null);
+        }
+
+    }
+
+    @Data
+    @ToString(callSuper = true)
+    @EqualsAndHashCode(callSuper = true)
+    public static class RobotSendRequestMarkdown extends RobotSendRequest {
+
+        private Markdown markdown;
+
+        public RobotSendRequestMarkdown() {
+            super("markdown", null);
+        }
+
+    }
+
+    @Data
+    @ToString(callSuper = true)
+    @EqualsAndHashCode(callSuper = true)
+    public static class RobotSendRequestActionCard extends RobotSendRequest {
+
+        private ActionCard actionCard;
+
+        public RobotSendRequestActionCard() {
+            super("actionCard", null);
+        }
+
+    }
+
     @Data
     @ToString
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Text implements Serializable {
-        /**
-         * text类型
-         */
         private String content;
     }
 
-    /**
-     * 被@人的手机号
-     *
-     * @author lry
-     */
     @Data
     @ToString
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class At implements Serializable {
-        /**
-         * 被@人的手机号
-         */
         private List<String> atMobiles;
         /**
          * @ 所有人时:true,否则为:false
          */
-        private String isAtAll;
+        private boolean isAtAll;
     }
 
-    /**
-     * Link
-     *
-     * @author lry
-     */
     @Data
     @ToString
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Link implements Serializable {
         /**
          * 点击消息跳转的URL
@@ -249,13 +231,10 @@ public class DingTalkWebHook implements IWebHook<DingTalkWebHook.RobotSendReques
         private String title;
     }
 
-    /**
-     * Markdown
-     *
-     * @author lry
-     */
     @Data
     @ToString
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Markdown implements Serializable {
         /**
          * markdown格式的消息
@@ -267,13 +246,10 @@ public class DingTalkWebHook implements IWebHook<DingTalkWebHook.RobotSendReques
         private String title;
     }
 
-    /**
-     * 按钮的信息
-     *
-     * @author lry
-     */
     @Data
     @ToString
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Btns implements Serializable {
         /**
          * 按钮方案，
@@ -285,13 +261,10 @@ public class DingTalkWebHook implements IWebHook<DingTalkWebHook.RobotSendReques
         private String title;
     }
 
-    /**
-     * ActionCard
-     *
-     * @author lry
-     */
     @Data
     @ToString
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class ActionCard implements Serializable {
         /**
          * 0-按钮竖直排列，1-按钮横向排列
@@ -323,13 +296,10 @@ public class DingTalkWebHook implements IWebHook<DingTalkWebHook.RobotSendReques
         private String title;
     }
 
-    /**
-     * Links
-     *
-     * @author lry
-     */
     @Data
     @ToString
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Links implements Serializable {
         /**
          * 点击单条信息到跳转链接
@@ -345,13 +315,10 @@ public class DingTalkWebHook implements IWebHook<DingTalkWebHook.RobotSendReques
         private String title;
     }
 
-    /**
-     * FeedCard
-     *
-     * @author lry
-     */
     @Data
     @ToString
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class FeedCard implements Serializable {
         private List<Links> links;
     }
