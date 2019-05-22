@@ -224,11 +224,13 @@
             <version>${seata.version}</version>
         </dependency>
 
+        <!-- Ding Talk
         <dependency>
             <groupId>com.taobao</groupId>
             <artifactId>taobao-sdk-java-auto</artifactId>
             <version>1479188381469-20190517</version>
         </dependency>
+        -->
 
         <!-- Qi Niu OSS -->
         <dependency>
