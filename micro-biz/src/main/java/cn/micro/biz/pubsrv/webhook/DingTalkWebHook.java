@@ -37,8 +37,8 @@ public class DingTalkWebHook implements IWebHook<DingTalkWebHook.RobotSendReques
     public static void main(String[] args) throws Exception {
         DingTalkWebHook dingTalkWebHook = new DingTalkWebHook("0044bea6737e89921d27495e5d57592ccd10a74ab04a4b39b1ec7ff87db6106c");
         RobotSendRequestText robotSendRequestText = new RobotSendRequestText();
-        robotSendRequestText.setText(new Text("测试机器人功能的消息"));
-        robotSendRequestText.setAt(new At(Arrays.asList("15828252029"), true));
+        robotSendRequestText.setText(new Text("测试机器人功能的消息201905"));
+        robotSendRequestText.setAt(new At(null, true));
         boolean flag = dingTalkWebHook.push(robotSendRequestText);
         System.out.println(flag);
     }
@@ -66,7 +66,7 @@ public class DingTalkWebHook implements IWebHook<DingTalkWebHook.RobotSendReques
             String requestBody = JSON.toJSONString(robotSendRequest);
             request.requestBody(requestBody);
 
-            log.info("Ding Talk request url:[{}], method:[{}], headers:[{}], body:[{}]",
+            log.debug("Ding Talk request url:[{}], method:[{}], headers:[{}], body:[{}]",
                     url, request.method(), request.headers(), requestBody);
             response = connection.execute();
         } catch (Exception e) {
@@ -205,7 +205,7 @@ public class DingTalkWebHook implements IWebHook<DingTalkWebHook.RobotSendReques
         /**
          * @ 所有人时:true,否则为:false
          */
-        private boolean isAtAll;
+        private Boolean isAtAll;
     }
 
     @Data

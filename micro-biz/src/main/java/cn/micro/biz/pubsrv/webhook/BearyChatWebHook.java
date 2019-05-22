@@ -62,10 +62,11 @@ public class BearyChatWebHook implements IWebHook<BearyChatWebHook.RobotSendRequ
             // setter post request method
             request.method(Connection.Method.POST);
             // setter post request body
-            request.requestBody(JSON.toJSONString(robotSendRequest));
+            String requestBody = JSON.toJSONString(robotSendRequest);
+            request.requestBody(requestBody);
 
             log.debug("Beary Chat request url:[{}], method:[{}], headers:[{}], body:[{}]",
-                    url, request.method(), request.headers(), JSON.toJSONString(request.data()));
+                    url, request.method(), request.headers(), requestBody);
             response = connection.execute();
         } catch (Exception e) {
             throw new MicroErrorException(e.getMessage(), e);
