@@ -59,6 +59,10 @@ public class Goods extends MicroEntity<Goods> {
      **/
     private Integer status;
     /**
+     * Comment audit way(automatic/artificial)
+     */
+    private Integer commentWay;
+    /**
      * Goods remark
      **/
     private String remark;
