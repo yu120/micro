@@ -29,15 +29,6 @@ public class GoodsStatistics extends MicroEntity<GoodsStatistics> {
     private Long goodsId;
 
     /**
-     * Visit count number
-     **/
-    private Integer visit;
-    /**
-     * Reply count number
-     **/
-    private Integer replyCount;
-
-    /**
      * Sale quantity
      **/
     private Integer saleQuantity;
