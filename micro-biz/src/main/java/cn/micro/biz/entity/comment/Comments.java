@@ -7,7 +7,7 @@ import lombok.*;
 import java.util.Date;
 
 /**
- * Comment Entity
+ * Comments Entity
  *
  * @author lry
  */
@@ -16,40 +16,40 @@ import java.util.Date;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@TableName("comment")
-public class Comment extends MicroEntity<Comment> {
+@TableName("comments")
+public class Comments extends MicroEntity<Comments> {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * Parent comment id
      * <p>
-     * {@link Comment#id}
+     * {@link Comments#id}
      **/
     private Long parentId;
 
     /**
-     * Comment category
+     * Comments category
      */
     private Integer category;
     /**
-     * Comment category id
+     * Comments category id
      */
     private Long categoryId;
 
     /**
-     * Comment member id
+     * Comments member id
      * <p>
      * {@link cn.micro.biz.entity.member.Member#id}
      **/
     private Long memberId;
 
     /**
-     * Comment content
+     * Comments content
      **/
     private String content;
     /**
-     * Comment status(Wait-audit/displayed/hidden)
+     * Comments status(Wait-audit/displayed/hidden)
      **/
     private Integer status;
 

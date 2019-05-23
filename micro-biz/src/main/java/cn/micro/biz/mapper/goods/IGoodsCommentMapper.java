@@ -3,7 +3,7 @@ package cn.micro.biz.mapper.goods;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
- * Goods Comment Mapper
+ * Goods Comments Mapper
  *
  * @author lry
  */

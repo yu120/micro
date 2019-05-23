@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 /**
- * Comment Behavior Entity
+ * Comments Behavior Entity
  *
  * @author lry
  */
@@ -14,25 +14,25 @@ import lombok.*;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@TableName("comment_behavior")
-public class CommentBehavior extends MicroEntity<CommentBehavior> {
+@TableName("comments_behavior")
+public class CommentsBehavior extends MicroEntity<CommentsBehavior> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Goods comment id
+     * Comments id
      * <p>
-     * {@link Comment#id}
+     * {@link Comments#id}
      **/
     private Long commentId;
     /**
-     * Comment member id
+     * Comments member id
      * <p>
      * {@link cn.micro.biz.entity.member.Member#id}
      **/
     private Long memberId;
     /**
-     * Comment category(support/oppose)
+     * Comments category(support/oppose)
      **/
     private Integer category;
 

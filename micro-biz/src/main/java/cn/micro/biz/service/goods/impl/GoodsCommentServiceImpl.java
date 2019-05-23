@@ -6,7 +6,7 @@ import cn.micro.biz.service.goods.IGoodsCommentService;
 import org.springframework.stereotype.Service;
 
 /**
- * Goods Comment Service Implements
+ * Goods Comments Service Implements
  *
  * @author lry
  */

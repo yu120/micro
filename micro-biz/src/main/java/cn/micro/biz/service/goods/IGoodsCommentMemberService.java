@@ -1,13 +1,13 @@
 package cn.micro.biz.service.goods;
 
 import cn.micro.biz.commons.mybatis.extension.IMicroService;
-import cn.micro.biz.entity.comment.CommentBehavior;
+import cn.micro.biz.entity.comment.CommentsBehavior;
 
 /**
- * Goods Comment Member Service
+ * Goods Comments Member Service
  *
  * @author lry
  */
-public interface IGoodsCommentMemberService extends IMicroService<CommentBehavior> {
+public interface IGoodsCommentMemberService extends IMicroService<CommentsBehavior> {
 
 }

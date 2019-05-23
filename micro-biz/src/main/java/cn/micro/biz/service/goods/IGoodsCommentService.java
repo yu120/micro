@@ -3,7 +3,7 @@ package cn.micro.biz.service.goods;
 import cn.micro.biz.commons.mybatis.extension.IMicroService;
 
 /**
- * Goods Comment Service
+ * Goods Comments Service
  *
  * @author lry
  */
