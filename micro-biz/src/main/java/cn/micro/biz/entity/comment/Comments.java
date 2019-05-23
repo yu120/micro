@@ -29,13 +29,13 @@ public class Comments extends MicroEntity<Comments> {
     private Long parentId;
 
     /**
-     * Comments category
+     * Comments origin category
      */
-    private Integer category;
+    private Integer origin;
     /**
-     * Comments category id
+     * Comments origin id
      */
-    private Long categoryId;
+    private Long originId;
 
     /**
      * Comments member id
@@ -44,6 +44,10 @@ public class Comments extends MicroEntity<Comments> {
      **/
     private Long memberId;
 
+    /**
+     * Comments category(comments/reply)
+     */
+    private Integer category;
     /**
      * Comments content
      **/
