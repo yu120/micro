@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 账号类型
+ * Account Category
  *
  * @author lry
  */
@@ -15,8 +15,7 @@ public enum AccountCategoryEnum {
     // ======
 
     EMAIL(1, "邮箱"),
-    MOBILE(2, "手机"),
-    ID_CARD(3, "身份证");
+    MOBILE(2, "手机");
 
     private final int value;
     private final String title;

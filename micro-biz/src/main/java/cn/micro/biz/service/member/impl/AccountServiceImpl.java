@@ -128,8 +128,6 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
             member.setEmail(account);
         } else if (AccountCategoryEnum.MOBILE.getValue() == type) {
             member.setMobile(account);
-        } else if (AccountCategoryEnum.ID_CARD.getValue() == type) {
-            member.setIdCard(account);
         }
 
         return member;
