@@ -60,6 +60,8 @@ public class Goods extends MicroEntity<Goods> {
     private Integer status;
     /**
      * Comment audit way(automatic/artificial)
+     * <p>
+     * {@link cn.micro.biz.type.goods.CommentAuditEnum}
      */
     private Integer commentAudit;
     /**

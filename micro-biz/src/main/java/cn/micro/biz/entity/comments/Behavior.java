@@ -21,6 +21,8 @@ public class Behavior extends MicroEntity<Behavior> {
 
     /**
      * Behavior origin category
+     * <p>
+     * {@link cn.micro.biz.type.comments.BehaviorOriginEnum}
      */
     private Integer origin;
     /**

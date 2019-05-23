@@ -1,16 +1,16 @@
-package cn.micro.biz.type.goods;
+package cn.micro.biz.type.comments;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * Goods Record Category
+ * Counting Category
  *
  * @author lry
  */
 @Getter
 @AllArgsConstructor
-public enum GoodsRecordCategoryEnum {
+public enum CountingCategoryEnum {
 
     // ======
 
@@ -20,8 +20,7 @@ public enum GoodsRecordCategoryEnum {
     PRAISE(4, "点赞数"),
     TRANSMIT(5, "转发量"),
     COLLECT(6, "收藏数"),
-    SALE(7, "销售量"),
-    ;
+    SALE(7, "销售量");
 
     private final int value;
     private final String title;

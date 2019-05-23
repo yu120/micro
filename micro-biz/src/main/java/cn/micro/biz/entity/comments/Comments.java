@@ -30,6 +30,8 @@ public class Comments extends MicroEntity<Comments> {
 
     /**
      * Comments origin category
+     * <p>
+     * {@link cn.micro.biz.type.comments.CommentsOriginEnum}
      */
     private Integer origin;
     /**
@@ -45,7 +47,9 @@ public class Comments extends MicroEntity<Comments> {
     private Long memberId;
 
     /**
-     * Comments category(comments/reply)
+     * Comments category
+     * <p>
+     * {@link cn.micro.biz.type.comments.CommentsCategoryEnum}
      */
     private Integer category;
     /**
