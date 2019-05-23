@@ -58,6 +58,8 @@ public class Order extends MicroEntity<Order> {
 
     /**
      * Order status(未付款,已付款,已发货,已签收,退货申请,退货中,已退货,取消交易)
+     * <p>
+     * {@link cn.micro.biz.pubsrv.pay.OrderStatusEnum}
      **/
     private Integer orderStatus;
     /**

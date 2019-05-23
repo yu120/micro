@@ -1,4 +1,4 @@
-package cn.micro.biz.entity.member;
+package cn.micro.biz.entity.safe;
 
 import cn.micro.biz.commons.mybatis.entity.MicroEntity;
 import com.baomidou.mybatisplus.annotation.TableName;

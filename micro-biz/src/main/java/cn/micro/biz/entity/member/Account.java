@@ -36,7 +36,7 @@ public class Account extends MicroEntity<Account> {
      */
     private String code;
     /**
-     * Account Category
+     * Account category
      * <p>
      * {@link AccountCategoryEnum}
      */
