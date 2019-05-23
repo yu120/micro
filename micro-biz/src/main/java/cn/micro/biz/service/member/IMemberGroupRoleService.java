@@ -3,6 +3,8 @@ package cn.micro.biz.service.member;
 import cn.micro.biz.commons.mybatis.extension.IMicroService;
 import cn.micro.biz.entity.member.MemberGroupRole;
 
+import java.util.List;
+
 /**
  * Member Group to Role Service
  *
@@ -10,4 +12,6 @@ import cn.micro.biz.entity.member.MemberGroupRole;
  */
 public interface IMemberGroupRoleService extends IMicroService<MemberGroupRole> {
 
+    List<MemberGroupRole> memberGroupRoles();
+    
 }

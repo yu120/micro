@@ -190,4 +190,4 @@ micro:
     remote-expire: 60s
     # cache rule list
     cache-rules:
-      MEMBER_INFO: {cache-type: BOTH, token: false, limit: 200, local-expire: 60s, remote-expire: 60s}
+      MEMBER_GROUP: {cache-type: LOCAL, token: false, limit: 1, local-expire: 600s}
