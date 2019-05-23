@@ -1,7 +1,6 @@
 package cn.micro.biz.entity.goods;
 
 import cn.micro.biz.commons.mybatis.entity.MicroEntity;
-import cn.micro.biz.entity.member.Member;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
@@ -35,7 +34,7 @@ public class GoodsCommentMember extends MicroEntity<GoodsCommentMember> {
     /**
      * Comment member id
      * <p>
-     * {@link Member#id}
+     * {@link cn.micro.biz.entity.member.Member#id}
      **/
     private Long memberId;
     /**
