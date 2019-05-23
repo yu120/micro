@@ -82,49 +82,49 @@ public class Member extends MicroEntity<Member> {
     /**
      * Province code
      * <p>
-     * {@link Area#code}
+     * {@link cn.micro.biz.entity.Area#code}
      */
     private String provinceCode;
     /**
      * Province name
      * <p>
-     * {@link Area#name}
+     * {@link cn.micro.biz.entity.Area#name}
      */
     private String provinceName;
     /**
      * City code
      * <p>
-     * {@link Area#code}
+     * {@link cn.micro.biz.entity.Area#code}
      */
     private String cityCode;
     /**
      * City name
      * <p>
-     * {@link Area#name}
+     * {@link cn.micro.biz.entity.Area#name}
      */
     private String cityName;
     /**
      * District code
      * <p>
-     * {@link Area#code}
+     * {@link cn.micro.biz.entity.Area#code}
      */
     private String districtCode;
     /**
      * District name
      * <p>
-     * {@link Area#name}
+     * {@link cn.micro.biz.entity.Area#name}
      */
     private String districtName;
     /**
      * Town code
      * <p>
-     * {@link Area#code}
+     * {@link cn.micro.biz.entity.Area#code}
      */
     private String townCode;
     /**
      * Town name
      * <p>
-     * {@link Area#name}
+     * {@link cn.micro.biz.entity.Area#name}
      */
     private String townName;
 

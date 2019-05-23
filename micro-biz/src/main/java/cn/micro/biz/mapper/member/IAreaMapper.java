@@ -1,6 +1,6 @@
 package cn.micro.biz.mapper.member;
 
-import cn.micro.biz.entity.member.Area;
+import cn.micro.biz.entity.Area;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

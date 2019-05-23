@@ -33,7 +33,7 @@ public class Permission extends MicroEntity<Permission> {
     /**
      * Application id
      * <p>
-     * {@link App#id}
+     * {@link cn.micro.biz.entity.App#id}
      */
     private Long appId;
 

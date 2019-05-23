@@ -1,6 +1,7 @@
 package cn.micro.biz.entity.goods;
 
 import cn.micro.biz.commons.mybatis.entity.MicroEntity;
+import cn.micro.biz.entity.Area;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
@@ -49,49 +50,49 @@ public class DeliveryAddress extends MicroEntity<DeliveryAddress> {
     /**
      * Country code
      * <p>
-     * {@link cn.micro.biz.entity.member.Area#code}
+     * {@link Area#code}
      **/
     private String countryCode;
     /**
      * Country name
      * <p>
-     * {@link cn.micro.biz.entity.member.Area#name}
+     * {@link Area#name}
      **/
     private String countryName;
     /**
      * Province code
      * <p>
-     * {@link cn.micro.biz.entity.member.Area#code}
+     * {@link Area#code}
      **/
     private String provinceCode;
     /**
      * Province name
      * <p>
-     * {@link cn.micro.biz.entity.member.Area#name}
+     * {@link Area#name}
      **/
     private String provinceName;
     /**
      * City code
      * <p>
-     * {@link cn.micro.biz.entity.member.Area#code}
+     * {@link Area#code}
      **/
     private String cityCode;
     /**
      * City name
      * <p>
-     * {@link cn.micro.biz.entity.member.Area#name}
+     * {@link Area#name}
      **/
     private String cityName;
     /**
      * District code
      * <p>
-     * {@link cn.micro.biz.entity.member.Area#code}
+     * {@link Area#code}
      **/
     private String districtCode;
     /**
      * District name
      * <p>
-     * {@link cn.micro.biz.entity.member.Area#name}
+     * {@link Area#name}
      **/
     private String districtName;
     /**
