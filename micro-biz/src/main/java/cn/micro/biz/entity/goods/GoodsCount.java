@@ -25,13 +25,16 @@ public class GoodsCount extends MicroEntity<GoodsCount> {
      * {@link Goods#id}
      **/
     private Long goodsId;
+
     /**
      * Count category
+     * <p>
+     * {@link cn.micro.biz.type.member.GoodsCountCategoryEnum}
      */
     private Integer category;
     /**
-     * Count number
+     * Count quantity
      */
-    private Long num;
+    private Long quantity;
 
 }

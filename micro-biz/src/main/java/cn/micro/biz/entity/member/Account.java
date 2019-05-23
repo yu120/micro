@@ -1,7 +1,7 @@
 package cn.micro.biz.entity.member;
 
 import cn.micro.biz.commons.mybatis.entity.MicroEntity;
-import cn.micro.biz.type.AccountCategoryEnum;
+import cn.micro.biz.type.member.AccountCategoryEnum;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;

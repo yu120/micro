@@ -1,7 +1,7 @@
 package cn.micro.biz.entity.member;
 
 import cn.micro.biz.commons.mybatis.entity.MicroEntity;
-import cn.micro.biz.type.SexEnum;
+import cn.micro.biz.type.member.SexEnum;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;

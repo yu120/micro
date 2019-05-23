@@ -1,23 +1,22 @@
-package cn.micro.biz.type;
+package cn.micro.biz.type.member;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * Permission Category Enum
+ * 账号类型
  *
  * @author lry
  */
 @Getter
 @AllArgsConstructor
-public enum PermissionCategoryEnum {
+public enum AccountCategoryEnum {
 
     // ======
 
-    TAB(1, "Tab"),
-    MENU(2, "菜单"),
-    ELEMENT(3, "页面元素"),
-    LINK(4, "超链接");
+    EMAIL(1, "邮箱"),
+    MOBILE(2, "手机"),
+    ID_CARD(3, "身份证");
 
     private final int value;
     private final String title;

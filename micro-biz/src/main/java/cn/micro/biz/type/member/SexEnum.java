@@ -1,4 +1,4 @@
-package cn.micro.biz.type;
+package cn.micro.biz.type.member;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

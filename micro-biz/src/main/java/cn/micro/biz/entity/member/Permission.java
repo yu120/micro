@@ -1,7 +1,7 @@
 package cn.micro.biz.entity.member;
 
 import cn.micro.biz.commons.mybatis.entity.MicroEntity;
-import cn.micro.biz.type.PermissionCategoryEnum;
+import cn.micro.biz.type.member.PermissionCategoryEnum;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
