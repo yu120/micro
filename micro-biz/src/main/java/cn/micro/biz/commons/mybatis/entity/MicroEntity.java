@@ -44,6 +44,7 @@ public class MicroEntity<T extends Model<T>> extends Model<T> {
     /**
      * The creator(id/ip/etc)
      */
+    @Deprecated
     @TableField(fill = FieldFill.INSERT)
     protected String creator;
 
@@ -56,6 +57,7 @@ public class MicroEntity<T extends Model<T>> extends Model<T> {
     /**
      * The editor(id/ip/etc)
      */
+    @Deprecated
     @TableField(fill = FieldFill.INSERT_UPDATE)
     protected String editor;
 

@@ -1,16 +1,11 @@
 package cn.micro.biz.entity.member;
 
 import cn.micro.biz.commons.mybatis.entity.MicroEntity;
-import cn.micro.biz.type.PermissionCategoryEnum;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 /**
- * Permission Entity
+ * Application Entity
  *
  * @author lry
  */
@@ -19,30 +14,11 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@TableName("permission")
-public class Permission extends MicroEntity<Permission> {
+@TableName("app")
+public class App extends MicroEntity<App> {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * Parent permission id
-     * <p>
-     * {@link Permission#id}
-     */
-    private Long parentId;
-    /**
-     * Application id
-     * <p>
-     * {@link App#id}
-     */
-    private Long appId;
-
-    /**
-     * Permission category. eg: tab,menu,element,link etc.
-     * <p>
-     * {@link PermissionCategoryEnum}
-     */
-    private Integer category;
     /**
      * Permission enable status
      */
