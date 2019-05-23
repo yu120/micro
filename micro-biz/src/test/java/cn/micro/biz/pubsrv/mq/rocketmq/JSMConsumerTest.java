@@ -1,7 +1,6 @@
-package cn.micro.biz.pubsrv.rocketmq;
+package cn.micro.biz.pubsrv.mq.rocketmq;
 
 import cn.micro.biz.pubsrv.mq.MicroMQProperties;
-import cn.micro.biz.pubsrv.mq.rocketmq.MicroRocketMQConnection;
 import org.apache.rocketmq.jms.domain.message.JmsTextMessage;
 
 import javax.jms.*;

@@ -1,5 +1,6 @@
 package cn.micro.biz.pubsrv.mq.rocketmq;
 
+import cn.micro.biz.commons.extension.Extension;
 import cn.micro.biz.pubsrv.mq.IMicroMQConnection;
 import cn.micro.biz.pubsrv.mq.MicroMQProperties;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import java.util.Set;
  * @author lry
  */
 @Slf4j
+@Extension("rocketmq")
 public class MicroRocketMQConnection implements IMicroMQConnection {
 
     @Override

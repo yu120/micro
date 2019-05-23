@@ -1,5 +1,7 @@
 package cn.micro.biz.pubsrv.mq;
 
+import cn.micro.biz.commons.extension.SPI;
+
 import javax.jms.Connection;
 
 /**
@@ -7,6 +9,7 @@ import javax.jms.Connection;
  *
  * @author lry
  */
+@SPI("rocketmq")
 public interface IMicroMQConnection {
 
     /**

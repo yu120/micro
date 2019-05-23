@@ -1,4 +1,4 @@
-package cn.micro.biz.pubsrv.rocketmq;
+package cn.micro.biz.pubsrv.mq.rocketmq;
 
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.common.message.Message;

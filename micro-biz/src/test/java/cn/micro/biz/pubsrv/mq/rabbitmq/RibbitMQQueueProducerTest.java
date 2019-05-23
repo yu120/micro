@@ -1,4 +1,4 @@
-package cn.micro.biz.pubsrv.rabbitmq;
+package cn.micro.biz.pubsrv.mq.rabbitmq;
 
 import com.rabbitmq.jms.admin.RMQConnectionFactory;
 

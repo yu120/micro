@@ -1,29 +1,29 @@
-package cn.micro.biz.pubsrv.activemq;
+package cn.micro.biz.pubsrv.mq.rocketmq;
 
 import cn.micro.biz.pubsrv.mq.MicroMQProperties;
-import cn.micro.biz.pubsrv.mq.MicroMQService;
 
 import javax.jms.*;
 
-public class ActiveMQJMSProducerTest {
+public class JMSSyncProducerTest {
 
     public static void main(String[] args) throws Exception {
-        MicroMQProperties properties = new MicroMQProperties();
-        properties.setUri("amqp://192.168.2.56:5672");
-        properties.setUsername("sxw_demo");
-        properties.setPassword("sxw_demo");
-        MicroMQService microMQService = new MicroMQService(properties);
-        microMQService.initialize();
+        MicroMQProperties microMQProperties = new MicroMQProperties();
+        microMQProperties.setUri("rocketmq://localhost:9876?producerId=producerId");
+        MicroRocketMQConnection microMQConnection = new MicroRocketMQConnection();
+        Connection connection = microMQConnection.createConnection(microMQProperties);
 
         try {
-            Session session = microMQService.createSession();
+            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
             Destination destination = session.createTopic("TopicTest:TagA");
             MessageProducer messageProducer = session.createProducer(destination);
+
+            connection.start();
             TextMessage message = session.createTextMessage("中文，Hello world!");
+
             messageProducer.send(message);
             System.out.println("send message success! msgId:" + message.getJMSMessageID());
         } finally {
-            microMQService.destroy();
+            connection.close();
         }
     }
 

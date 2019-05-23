@@ -1,5 +1,6 @@
 package cn.micro.biz.pubsrv.mq.activemq;
 
+import cn.micro.biz.commons.extension.Extension;
 import cn.micro.biz.pubsrv.mq.IMicroMQConnection;
 import cn.micro.biz.pubsrv.mq.MicroMQProperties;
 import org.apache.activemq.ActiveMQConnectionFactory;
@@ -12,6 +13,7 @@ import javax.jms.Connection;
  *
  * @author lry
  */
+@Extension("activemq")
 public class MicroActiveMQConnection implements IMicroMQConnection {
 
     @Override

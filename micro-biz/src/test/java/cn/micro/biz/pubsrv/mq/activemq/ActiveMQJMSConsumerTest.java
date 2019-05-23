@@ -1,4 +1,4 @@
-package cn.micro.biz.pubsrv.activemq;
+package cn.micro.biz.pubsrv.mq.activemq;
 
 import cn.micro.biz.pubsrv.mq.MicroMQProperties;
 import cn.micro.biz.pubsrv.mq.MicroMQService;
@@ -13,7 +13,7 @@ public class ActiveMQJMSConsumerTest {
         properties.setUsername("sxw_demo");
         properties.setPassword("sxw_demo");
         MicroMQService microMQService = new MicroMQService(properties);
-        microMQService.initialize();
+        microMQService.afterPropertiesSet();
 
         try {
             Session session = microMQService.createSession();
