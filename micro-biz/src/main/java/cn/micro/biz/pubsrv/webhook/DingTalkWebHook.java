@@ -10,7 +10,6 @@ import org.jsoup.helper.HttpConnection;
 
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -21,7 +20,6 @@ import java.util.List;
 @Slf4j
 public class DingTalkWebHook implements IWebHook<DingTalkWebHook.RobotSendRequest> {
 
-    private static final int SUCCESS_STATUS_CODE = 200;
     private static final int RESPONSE_CODE_OK = 0;
     private static final String RESPONSE_CODE_KEY = "errcode";
     private static final String CONTENT_TYPE_KEY = "Content-Type";
@@ -56,37 +54,32 @@ public class DingTalkWebHook implements IWebHook<DingTalkWebHook.RobotSendReques
         try {
             Connection connection = HttpConnection.connect(url).ignoreContentType(true);
             Connection.Request request = connection.request();
-            // setter post request header
             request.header(CONTENT_TYPE_KEY, CONTENT_TYPE);
-            // setter post request body charset
             request.postDataCharset(StandardCharsets.UTF_8.name());
-            // setter post request method
             request.method(Connection.Method.POST);
-            // setter post request body
-            String requestBody = JSON.toJSONString(robotSendRequest);
-            request.requestBody(requestBody);
+            request.requestBody(JSON.toJSONString(robotSendRequest));
 
             log.debug("Ding Talk request url:[{}], method:[{}], headers:[{}], body:[{}]",
-                    url, request.method(), request.headers(), requestBody);
+                    url, request.method(), request.headers(), request.requestBody());
             response = connection.execute();
         } catch (Exception e) {
             throw new MicroErrorException(e.getMessage(), e);
         }
 
-        if (SUCCESS_STATUS_CODE != response.statusCode()) {
-            throw new MicroErrorException("网络错误, code:" +
-                    response.statusCode() + ", message:" + response.statusMessage());
+        if (this.checkCode(response)) {
+            String responseBody = response.charset(StandardCharsets.UTF_8.name()).body();
+            log.debug("Ding Talk response body:{}", responseBody);
+            JSONObject jsonObject = JSON.parseObject(responseBody);
+            if (jsonObject == null || !jsonObject.containsKey(RESPONSE_CODE_KEY)) {
+                log.warn("Ding Talk send fail, response body:{}", responseBody);
+                return false;
+            }
+
+            return RESPONSE_CODE_OK == jsonObject.getInteger(RESPONSE_CODE_KEY);
+
         }
 
-        String responseBody = response.charset(StandardCharsets.UTF_8.name()).body();
-        log.debug("Ding Talk response body:{}", responseBody);
-        JSONObject jsonObject = JSON.parseObject(responseBody);
-        if (jsonObject == null || !jsonObject.containsKey(RESPONSE_CODE_KEY)) {
-            log.warn("Ding Talk send fail, response body:{}", responseBody);
-            return false;
-        }
-
-        return RESPONSE_CODE_OK == jsonObject.getInteger(RESPONSE_CODE_KEY);
+        return false;
     }
 
     /**
@@ -120,7 +113,6 @@ public class DingTalkWebHook implements IWebHook<DingTalkWebHook.RobotSendReques
          * 被@人的手机号
          */
         private At at;
-
     }
 
     @Data
