@@ -17,7 +17,7 @@ public enum BehaviorCategoryEnum {
     GOODS_COLLECT(101, "商品", "收藏"),
     GOODS_VISIT(102, "商品", "浏览量"),
 
-    // ====== 评论
+    // ====== 评论/回复
 
     COMMENT_SUPPORT(201, "评论/回复", "顶"),
     COMMENT_OPPOSE(202, "评论/回复", "踩"),
