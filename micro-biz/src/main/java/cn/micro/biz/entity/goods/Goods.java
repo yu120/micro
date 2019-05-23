@@ -61,7 +61,7 @@ public class Goods extends MicroEntity<Goods> {
     /**
      * Comment audit way(automatic/artificial)
      */
-    private Integer commentWay;
+    private Integer commentAudit;
     /**
      * Goods remark
      **/
