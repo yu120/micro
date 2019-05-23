@@ -1,6 +1,6 @@
 package cn.micro.biz.mapper.order;
 
-import cn.micro.biz.entity.order.WxPayNotify;
+import cn.micro.biz.entity.pay.WxPayNotify;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

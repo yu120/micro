@@ -1,4 +1,4 @@
-package cn.micro.biz.entity.order;
+package cn.micro.biz.entity.pay;
 
 import cn.micro.biz.commons.mybatis.entity.MicroEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
