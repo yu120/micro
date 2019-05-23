@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Score Details Entity
@@ -49,6 +50,10 @@ public class ScoreDetails extends MicroEntity<ScoreDetails> {
      * 积分状态：有效、已扣除、已过期、冻结中、冻结返还、冻结扣减
      */
     private Integer status;
+    /**
+     * 过期时间
+     */
+    private Date expireTime;
 
     /**
      * 积分来源:当扣减积分时，存储扣减的积分记录id，用于追溯积分
