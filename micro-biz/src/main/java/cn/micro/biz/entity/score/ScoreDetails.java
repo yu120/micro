@@ -51,6 +51,10 @@ public class ScoreDetails extends MicroEntity<ScoreDetails> {
      */
     private Integer status;
     /**
+     * 是否已过期
+     */
+    private Integer expire;
+    /**
      * 过期时间
      */
     private Date expireTime;
