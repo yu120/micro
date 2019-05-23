@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  */
 public class NetUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(NetUtils.class);
+    private static final Logger log = LoggerFactory.getLogger(NetUtils.class);
 
     public static final String LOCALHOST = "127.0.0.1";
     public static final String ANYHOST = "0.0.0.0";
@@ -35,7 +35,7 @@ public class NetUtils {
     private static final Pattern ADDRESS_PATTERN = Pattern.compile("^\\d{1,3}(\\.\\d{1,3}){3}\\:\\d{1,5}$");
     private static final Pattern LOCAL_IP_PATTERN = Pattern.compile("127(\\.\\d{1,3}){3}$");
     private static final Pattern IP_PATTERN = Pattern.compile("\\d{1,3}(\\.\\d{1,3}){3,5}$");
-    private static final Map<String, String> hostNameCache = new LRUCache<>(1000);
+    private static final Map<String, String> HOST_NAME_CACHE = new LRUCache<>(1000);
     private static volatile InetAddress LOCAL_ADDRESS = null;
 
     public static int getRandomPort() {
@@ -156,7 +156,7 @@ public class NetUtils {
                 return localAddress;
             }
         } catch (Throwable e) {
-            logger.warn("Failed to retrieving ip address, " + e.getMessage(), e);
+            log.warn("Failed to retrieving ip address, " + e.getMessage(), e);
         }
 
         try {
@@ -174,20 +174,20 @@ public class NetUtils {
                                         return address;
                                     }
                                 } catch (Throwable e) {
-                                    logger.warn("Failed to retrieving ip address, " + e.getMessage(), e);
+                                    log.warn("Failed to retrieving ip address, " + e.getMessage(), e);
                                 }
                             }
                         }
                     } catch (Throwable e) {
-                        logger.warn("Failed to retrieving ip address, " + e.getMessage(), e);
+                        log.warn("Failed to retrieving ip address, " + e.getMessage(), e);
                     }
                 }
             }
         } catch (Throwable e) {
-            logger.warn("Failed to retrieving ip address, " + e.getMessage(), e);
+            log.warn("Failed to retrieving ip address, " + e.getMessage(), e);
         }
 
-        logger.error("Could not get local host ip address, will use 127.0.0.1 instead.");
+        log.error("Could not get local host ip address, will use 127.0.0.1 instead.");
         return localAddress;
     }
 
@@ -197,14 +197,14 @@ public class NetUtils {
             if (i > -1) {
                 address = address.substring(0, i);
             }
-            String hostname = hostNameCache.get(address);
+            String hostname = HOST_NAME_CACHE.get(address);
             if (hostname != null && hostname.length() > 0) {
                 return hostname;
             }
             InetAddress inetAddress = InetAddress.getByName(address);
             if (inetAddress != null) {
                 hostname = inetAddress.getHostName();
-                hostNameCache.put(address, hostname);
+                HOST_NAME_CACHE.put(address, hostname);
                 return hostname;
             }
         } catch (Throwable e) {
