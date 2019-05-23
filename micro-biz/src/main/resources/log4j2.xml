@@ -43,7 +43,7 @@
 
         <!-- Error Logger -->
         <RollingRandomAccessFile name="ERROR_LOG" fileName="${LOG_HOME}/error.log" immediateFlush="false"
-                                 filePattern="${LOG_HOME}/error-%d{yyyy-MM-dd}-%i.log.gz" append="true">
+                                 filePattern="${LOG_HOME}/bak/error-%d{yyyy-MM-dd}-%i.log.gz" append="true">
             <PatternLayout pattern="${LOG_PATTERN}"/>
             <Filters>
                 <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
@@ -62,7 +62,7 @@
 
         <!-- App Logger -->
         <RollingRandomAccessFile name="APP_LOG" fileName="${LOG_HOME}/app.log" immediateFlush="false"
-                                 filePattern="${LOG_HOME}/app-%d{yyyy-MM-dd}-%i.log.gz" append="true">
+                                 filePattern="${LOG_HOME}/bak/app-%d{yyyy-MM-dd}-%i.log.gz" append="true">
             <PatternLayout pattern="${LOG_PATTERN}"/>
             <Filters>
                 <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
