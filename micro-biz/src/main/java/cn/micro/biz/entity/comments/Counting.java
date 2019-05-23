@@ -21,6 +21,8 @@ public class Counting extends MicroEntity<Counting> {
 
     /**
      * Counting origin category
+     *
+     * {@link cn.micro.biz.type.comments.CountingOriginEnum}
      */
     private Integer origin;
     /**
