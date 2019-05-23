@@ -1,11 +1,12 @@
-package cn.micro.biz.entity.goods;
+package cn.micro.biz.entity.comments;
 
 import cn.micro.biz.commons.mybatis.entity.MicroEntity;
+import cn.micro.biz.type.comments.BehaviorCategoryEnum;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 /**
- * Goods Count Entity
+ * Counting Entity
  *
  * @author lry
  */
@@ -14,26 +15,28 @@ import lombok.*;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@TableName("goods_count")
-public class GoodsCount extends MicroEntity<GoodsCount> {
+@TableName("counting")
+public class Counting extends MicroEntity<Counting> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Goods id
-     * <p>
-     * {@link Goods#id}
-     **/
-    private Long goodsId;
+     * Counting origin category
+     */
+    private Integer origin;
+    /**
+     * Counting origin id
+     */
+    private Long originId;
 
     /**
-     * Count category
+     * Counting category
      * <p>
-     * {@link cn.micro.biz.type.goods.GoodsCountCategoryEnum}
+     * {@link BehaviorCategoryEnum}
      */
     private Integer category;
     /**
-     * Count quantity
+     * Counting quantity
      */
     private Long quantity;
 

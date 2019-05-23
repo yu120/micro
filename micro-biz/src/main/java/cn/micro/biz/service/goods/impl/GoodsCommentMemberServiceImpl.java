@@ -1,7 +1,7 @@
 package cn.micro.biz.service.goods.impl;
 
 import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
-import cn.micro.biz.entity.comment.CommentsBehavior;
+import cn.micro.biz.entity.comments.Behavior;
 import cn.micro.biz.mapper.goods.IGoodsCommentMemberMapper;
 import cn.micro.biz.service.goods.IGoodsCommentMemberService;
 import org.springframework.stereotype.Service;
@@ -12,6 +12,6 @@ import org.springframework.stereotype.Service;
  * @author lry
  */
 @Service
-public class GoodsCommentMemberServiceImpl extends MicroServiceImpl<IGoodsCommentMemberMapper, CommentsBehavior> implements IGoodsCommentMemberService {
+public class GoodsCommentMemberServiceImpl extends MicroServiceImpl<IGoodsCommentMemberMapper, Behavior> implements IGoodsCommentMemberService {
 
 }

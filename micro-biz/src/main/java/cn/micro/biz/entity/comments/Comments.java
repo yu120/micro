@@ -1,4 +1,4 @@
-package cn.micro.biz.entity.comment;
+package cn.micro.biz.entity.comments;
 
 import cn.micro.biz.commons.mybatis.entity.MicroEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -22,7 +22,7 @@ public class Comments extends MicroEntity<Comments> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Parent comment id
+     * Parent comments id
      * <p>
      * {@link Comments#id}
      **/
