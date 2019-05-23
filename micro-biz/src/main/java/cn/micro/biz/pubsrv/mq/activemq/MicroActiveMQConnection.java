@@ -1,10 +1,10 @@
 package cn.micro.biz.pubsrv.mq.activemq;
 
-import cn.micro.biz.commons.extension.Extension;
 import cn.micro.biz.pubsrv.mq.IMicroMQConnection;
 import cn.micro.biz.pubsrv.mq.MicroMQProperties;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.commons.lang3.StringUtils;
+import org.micro.extension.Extension;
 
 import javax.jms.Connection;
 

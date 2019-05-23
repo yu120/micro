@@ -1,10 +1,10 @@
 package cn.micro.biz.pubsrv.mq.rabbitmq;
 
-import cn.micro.biz.commons.extension.Extension;
 import cn.micro.biz.pubsrv.mq.IMicroMQConnection;
 import cn.micro.biz.pubsrv.mq.MicroMQProperties;
 import com.rabbitmq.jms.admin.RMQConnectionFactory;
 import org.apache.commons.lang3.StringUtils;
+import org.micro.extension.Extension;
 
 import javax.jms.Connection;
 

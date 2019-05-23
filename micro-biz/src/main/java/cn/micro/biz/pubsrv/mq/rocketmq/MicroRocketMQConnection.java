@@ -1,11 +1,11 @@
 package cn.micro.biz.pubsrv.mq.rocketmq;
 
-import cn.micro.biz.commons.extension.Extension;
 import cn.micro.biz.pubsrv.mq.IMicroMQConnection;
 import cn.micro.biz.pubsrv.mq.MicroMQProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.jms.domain.CommonConstant;
 import org.apache.rocketmq.jms.domain.JmsBaseConnectionFactory;
+import org.micro.extension.Extension;
 
 import javax.jms.Connection;
 import java.net.URI;

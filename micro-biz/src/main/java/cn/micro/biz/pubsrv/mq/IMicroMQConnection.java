@@ -1,6 +1,6 @@
 package cn.micro.biz.pubsrv.mq;
 
-import cn.micro.biz.commons.extension.SPI;
+import org.micro.extension.SPI;
 
 import javax.jms.Connection;
 

@@ -2,9 +2,9 @@ package cn.micro.biz.pubsrv.mq;
 
 import cn.micro.biz.commons.URL;
 import cn.micro.biz.commons.exception.MicroErrorException;
-import cn.micro.biz.commons.extension.ExtensionLoader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.micro.extension.ExtensionLoader;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
