@@ -54,7 +54,7 @@ public class GoodsComment extends MicroEntity<GoodsComment> {
      * <p>
      * {@link cn.micro.biz.entity.member.Member#id}
      **/
-    private Long auditorId;
+    private Long auditId;
     /**
      * Audit time
      **/
