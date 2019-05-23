@@ -19,7 +19,7 @@ import java.util.List;
 public class MemberGroupServiceImpl extends MicroServiceImpl<IMemberGroupMapper, MemberGroup> implements IMemberGroupService {
 
     @Override
-    @MicroCache(CacheKey.MEMBER_GROUP)
+    @MicroCache(CacheKey.ALL_MEMBER_GROUP)
     public List<MemberGroup> memberGroups() {
         return super.list();
     }

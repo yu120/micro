@@ -190,4 +190,8 @@ micro:
     remote-expire: 60s
     # cache rule list
     cache-rules:
-      MEMBER_GROUP: {cache-type: LOCAL, token: false, limit: 1, local-expire: 600s}
+      ALL_ROLE: {cache-type: LOCAL, token: false, limit: 1, local-expire: 600s}
+      ALL_PERMISSION: {cache-type: LOCAL, token: false, limit: 1, local-expire: 600s}
+      ALL_ROLE_PERMISSION: {cache-type: LOCAL, token: false, limit: 1, local-expire: 600s}
+      ALL_MEMBER_GROUP: {cache-type: LOCAL, token: false, limit: 1, local-expire: 600s}
+      ALL_MEMBER_GROUP_ROLE: {cache-type: LOCAL, token: false, limit: 1, local-expire: 600s}

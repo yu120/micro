@@ -19,7 +19,7 @@ import java.util.List;
 public class RolePermissionServiceImpl extends MicroServiceImpl<IRolePermissionMapper, RolePermission> implements IRolePermissionService {
 
     @Override
-    @MicroCache(CacheKey.ROLE_PERMISSION)
+    @MicroCache(CacheKey.ALL_ROLE_PERMISSION)
     public List<RolePermission> rolePermissions() {
         return super.list();
     }

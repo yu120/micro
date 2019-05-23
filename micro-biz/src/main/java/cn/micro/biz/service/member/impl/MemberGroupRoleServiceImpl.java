@@ -19,7 +19,7 @@ import java.util.List;
 public class MemberGroupRoleServiceImpl extends MicroServiceImpl<IMemberGroupRoleMapper, MemberGroupRole> implements IMemberGroupRoleService {
 
     @Override
-    @MicroCache(CacheKey.MEMBER_GROUP_ROLE)
+    @MicroCache(CacheKey.ALL_MEMBER_GROUP_ROLE)
     public List<MemberGroupRole> memberGroupRoles() {
         return super.list();
     }

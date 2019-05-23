@@ -19,7 +19,7 @@ import java.util.List;
 public class PermissionServiceImpl extends MicroServiceImpl<IPermissionMapper, Permission> implements IPermissionService {
 
     @Override
-    @MicroCache(CacheKey.PERMISSION)
+    @MicroCache(CacheKey.ALL_PERMISSION)
     public List<Permission> permissions() {
         return super.list();
     }

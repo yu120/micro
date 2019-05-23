@@ -19,7 +19,7 @@ import java.util.List;
 public class RoleServiceImpl extends MicroServiceImpl<IRoleMapper, Role> implements IRoleService {
 
     @Override
-    @MicroCache(CacheKey.ROLE)
+    @MicroCache(CacheKey.ALL_ROLE)
     public List<Role> roles() {
         return super.list();
     }
