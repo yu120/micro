@@ -14,13 +14,11 @@ public enum CommentsCategoryEnum {
 
     // ====== 商品
 
-    GOODS_COMMENTS(101, "商品", "评论"),
-    GOODS_REPLY(102, "商品", "回复"),
+    GOODS_COMMENTS(101, "商品", "评论/回复"),
 
     // ====== 动态
 
-    NEWS_COMMENTS(201, "动态", "评论"),
-    NEWS_REPLY(202, "动态", "回复"),
+    NEWS_COMMENTS(201, "动态", "评论/回复"),
     ;
 
     private final int value;
