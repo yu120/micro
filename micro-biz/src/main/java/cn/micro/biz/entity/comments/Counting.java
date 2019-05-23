@@ -20,22 +20,15 @@ public class Counting extends MicroEntity<Counting> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Counting origin category
-     *
-     * {@link cn.micro.biz.type.comments.CountingOriginEnum}
-     */
-    private Integer origin;
-    /**
-     * Counting origin id
-     */
-    private Long originId;
-
-    /**
      * Counting category
      * <p>
      * {@link cn.micro.biz.type.comments.CountingCategoryEnum}
      */
     private Integer category;
+    /**
+     * Counting origin id
+     */
+    private Long originId;
     /**
      * Counting quantity
      */

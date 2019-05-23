@@ -20,27 +20,20 @@ public class Behavior extends MicroEntity<Behavior> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Behavior origin category
+     * Behavior category
      * <p>
-     * {@link cn.micro.biz.type.comments.BehaviorOriginEnum}
-     */
-    private Integer origin;
+     * {@link cn.micro.biz.type.comments.BehaviorCategoryEnum}
+     **/
+    private Integer category;
     /**
      * Behavior origin id
      */
     private Long originId;
-
     /**
      * Behavior member id
      * <p>
      * {@link cn.micro.biz.entity.member.Member#id}
      **/
     private Long memberId;
-    /**
-     * Behavior category
-     * <p>
-     * {@link cn.micro.biz.type.comments.BehaviorCategoryEnum}
-     **/
-    private Integer category;
 
 }
