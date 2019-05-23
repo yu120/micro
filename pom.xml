@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.micro</groupId>
-    <artifactId>micro</artifactId>
+    <artifactId>micro-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
@@ -24,7 +24,7 @@
         <dependencies>
             <dependency>
                 <groupId>org.micro</groupId>
-                <artifactId>micro-core</artifactId>
+                <artifactId>micro</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

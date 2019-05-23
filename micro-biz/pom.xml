@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>micro</artifactId>
+        <artifactId>micro-parent</artifactId>
         <groupId>org.micro</groupId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
@@ -74,8 +74,8 @@
 
     <dependencies>
         <dependency>
-            <artifactId>micro-core</artifactId>
             <groupId>org.micro</groupId>
+            <artifactId>micro</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
 

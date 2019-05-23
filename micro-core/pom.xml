@@ -5,21 +5,22 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>micro</artifactId>
+        <artifactId>micro-parent</artifactId>
         <groupId>org.micro</groupId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>micro-core</artifactId>
+    <artifactId>micro</artifactId>
     <packaging>jar</packaging>
     <name>The Micro Core</name>
     <description>The Micro Core</description>
 
     <properties>
-        <guava.version>26.0-jre</guava.version>
+        <guava.version>27.1-jre</guava.version>
+        <commons-lang3.version>3.9</commons-lang3.version>
         <slf4j-api.version>1.7.26</slf4j-api.version>
         <lombok.version>1.18.8</lombok.version>
-        <junit.version>4.12</junit.version>
+        <junit-jupiter-api.version>5.5.0-M1</junit-jupiter-api.version>
     </properties>
 
     <dependencies>
@@ -27,6 +28,11 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -42,9 +48,9 @@
         </dependency>
 
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit-jupiter-api.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
