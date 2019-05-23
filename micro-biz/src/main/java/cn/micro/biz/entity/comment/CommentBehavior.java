@@ -1,11 +1,11 @@
-package cn.micro.biz.entity.goods;
+package cn.micro.biz.entity.comment;
 
 import cn.micro.biz.commons.mybatis.entity.MicroEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 /**
- * Goods Comment Behavior Entity
+ * Comment Behavior Entity
  *
  * @author lry
  */
@@ -14,15 +14,15 @@ import lombok.*;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@TableName("goods_comment_behavior")
-public class GoodsCommentBehavior extends MicroEntity<GoodsCommentBehavior> {
+@TableName("comment_behavior")
+public class CommentBehavior extends MicroEntity<CommentBehavior> {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * Goods comment id
      * <p>
-     * {@link GoodsComment#id}
+     * {@link Comment#id}
      **/
     private Long commentId;
     /**

@@ -1,4 +1,4 @@
-package cn.micro.biz.entity.goods;
+package cn.micro.biz.entity.comment;
 
 import cn.micro.biz.commons.mybatis.entity.MicroEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -7,7 +7,7 @@ import lombok.*;
 import java.util.Date;
 
 /**
- * Goods Comment Entity
+ * Comment Entity
  *
  * @author lry
  */
@@ -16,29 +16,33 @@ import java.util.Date;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@TableName("goods_comment")
-public class GoodsComment extends MicroEntity<GoodsComment> {
+@TableName("comment")
+public class Comment extends MicroEntity<Comment> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Goods id
+     * Parent comment id
      * <p>
-     * {@link Goods#id}
+     * {@link Comment#id}
      **/
-    private Long goodsId;
+    private Long parentId;
+
+    /**
+     * Comment category
+     */
+    private Integer category;
+    /**
+     * Comment category id
+     */
+    private Long categoryId;
+
     /**
      * Comment member id
      * <p>
      * {@link cn.micro.biz.entity.member.Member#id}
      **/
     private Long memberId;
-    /**
-     * Parent comment id
-     * <p>
-     * {@link GoodsComment#id}
-     **/
-    private Long parentId;
 
     /**
      * Comment content
@@ -65,11 +69,11 @@ public class GoodsComment extends MicroEntity<GoodsComment> {
     private String auditRemark;
 
     /**
-     * Support count number
+     * Support quantity
      **/
     private Integer support;
     /**
-     * Oppose count number
+     * Oppose quantity
      **/
     private Integer oppose;
 
