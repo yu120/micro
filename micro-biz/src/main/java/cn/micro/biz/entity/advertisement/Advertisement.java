@@ -7,7 +7,7 @@ import lombok.*;
 import java.util.Date;
 
 /**
- * Advert Entity
+ * Advertisement Entity
  * <p>
  * http://www.wstmart.net/database-887.html
  * https://blog.csdn.net/juedaihuaihuai/article/details/4328292
@@ -19,38 +19,38 @@ import java.util.Date;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@TableName("advert")
-public class Advert extends MicroEntity<Advert> {
+@TableName("advertisement")
+public class Advertisement extends MicroEntity<Advertisement> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Advert position id
+     * Advertisement position id
      * <p>
-     * {@link AdvertPosition#id}
+     * {@link AdvertisementPosition#id}
      */
     private Long advertPositionId;
     /**
-     * Advertiser id
+     * AdvertisementStore id
      * <p>
-     * {@link Advertiser#id}
+     * {@link AdvertisementStore#id}
      */
     private Long advertiserId;
 
     /**
-     * Advert category
+     * Advertisement category
      */
     private Integer category;
     /**
-     * Advert name
+     * Advertisement name
      */
     private Integer name;
     /**
-     * Advert icon
+     * Advertisement icon
      */
     private Integer icon;
     /**
-     * Advert url
+     * Advertisement url
      */
     private Integer url;
     /**
@@ -58,16 +58,16 @@ public class Advert extends MicroEntity<Advert> {
      **/
     private String intro;
     /**
-     * Advert sort
+     * Advertisement sort
      */
     private Integer sort;
 
     /**
-     * Advert start time
+     * Advertisement start time
      */
     private Date startTime;
     /**
-     * Advert end time
+     * Advertisement end time
      */
     private Date endTime;
 

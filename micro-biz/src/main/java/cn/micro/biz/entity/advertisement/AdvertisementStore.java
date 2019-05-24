@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 /**
- * Advertiser Entity
+ * Advertisement Store Entity
  *
  * @author lry
  */
@@ -14,37 +14,37 @@ import lombok.*;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@TableName("advertiser")
-public class Advertiser extends MicroEntity<Advertiser> {
+@TableName("advertisement_store")
+public class AdvertisementStore extends MicroEntity<AdvertisementStore> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Advertiser name
+     * Advertisement store name
      */
     private String name;
     /**
-     * Advertiser company
+     * Advertisement store company
      */
     private String company;
     /**
-     * Advertiser tel
+     * Advertisement store tel
      */
     private String tel;
     /**
-     * Advertiser qq number
+     * Advertisement store qq number
      */
     private String qq;
     /**
-     * Advertiser wx number
+     * Advertisement store wx number
      */
     private String wx;
     /**
-     * Advertiser address
+     * Advertisement store address
      */
     private String address;
     /**
-     * Advertiser level category
+     * Advertisement store level category
      */
     private Integer category;
     
