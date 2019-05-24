@@ -1,5 +1,6 @@
 package cn.micro.biz.mapper.goods;
 
+import cn.micro.biz.entity.comments.Comments;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -7,6 +8,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  *
  * @author lry
  */
-public interface IGoodsCommentMapper extends BaseMapper<GoodsComment> {
+public interface ICommentsMapper extends BaseMapper<Comments> {
 
 }
