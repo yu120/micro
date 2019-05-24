@@ -4,10 +4,10 @@ import cn.micro.biz.entity.comments.Behavior;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
- * Goods Comments Member Mapper
+ * Behavior Mapper
  *
  * @author lry
  */
-public interface IGoodsCommentMemberMapper extends BaseMapper<Behavior> {
+public interface IBehaviorMapper extends BaseMapper<Behavior> {
 
 }

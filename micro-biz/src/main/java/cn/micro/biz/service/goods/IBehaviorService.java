@@ -8,6 +8,6 @@ import cn.micro.biz.entity.comments.Behavior;
  *
  * @author lry
  */
-public interface IGoodsCommentMemberService extends IMicroService<Behavior> {
+public interface IBehaviorService extends IMicroService<Behavior> {
 
 }
