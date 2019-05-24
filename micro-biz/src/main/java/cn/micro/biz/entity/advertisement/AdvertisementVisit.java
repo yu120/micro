@@ -38,6 +38,10 @@ public class AdvertisementVisit extends MicroEntity<AdvertisementVisit> {
      * Visitor operating system
      */
     private String os;
+    /**
+     * Origin url
+     */
+    private String originUrl;
 
     /**
      * Visitor browser kernel
