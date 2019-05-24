@@ -44,5 +44,13 @@ public class AdvertisementPosition extends MicroEntity<AdvertisementPosition> {
      * Advertisement height
      */
     private Integer height;
+    /**
+     * Advertisement image max size
+     */
+    private Integer maxSize;
+    /**
+     * Advertisement rotation time(ms)
+     */
+    private Integer rotationTime;
 
 }

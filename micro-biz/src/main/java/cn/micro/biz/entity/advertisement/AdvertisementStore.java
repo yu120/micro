@@ -44,8 +44,8 @@ public class AdvertisementStore extends MicroEntity<AdvertisementStore> {
      */
     private String address;
     /**
-     * Advertisement store level category
+     * Advertisement store level
      */
-    private Integer category;
+    private Integer level;
     
 }
