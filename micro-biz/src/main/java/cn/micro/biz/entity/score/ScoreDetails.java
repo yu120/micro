@@ -33,11 +33,7 @@ public class ScoreDetails extends MicroEntity<ScoreDetails> {
     /**
      * Score amount
      */
-    private BigDecimal operationAmount;
-    /**
-     * Score available amount
-     */
-    private BigDecimal availableAmount;
+    private BigDecimal amount;
     /**
      * 操作类型：增加积分、减少积分
      */
@@ -65,5 +61,9 @@ public class ScoreDetails extends MicroEntity<ScoreDetails> {
      * {@link ScoreDetails#id}
      */
     private Long origin;
+    /**
+     * Score details remark
+     **/
+    private String remark;
 
 }

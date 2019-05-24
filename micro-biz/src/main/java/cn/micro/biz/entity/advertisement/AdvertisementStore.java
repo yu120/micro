@@ -47,5 +47,13 @@ public class AdvertisementStore extends MicroEntity<AdvertisementStore> {
      * Advertisement store level
      */
     private Integer level;
+    /**
+     * Advertisement intro
+     **/
+    private String intro;
+    /**
+     * Advertisement remark
+     **/
+    private String remark;
     
 }

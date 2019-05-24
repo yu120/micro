@@ -5,9 +5,10 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
- * Member Score Entity
+ * Member Available Score Entity
  *
  * @author lry
  */
@@ -16,8 +17,8 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@TableName("member_score")
-public class MemberScore extends MicroEntity<MemberScore> {
+@TableName("available_score")
+public class AvailableScore extends MicroEntity<AvailableScore> {
 
     private static final long serialVersionUID = 1L;
 
@@ -28,8 +29,16 @@ public class MemberScore extends MicroEntity<MemberScore> {
      */
     private Long memberId;
     /**
-     * Score all amount
+     * Score available amount
      */
     private BigDecimal amount;
+    /**
+     * Has it expired
+     */
+    private Integer expire;
+    /**
+     * Expire time
+     */
+    private Date expireTime;
 
 }
