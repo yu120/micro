@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 /**
- * Advertisement Position
+ * Advert Statistics Entity
  *
  * @author lry
  */
@@ -14,33 +14,33 @@ import lombok.*;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@TableName("advertisement_position")
-public class AdvertisementPosition extends MicroEntity<AdvertisementPosition> {
+@TableName("advert_statistics")
+public class AdvertStatistics extends MicroEntity<AdvertStatistics> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Advertisement category
+     * Advert category
      */
     private Integer category;
     /**
-     * Advertisement enable status
+     * Advert enable status
      */
     private Integer status;
     /**
-     * Advertisement name
+     * Advert name
      */
     private String name;
     /**
-     * Advertisement code
+     * Advert code
      */
     private String code;
     /**
-     * Advertisement width
+     * Advert width
      */
     private Integer width;
     /**
-     * Advertisement height
+     * Advert height
      */
     private Integer height;
 
