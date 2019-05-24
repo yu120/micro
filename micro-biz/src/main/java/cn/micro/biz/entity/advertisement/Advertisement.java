@@ -29,14 +29,18 @@ public class Advertisement extends MicroEntity<Advertisement> {
      * <p>
      * {@link AdvertisementPosition#id}
      */
-    private Long advertPositionId;
+    private Long positionId;
     /**
      * AdvertisementStore id
      * <p>
      * {@link AdvertisementStore#id}
      */
-    private Long advertiserId;
+    private Long storeId;
 
+    /**
+     * Advertisement status
+     **/
+    private Integer status;
     /**
      * Advertisement category
      */
@@ -71,4 +75,9 @@ public class Advertisement extends MicroEntity<Advertisement> {
      */
     private Date endTime;
 
+    /**
+     * Advertisement remark
+     **/
+    private String remark;
+    
 }

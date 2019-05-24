@@ -20,13 +20,14 @@ public class AdvertisementPosition extends MicroEntity<AdvertisementPosition> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Advertisement category
-     */
-    private Integer category;
-    /**
      * Advertisement enable status
      */
     private Integer status;
+    /**
+     * Advertisement category
+     */
+    private Integer category;
+
     /**
      * Advertisement name
      */
