@@ -8,6 +8,7 @@ import com.sun.tools.javac.api.JavacTrees;
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.processing.JavacProcessingEnvironment;
+import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.*;
 import com.sun.tools.javac.tree.TreeMaker;
 import com.sun.tools.javac.tree.TreeTranslator;
@@ -20,10 +21,9 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @AutoService(Processor.class)
 @SupportedAnnotationTypes("org.micro.annotation.MicroData")
@@ -52,81 +52,84 @@ public class MicroGetterProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         log.debug("process========>{}", annotations);
         Set<? extends Element> annotation = roundEnv.getElementsAnnotatedWith(MicroData.class);
-        annotation.stream().map(element -> trees.getTree(element)).forEach(tree -> tree.accept(new TreeTranslator() {
-
-            @Override
-            public void visitClassDef(JCClassDecl jcClass) {
-                //过滤属性
-                Map<Name, JCVariableDecl> treeMap =
-                        jcClass.defs.stream().filter(k -> k.getKind().equals(Tree.Kind.VARIABLE))
-                                .map(tree -> (JCVariableDecl) tree)
-                                .collect(Collectors.toMap(JCVariableDecl::getName, Function.identity()));
-                //处理变量
-                treeMap.forEach((k, jcVariable) -> {
-                    messager.printMessage(Diagnostic.Kind.NOTE, String.format("fields:%s", k));
-                    try {
-                        //增加get方法
-                        jcClass.defs = jcClass.defs.prepend(generateGetterMethod(jcVariable));
-                        //增加set方法
-                        jcClass.defs = jcClass.defs.prepend(generateSetterMethod(jcVariable));
-                    } catch (Exception e) {
-                        messager.printMessage(Diagnostic.Kind.ERROR, Throwables.getStackTraceAsString(e));
+        for (Element element : annotation) {
+            JCTree jcTree = trees.getTree(element);
+            jcTree.accept(new TreeTranslator() {
+                @Override
+                public void visitClassDef(JCClassDecl jcClass) {
+                    //过滤属性
+                    Map<Name, JCVariableDecl> treeMap = new HashMap<>();
+                    for (JCTree jcTree : jcClass.defs) {
+                        if (jcTree.getKind().equals(Tree.Kind.VARIABLE)) {
+                            JCVariableDecl jcVariableDecl = (JCVariableDecl) jcTree;
+                            treeMap.put(jcVariableDecl.getName(), jcVariableDecl);
+                        }
                     }
-                });
-                //增加toString方法
-                //jcClass.defs = jcClass.defs.prepend(generateToStringBuilderMethod());
-                super.visitClassDef(jcClass);
-            }
 
-            @Override
-            public void visitMethodDef(JCMethodDecl jcMethod) {
-                //打印所有方法
-                messager.printMessage(Diagnostic.Kind.NOTE, jcMethod.toString());
-                //修改方法
-                if ("getTest".equals(jcMethod.getName().toString())) {
-                    result = treeMaker
-                            .MethodDef(jcMethod.getModifiers(), getNameFromString("testMethod"), jcMethod.restype,
-                                    jcMethod.getTypeParameters(), jcMethod.getParameters(), jcMethod.getThrows(),
-                                    jcMethod.getBody(), jcMethod.defaultValue);
+                    //处理变量
+                    for (Map.Entry<Name, JCVariableDecl> entry : treeMap.entrySet()) {
+                        messager.printMessage(Diagnostic.Kind.NOTE, String.format("fields:%s", entry.getKey()));
+                        try {
+                            //增加get方法
+                            jcClass.defs = jcClass.defs.prepend(generateGetterMethod(entry.getValue()));
+                            //增加set方法
+                            jcClass.defs = jcClass.defs.prepend(generateSetterMethod(entry.getValue()));
+                        } catch (Exception e) {
+                            messager.printMessage(Diagnostic.Kind.ERROR, Throwables.getStackTraceAsString(e));
+                        }
+                    }
+
+                    super.visitClassDef(jcClass);
                 }
-                super.visitMethodDef(jcMethod);
-            }
-        }));
+
+                @Override
+                public void visitMethodDef(JCMethodDecl jcMethod) {
+                    //打印所有方法
+                    messager.printMessage(Diagnostic.Kind.NOTE, jcMethod.toString());
+                    //修改方法
+                    if ("getTest".equals(jcMethod.getName().toString())) {
+                        result = treeMaker.MethodDef(
+                                jcMethod.getModifiers(),
+                                getNameFromString("testMethod"),
+                                jcMethod.restype,
+                                jcMethod.getTypeParameters(),
+                                jcMethod.getParameters(),
+                                jcMethod.getThrows(),
+                                jcMethod.getBody(),
+                                jcMethod.defaultValue);
+                    }
+                    super.visitMethodDef(jcMethod);
+                }
+            });
+        }
+
         return true;
     }
 
     private JCMethodDecl generateGetterMethod(JCVariableDecl jcVariable) {
-
         //修改方法级别
         JCModifiers jcModifiers = treeMaker.Modifiers(Flags.PUBLIC);
-
         //添加方法名称
         Name methodName = handleMethodSignature(jcVariable.getName(), "get");
 
         //添加方法内容
         ListBuffer<JCStatement> jcStatements = new ListBuffer<>();
-        jcStatements.append(
-                treeMaker.Return(treeMaker.Select(treeMaker.Ident(getNameFromString("this")), jcVariable.getName())));
+        jcStatements.append(treeMaker.Return(treeMaker.Select(treeMaker.Ident(getNameFromString("this")), jcVariable.getName())));
         JCBlock jcBlock = treeMaker.Block(0, jcStatements.toList());
 
         //添加返回值类型
         JCExpression returnType = jcVariable.vartype;
-
         //参数类型
         List<JCTypeParameter> typeParameters = List.nil();
-
         //参数变量
         List<JCVariableDecl> parameters = List.nil();
-
         //声明异常
         List<JCExpression> throwsClauses = List.nil();
         //构建方法
-        return treeMaker
-                .MethodDef(jcModifiers, methodName, returnType, typeParameters, parameters, throwsClauses, jcBlock, null);
+        return treeMaker.MethodDef(jcModifiers, methodName, returnType, typeParameters, parameters, throwsClauses, jcBlock, null);
     }
 
     private JCMethodDecl generateSetterMethod(JCVariableDecl jcVariable) throws ReflectiveOperationException {
-
         //修改方法级别
         JCModifiers modifiers = treeMaker.Modifiers(Flags.PUBLIC);
 
@@ -143,9 +146,7 @@ public class MicroGetterProcessor extends AbstractProcessor {
         JCBlock jcBlock = treeMaker.Block(0, jcStatements.toList());
 
         //添加返回值类型
-        JCExpression returnType =
-                treeMaker.Type((Type) (Class.forName("com.sun.tools.javac.code.Type$JCVoidType").newInstance()));
-
+        JCExpression returnType = treeMaker.Type((Type) (Class.forName("com.sun.tools.javac.code.Type$JCVoidType").newInstance()));
         List<JCTypeParameter> typeParameters = List.nil();
 
         //定义参数
@@ -155,51 +156,7 @@ public class MicroGetterProcessor extends AbstractProcessor {
 
         //声明异常
         List<JCExpression> throwsClauses = List.nil();
-        return treeMaker
-                .MethodDef(modifiers, methodName, returnType, typeParameters, parameters, throwsClauses, jcBlock, null);
-
-    }
-
-    private JCMethodDecl generateToStringBuilderMethod() {
-
-        //修改方法级别
-        JCModifiers modifiers = treeMaker.Modifiers(Flags.PUBLIC);
-
-        //添加方法名称
-        Name methodName = getNameFromString("toString");
-
-        //设置调用方法函数类型和调用函数
-        JCExpressionStatement statement = treeMaker.Exec(treeMaker.Apply(List.of(memberAccess("java.lang.Object")),
-                memberAccess("com.nicky.lombok.adapter.AdapterFactory.builderStyleAdapter"),
-                List.of(treeMaker.Ident(getNameFromString("this")))));
-        ListBuffer<JCStatement> jcStatements = new ListBuffer<>();
-        jcStatements.append(treeMaker.Return(statement.getExpression()));
-        //设置方法体
-        JCBlock jcBlock = treeMaker.Block(0, jcStatements.toList());
-
-        //添加返回值类型
-        JCExpression returnType = memberAccess("java.lang.String");
-
-        //参数类型
-        List<JCTypeParameter> typeParameters = List.nil();
-
-        //参数变量
-        List<JCVariableDecl> parameters = List.nil();
-
-        //声明异常
-        List<JCExpression> throwsClauses = List.nil();
-
-        return treeMaker
-                .MethodDef(modifiers, methodName, returnType, typeParameters, parameters, throwsClauses, jcBlock, null);
-    }
-
-    private JCExpression memberAccess(String components) {
-        String[] componentArray = components.split("\\.");
-        JCExpression expr = treeMaker.Ident(getNameFromString(componentArray[0]));
-        for (int i = 1; i < componentArray.length; i++) {
-            expr = treeMaker.Select(expr, getNameFromString(componentArray[i]));
-        }
-        return expr;
+        return treeMaker.MethodDef(modifiers, methodName, returnType, typeParameters, parameters, throwsClauses, jcBlock, null);
     }
 
     private Name handleMethodSignature(Name name, String prefix) {
