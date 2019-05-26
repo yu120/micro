@@ -8,7 +8,6 @@ import com.sun.tools.javac.api.JavacTrees;
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.processing.JavacProcessingEnvironment;
-import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.*;
 import com.sun.tools.javac.tree.TreeMaker;
 import com.sun.tools.javac.tree.TreeTranslator;
@@ -96,10 +95,10 @@ public class MicroGetterProcessor extends AbstractProcessor {
         return true;
     }
 
-    private JCTree.JCMethodDecl generateGetterMethod(JCTree.JCVariableDecl jcVariable) {
+    private JCMethodDecl generateGetterMethod(JCVariableDecl jcVariable) {
 
         //修改方法级别
-        JCTree.JCModifiers jcModifiers = treeMaker.Modifiers(Flags.PUBLIC);
+        JCModifiers jcModifiers = treeMaker.Modifiers(Flags.PUBLIC);
 
         //添加方法名称
         Name methodName = handleMethodSignature(jcVariable.getName(), "get");
@@ -114,7 +113,7 @@ public class MicroGetterProcessor extends AbstractProcessor {
         JCExpression returnType = jcVariable.vartype;
 
         //参数类型
-        List<JCTree.JCTypeParameter> typeParameters = List.nil();
+        List<JCTypeParameter> typeParameters = List.nil();
 
         //参数变量
         List<JCVariableDecl> parameters = List.nil();
@@ -126,36 +125,36 @@ public class MicroGetterProcessor extends AbstractProcessor {
                 .MethodDef(jcModifiers, methodName, returnType, typeParameters, parameters, throwsClauses, jcBlock, null);
     }
 
-    private JCTree.JCMethodDecl generateSetterMethod(JCTree.JCVariableDecl jcVariable) throws ReflectiveOperationException {
+    private JCMethodDecl generateSetterMethod(JCVariableDecl jcVariable) throws ReflectiveOperationException {
 
         //修改方法级别
-        JCTree.JCModifiers modifiers = treeMaker.Modifiers(Flags.PUBLIC);
+        JCModifiers modifiers = treeMaker.Modifiers(Flags.PUBLIC);
 
         //添加方法名称
         Name variableName = jcVariable.getName();
         Name methodName = handleMethodSignature(variableName, "set");
 
         //设置方法体
-        ListBuffer<JCTree.JCStatement> jcStatements = new ListBuffer<>();
+        ListBuffer<JCStatement> jcStatements = new ListBuffer<>();
         jcStatements.append(treeMaker.Exec(treeMaker
                 .Assign(treeMaker.Select(treeMaker.Ident(getNameFromString("this")), variableName),
                         treeMaker.Ident(variableName))));
         //定义方法体
-        JCTree.JCBlock jcBlock = treeMaker.Block(0, jcStatements.toList());
+        JCBlock jcBlock = treeMaker.Block(0, jcStatements.toList());
 
         //添加返回值类型
-        JCTree.JCExpression returnType =
+        JCExpression returnType =
                 treeMaker.Type((Type) (Class.forName("com.sun.tools.javac.code.Type$JCVoidType").newInstance()));
 
-        List<JCTree.JCTypeParameter> typeParameters = List.nil();
+        List<JCTypeParameter> typeParameters = List.nil();
 
         //定义参数
-        JCTree.JCVariableDecl variableDecl = treeMaker
+        JCVariableDecl variableDecl = treeMaker
                 .VarDef(treeMaker.Modifiers(Flags.PARAMETER, List.nil()), jcVariable.name, jcVariable.vartype, null);
-        List<JCTree.JCVariableDecl> parameters = List.of(variableDecl);
+        List<JCVariableDecl> parameters = List.of(variableDecl);
 
         //声明异常
-        List<JCTree.JCExpression> throwsClauses = List.nil();
+        List<JCExpression> throwsClauses = List.nil();
         return treeMaker
                 .MethodDef(modifiers, methodName, returnType, typeParameters, parameters, throwsClauses, jcBlock, null);
 
@@ -194,9 +193,9 @@ public class MicroGetterProcessor extends AbstractProcessor {
                 .MethodDef(modifiers, methodName, returnType, typeParameters, parameters, throwsClauses, jcBlock, null);
     }
 
-    private JCTree.JCExpression memberAccess(String components) {
+    private JCExpression memberAccess(String components) {
         String[] componentArray = components.split("\\.");
-        JCTree.JCExpression expr = treeMaker.Ident(getNameFromString(componentArray[0]));
+        JCExpression expr = treeMaker.Ident(getNameFromString(componentArray[0]));
         for (int i = 1; i < componentArray.length; i++) {
             expr = treeMaker.Select(expr, getNameFromString(componentArray[i]));
         }
