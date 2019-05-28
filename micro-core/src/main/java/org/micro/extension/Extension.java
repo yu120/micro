@@ -3,13 +3,13 @@ package org.micro.extension;
 import java.lang.annotation.*;
 
 /**
- * NPI有多个实现时，可以根据条件进行过滤、排序后再返回。
+ * SPI有多个实现时，可以根据条件进行过滤、排序后再返回。
  *
  * @author lry
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
+@Target(ElementType.TYPE)
 public @interface Extension {
 
     /**
@@ -23,7 +23,7 @@ public @interface Extension {
     int order() default 20;
 
     /**
-     * NPI的category，获取NPI列表时，根据category进行匹配
+     * SPI的category，获取SPI列表时，根据category进行匹配
      * <p>
      * 当category中存在待过滤的search-category时，匹配成功
      */
