@@ -48,15 +48,15 @@ public class Advertisement extends MicroEntity<Advertisement> {
     /**
      * Advertisement name
      */
-    private Integer name;
+    private String name;
     /**
      * Advertisement icon
      */
-    private Integer icon;
+    private String icon;
     /**
      * Advertisement url
      */
-    private Integer url;
+    private String url;
     /**
      * Attributes intro
      **/
