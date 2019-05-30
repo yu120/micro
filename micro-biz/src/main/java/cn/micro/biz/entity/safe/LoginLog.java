@@ -20,6 +20,14 @@ public class LoginLog extends MicroEntity<LoginLog> {
     private static final long serialVersionUID = 1L;
 
     /**
+     * Login account value
+     */
+    private String account;
+    /**
+     *
+     */
+    private Integer accountType;
+    /**
      * Login member id
      * <p>
      * {@link cn.micro.biz.entity.member.Member#id}
