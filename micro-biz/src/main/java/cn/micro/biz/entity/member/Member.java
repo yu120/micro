@@ -32,9 +32,9 @@ public class Member extends MicroEntity<Member> {
      */
     private String name;
     /**
-     * Member head image url
+     * Member head image icon url
      */
-    private String headImgUrl;
+    private String icon;
     /**
      * Member sex
      * <p>

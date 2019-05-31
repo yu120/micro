@@ -13,11 +13,14 @@ import cn.micro.biz.mapper.member.IMemberGroupMemberMapper;
 import cn.micro.biz.mapper.member.IMemberMapper;
 import cn.micro.biz.model.add.RegisterAccount;
 import cn.micro.biz.model.query.LoginAccount;
+import cn.micro.biz.pubsrv.wx.MicroWxService;
+import cn.micro.biz.pubsrv.wx.WxAuthCode2Session;
 import cn.micro.biz.service.member.IAccountService;
 import cn.micro.biz.service.member.IMemberRoleService;
 import cn.micro.biz.type.member.AccountEnum;
 import cn.micro.biz.type.member.MemberGroupEnum;
 import io.seata.spring.annotation.GlobalTransactional;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +32,7 @@ import java.util.List;
  *
  * @author lry
  */
+@Slf4j
 @Service
 public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account> implements IAccountService {
 
@@ -39,55 +43,79 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
 
     @Resource
     private IMemberRoleService memberRoleService;
+    @Resource
+    private MicroWxService microWxService;
 
     @GlobalTransactional
     @Override
     public Boolean doRegister(RegisterAccount registerAccount) {
         // 1.账号唯一性校验
-        Account account = super.getOne(Account::getCode, registerAccount.getAccount());
-        if (account != null) {
-            throw new MicroBadRequestException("账号已存在");
-        }
+        Account account = super.getOne(Account::getCategory, registerAccount.getCategory(),
+                Account::getCode, registerAccount.getAccount());
 
         // 2.检查账号是否存在用户信息
-        Member member, addMember = new Member();
-        if (AccountEnum.EMAIL.getValue() == registerAccount.getCategory()) {
-            member = memberMapper.selectOne(Member::getEmail, registerAccount.getAccount());
-            addMember.setEmail(registerAccount.getAccount());
-        } else if (AccountEnum.MOBILE.getValue() == registerAccount.getCategory()) {
-            member = memberMapper.selectOne(Member::getMobile, registerAccount.getAccount());
-            addMember.setMobile(registerAccount.getAccount());
+        Member addOrUpdateMember = new Member();
+        if (AccountEnum.WX_AUTO_LOGIN.getValue() == registerAccount.getCategory()) {
+            // 2.1.微信自动登录
+            if (account != null) {
+                addOrUpdateMember = memberMapper.selectById(account.getMemberId());
+                if (addOrUpdateMember == null) {
+                    addOrUpdateMember = new Member();
+                }
+            }
         } else {
-            throw new MicroBadRequestException("非法账号类型");
-        }
-
-        if (member == null) {
-            // 3.没有用户信息,则立即注册一条用户信息
-            member = addMember;
-            member.setSalt(MD5Utils.randomSalt());
-            member.setPassword(MD5Utils.encode(registerAccount.getPassword(), member.getSalt()));
-            if (memberMapper.insert(member) <= 0) {
-                throw new MicroErrorException("用户注册失败");
+            // 2.2.非微信自动登录
+            if (account != null) {
+                throw new MicroBadRequestException("账号已存在");
+            }
+            Member member;
+            if (AccountEnum.MOBILE.getValue() == registerAccount.getCategory()) {
+                member = memberMapper.selectOne(Member::getMobile, registerAccount.getAccount());
+                addOrUpdateMember.setMobile(registerAccount.getAccount());
+            } else if (AccountEnum.EMAIL.getValue() == registerAccount.getCategory()) {
+                member = memberMapper.selectOne(Member::getEmail, registerAccount.getAccount());
+                addOrUpdateMember.setEmail(registerAccount.getAccount());
+            } else {
+                throw new MicroBadRequestException("非法账号类型");
+            }
+            if (member != null) {
+                throw new MicroBadRequestException("用户已存在");
             }
         }
 
-        // 4.注册账号
-        Account addAccount = new Account();
-        addAccount.setMemberId(member.getId());
-        addAccount.setCode(registerAccount.getAccount());
-        addAccount.setCategory(registerAccount.getCategory());
-        addAccount.setIp(IPUtils.getRequestIPAddress());
-        addAccount.setPlatform(registerAccount.getPlatform());
-        if (baseMapper.insert(addAccount) <= 0) {
-            throw new MicroErrorException("账号注册失败");
-        }
+        addOrUpdateMember.setName(registerAccount.getName());
+        addOrUpdateMember.setIcon(registerAccount.getIcon());
+        addOrUpdateMember.setSalt(MD5Utils.randomSalt());
+        addOrUpdateMember.setPassword(MD5Utils.encode(registerAccount.getPassword(), addOrUpdateMember.getSalt()));
+        if (addOrUpdateMember.getId() == null) {
+            // 3.1.注册用户
+            if (memberMapper.insert(addOrUpdateMember) <= 0) {
+                throw new MicroErrorException("用户注册失败");
+            }
 
-        // 5.分配用户组
-        MemberGroupMember addMemberGroupMember = new MemberGroupMember();
-        addMemberGroupMember.setMemberId(member.getId());
-        addMemberGroupMember.setMemberGroupId(MemberGroupEnum.MEMBER.getValue());
-        if (memberGroupMemberMapper.insert(addMemberGroupMember) <= 0) {
-            throw new MicroErrorException("用户组分配失败");
+            // 4.注册账号
+            Account addAccount = new Account();
+            addAccount.setMemberId(addOrUpdateMember.getId());
+            addAccount.setCode(registerAccount.getAccount());
+            addAccount.setCategory(registerAccount.getCategory());
+            addAccount.setIp(IPUtils.getRequestIPAddress());
+            addAccount.setPlatform(registerAccount.getPlatform());
+            if (baseMapper.insert(addAccount) <= 0) {
+                throw new MicroErrorException("账号注册失败");
+            }
+
+            // 5.分配用户组
+            MemberGroupMember addMemberGroupMember = new MemberGroupMember();
+            addMemberGroupMember.setMemberId(addOrUpdateMember.getId());
+            addMemberGroupMember.setMemberGroupId(MemberGroupEnum.MEMBER.getValue());
+            if (memberGroupMemberMapper.insert(addMemberGroupMember) <= 0) {
+                throw new MicroErrorException("用户组分配失败");
+            }
+        } else {
+            // 3.2.更新用户信息
+            if (memberMapper.updateById(addOrUpdateMember) <= 0) {
+                throw new MicroErrorException("自动注册失败");
+            }
         }
 
         return true;
@@ -121,6 +149,11 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
         // 5.组装响应模型
         return MicroAuthContext.build(member.getTenantId(), member.getId(),
                 member.getName(), loginAccount.getPlatform(), roleCodes);
+    }
+
+    @Override
+    public WxAuthCode2Session wxLogin(String code) {
+        return microWxService.wxLogin(code);
     }
 
 }

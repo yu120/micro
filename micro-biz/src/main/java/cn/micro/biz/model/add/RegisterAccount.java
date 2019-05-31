@@ -15,6 +15,12 @@ public class RegisterAccount implements Serializable {
      */
     private String name;
     /**
+     * Member head image icon url
+     * <p>
+     * tip: 可选
+     */
+    private String icon;
+    /**
      * Account category
      * <p>
      * {@link AccountEnum}
@@ -26,6 +32,8 @@ public class RegisterAccount implements Serializable {
     private String account;
     /**
      * Account password
+     * <p>
+     * tip: 微信自动登录时需要加入随机密码
      */
     private String password;
     /**
