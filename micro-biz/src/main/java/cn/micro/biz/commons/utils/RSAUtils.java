@@ -30,16 +30,22 @@ public class RSAUtils {
      */
     private static final int KEY_SIZE = 512;
     /**
-     * 公钥
+     * 公钥 KEY
      */
     private static final String PUBLIC_KEY = "RSAPublicKey";
     /**
-     * 私钥
+     * 私钥 KEY
      */
     private static final String PRIVATE_KEY = "RSAPrivateKey";
+    /**
+     * 公钥
+     */
     private static final byte[] PUBLIC_CODE = Base64.getDecoder().decode(
             "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJJUL6PraepgV77xARtObesZl7W+9o6nNb3" +
                     "byiFpQeFITL+JYgcG36r3wB2gUyD8RlksvFVhFPZBREUeAXtTMzUCAwEAAQ==");
+    /**
+     * 私钥
+     */
     private static final byte[] PRIVATE_CODE = Base64.getDecoder().decode(
             "MIIBVQIBADANBgkqhkiG9w0BAQEFAASCAT8wggE7AgEAAkEAklQvo+tp6mBXvvEBG05" +
                     "t6xmXtb72jqc1vdvKIWlB4UhMv4liBwbfqvfAHaBTIPxGWSy8VWEU9kFERR4Be1M" +
