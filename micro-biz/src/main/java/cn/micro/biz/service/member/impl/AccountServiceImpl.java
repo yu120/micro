@@ -13,10 +13,10 @@ import cn.micro.biz.entity.member.MemberRole;
 import cn.micro.biz.mapper.member.IAccountMapper;
 import cn.micro.biz.mapper.member.IMemberMapper;
 import cn.micro.biz.mapper.member.IMemberRoleMapper;
-import cn.micro.biz.model.add.RegisterMemberAdd;
+import cn.micro.biz.model.add.RegisterMember;
 import cn.micro.biz.model.query.LoginAccountQuery;
 import cn.micro.biz.service.member.IAccountService;
-import cn.micro.biz.type.member.AccountCategoryEnum;
+import cn.micro.biz.type.member.AccountEnum;
 import cn.micro.biz.type.member.RoleEnum;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import io.seata.spring.annotation.GlobalTransactional;
@@ -42,45 +42,51 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
 
     @GlobalTransactional
     @Override
-    public Boolean addRegister(RegisterMemberAdd registerMemberAdd) throws Exception {
+    public Boolean doRegister(RegisterMember registerMember) {
         // 账号唯一性校验
-        Account account = super.getOne(Account::getCode, registerMemberAdd.getAccount());
+        Account account = super.getOne(Account::getCode, registerMember.getAccount());
         if (account != null) {
             throw new MicroBadRequestException("账号已存在");
         }
 
         // 检查账号是否存在用户信息
-        Long memberId;
-        Member queryMember = this.buildMember(registerMemberAdd.getAccount(), registerMemberAdd.getType());
-        Member member = memberMapper.selectOne(Wrappers.query(queryMember));
-        if (member != null) {
-            memberId = member.getId();
+        Member member, addMember = new Member();
+        if (AccountEnum.EMAIL.getValue() == registerMember.getCategory()) {
+            member = memberMapper.selectOne(Member::getEmail, registerMember.getAccount());
+            addMember.setEmail(registerMember.getAccount());
+        } else if (AccountEnum.MOBILE.getValue() == registerMember.getCategory()) {
+            member = memberMapper.selectOne(Member::getMobile, registerMember.getAccount());
+            addMember.setMobile(registerMember.getAccount());
         } else {
+            throw new MicroBadRequestException("非法账号类型");
+        }
+
+        if (member == null) {
             // 没有用户信息,则立即注册一条用户信息
-            Member addMember = this.buildMember(registerMemberAdd.getAccount(), registerMemberAdd.getType());
-            addMember.setSalt(MD5Utils.randomSalt());
-            addMember.setPassword(MD5Utils.encode(registerMemberAdd.getPassword(), addMember.getSalt()));
-            if (memberMapper.insert(addMember) <= 0) {
+            member = addMember;
+            member.setSalt(MD5Utils.randomSalt());
+            member.setPassword(MD5Utils.encode(registerMember.getPassword(), member.getSalt()));
+            if (memberMapper.insert(member) <= 0) {
                 throw new MicroErrorException("用户注册失败");
             }
-            memberId = addMember.getId();
         }
 
         // 注册账号
-        Account insertAccount = new Account();
-        insertAccount.setMemberId(memberId);
-        insertAccount.setCode(registerMemberAdd.getAccount());
-        insertAccount.setIp(IPUtils.getRequestIPAddress());
-        insertAccount.setCategory(registerMemberAdd.getType());
-        if (baseMapper.insert(insertAccount) <= 0) {
+        Account addAccount = new Account();
+        addAccount.setMemberId(member.getId());
+        addAccount.setCode(registerMember.getAccount());
+        addAccount.setCategory(registerMember.getCategory());
+        addAccount.setIp(IPUtils.getRequestIPAddress());
+        addAccount.setPlatform(registerMember.getPlatform());
+        if (baseMapper.insert(addAccount) <= 0) {
             throw new MicroErrorException("账号注册失败");
         }
 
         // 分配角色
-        MemberRole memberRole = new MemberRole();
-        memberRole.setMemberId(memberId);
-        memberRole.setRoleId(RoleEnum.ROLE_USER.getValue());
-        if (memberRoleMapper.insert(memberRole) <= 0) {
+        MemberRole addMemberRole = new MemberRole();
+        addMemberRole.setMemberId(member.getId());
+        addMemberRole.setRoleId(RoleEnum.ROLE_MEMBER.getValue());
+        if (memberRoleMapper.insert(addMemberRole) <= 0) {
             throw new MicroErrorException("角色分配失败");
         }
 
@@ -88,7 +94,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
     }
 
     @Override
-    public MicroToken queryLogin(LoginAccountQuery loginAccountQuery) throws Exception {
+    public MicroToken queryLogin(LoginAccountQuery loginAccountQuery) {
         // 校验账号信息
         Account queryAccount = new Account();
         queryAccount.setCode(loginAccountQuery.getAccount());
@@ -120,17 +126,6 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
 
         return MicroAuthContext.build(member.getTenantId(), member.getId(), member.getName(),
                 loginAccountQuery.getDevice(), roleCodes, null);
-    }
-
-    private Member buildMember(String account, Integer type) {
-        Member member = new Member();
-        if (AccountCategoryEnum.EMAIL.getValue() == type) {
-            member.setEmail(account);
-        } else if (AccountCategoryEnum.MOBILE.getValue() == type) {
-            member.setMobile(account);
-        }
-
-        return member;
     }
 
 }

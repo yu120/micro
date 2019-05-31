@@ -1,37 +1,37 @@
 package cn.micro.biz.commons.mybatis.extension;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
-import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
 /**
- * Micro Service
+ * Micro Mapper
  * <p>
  *
  * @param <T>
  * @author lry
  */
-public interface IMicroService<T> extends IService<T> {
+public interface IMicroMapper<T> extends BaseMapper<T> {
 
     // ====== lambda equals(eq) to one object
 
     /**
-     * The get one object by 1 equals(eq) bean field
+     * The select one object by 1 equals(eq) bean field
      *
      * @param eqColumn eg: User::getName
      * @param eqValue  eg: "Tom"
      * @return {@link T }
      */
-    default T getOne(SFunction<T, String> eqColumn, Serializable eqValue) {
-        return getOne(eqColumn, eqValue, null, null);
+    default T selectOne(SFunction<T, String> eqColumn, Serializable eqValue) {
+        return selectOne(eqColumn, eqValue, null, null);
     }
 
     /**
-     * The get one object by 2 equals(eq) bean field
+     * The select one object by 2 equals(eq) bean field
      *
      * @param eqColumn1 eg: User::getName
      * @param eqValue1  eg: "Tom"
@@ -39,9 +39,9 @@ public interface IMicroService<T> extends IService<T> {
      * @param eqValue2  eg: "STUDENT"
      * @return {@link T }
      */
-    default T getOne(SFunction<T, String> eqColumn1, Serializable eqValue1,
-                     SFunction<T, String> eqColumn2, Serializable eqValue2) {
-        return this.getOne(buildEqQuery(eqColumn1, eqValue1, eqColumn2, eqValue2));
+    default T selectOne(SFunction<T, String> eqColumn1, Serializable eqValue1,
+                        SFunction<T, String> eqColumn2, Serializable eqValue2) {
+        return this.selectOne(buildEqQuery(eqColumn1, eqValue1, eqColumn2, eqValue2));
     }
 
     // ====== lambda equals(eq) to list object
@@ -53,8 +53,8 @@ public interface IMicroService<T> extends IService<T> {
      * @param eqValue  eg: "Tom"
      * @return {@link T }
      */
-    default List<T> list(SFunction<T, String> eqColumn, Serializable eqValue) {
-        return list(eqColumn, eqValue, null, null);
+    default List<T> selectList(SFunction<T, String> eqColumn, Serializable eqValue) {
+        return selectList(eqColumn, eqValue, null, null);
     }
 
     /**
@@ -66,9 +66,9 @@ public interface IMicroService<T> extends IService<T> {
      * @param eqValue2  eg: "STUDENT"
      * @return {@link T }
      */
-    default List<T> list(SFunction<T, String> eqColumn1, Serializable eqValue1,
-                         SFunction<T, String> eqColumn2, Serializable eqValue2) {
-        return this.list(buildEqQuery(eqColumn1, eqValue1, eqColumn2, eqValue2));
+    default List<T> selectList(SFunction<T, String> eqColumn1, Serializable eqValue1,
+                               SFunction<T, String> eqColumn2, Serializable eqValue2) {
+        return this.selectList(buildEqQuery(eqColumn1, eqValue1, eqColumn2, eqValue2));
     }
 
     // ====== lambda equals(eq) to one object
@@ -80,8 +80,8 @@ public interface IMicroService<T> extends IService<T> {
      * @param eqValue  eg: "Tom"
      * @return {@link T }
      */
-    default boolean remove(SFunction<T, String> eqColumn, Serializable eqValue) {
-        return remove(eqColumn, eqValue, null, null);
+    default boolean delete(SFunction<T, String> eqColumn, Serializable eqValue) {
+        return delete(eqColumn, eqValue, null, null);
     }
 
     /**
@@ -93,7 +93,7 @@ public interface IMicroService<T> extends IService<T> {
      * @param eqValue2  eg: "STUDENT"
      * @return {@link T }
      */
-    default boolean remove(
+    default boolean delete(
             SFunction<T, String> eqColumn1, Serializable eqValue1,
             SFunction<T, ?> eqColumn2, Serializable eqValue2) {
         LambdaQueryWrapper<T> wrapper = new LambdaQueryWrapper<T>().eq(eqColumn1, eqValue1);
@@ -101,7 +101,7 @@ public interface IMicroService<T> extends IService<T> {
             wrapper.eq(eqColumn2, eqValue2);
         }
 
-        return this.remove(wrapper);
+        return this.delete(wrapper) > 0;
     }
 
     // ====== lambda equals(eq) to one object
@@ -137,7 +137,7 @@ public interface IMicroService<T> extends IService<T> {
             wrapper.eq(eqColumn2, eqValue2);
         }
 
-        return this.update(entity, wrapper);
+        return this.update(entity, wrapper) > 0;
     }
 
     // ====== lambda in to list object
@@ -149,8 +149,8 @@ public interface IMicroService<T> extends IService<T> {
      * @param inValues eg: "Tom", "Jack"
      * @return {@link List<T> }
      */
-    default List<T> listIn(SFunction<T, String> inColumn, Object... inValues) {
-        return this.list(new LambdaQueryWrapper<T>().in(inColumn, inValues));
+    default List<T> selectListIn(SFunction<T, String> inColumn, Object... inValues) {
+        return this.selectList(new LambdaQueryWrapper<T>().in(inColumn, inValues));
     }
 
     /**
@@ -160,8 +160,8 @@ public interface IMicroService<T> extends IService<T> {
      * @param inValues eg: Arrays.asList("Tom", "Jack")
      * @return {@link List<T> }
      */
-    default List<T> listIn(SFunction<T, String> inColumn, Collection<Serializable> inValues) {
-        return this.list(new LambdaQueryWrapper<T>().in(inColumn, inValues));
+    default List<T> selectListIn(SFunction<T, String> inColumn, Collection<Serializable> inValues) {
+        return this.selectList(new LambdaQueryWrapper<T>().in(inColumn, inValues));
     }
 
     // ====== lambda equals(eq) and in to list object
@@ -175,10 +175,10 @@ public interface IMicroService<T> extends IService<T> {
      * @param inValues eg: "beijing", "shanghai"
      * @return {@link List<T> }
      */
-    default List<T> listEqAndIn(
+    default List<T> selectListEqAndIn(
             SFunction<T, String> eqColumn, Serializable eqValue,
             SFunction<T, String> inColumn, Object... inValues) {
-        return listEqAndIn(eqColumn, eqValue, null, null, inColumn, inValues);
+        return selectListEqAndIn(eqColumn, eqValue, null, null, inColumn, inValues);
     }
 
     /**
@@ -192,11 +192,11 @@ public interface IMicroService<T> extends IService<T> {
      * @param inValues  eg: "beijing", "shanghai"
      * @return {@link List<T> }
      */
-    default List<T> listEqAndIn(
+    default List<T> selectListEqAndIn(
             SFunction<T, String> eqColumn1, Serializable eqValue1,
             SFunction<T, String> eqColumn2, Serializable eqValue2,
             SFunction<T, String> inColumn, Object... inValues) {
-        return this.list(buildEqQuery(eqColumn1, eqValue1, eqColumn2, eqValue2).in(inColumn, inValues));
+        return this.selectList(buildEqQuery(eqColumn1, eqValue1, eqColumn2, eqValue2).in(inColumn, inValues));
     }
 
     /**
@@ -208,10 +208,10 @@ public interface IMicroService<T> extends IService<T> {
      * @param inValues eg: Arrays.asList("beijing", "shanghai")
      * @return {@link List<T> }
      */
-    default List<T> listEqAndIn(
+    default List<T> selectListEqAndIn(
             SFunction<T, String> eqColumn, Serializable eqValue,
             SFunction<T, String> inColumn, Collection<Serializable> inValues) {
-        return listEqAndIn(eqColumn, eqValue, null, null, inColumn, inValues);
+        return selectListEqAndIn(eqColumn, eqValue, null, null, inColumn, inValues);
     }
 
     /**
@@ -225,11 +225,11 @@ public interface IMicroService<T> extends IService<T> {
      * @param inValues  eg: Arrays.asList("beijing", "shanghai")
      * @return {@link List<T> }
      */
-    default List<T> listEqAndIn(
+    default List<T> selectListEqAndIn(
             SFunction<T, String> eqColumn1, Serializable eqValue1,
             SFunction<T, String> eqColumn2, Serializable eqValue2,
             SFunction<T, String> inColumn, Collection<Serializable> inValues) {
-        return this.list(buildEqQuery(eqColumn1, eqValue1, eqColumn2, eqValue2).in(inColumn, inValues));
+        return this.selectList(buildEqQuery(eqColumn1, eqValue1, eqColumn2, eqValue2).in(inColumn, inValues));
     }
 
     /**
@@ -245,11 +245,11 @@ public interface IMicroService<T> extends IService<T> {
             SFunction<T, String> column1, Serializable value1,
             SFunction<T, String> column2, Serializable value2) {
         LambdaQueryWrapper<T> wrapper = new LambdaQueryWrapper<T>().eq(column1, value1);
-        if (column2 == null || value2 == null) {
-            return wrapper;
+        if (column2 != null && value2 != null) {
+            wrapper.eq(column2, value2);
         }
 
-        return wrapper.eq(column2, value2);
+        return wrapper;
     }
 
 }

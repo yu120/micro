@@ -4,13 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 设备类型
+ * 平台类型
  *
  * @author lry
  */
 @Getter
 @AllArgsConstructor
-public enum DeviceTypeEnum {
+public enum PlatformEnum {
 
     // ======
 

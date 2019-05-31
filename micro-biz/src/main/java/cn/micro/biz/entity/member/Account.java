@@ -1,7 +1,7 @@
 package cn.micro.biz.entity.member;
 
 import cn.micro.biz.commons.mybatis.entity.MicroEntity;
-import cn.micro.biz.type.member.AccountCategoryEnum;
+import cn.micro.biz.type.member.AccountEnum;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -38,7 +38,7 @@ public class Account extends MicroEntity<Account> {
     /**
      * Account category
      * <p>
-     * {@link AccountCategoryEnum}
+     * {@link AccountEnum}
      */
     private Integer category;
     /**

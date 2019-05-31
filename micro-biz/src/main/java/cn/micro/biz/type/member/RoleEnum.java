@@ -9,7 +9,7 @@ public enum RoleEnum {
 
     // ======
 
-    ROLE_USER(0, "基础用户"),
+    ROLE_MEMBER(0, "基础用户"),
     ROLE_SUPER_ADMIN(1, "超级管理员");
 
     private final long value;

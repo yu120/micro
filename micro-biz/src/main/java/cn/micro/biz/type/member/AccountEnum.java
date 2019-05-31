@@ -10,7 +10,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum AccountCategoryEnum {
+public enum AccountEnum {
 
     // ======
 
