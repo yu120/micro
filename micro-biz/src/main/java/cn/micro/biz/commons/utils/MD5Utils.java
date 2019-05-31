@@ -36,8 +36,8 @@ public class MD5Utils {
      * @param salt          salt
      * @return check password result
      */
-    public static boolean check(String checkPassword, String password, String salt) {
-        return password.equals(encode(checkPassword, salt));
+    public static boolean checkNotEquals(String checkPassword, String password, String salt) {
+        return !password.equals(encode(checkPassword, salt));
     }
 
 }

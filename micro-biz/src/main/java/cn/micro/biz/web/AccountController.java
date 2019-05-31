@@ -1,8 +1,8 @@
 package cn.micro.biz.web;
 
 import cn.micro.biz.commons.auth.MicroToken;
-import cn.micro.biz.model.add.RegisterMember;
-import cn.micro.biz.model.query.LoginAccountQuery;
+import cn.micro.biz.model.add.RegisterAccount;
+import cn.micro.biz.model.query.LoginAccount;
 import cn.micro.biz.service.member.IAccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +26,13 @@ public class AccountController {
     private final IAccountService accountService;
 
     @RequestMapping(value = "register", method = RequestMethod.PUT)
-    public Boolean register(@RequestBody @Validated RegisterMember registerMember) throws Exception {
-        return accountService.doRegister(registerMember);
+    public Boolean register(@RequestBody @Validated RegisterAccount registerAccount) throws Exception {
+        return accountService.doRegister(registerAccount);
     }
 
     @RequestMapping(value = "login", method = RequestMethod.POST)
-    public MicroToken login(@RequestBody @Validated LoginAccountQuery loginAccountQuery) throws Exception {
-        return accountService.queryLogin(loginAccountQuery);
+    public MicroToken login(@RequestBody @Validated LoginAccount loginAccount) throws Exception {
+        return accountService.doLogin(loginAccount);
     }
 
 }

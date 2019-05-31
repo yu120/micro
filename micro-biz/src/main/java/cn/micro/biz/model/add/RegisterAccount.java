@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 @Data
 @ToString
-public class RegisterMember implements Serializable {
+public class RegisterAccount implements Serializable {
 
     /**
      * Member name

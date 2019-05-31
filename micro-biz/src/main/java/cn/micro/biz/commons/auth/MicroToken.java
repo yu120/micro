@@ -20,8 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 public class MicroToken {
 
-
-
     @JsonProperty("token_type")
     @JSONField(name = "token_type")
     private String tokenType;

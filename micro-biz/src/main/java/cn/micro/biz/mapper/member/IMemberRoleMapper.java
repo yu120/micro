@@ -12,6 +12,12 @@ import java.util.List;
  */
 public interface IMemberRoleMapper extends BaseMapper<MemberRole> {
 
+    /**
+     * 查询用户直接拥有的角色CODE列表
+     *
+     * @param memberId
+     * @return
+     */
     List<String> selectRoleCodesByMemberId(Long memberId);
 
 }

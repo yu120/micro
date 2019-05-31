@@ -3,7 +3,6 @@ package cn.micro.biz.commons.auth;
 import cn.micro.biz.commons.exception.MicroBadRequestException;
 import cn.micro.biz.commons.exception.MicroErrorException;
 import cn.micro.biz.commons.exception.MicroSignInException;
-import cn.micro.biz.commons.mybatis.MicroMybatisProperties;
 import cn.micro.biz.commons.mybatis.MicroTenantProperties;
 import cn.micro.biz.commons.utils.IPUtils;
 import cn.micro.biz.pubsrv.redis.RedisService;
@@ -86,7 +85,11 @@ public class MicroAuthContext implements InitializingBean {
                 microTokenBody.getDeviceType(), microTokenBody.getAuthorities(), microTokenBody.getOthers());
     }
 
-    public static MicroToken build(Long tenantId, Long memberId, String memberName, Integer device,
+    public static MicroToken build(Long tenantId, Long memberId, String memberName, Integer platform, List<String> authorities) {
+        return build(tenantId, memberId, memberName, platform, authorities, null);
+    }
+
+    public static MicroToken build(Long tenantId, Long memberId, String memberName, Integer platform,
                                    List<String> authorities, Map<String, Object> others) {
         try {
             String jti = UUID.randomUUID().toString();
@@ -100,8 +103,8 @@ public class MicroAuthContext implements InitializingBean {
             builder.withClaim(MicroTokenBody.TENANT_ID, tenantId);
             builder.withClaim(MicroTokenBody.MEMBER_ID, memberId);
             builder.withClaim(MicroTokenBody.MEMBER_NAME, memberName);
-            builder.withClaim(MicroTokenBody.DEVICE, device);
-            builder.withClaim(MicroTokenBody.CLIENT, IPUtils.getRequestIPAddress());
+            builder.withClaim(MicroTokenBody.PLATFORM, platform);
+            builder.withClaim(MicroTokenBody.IP, IPUtils.getRequestIPAddress());
             builder.withClaim(MicroTokenBody.TIME, System.currentTimeMillis());
             if (!(authorities == null || authorities.size() == 0)) {
                 builder.withArrayClaim(MicroTokenBody.AUTHORITIES, authorities.toArray(new String[0]));
@@ -319,7 +322,7 @@ public class MicroAuthContext implements InitializingBean {
             MicroTokenBody microTokenBody = new MicroTokenBody();
             microTokenBody.setMemberId(decodedJWT.getClaim(MicroTokenBody.MEMBER_ID).asLong());
             microTokenBody.setMemberName(decodedJWT.getClaim(MicroTokenBody.MEMBER_NAME).asString());
-            microTokenBody.setDeviceType(decodedJWT.getClaim(MicroTokenBody.DEVICE).asInt());
+            microTokenBody.setDeviceType(decodedJWT.getClaim(MicroTokenBody.PLATFORM).asInt());
             microTokenBody.setAuthorities(decodedJWT.getClaim(MicroTokenBody.AUTHORITIES).asList(String.class));
             microTokenBody.setOthers(decodedJWT.getClaim(MicroTokenBody.OTHERS).asMap());
             return microTokenBody;

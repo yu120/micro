@@ -24,8 +24,8 @@ public class MicroTokenBody {
     public static final String TENANT_ID = "tenant_id";
     public static final String MEMBER_ID = "member_id";
     public static final String MEMBER_NAME = "member_name";
-    public static final String DEVICE = "device";
-    public static final String CLIENT = "client";
+    public static final String PLATFORM = "platform";
+    public static final String IP = "ip";
     public static final String TIME = "time";
     public static final String AUTHORITIES = "authorities";
     public static final String OTHERS = "others";
