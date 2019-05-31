@@ -15,8 +15,8 @@ public interface IMemberRoleService extends IMicroService<MemberRole> {
     /**
      * 查询某个用户的所有角色CODE列表
      *
-     * @param memberId
-     * @return
+     * @param memberId {@link cn.micro.biz.entity.member.Member#id}
+     * @return role code list
      */
     List<String> queryMemberRoles(Long memberId);
 
