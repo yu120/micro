@@ -8,10 +8,7 @@ import cn.micro.biz.service.member.IAccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Account Controller
@@ -36,8 +33,26 @@ public class AccountController {
         return accountService.doLogin(loginAccount);
     }
 
+    /**
+     * 微信自动登录常用方式（账号和密码都是unionid）：
+     * <p>
+     * 方式一：使用静默授权直接获取 unionid，然后分配账号和用户信息，当进行其他操作时，强制要求绑定手机号或邮箱地址
+     * 方式二：获取unionid，然后获取用户信息，然后自动注册，然后自动登录
+     * <p>
+     * 微信自动登录流程:
+     * <p>
+     * 1.使用 GET https://open.weixin.qq.com/connect/oauth2/authorize 获取CODE
+     * 2.使用 GET /account/wx 获取openid
+     * 3.上一步返回 hasAccount=false, 则使用 PUT /account/register 进行注册；否则使用 POST /account/login 进行登录
+     * <p>
+     * {@see https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/login.html}
+     * {@see https://developers.weixin.qq.com/community/develop/doc/0006026b3c83c0e244573a0025bc08}
+     *
+     * @param code code
+     * @return {@link WxAuthCode2Session}
+     */
     @RequestMapping(value = "wx", method = RequestMethod.GET)
-    public WxAuthCode2Session wxLogin(String code) {
+    public WxAuthCode2Session wxLogin(@RequestParam("code") String code) {
         return accountService.wxLogin(code);
     }
 
