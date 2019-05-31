@@ -4,6 +4,7 @@ import cn.micro.biz.commons.auth.MicroToken;
 import cn.micro.biz.commons.mybatis.extension.IMicroService;
 import cn.micro.biz.entity.member.Account;
 import cn.micro.biz.model.add.RegisterAccount;
+import cn.micro.biz.model.edit.ChangePassword;
 import cn.micro.biz.model.query.LoginAccount;
 import cn.micro.biz.pubsrv.wx.WxAuthCode2Session;
 
@@ -38,5 +39,13 @@ public interface IAccountService extends IMicroService<Account> {
      * @return {@link WxAuthCode2Session}
      */
     WxAuthCode2Session wxLogin(String code, boolean register);
+
+    /**
+     * 修改密码
+     *
+     * @param changePassword {@link ChangePassword}
+     * @return true表示修改成功
+     */
+    Boolean doChangePassword(ChangePassword changePassword);
 
 }

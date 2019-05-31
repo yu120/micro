@@ -12,6 +12,7 @@ import cn.micro.biz.mapper.member.IAccountMapper;
 import cn.micro.biz.mapper.member.IMemberGroupMemberMapper;
 import cn.micro.biz.mapper.member.IMemberMapper;
 import cn.micro.biz.model.add.RegisterAccount;
+import cn.micro.biz.model.edit.ChangePassword;
 import cn.micro.biz.model.query.LoginAccount;
 import cn.micro.biz.pubsrv.wx.MicroWxService;
 import cn.micro.biz.pubsrv.wx.WxAuthCode2Session;
@@ -173,6 +174,32 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
         }
 
         return wxAuthCode2Session;
+    }
+
+    @Override
+    public Boolean doChangePassword(ChangePassword changePassword) {
+        // 查询当前用户信息
+        Long memberId = MicroAuthContext.getMemberId();
+        Member member = memberMapper.selectById(memberId);
+        if (member == null) {
+            throw new MicroBadRequestException("当前用户不可用");
+        }
+
+        // 校验密码
+        if (RSAUtils.checkNotEquals(changePassword.getOldPassword(), member.getPassword(), member.getSalt())) {
+            throw new MicroBadRequestException("旧密码错误");
+        }
+
+        // 修改密码
+        Member updateMember = new Member();
+        updateMember.setId(memberId);
+        updateMember.setPwd(RSAUtils.encryptPwd(changePassword.getNewPassword(), member.getSalt()));
+        updateMember.setPassword(RSAUtils.encryptPassword(updateMember.getPwd()));
+        if (memberMapper.updateById(updateMember) <= 0) {
+            throw new MicroErrorException("修改失败");
+        }
+
+        return true;
     }
 
 }

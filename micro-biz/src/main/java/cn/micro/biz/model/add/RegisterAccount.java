@@ -1,7 +1,6 @@
 package cn.micro.biz.model.add;
 
 import cn.micro.biz.commons.validate.AssertEnum;
-import cn.micro.biz.commons.validate.Length;
 import cn.micro.biz.type.member.AccountEnum;
 import cn.micro.biz.type.member.PlatformEnum;
 import lombok.Data;
@@ -49,7 +48,6 @@ public class RegisterAccount implements Serializable {
      * tip: 微信自动登录时,请使用openId加密后的值进行填充
      */
     @NotBlank(message = "密码不能为空")
-    @Length(length = 32)
     private String password;
 
     /**

@@ -1,7 +1,9 @@
 package cn.micro.biz.web;
 
 import cn.micro.biz.commons.auth.MicroToken;
+import cn.micro.biz.commons.auth.PreAuth;
 import cn.micro.biz.model.add.RegisterAccount;
+import cn.micro.biz.model.edit.ChangePassword;
 import cn.micro.biz.model.query.LoginAccount;
 import cn.micro.biz.pubsrv.wx.WxAuthCode2Session;
 import cn.micro.biz.service.member.IAccountService;
@@ -57,6 +59,17 @@ public class AccountController {
             @RequestParam("code") String code,
             @RequestParam(value = "register", required = false, defaultValue = "true") Boolean register) {
         return accountService.wxLogin(code, register);
+    }
+
+    @RequestMapping(value = "forget-password", method = RequestMethod.POST)
+    public MicroToken forgetPassword(@RequestBody @Validated LoginAccount loginAccount) {
+        return accountService.doLogin(loginAccount);
+    }
+
+    @PreAuth
+    @RequestMapping(value = "change-password", method = RequestMethod.POST)
+    public Boolean changePassword(@RequestBody @Validated ChangePassword changePassword) {
+        return accountService.doChangePassword(changePassword);
     }
 
 }
