@@ -48,7 +48,8 @@ public class AccountController {
      * {@see https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/login.html}
      * {@see https://developers.weixin.qq.com/community/develop/doc/0006026b3c83c0e244573a0025bc08}
      *
-     * @param code code
+     * @param code     code
+     * @param register 默认为true,表示会自动注册账号和用户信息
      * @return {@link WxAuthCode2Session}
      */
     @RequestMapping(value = "wx", method = RequestMethod.GET)

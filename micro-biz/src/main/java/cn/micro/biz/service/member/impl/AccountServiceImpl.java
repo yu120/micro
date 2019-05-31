@@ -165,7 +165,9 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
                     registerAccount.setCategory(AccountEnum.WX_AUTO_LOGIN.getValue());
                     registerAccount.setPlatform(PlatformEnum.WX.getValue());
                     registerAccount.setPassword(RSAUtils.encryptByPublicKeyHex(wxAuthCode2Session.getUnionId()));
-                    this.doRegister(registerAccount);
+                    if (this.doRegister(registerAccount)) {
+                        wxAuthCode2Session.setHasAccount(true);
+                    }
                 }
             }
         }
