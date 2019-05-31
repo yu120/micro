@@ -6,7 +6,7 @@ import cn.micro.biz.commons.exception.MicroBadRequestException;
 import cn.micro.biz.commons.exception.MicroErrorException;
 import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
 import cn.micro.biz.commons.utils.IPUtils;
-import cn.micro.biz.commons.utils.MD5Utils;
+import cn.micro.biz.commons.utils.RSAUtils;
 import cn.micro.biz.entity.member.*;
 import cn.micro.biz.mapper.member.IAccountMapper;
 import cn.micro.biz.mapper.member.IMemberGroupMemberMapper;
@@ -89,8 +89,9 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
             // 3.1.注册用户
             addOrUpdateMember.setName(registerAccount.getName());
             addOrUpdateMember.setIcon(registerAccount.getIcon());
-            addOrUpdateMember.setSalt(MD5Utils.randomSalt());
-            addOrUpdateMember.setPassword(MD5Utils.encode(registerAccount.getPassword(), addOrUpdateMember.getSalt()));
+            addOrUpdateMember.setSalt(RSAUtils.randomSalt());
+            addOrUpdateMember.setPwd(RSAUtils.encryptPwd(registerAccount.getPassword(), addOrUpdateMember.getSalt()));
+            addOrUpdateMember.setPassword(RSAUtils.encryptPassword(addOrUpdateMember.getPwd()));
             if (memberMapper.insert(addOrUpdateMember) <= 0) {
                 throw new MicroErrorException("用户注册失败");
             }
@@ -133,7 +134,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
         }
 
         // 3.校验密码
-        if (MD5Utils.checkNotEquals(loginAccount.getPassword(), member.getPassword(), member.getSalt())) {
+        if (RSAUtils.checkNotEquals(loginAccount.getPassword(), member.getPassword(), member.getSalt())) {
             throw new MicroBadRequestException("密码错误");
         }
 
@@ -163,7 +164,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
                     registerAccount.setAccount(wxAuthCode2Session.getUnionId());
                     registerAccount.setCategory(AccountEnum.WX_AUTO_LOGIN.getValue());
                     registerAccount.setPlatform(PlatformEnum.WX.getValue());
-                    registerAccount.setPassword(MD5Utils.encode(wxAuthCode2Session.getUnionId()));
+                    registerAccount.setPassword(RSAUtils.encryptByPublicKeyHex(wxAuthCode2Session.getUnionId()));
                     this.doRegister(registerAccount);
                 }
             }

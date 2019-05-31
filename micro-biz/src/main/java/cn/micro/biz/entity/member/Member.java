@@ -75,9 +75,13 @@ public class Member extends MicroEntity<Member> {
      */
     private String salt;
     /**
-     * Login password
+     * Login password md5
      */
     private String password;
+    /**
+     * Login password(禁止查询该字段)
+     */
+    private String pwd;
 
     /**
      * Province code

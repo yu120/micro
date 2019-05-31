@@ -1,5 +1,9 @@
 package cn.micro.biz.commons.utils;
 
+import cn.micro.biz.commons.exception.MicroErrorException;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.digest.DigestUtils;
+
 import javax.crypto.Cipher;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
@@ -10,6 +14,7 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * 非对称加密算法RSA算法组件
@@ -20,12 +25,15 @@ import java.util.Map;
  * 流程：
  * 1.前端：使用公钥加密传输给后端
  * 2.后端：使用私钥解密前端传输过来的内容
- * 3.后端：使用私钥加密后入库
+ * 3.后端：使用私钥+随机盐加密后入库
  * 4.后端使用公钥解密后对比密码
  *
  * @author lry
  */
+@Slf4j
 public class RSAUtils {
+
+    private static final String SALT_SEPARATOR = ".";
 
     /**
      * 非对称密钥算法
@@ -62,49 +70,163 @@ public class RSAUtils {
                     "2Ol2noxtDArc1Xe3CTSTM7Kg9xQIhAIpmV4s0hSAd6+M65ZdtxZE3o5m09t/6j3I" +
                     "0x7O8gX4J");
 
-    /**
-     * 初始化密钥对
-     *
-     * @return Map 甲方密钥的Map
-     */
-    private static Map<String, Object> initKey() throws Exception {
-        // 实例化密钥生成器
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(KEY_ALGORITHM);
-        // 初始化密钥生成器
-        keyPairGenerator.initialize(KEY_SIZE);
-        // 生成密钥对
-        KeyPair keyPair = keyPairGenerator.generateKeyPair();
-        // 甲方公钥
-        RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
-        // 甲方私钥
-        RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
-        // 将密钥存储在map中
-        Map<String, Object> keyMap = new HashMap<>();
-        keyMap.put(PUBLIC_KEY, publicKey);
-        keyMap.put(PRIVATE_KEY, privateKey);
-        return keyMap;
+    public static void main(String[] args) throws Exception {
+        //初始化密钥
+        //生成密钥对
+        Map<String, Object> keyMap = initKey();
+        //公钥
+        byte[] publicKey = getPublicKey(keyMap);
+        //私钥
+        byte[] privateKey = getPrivateKey(keyMap);
+        System.out.println("公钥：\n" + Base64.getEncoder().encodeToString(PUBLIC_CODE));
+        System.out.println("私钥：\n" + Base64.getEncoder().encodeToString(PRIVATE_CODE));
+
+        String str = "RSA密码交换算法";
+        System.out.println("原文:" + str);
+        String code1 = encryptByPrivateKeyHex(str);
+        System.out.println("私钥加密后的数据：" + code1);
+        String decode1 = decryptByPublicKeyHex(code1);
+        System.out.println("公钥解密后的数据：" + decode1);
+
+        str = "乙方向甲方发送数据RSA算法";
+        System.out.println("原文:" + str);
+        String code2 = encryptByPublicKeyHex(str);
+        System.out.println("公钥加密后的数据：" + code2);
+        String decode3 = decryptByPrivateKeyHex(code2);
+        System.out.println("私钥解密后的数据：" + decode3);
     }
 
     /**
-     * 取得私钥
+     * The build random salt str
      *
-     * @param keyMap 密钥map
-     * @return byte[] 私钥
+     * @return salt str
      */
-    private static byte[] getPrivateKey(Map<String, Object> keyMap) {
-        Key key = (Key) keyMap.get(PRIVATE_KEY);
-        return key.getEncoded();
+    public static String randomSalt() {
+        return UUID.randomUUID().toString().replace("-", "").substring(8, 24);
     }
 
     /**
-     * 取得公钥
+     * pwd加密密码
+     * <p>
+     * 私钥解密后使用私钥加盐加密
      *
-     * @param keyMap 密钥map
-     * @return byte[] 公钥
+     * @param data public encrypt string
+     * @param salt salt
+     * @return private encrypt string
      */
-    private static byte[] getPublicKey(Map<String, Object> keyMap) {
-        Key key = (Key) keyMap.get(PUBLIC_KEY);
-        return key.getEncoded();
+    public static String encryptPwd(String data, String salt) {
+        return encryptByPrivateKeyHex(decryptByPrivateKeyHex(data), salt);
+    }
+
+    /**
+     * password加密
+     *
+     * @param pwd pwd string
+     * @return password string
+     */
+    public static String encryptPassword(String pwd) {
+        return DigestUtils.sha1Hex(pwd).toLowerCase();
+    }
+
+    /**
+     * The check password
+     *
+     * @param checkPassword need check md5 password
+     * @param dbPassword    password
+     * @param salt          salt
+     * @return check password result
+     */
+    public static boolean checkNotEquals(String checkPassword, String dbPassword, String salt) {
+        String pwd = encryptPwd(checkPassword, salt);
+        return !encryptPassword(pwd).equals(dbPassword);
+    }
+
+    /**
+     * 私钥加密
+     *
+     * @param data 待加密数据
+     * @param salt 盐值
+     * @return byte 加密数据
+     */
+    public static String encryptByPrivateKeyHex(String data, String salt) {
+        return encryptByPrivateKeyHex(data + SALT_SEPARATOR + salt);
+    }
+
+    /**
+     * 私钥加密
+     *
+     * @param data 待加密数据
+     * @return byte 加密数据
+     */
+    public static String encryptByPrivateKeyHex(String data) {
+        try {
+            byte[] dataByte = encryptByPrivateKey(data.getBytes(StandardCharsets.UTF_8), PRIVATE_CODE);
+            return Base64.getEncoder().encodeToString(dataByte);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new MicroErrorException("加密失败");
+        }
+    }
+
+    /**
+     * 公钥解密
+     *
+     * @param data 待解密数据
+     * @return byte 解密数据
+     */
+    public static String decryptByPublicKeyHex(String data) {
+        try {
+            byte[] dataByte = Base64.getDecoder().decode(data);
+            byte[] decryptByte = decryptByPublicKey(dataByte, PUBLIC_CODE);
+            return new String(decryptByte, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new MicroErrorException("解密失败");
+        }
+    }
+
+    /**
+     * 公钥加密
+     *
+     * @param data 待加密数据
+     * @param salt 盐值
+     * @return byte 加密数据
+     */
+    public static String encryptByPublicKeyHex(String data, String salt) {
+        return encryptByPublicKeyHex(data + SALT_SEPARATOR + salt);
+    }
+
+    /**
+     * 公钥加密
+     *
+     * @param data 待加密数据
+     * @return byte 加密数据
+     */
+    public static String encryptByPublicKeyHex(String data) {
+        try {
+            byte[] dataByte = encryptByPublicKey(data.getBytes(StandardCharsets.UTF_8), PUBLIC_CODE);
+            return Base64.getEncoder().encodeToString(dataByte);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new MicroErrorException("加密失败");
+        }
+    }
+
+    /**
+     * 私钥解密
+     *
+     * @param data 待解密数据
+     * @return byte 解密数据
+     */
+    public static String decryptByPrivateKeyHex(String data) {
+        try {
+            byte[] dataByte = Base64.getDecoder().decode(data);
+            byte[] decryptByte = decryptByPrivateKey(dataByte, PRIVATE_CODE);
+            return new String(decryptByte, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new MicroErrorException("解密失败");
+        }
     }
 
     /**
@@ -189,75 +311,48 @@ public class RSAUtils {
     }
 
     /**
-     * 私钥加密
+     * 初始化密钥对
      *
-     * @param data 待加密数据
-     * @return byte 加密数据
+     * @return Map 甲方密钥的Map
      */
-    public static String encryptByPrivateKeyHex(String data) throws Exception {
-        byte[] dataByte = encryptByPrivateKey(data.getBytes(StandardCharsets.UTF_8), PRIVATE_CODE);
-        return Base64.getEncoder().encodeToString(dataByte);
+    private static Map<String, Object> initKey() throws Exception {
+        // 实例化密钥生成器
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(KEY_ALGORITHM);
+        // 初始化密钥生成器
+        keyPairGenerator.initialize(KEY_SIZE);
+        // 生成密钥对
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
+        // 甲方公钥
+        RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
+        // 甲方私钥
+        RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
+        // 将密钥存储在map中
+        Map<String, Object> keyMap = new HashMap<>();
+        keyMap.put(PUBLIC_KEY, publicKey);
+        keyMap.put(PRIVATE_KEY, privateKey);
+        return keyMap;
     }
 
     /**
-     * 公钥解密
+     * 取得私钥
      *
-     * @param data 待解密数据
-     * @return byte 解密数据
+     * @param keyMap 密钥map
+     * @return byte[] 私钥
      */
-    public static String decryptByPublicKeyHex(String data) throws Exception {
-        byte[] dataByte = Base64.getDecoder().decode(data);
-        byte[] decryptByte = decryptByPublicKey(dataByte, PUBLIC_CODE);
-        return new String(decryptByte, StandardCharsets.UTF_8);
+    private static byte[] getPrivateKey(Map<String, Object> keyMap) {
+        Key key = (Key) keyMap.get(PRIVATE_KEY);
+        return key.getEncoded();
     }
 
     /**
-     * 公钥加密
+     * 取得公钥
      *
-     * @param data 待加密数据
-     * @return byte 加密数据
+     * @param keyMap 密钥map
+     * @return byte[] 公钥
      */
-    public static String encryptByPublicKeyHex(String data) throws Exception {
-        byte[] dataByte = encryptByPublicKey(data.getBytes(StandardCharsets.UTF_8), PUBLIC_CODE);
-        return Base64.getEncoder().encodeToString(dataByte);
-    }
-
-    /**
-     * 私钥解密
-     *
-     * @param data 待解密数据
-     * @return byte 解密数据
-     */
-    public static String decryptByPrivateKeyHex(String data) throws Exception {
-        byte[] dataByte = Base64.getDecoder().decode(data);
-        byte[] decryptByte = decryptByPrivateKey(dataByte, PRIVATE_CODE);
-        return new String(decryptByte, StandardCharsets.UTF_8);
-    }
-
-    public static void main(String[] args) throws Exception {
-        //初始化密钥
-        //生成密钥对
-        Map<String, Object> keyMap = initKey();
-        //公钥
-        byte[] publicKey = getPublicKey(keyMap);
-        //私钥
-        byte[] privateKey = getPrivateKey(keyMap);
-        System.out.println("公钥：\n" + Base64.getEncoder().encodeToString(PUBLIC_CODE));
-        System.out.println("私钥：\n" + Base64.getEncoder().encodeToString(PRIVATE_CODE));
-
-        String str = "RSA密码交换算法";
-        System.out.println("原文:" + str);
-        String code1 = encryptByPrivateKeyHex(str);
-        System.out.println("私钥加密后的数据：" + code1);
-        String decode1 = decryptByPublicKeyHex(code1);
-        System.out.println("公钥解密后的数据：" + decode1);
-
-        str = "乙方向甲方发送数据RSA算法";
-        System.out.println("原文:" + str);
-        String code2 = encryptByPublicKeyHex(str);
-        System.out.println("公钥加密后的数据：" + code2);
-        String decode3 = decryptByPrivateKeyHex(code2);
-        System.out.println("私钥解密后的数据：" + decode3);
+    private static byte[] getPublicKey(Map<String, Object> keyMap) {
+        Key key = (Key) keyMap.get(PUBLIC_KEY);
+        return key.getEncoded();
     }
 
 }
