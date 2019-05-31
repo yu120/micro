@@ -22,6 +22,7 @@ import cn.micro.biz.type.member.MemberGroupEnum;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -148,7 +149,19 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
 
     @Override
     public WxAuthCode2Session wxLogin(String code) {
-        return microWxService.wxLogin(code);
+        WxAuthCode2Session wxAuthCode2Session = microWxService.wxLogin(code);
+        if (wxAuthCode2Session != null) {
+            if (StringUtils.isNotBlank(wxAuthCode2Session.getOpenId())) {
+                // 判断账号是否已被注册
+                Account account = super.getOne(Account::getCategory, AccountEnum.WX_AUTO_LOGIN.getValue(),
+                        Account::getCode, wxAuthCode2Session.getOpenId());
+                if (account != null) {
+                    wxAuthCode2Session.setHasAccount(true);
+                }
+            }
+        }
+
+        return wxAuthCode2Session;
     }
 
 }

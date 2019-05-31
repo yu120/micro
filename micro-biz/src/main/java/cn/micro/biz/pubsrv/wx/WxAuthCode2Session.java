@@ -6,9 +6,19 @@ import lombok.ToString;
 
 import java.io.Serializable;
 
+/**
+ * Wx Auth Code to Session
+ *
+ * @author lry
+ */
 @Data
 @ToString
 public class WxAuthCode2Session implements Serializable {
+
+    /**
+     * 是否已注册账号(true表示已注册)
+     */
+    private Boolean hasAccount = false;
 
     /**
      * 用户唯一标识
