@@ -12,7 +12,10 @@ import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.*;
 import com.sun.tools.javac.tree.TreeMaker;
 import com.sun.tools.javac.tree.TreeTranslator;
-import com.sun.tools.javac.util.*;
+import com.sun.tools.javac.util.Context;
+import com.sun.tools.javac.util.List;
+import com.sun.tools.javac.util.ListBuffer;
+import com.sun.tools.javac.util.Names;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +61,7 @@ public class MicroGetterProcessor extends AbstractProcessor {
                 @Override
                 public void visitClassDef(JCClassDecl jcClass) {
                     //过滤属性
-                    Map<Name, JCVariableDecl> treeMap = new HashMap<>();
+                    Map<com.sun.tools.javac.util.Name, JCVariableDecl> treeMap = new HashMap<>();
                     for (JCTree jcTree : jcClass.defs) {
                         if (jcTree.getKind().equals(Tree.Kind.VARIABLE)) {
                             JCVariableDecl jcVariableDecl = (JCVariableDecl) jcTree;
@@ -67,7 +70,7 @@ public class MicroGetterProcessor extends AbstractProcessor {
                     }
 
                     //处理变量
-                    for (Map.Entry<Name, JCVariableDecl> entry : treeMap.entrySet()) {
+                    for (Map.Entry<com.sun.tools.javac.util.Name, JCVariableDecl> entry : treeMap.entrySet()) {
                         messager.printMessage(Diagnostic.Kind.NOTE, String.format("fields:%s", entry.getKey()));
                         try {
                             //增加get方法
@@ -110,7 +113,7 @@ public class MicroGetterProcessor extends AbstractProcessor {
         //修改方法级别
         JCModifiers jcModifiers = treeMaker.Modifiers(Flags.PUBLIC);
         //添加方法名称
-        Name methodName = handleMethodSignature(jcVariable.getName(), "get");
+        com.sun.tools.javac.util.Name methodName = handleMethodSignature(jcVariable.getName(), "get");
 
         //添加方法内容
         ListBuffer<JCStatement> jcStatements = new ListBuffer<>();
@@ -134,8 +137,8 @@ public class MicroGetterProcessor extends AbstractProcessor {
         JCModifiers modifiers = treeMaker.Modifiers(Flags.PUBLIC);
 
         //添加方法名称
-        Name variableName = jcVariable.getName();
-        Name methodName = handleMethodSignature(variableName, "set");
+        com.sun.tools.javac.util.Name variableName = jcVariable.getName();
+        com.sun.tools.javac.util.Name methodName = handleMethodSignature(variableName, "set");
 
         //设置方法体
         ListBuffer<JCStatement> jcStatements = new ListBuffer<>();
@@ -159,11 +162,11 @@ public class MicroGetterProcessor extends AbstractProcessor {
         return treeMaker.MethodDef(modifiers, methodName, returnType, typeParameters, parameters, throwsClauses, jcBlock, null);
     }
 
-    private Name handleMethodSignature(Name name, String prefix) {
+    private com.sun.tools.javac.util.Name handleMethodSignature(com.sun.tools.javac.util.Name name, String prefix) {
         return names.fromString(prefix + CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, name.toString()));
     }
 
-    private Name getNameFromString(String s) {
+    private com.sun.tools.javac.util.Name getNameFromString(String s) {
         return names.fromString(s);
     }
 

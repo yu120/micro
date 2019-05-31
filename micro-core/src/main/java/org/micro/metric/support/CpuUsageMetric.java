@@ -37,7 +37,7 @@ public class CpuUsageMetric implements Metric {
             RUNTIME_MBEAN = new ObjectName("java.lang:type=Runtime");
             OS_MBEAN = new ObjectName("java.lang:type=OperatingSystem");
         } catch (MalformedObjectNameException e) {
-            throw new AssertionError(e);
+            throw new RuntimeException(e);
         }
     }
     private final MBeanServer mbeanServer;
