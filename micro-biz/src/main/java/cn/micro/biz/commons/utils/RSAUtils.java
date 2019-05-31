@@ -23,10 +23,11 @@ import java.util.UUID;
  * 大费周章的构造各自本地的密钥对了。DH算法只能算法非对称算法的底层实现。而RSA算法算法实现起来较为简单
  * <p>
  * 流程：
- * 1.前端：使用公钥加密传输给后端
- * 2.后端：使用私钥解密前端传输过来的内容
- * 3.后端：使用私钥+随机盐加密后入库
- * 4.后端使用公钥解密后对比密码
+ * 1.前端[外部公钥]：使用[外部公钥]对明文密码进行加密后传输给后端
+ * 2.后端[外部私钥]：使用[外部私钥]解密前端传输过来的内容
+ * 3.后端[内部私钥]：使用[内部私钥+随机盐]加密后入库
+ * 4.后端[内部私钥]：使用[内部私钥+随机盐]加密后对比密码是否正确
+ * 5.后端[内部公钥]：使用[内部公钥]解密(pwd)后得到明文密码
  *
  * @author lry
  */
@@ -52,13 +53,13 @@ public class RSAUtils {
      */
     private static final String PRIVATE_KEY = "RSAPrivateKey";
     /**
-     * 公钥
+     * 外部公钥
      */
     private static final byte[] PUBLIC_CODE = Base64.getDecoder().decode(
             "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJJUL6PraepgV77xARtObesZl7W+9o6nNb3" +
                     "byiFpQeFITL+JYgcG36r3wB2gUyD8RlksvFVhFPZBREUeAXtTMzUCAwEAAQ==");
     /**
-     * 私钥
+     * 外部私钥
      */
     private static final byte[] PRIVATE_CODE = Base64.getDecoder().decode(
             "MIIBVQIBADANBgkqhkiG9w0BAQEFAASCAT8wggE7AgEAAkEAklQvo+tp6mBXvvEBG05" +
@@ -69,6 +70,24 @@ public class RSAUtils {
                     "gS2cl6pEYU7QbslIBc4/arim99jf9nAFLSNjsQirJY/ECIQCJ3MVkHL1/FB7AFRe" +
                     "2Ol2noxtDArc1Xe3CTSTM7Kg9xQIhAIpmV4s0hSAd6+M65ZdtxZE3o5m09t/6j3I" +
                     "0x7O8gX4J");
+    /**
+     * 内部公钥
+     */
+    private static final byte[] INTERNAL_PUBLIC_CODE = Base64.getDecoder().decode(
+            "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJsSXPVd6he/40w92GWFHC7rGPmSgOb1p1m" +
+                    "ZNEPosBsN2kZ0/NHKqMsi+OIXMqifD01M9vTwfKuasDZ0gXY1rwcCAwEAAQ==");
+    /**
+     * 内部私钥
+     */
+    private static final byte[] INTERNAL_PRIVATE_CODE = Base64.getDecoder().decode(
+            "MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAmxJc9V3qF7/jTD3YZYU" +
+                    "cLusY+ZKA5vWnWZk0Q+iwGw3aRnT80cqoyyL44hcyqJ8PTUz29PB8q5qwNnS" +
+                    "BdjWvBwIDAQABAkAVgFtRTj9KIbojdSPPF8DLpJ9m43BqFb+phbugeuAIMBA" +
+                    "mLBn/R36inxv0p2cbFf7y4HJEZysoM9E87oRxJ30BAiEA87O5j8FODYDxeT7" +
+                    "WRyqafon9CtDQqZnQC8fUEpE8S4cCIQCi5antJvt/B6h0AmF3J+SPnIlG3Aw" +
+                    "6pd1rs1hqK7dggQIhAMNgOgsbAXVoA6+dhfKGIFgETn6mTDM8YgOfz9CW6Uz" +
+                    "vAiAEef0+eCjHJ+W4MmyNQrpkO/AF03w+jFpWYFpYqJTkgQIgIqjB1bA1C6C" +
+                    "OMiJh4475z+aGexkMfOSpZV4DQdi0/UY=");
 
     public static void main(String[] args) throws Exception {
         //初始化密钥
@@ -78,21 +97,21 @@ public class RSAUtils {
         byte[] publicKey = getPublicKey(keyMap);
         //私钥
         byte[] privateKey = getPrivateKey(keyMap);
-        System.out.println("公钥：\n" + Base64.getEncoder().encodeToString(PUBLIC_CODE));
-        System.out.println("私钥：\n" + Base64.getEncoder().encodeToString(PRIVATE_CODE));
+        System.out.println("公钥：\n" + Base64.getEncoder().encodeToString(publicKey));
+        System.out.println("私钥：\n" + Base64.getEncoder().encodeToString(privateKey));
 
         String str = "RSA密码交换算法";
         System.out.println("原文:" + str);
-        String code1 = encryptByPrivateKeyHex(str);
+        String code1 = encryptByPrivateKeyHex(str, PRIVATE_CODE);
         System.out.println("私钥加密后的数据：" + code1);
-        String decode1 = decryptByPublicKeyHex(code1);
+        String decode1 = decryptByPublicKeyHex(code1, PUBLIC_CODE);
         System.out.println("公钥解密后的数据：" + decode1);
 
         str = "乙方向甲方发送数据RSA算法";
         System.out.println("原文:" + str);
-        String code2 = encryptByPublicKeyHex(str);
+        String code2 = encryptByPublicKeyHex(str, PUBLIC_CODE);
         System.out.println("公钥加密后的数据：" + code2);
-        String decode3 = decryptByPrivateKeyHex(code2);
+        String decode3 = decryptByPrivateKeyHex(code2, PRIVATE_CODE);
         System.out.println("私钥解密后的数据：" + decode3);
     }
 
@@ -106,16 +125,13 @@ public class RSAUtils {
     }
 
     /**
-     * pwd加密密码
-     * <p>
-     * 私钥解密后使用私钥加盐加密
+     * 公钥加密
      *
-     * @param data public encrypt string
-     * @param salt salt
-     * @return private encrypt string
+     * @param data 待加密数据
+     * @return byte 加密数据
      */
-    public static String encryptPwd(String data, String salt) {
-        return encryptByPrivateKeyHex(decryptByPrivateKeyHex(data), salt);
+    public static String encryptByPublicKeyHex(String data) {
+        return encryptByPublicKeyHex(data, PUBLIC_CODE);
     }
 
     /**
@@ -142,25 +158,43 @@ public class RSAUtils {
     }
 
     /**
-     * 私钥加密
+     * pwd加密密码
+     * <p>
+     * 私钥解密后使用私钥加盐加密
      *
-     * @param data 待加密数据
-     * @param salt 盐值
-     * @return byte 加密数据
+     * @param data public encrypt string
+     * @param salt salt
+     * @return private encrypt string
      */
-    public static String encryptByPrivateKeyHex(String data, String salt) {
-        return encryptByPrivateKeyHex(data + SALT_SEPARATOR + salt);
+    public static String encryptPwd(String data, String salt) {
+        String password = decryptByPrivateKeyHex(data, PRIVATE_CODE);
+        return encryptByPrivateKeyHex(password + SALT_SEPARATOR + salt, INTERNAL_PRIVATE_CODE);
     }
+
+    /**
+     * 公钥解密
+     *
+     * @param data 待解密数据(pwd)
+     * @param salt salt
+     * @return string 解密数据(明文密码)
+     */
+    public static String decryptPwd(String data, String salt) {
+        String pwdResult = decryptByPublicKeyHex(data, INTERNAL_PUBLIC_CODE);
+        return pwdResult.substring(0, pwdResult.indexOf(SALT_SEPARATOR));
+    }
+
+    // ============ 基于string的底层加/解密
 
     /**
      * 私钥加密
      *
-     * @param data 待加密数据
+     * @param data       待加密数据
+     * @param privateKey 私钥秘钥
      * @return byte 加密数据
      */
-    public static String encryptByPrivateKeyHex(String data) {
+    private static String encryptByPrivateKeyHex(String data, byte[] privateKey) {
         try {
-            byte[] dataByte = encryptByPrivateKey(data.getBytes(StandardCharsets.UTF_8), PRIVATE_CODE);
+            byte[] dataByte = encryptByPrivateKey(data.getBytes(StandardCharsets.UTF_8), privateKey);
             return Base64.getEncoder().encodeToString(dataByte);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -171,13 +205,14 @@ public class RSAUtils {
     /**
      * 公钥解密
      *
-     * @param data 待解密数据
+     * @param data      待解密数据
+     * @param publicKey 公钥秘钥
      * @return byte 解密数据
      */
-    public static String decryptByPublicKeyHex(String data) {
+    private static String decryptByPublicKeyHex(String data, byte[] publicKey) {
         try {
             byte[] dataByte = Base64.getDecoder().decode(data);
-            byte[] decryptByte = decryptByPublicKey(dataByte, PUBLIC_CODE);
+            byte[] decryptByte = decryptByPublicKey(dataByte, publicKey);
             return new String(decryptByte, StandardCharsets.UTF_8);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -188,23 +223,13 @@ public class RSAUtils {
     /**
      * 公钥加密
      *
-     * @param data 待加密数据
-     * @param salt 盐值
+     * @param data      待加密数据
+     * @param publicKey 公钥秘钥
      * @return byte 加密数据
      */
-    public static String encryptByPublicKeyHex(String data, String salt) {
-        return encryptByPublicKeyHex(data + SALT_SEPARATOR + salt);
-    }
-
-    /**
-     * 公钥加密
-     *
-     * @param data 待加密数据
-     * @return byte 加密数据
-     */
-    public static String encryptByPublicKeyHex(String data) {
+    private static String encryptByPublicKeyHex(String data, byte[] publicKey) {
         try {
-            byte[] dataByte = encryptByPublicKey(data.getBytes(StandardCharsets.UTF_8), PUBLIC_CODE);
+            byte[] dataByte = encryptByPublicKey(data.getBytes(StandardCharsets.UTF_8), publicKey);
             return Base64.getEncoder().encodeToString(dataByte);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -215,19 +240,22 @@ public class RSAUtils {
     /**
      * 私钥解密
      *
-     * @param data 待解密数据
+     * @param data       待解密数据
+     * @param privateKey 私密秘钥
      * @return byte 解密数据
      */
-    public static String decryptByPrivateKeyHex(String data) {
+    private static String decryptByPrivateKeyHex(String data, byte[] privateKey) {
         try {
             byte[] dataByte = Base64.getDecoder().decode(data);
-            byte[] decryptByte = decryptByPrivateKey(dataByte, PRIVATE_CODE);
+            byte[] decryptByte = decryptByPrivateKey(dataByte, privateKey);
             return new String(decryptByte, StandardCharsets.UTF_8);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new MicroErrorException("解密失败");
         }
     }
+
+    // ============ 基于byte[]的底层加/解密
 
     /**
      * 私钥加密
@@ -236,7 +264,7 @@ public class RSAUtils {
      * @param key  密钥
      * @return byte[] 加密数据
      */
-    public static byte[] encryptByPrivateKey(byte[] data, byte[] key) throws Exception {
+    private static byte[] encryptByPrivateKey(byte[] data, byte[] key) throws Exception {
         // 取得私钥
         PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(key);
         KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
@@ -255,7 +283,7 @@ public class RSAUtils {
      * @param key  密钥
      * @return byte[] 加密数据
      */
-    public static byte[] encryptByPublicKey(byte[] data, byte[] key) throws Exception {
+    private static byte[] encryptByPublicKey(byte[] data, byte[] key) throws Exception {
         // 实例化密钥工厂
         KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
         // 初始化公钥
@@ -277,7 +305,7 @@ public class RSAUtils {
      * @param key  密钥
      * @return byte[] 解密数据
      */
-    public static byte[] decryptByPrivateKey(byte[] data, byte[] key) throws Exception {
+    private static byte[] decryptByPrivateKey(byte[] data, byte[] key) throws Exception {
         // 取得私钥
         PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(key);
         KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
@@ -296,7 +324,7 @@ public class RSAUtils {
      * @param key  密钥
      * @return byte[] 解密数据
      */
-    public static byte[] decryptByPublicKey(byte[] data, byte[] key) throws Exception {
+    private static byte[] decryptByPublicKey(byte[] data, byte[] key) throws Exception {
         //实例化密钥工厂
         KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
         //初始化公钥
@@ -309,6 +337,8 @@ public class RSAUtils {
         cipher.init(Cipher.DECRYPT_MODE, pubKey);
         return cipher.doFinal(data);
     }
+
+    // ============ 公用方法
 
     /**
      * 初始化密钥对
