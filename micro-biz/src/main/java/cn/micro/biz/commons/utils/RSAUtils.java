@@ -16,6 +16,12 @@ import java.util.Map;
  * <p>
  * 非对称算法一般是用来传送对称加密算法的密钥来使用的，相对于DH算法，RSA算法只需要一方构造密钥，不需要
  * 大费周章的构造各自本地的密钥对了。DH算法只能算法非对称算法的底层实现。而RSA算法算法实现起来较为简单
+ * <p>
+ * 流程：
+ * 1.前端：使用公钥加密传输给后端
+ * 2.后端：使用私钥解密前端传输过来的内容
+ * 3.后端：使用私钥加密后入库
+ * 4.后端使用公钥解密后对比密码
  *
  * @author lry
  */
@@ -242,16 +248,16 @@ public class RSAUtils {
         String str = "RSA密码交换算法";
         System.out.println("原文:" + str);
         String code1 = encryptByPrivateKeyHex(str);
-        System.out.println("加密后的数据1：" + code1);
+        System.out.println("私钥加密后的数据：" + code1);
         String decode1 = decryptByPublicKeyHex(code1);
-        System.out.println("乙方解密后的数据：" + decode1);
+        System.out.println("公钥解密后的数据：" + decode1);
 
         str = "乙方向甲方发送数据RSA算法";
         System.out.println("原文:" + str);
         String code2 = encryptByPublicKeyHex(str);
-        System.out.println("加密后的数据：" + code2);
+        System.out.println("公钥加密后的数据：" + code2);
         String decode3 = decryptByPrivateKeyHex(code2);
-        System.out.println("甲方解密后的数据：" + decode3);
+        System.out.println("私钥解密后的数据：" + decode3);
     }
 
 }
