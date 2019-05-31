@@ -83,12 +83,12 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
             }
         }
 
-        addOrUpdateMember.setName(registerAccount.getName());
-        addOrUpdateMember.setIcon(registerAccount.getIcon());
-        addOrUpdateMember.setSalt(MD5Utils.randomSalt());
-        addOrUpdateMember.setPassword(MD5Utils.encode(registerAccount.getPassword(), addOrUpdateMember.getSalt()));
         if (addOrUpdateMember.getId() == null) {
             // 3.1.注册用户
+            addOrUpdateMember.setName(registerAccount.getName());
+            addOrUpdateMember.setIcon(registerAccount.getIcon());
+            addOrUpdateMember.setSalt(MD5Utils.randomSalt());
+            addOrUpdateMember.setPassword(MD5Utils.encode(registerAccount.getPassword(), addOrUpdateMember.getSalt()));
             if (memberMapper.insert(addOrUpdateMember) <= 0) {
                 throw new MicroErrorException("用户注册失败");
             }
@@ -110,11 +110,6 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
             addMemberGroupMember.setMemberGroupId(MemberGroupEnum.MEMBER.getValue());
             if (memberGroupMemberMapper.insert(addMemberGroupMember) <= 0) {
                 throw new MicroErrorException("用户组分配失败");
-            }
-        } else {
-            // 3.2.更新用户信息
-            if (memberMapper.updateById(addOrUpdateMember) <= 0) {
-                throw new MicroErrorException("自动注册失败");
             }
         }
 
