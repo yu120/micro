@@ -19,6 +19,7 @@ import cn.micro.biz.service.member.IAccountService;
 import cn.micro.biz.service.member.IMemberRoleService;
 import cn.micro.biz.type.member.AccountEnum;
 import cn.micro.biz.type.member.MemberGroupEnum;
+import cn.micro.biz.type.member.PlatformEnum;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -148,15 +149,22 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
     }
 
     @Override
-    public WxAuthCode2Session wxLogin(String code) {
+    public WxAuthCode2Session wxLogin(String code, boolean register) {
         WxAuthCode2Session wxAuthCode2Session = microWxService.wxLogin(code);
         if (wxAuthCode2Session != null) {
-            if (StringUtils.isNotBlank(wxAuthCode2Session.getOpenId())) {
+            if (StringUtils.isNotBlank(wxAuthCode2Session.getUnionId())) {
                 // 判断账号是否已被注册
                 Account account = super.getOne(Account::getCategory, AccountEnum.WX_AUTO_LOGIN.getValue(),
-                        Account::getCode, wxAuthCode2Session.getOpenId());
+                        Account::getCode, wxAuthCode2Session.getUnionId());
                 if (account != null) {
                     wxAuthCode2Session.setHasAccount(true);
+                } else if (register) {
+                    RegisterAccount registerAccount = new RegisterAccount();
+                    registerAccount.setAccount(wxAuthCode2Session.getUnionId());
+                    registerAccount.setCategory(AccountEnum.WX_AUTO_LOGIN.getValue());
+                    registerAccount.setPlatform(PlatformEnum.WX.getValue());
+                    registerAccount.setPassword(MD5Utils.encode(wxAuthCode2Session.getUnionId()));
+                    this.doRegister(registerAccount);
                 }
             }
         }

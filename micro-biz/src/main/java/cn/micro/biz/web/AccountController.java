@@ -52,8 +52,10 @@ public class AccountController {
      * @return {@link WxAuthCode2Session}
      */
     @RequestMapping(value = "wx", method = RequestMethod.GET)
-    public WxAuthCode2Session wxLogin(@RequestParam("code") String code) {
-        return accountService.wxLogin(code);
+    public WxAuthCode2Session wxLogin(
+            @RequestParam("code") String code,
+            @RequestParam(value = "register", required = false, defaultValue = "true") Boolean register) {
+        return accountService.wxLogin(code, register);
     }
 
 }

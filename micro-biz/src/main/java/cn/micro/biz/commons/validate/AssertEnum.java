@@ -1,5 +1,7 @@
 package cn.micro.biz.commons.validate;
 
+import cn.micro.biz.commons.validate.support.AssertEnumValidator;
+
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;

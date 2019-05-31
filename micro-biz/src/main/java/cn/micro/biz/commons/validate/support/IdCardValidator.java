@@ -1,5 +1,6 @@
-package cn.micro.biz.commons.validate;
+package cn.micro.biz.commons.validate.support;
 
+import cn.micro.biz.commons.validate.IdCard;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.ConstraintValidator;

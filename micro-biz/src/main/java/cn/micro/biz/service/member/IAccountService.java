@@ -33,9 +33,10 @@ public interface IAccountService extends IMicroService<Account> {
     /**
      * 微信代理登录
      *
-     * @param code js_code
+     * @param code     js_code
+     * @param register true表示自动注册
      * @return {@link WxAuthCode2Session}
      */
-    WxAuthCode2Session wxLogin(String code);
+    WxAuthCode2Session wxLogin(String code, boolean register);
 
 }

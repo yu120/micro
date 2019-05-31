@@ -20,12 +20,22 @@ public class MD5Utils {
     /**
      * The encode password
      *
+     * @param password
+     * @return
+     */
+    public static String encode(String password) {
+        return DigestUtils.sha1Hex(password).toLowerCase();
+    }
+
+    /**
+     * The encode password
+     *
      * @param password md5 password
      * @param salt     salt
      * @return encode password result
      */
     public static String encode(String password, String salt) {
-        return DigestUtils.md5Hex(PREFIX + password + salt).toLowerCase();
+        return encode(PREFIX + password + salt);
     }
 
     /**
