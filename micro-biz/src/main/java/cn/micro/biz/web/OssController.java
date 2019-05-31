@@ -26,8 +26,8 @@ public class OssController {
     private QiNiuOssService qiNiuOssService;
 
     @NonAuth
-    @RequestMapping(value = "upload-token", method = RequestMethod.GET)
-    public OssTokenVO uploadToken() {
+    @RequestMapping(value = "token", method = RequestMethod.GET)
+    public OssTokenVO token() {
         return qiNiuOssService.uploadToken();
     }
 
