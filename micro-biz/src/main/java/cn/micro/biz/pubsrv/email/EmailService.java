@@ -1,5 +1,6 @@
 package cn.micro.biz.pubsrv.email;
 
+import cn.micro.biz.type.EmailCategoryEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
@@ -17,6 +18,9 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 @Slf4j
@@ -47,7 +51,28 @@ public class EmailService implements InitializingBean {
         javaMailSender.setJavaMailProperties(javaMailProperties);
     }
 
-    public void sendSimpleMail(EmailMessage emailMessage) throws Exception {
+    public boolean sendMail(Integer category, String email) {
+        EmailCategoryEnum emailCategoryEnum = EmailCategoryEnum.get(category);
+
+        try {
+            EmailMessage emailMessage = new EmailMessage();
+            emailMessage.setRecipients(Collections.singletonList(email));
+            emailMessage.setTemplate(emailCategoryEnum.getTemplate());
+            emailMessage.setSubject(emailCategoryEnum.getSubject());
+            Map<String, Object> map = new HashMap<>();
+            map.put("title", emailCategoryEnum.getTitle());
+            map.put("email", email);
+            map.put("category", emailCategoryEnum.getCategory());
+            map.put("captcha", "123456");
+            emailMessage.setVariables(map);
+            return this.sendSimpleMail(emailMessage);
+        } catch (Exception e) {
+            log.error("发送邮件异常", e);
+            return false;
+        }
+    }
+
+    public boolean sendSimpleMail(EmailMessage emailMessage) throws Exception {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mmh = new MimeMessageHelper(mimeMessage, true);
         mmh.setFrom(new InternetAddress(emailProperties.getUsername(),
@@ -70,6 +95,7 @@ public class EmailService implements InitializingBean {
         }
 
         javaMailSender.send(mimeMessage);
+        return true;
     }
 
 }
