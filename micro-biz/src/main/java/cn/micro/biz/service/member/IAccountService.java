@@ -42,10 +42,17 @@ public interface IAccountService extends IMicroService<Account> {
     WxAuthCode2Session wxLogin(String code, boolean register);
 
     /**
+     * 刷新Token
+     *
+     * @return {@link MicroToken}
+     */
+    MicroToken doRefreshToken();
+
+    /**
      * 忘记密码-修改密码
      *
      * @param forgetPassword {@link ForgetPassword}
-     * @return
+     * @return true表示修改成功
      */
     Boolean doForgetPassword(ForgetPassword forgetPassword);
 

@@ -2,6 +2,7 @@ package cn.micro.biz.commons.auth;
 
 import cn.micro.biz.commons.exception.MicroBadRequestException;
 import cn.micro.biz.commons.exception.MicroErrorException;
+import cn.micro.biz.commons.exception.MicroPermissionException;
 import cn.micro.biz.commons.exception.MicroSignInException;
 import cn.micro.biz.commons.mybatis.MicroTenantProperties;
 import cn.micro.biz.commons.utils.IPUtils;
@@ -340,6 +341,26 @@ public class MicroAuthContext implements InitializingBean {
         HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
         return (MicroTokenBody) request.getAttribute(ACCESS_TOKEN_KEY);
     }
+
+    public static MicroTokenBody getContextRefreshToken() {
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (requestAttributes == null) {
+            throw new MicroErrorException("Not Found RequestAttributes");
+        }
+
+        HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
+        String refreshTokenValue = MicroAuthContext.getRefreshAccessToken(request);
+        if (refreshTokenValue == null || refreshTokenValue.length() == 0) {
+            throw new MicroPermissionException("Not Found X-Refresh-Token");
+        }
+
+        // verify token
+        MicroAuthContext.verifyToken(refreshTokenValue);
+
+        // parse token
+        return MicroAuthContext.parseToken(refreshTokenValue);
+    }
+
 
     public static Long getMemberId() {
         MicroTokenBody microTokenBody = getContextAccessToken();

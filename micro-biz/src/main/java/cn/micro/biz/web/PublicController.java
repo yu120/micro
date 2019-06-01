@@ -10,6 +10,7 @@ import cn.micro.biz.pubsrv.sms.AliYunSmsService;
 import cn.micro.biz.service.member.IUnionCodeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,21 @@ public class PublicController {
     private final QiNiuOssService qiNiuOssService;
     private final AliYunSmsService aliYunSmsService;
     private final IUnionCodeService unionCodeService;
+
+    private final StringEncryptor stringEncryptor;
+
+    @NonAuth
+    @RequestMapping(value = "encrypt", method = RequestMethod.GET)
+    public String encrypt(@RequestParam("encrypt") String encrypt) {
+        return stringEncryptor.encrypt(encrypt);
+    }
+
+    @NonAuth
+    @RequestMapping(value = "decrypt", method = RequestMethod.GET)
+    public String decrypt(@RequestParam("decrypt") String decrypt) {
+        return stringEncryptor.decrypt(decrypt);
+    }
+
 
     @RequestMapping(value = "oss-token", method = RequestMethod.GET)
     public OssTokenVO ossToken() {

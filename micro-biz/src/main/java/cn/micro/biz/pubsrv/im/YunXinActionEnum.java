@@ -16,7 +16,7 @@ public enum YunXinActionEnum {
 
     USER_CREATE("/user/create.action", "创建网易云通信ID"),
     USER_UPDATE("/user/update.action", "网易云通信ID更新"),
-    USER_REFRESH_TOKEN("/user/refreshToken.action", "更新并获取新token"),
+    USER_REFRESH_TOKEN("/user/doRefreshToken.action", "更新并获取新token"),
     USER_BLOCK("/user/block.action", "封禁网易云通信ID"),
     USER_UNBLOCK("/user/unblock.action", "解禁网易云通信ID"),
     // == 用户名片

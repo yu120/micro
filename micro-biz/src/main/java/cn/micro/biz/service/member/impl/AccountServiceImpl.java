@@ -2,13 +2,16 @@ package cn.micro.biz.service.member.impl;
 
 import cn.micro.biz.commons.auth.MicroAuthContext;
 import cn.micro.biz.commons.auth.MicroToken;
+import cn.micro.biz.commons.auth.MicroTokenBody;
 import cn.micro.biz.commons.exception.MicroBadRequestException;
 import cn.micro.biz.commons.exception.MicroErrorException;
 import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
 import cn.micro.biz.commons.utils.IPUtils;
 import cn.micro.biz.commons.utils.RSAUtils;
 import cn.micro.biz.entity.UnionCode;
-import cn.micro.biz.entity.member.*;
+import cn.micro.biz.entity.member.Account;
+import cn.micro.biz.entity.member.Member;
+import cn.micro.biz.entity.member.MemberGroupMember;
 import cn.micro.biz.mapper.member.IAccountMapper;
 import cn.micro.biz.mapper.member.IMemberGroupMemberMapper;
 import cn.micro.biz.mapper.member.IMemberMapper;
@@ -181,6 +184,29 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
         }
 
         return wxAuthCode2Session;
+    }
+
+    @Override
+    public MicroToken doRefreshToken() {
+        // parse token
+        MicroTokenBody microTokenBody = MicroAuthContext.getContextRefreshToken();
+
+        // refresh data
+        Member member = memberMapper.selectById(microTokenBody.getMemberId());
+        if (member == null) {
+            throw new MicroBadRequestException("用户不存在");
+        }
+
+        // 查询拥有角色
+        List<String> roleCodes = memberRoleService.queryMemberRoles(member.getId());
+        if (CollectionUtils.isEmpty(roleCodes)) {
+            throw new MicroBadRequestException("用户未分配角色或用户组");
+        }
+        microTokenBody.setMemberName(member.getName());
+        microTokenBody.setAuthorities(roleCodes);
+
+        // build new token
+        return MicroAuthContext.build(microTokenBody);
     }
 
     @Override
