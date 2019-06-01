@@ -64,7 +64,7 @@ public class AccountController {
     }
 
     @NonAuth
-    @RequestMapping(value = "refresh", method = RequestMethod.POST)
+    @RequestMapping(value = "refresh-token", method = RequestMethod.POST)
     public MicroToken refreshToken() {
         return accountService.doRefreshToken();
     }
