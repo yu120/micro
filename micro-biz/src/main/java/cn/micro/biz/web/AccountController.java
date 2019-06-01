@@ -55,7 +55,7 @@ public class AccountController {
      * @param register 默认为true,表示会自动注册账号和用户信息
      * @return {@link WxAuthCode2Session}
      */
-    @RequestMapping(value = "wx", method = RequestMethod.GET)
+    @RequestMapping(value = "wx-login", method = RequestMethod.PUT)
     public WxAuthCode2Session wxLogin(
             @RequestParam("code") String code,
             @RequestParam(value = "register", required = false, defaultValue = "true") Boolean register) {
