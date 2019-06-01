@@ -103,6 +103,8 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
             addOrUpdateMember.setSalt(RSAUtils.randomSalt());
             addOrUpdateMember.setPwd(RSAUtils.encryptPwd(registerAccount.getPassword(), addOrUpdateMember.getSalt()));
             addOrUpdateMember.setPassword(RSAUtils.encryptPassword(addOrUpdateMember.getPwd()));
+            addOrUpdateMember.setIp(IPUtils.getRequestIPAddress());
+            addOrUpdateMember.setPlatform(registerAccount.getPlatform());
             if (memberMapper.insert(addOrUpdateMember) <= 0) {
                 throw new MicroErrorException("用户注册失败");
             }
@@ -112,8 +114,6 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
             addAccount.setMemberId(addOrUpdateMember.getId());
             addAccount.setCode(registerAccount.getAccount());
             addAccount.setCategory(registerAccount.getCategory());
-            addAccount.setIp(IPUtils.getRequestIPAddress());
-            addAccount.setPlatform(registerAccount.getPlatform());
             if (baseMapper.insert(addAccount) <= 0) {
                 throw new MicroErrorException("账号注册失败");
             }
@@ -259,12 +259,81 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
         return true;
     }
 
+    @GlobalTransactional
     @Override
     public Boolean doChangeAccount(ChangeEmailOrMobile changeEmailOrMobile) {
-        // 校验验证码
-        unionCodeService.checkCode(UnionCodeCategoryEnum.FORGET_PASSWORD,
-                changeEmailOrMobile.getAccount(), changeEmailOrMobile.getCode());
-        return null;
+        // 1.验证码校验
+        UnionCodeCategoryEnum unionCodeCategoryEnum;
+        if (AccountEnum.EMAIL.getValue() == changeEmailOrMobile.getCategory()) {
+            unionCodeCategoryEnum = UnionCodeCategoryEnum.CHANGE_EMAIL;
+        } else if (AccountEnum.MOBILE.getValue() == changeEmailOrMobile.getCategory()) {
+            unionCodeCategoryEnum = UnionCodeCategoryEnum.CHANGE_MOBILE;
+        } else {
+            throw new MicroBadRequestException("暂不支持修改该类型账号");
+        }
+        unionCodeService.checkCode(unionCodeCategoryEnum, changeEmailOrMobile.getAccount(), changeEmailOrMobile.getCode());
+
+        // 2.检查账号信息中的邮箱地址
+        Account account = super.getOne(Account::getCategory, changeEmailOrMobile.getCategory(),
+                Account::getCode, changeEmailOrMobile.getAccount());
+        if (account != null) {
+            throw new MicroBadRequestException("该邮箱地址已被占用");
+        }
+
+        // 3.检查用户信息中的邮箱地址或手机号是否已被占用
+        if (AccountEnum.EMAIL.getValue() == changeEmailOrMobile.getCategory()) {
+            Member member = memberMapper.selectOne(Member::getEmail, changeEmailOrMobile.getAccount());
+            if (member != null) {
+                throw new MicroBadRequestException("该邮箱地址已被占用");
+            }
+        } else if (AccountEnum.MOBILE.getValue() == changeEmailOrMobile.getCategory()) {
+            Member member = memberMapper.selectOne(Member::getMobile, changeEmailOrMobile.getAccount());
+            if (member != null) {
+                throw new MicroBadRequestException("该手机号已被占用");
+            }
+        }
+
+        // 4.查询当前用户需要修改的账号记录
+        Long currentMemberId = MicroAuthContext.getMemberId();
+        Account currentAccount = super.getOne(Account::getMemberId, currentMemberId,
+                Account::getCategory, changeEmailOrMobile.getCategory());
+        if (currentAccount == null) {
+            // 5.1.新增登录账号
+            Account addAccount = new Account();
+            addAccount.setMemberId(currentMemberId);
+            addAccount.setCategory(changeEmailOrMobile.getCategory());
+            addAccount.setCode(changeEmailOrMobile.getAccount());
+            if (!super.save(addAccount)) {
+                throw new MicroBadRequestException("修改失败");
+            }
+
+            // 6.1.修改用户信息中的邮箱地址
+            Member updateMember = new Member();
+            updateMember.setId(currentMemberId);
+            updateMember.setEmail(changeEmailOrMobile.getAccount());
+            if (memberMapper.updateById(updateMember) > 0) {
+                throw new MicroBadRequestException("修改失败");
+            }
+        } else {
+            // 5.2.修改登录账号
+            Account updateAccount = new Account();
+            updateAccount.setId(currentAccount.getId());
+            updateAccount.setCategory(changeEmailOrMobile.getCategory());
+            updateAccount.setCode(changeEmailOrMobile.getAccount());
+            if (!super.updateById(updateAccount)) {
+                throw new MicroBadRequestException("修改失败");
+            }
+
+            // 6.2.修改用户信息中的手机号码
+            Member updateMember = new Member();
+            updateMember.setId(currentMemberId);
+            updateMember.setMobile(changeEmailOrMobile.getAccount());
+            if (memberMapper.updateById(updateMember) > 0) {
+                throw new MicroBadRequestException("修改失败");
+            }
+        }
+
+        return true;
     }
 
     @Override

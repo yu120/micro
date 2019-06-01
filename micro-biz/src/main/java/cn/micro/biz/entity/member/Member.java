@@ -132,4 +132,15 @@ public class Member extends MicroEntity<Member> {
      */
     private String townName;
 
+    /**
+     * Member register IP
+     */
+    private String ip;
+    /**
+     * Member register platform category
+     * <p>
+     * {@link cn.micro.biz.type.member.PlatformEnum}
+     */
+    private Integer platform;
+
 }

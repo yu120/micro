@@ -41,13 +41,5 @@ public class Account extends MicroEntity<Account> {
      * {@link AccountEnum}
      */
     private Integer category;
-    /**
-     * Account register IP
-     */
-    private String ip;
-    /**
-     * Account register platform category
-     */
-    private Integer platform;
 
 }
