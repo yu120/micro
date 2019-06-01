@@ -15,7 +15,9 @@ public enum UnionCodeCategoryEnum {
 
     // ======
 
-    FORGET_PASSWORD(0, EmailCategoryEnum.FORGET_PASSWORD.name(), 3, 30 * 60, "忘记密码验证码");
+    FORGET_PASSWORD(0, EmailCategoryEnum.FORGET_PASSWORD.name(), 3, 30 * 60, "忘记密码验证码"),
+    CHANGE_EMAIL(1, EmailCategoryEnum.FORGET_PASSWORD.name(), 3, 30 * 60, "修改邮箱验证码"),
+    CHANGE_MOBILE(2, EmailCategoryEnum.FORGET_PASSWORD.name(), 3, 30 * 60, "修改手机号验证码");
 
     private final int value;
     private final String category;

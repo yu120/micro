@@ -4,6 +4,7 @@ import cn.micro.biz.commons.auth.MicroToken;
 import cn.micro.biz.commons.mybatis.extension.IMicroService;
 import cn.micro.biz.entity.member.Account;
 import cn.micro.biz.model.add.RegisterAccount;
+import cn.micro.biz.model.edit.ChangeEmailOrMobile;
 import cn.micro.biz.model.edit.ChangePassword;
 import cn.micro.biz.model.edit.ForgetPassword;
 import cn.micro.biz.model.query.LoginAccount;
@@ -63,5 +64,21 @@ public interface IAccountService extends IMicroService<Account> {
      * @return true表示修改成功
      */
     Boolean doChangePassword(ChangePassword changePassword);
+
+    /**
+     * 修改邮箱地址或手机号码
+     *
+     * @param changeEmailOrMobile {@link ChangeEmailOrMobile}
+     * @return true表示修改成功
+     */
+    Boolean doChangeAccount(ChangeEmailOrMobile changeEmailOrMobile);
+
+    /**
+     * 校验账号是否已被注册
+     *
+     * @param account email,mobile
+     * @return true表示已被占用
+     */
+    Boolean doRegistered(String account);
 
 }

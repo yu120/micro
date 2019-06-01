@@ -8,7 +8,6 @@ import cn.micro.biz.commons.exception.MicroErrorException;
 import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
 import cn.micro.biz.commons.utils.IPUtils;
 import cn.micro.biz.commons.utils.RSAUtils;
-import cn.micro.biz.entity.UnionCode;
 import cn.micro.biz.entity.member.Account;
 import cn.micro.biz.entity.member.Member;
 import cn.micro.biz.entity.member.MemberGroupMember;
@@ -16,6 +15,7 @@ import cn.micro.biz.mapper.member.IAccountMapper;
 import cn.micro.biz.mapper.member.IMemberGroupMemberMapper;
 import cn.micro.biz.mapper.member.IMemberMapper;
 import cn.micro.biz.model.add.RegisterAccount;
+import cn.micro.biz.model.edit.ChangeEmailOrMobile;
 import cn.micro.biz.model.edit.ChangePassword;
 import cn.micro.biz.model.edit.ForgetPassword;
 import cn.micro.biz.model.query.LoginAccount;
@@ -211,31 +211,12 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
 
     @Override
     public Boolean doForgetPassword(ForgetPassword forgetPassword) {
-        UnionCode unionCode = unionCodeService.getOne(UnionCode::getCategory,
-                UnionCodeCategoryEnum.FORGET_PASSWORD.getValue(),
-                UnionCode::getAccount, forgetPassword.getAccount());
-        if (unionCode == null) {
-            throw new MicroBadRequestException("验证码不存在");
-        }
-        if (!unionCode.getCode().equals(forgetPassword.getCode())) {
-            // 验证失败，则失败次数+1
-            UnionCode updateUnionCode = new UnionCode();
-            updateUnionCode.setId(unionCode.getId());
-            updateUnionCode.setFailTimes(unionCode.getFailTimes() + 1);
-            unionCodeService.updateById(updateUnionCode);
+        // 校验验证码
+        unionCodeService.checkCode(UnionCodeCategoryEnum.FORGET_PASSWORD,
+                forgetPassword.getAccount(), forgetPassword.getCode());
 
-            // 失败次数达到上限后,直接删除验证码
-            if (updateUnionCode.getFailTimes() >= unionCode.getMaxTimes()) {
-                unionCodeService.removeById(unionCode.getId());
-            }
-
-            return false;
-        }
-
-        // 删除验证成功后的验证码
-        unionCodeService.removeById(unionCode.getId());
-
-        Member member = memberMapper.selectOne(Member::getEmail, unionCode.getAccount());
+        // 查询账号信息
+        Member member = memberMapper.selectOne(Member::getEmail, forgetPassword.getAccount());
         if (member == null) {
             throw new MicroBadRequestException("账号不存在");
         }
@@ -276,6 +257,19 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
         }
 
         return true;
+    }
+
+    @Override
+    public Boolean doChangeAccount(ChangeEmailOrMobile changeEmailOrMobile) {
+        // 校验验证码
+        unionCodeService.checkCode(UnionCodeCategoryEnum.FORGET_PASSWORD,
+                changeEmailOrMobile.getAccount(), changeEmailOrMobile.getCode());
+        return null;
+    }
+
+    @Override
+    public Boolean doRegistered(String account) {
+        return super.getOne(Account::getCode, account) != null;
     }
 
 }

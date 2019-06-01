@@ -1,5 +1,6 @@
 package cn.micro.biz.service.member.impl;
 
+import cn.micro.biz.commons.exception.MicroBadRequestException;
 import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
 import cn.micro.biz.entity.UnionCode;
 import cn.micro.biz.mapper.member.IUnionCodeMapper;
@@ -26,6 +27,32 @@ import java.util.stream.Collectors;
 public class UnionCodeServiceImpl extends MicroServiceImpl<IUnionCodeMapper, UnionCode> implements IUnionCodeService {
 
     private final EmailService emailService;
+
+    @Override
+    public void checkCode(UnionCodeCategoryEnum unionCodeCategoryEnum, String account, String code) {
+        UnionCode unionCode = super.getOne(UnionCode::getCategory, unionCodeCategoryEnum.getValue(),
+                UnionCode::getAccount, account);
+        if (unionCode == null) {
+            throw new MicroBadRequestException("验证码不存在");
+        }
+        if (!unionCode.getCode().equals(code)) {
+            // 验证失败，则失败次数+1
+            UnionCode updateUnionCode = new UnionCode();
+            updateUnionCode.setId(unionCode.getId());
+            updateUnionCode.setFailTimes(unionCode.getFailTimes() + 1);
+            super.updateById(updateUnionCode);
+
+            // 失败次数达到上限后,直接删除验证码
+            if (updateUnionCode.getFailTimes() >= unionCode.getMaxTimes()) {
+                super.removeById(unionCode.getId());
+            }
+
+            throw new MicroBadRequestException("验证码错误");
+        }
+
+        // 删除验证成功后的验证码
+        super.removeById(unionCode.getId());
+    }
 
     @Override
     public boolean sendCodeMail(Integer category, String email) {

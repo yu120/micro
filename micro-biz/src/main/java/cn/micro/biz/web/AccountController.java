@@ -1,9 +1,9 @@
 package cn.micro.biz.web;
 
 import cn.micro.biz.commons.auth.MicroToken;
-import cn.micro.biz.commons.auth.NonAuth;
 import cn.micro.biz.commons.auth.PreAuth;
 import cn.micro.biz.model.add.RegisterAccount;
+import cn.micro.biz.model.edit.ChangeEmailOrMobile;
 import cn.micro.biz.model.edit.ChangePassword;
 import cn.micro.biz.model.edit.ForgetPassword;
 import cn.micro.biz.model.query.LoginAccount;
@@ -63,7 +63,6 @@ public class AccountController {
         return accountService.wxLogin(code, register);
     }
 
-    @NonAuth
     @RequestMapping(value = "refresh-token", method = RequestMethod.POST)
     public MicroToken refreshToken() {
         return accountService.doRefreshToken();
@@ -81,15 +80,14 @@ public class AccountController {
     }
 
     @PreAuth
-    @RequestMapping(value = "change-email", method = RequestMethod.PUT)
-    public Boolean changeEmail(@RequestBody @Validated ForgetPassword forgetPassword) {
-        return accountService.doForgetPassword(forgetPassword);
+    @RequestMapping(value = "change-account", method = RequestMethod.PUT)
+    public Boolean changeAccount(@RequestBody @Validated ChangeEmailOrMobile changeEmailOrMobile) {
+        return accountService.doChangeAccount(changeEmailOrMobile);
     }
 
-    @PreAuth
-    @RequestMapping(value = "change-mobile", method = RequestMethod.PUT)
-    public Boolean changeMobile(@RequestBody @Validated ForgetPassword forgetPassword) {
-        return accountService.doForgetPassword(forgetPassword);
+    @RequestMapping(value = "registered", method = RequestMethod.GET)
+    public Boolean registered(@RequestParam("account") String account) {
+        return accountService.doRegistered(account);
     }
 
 }
