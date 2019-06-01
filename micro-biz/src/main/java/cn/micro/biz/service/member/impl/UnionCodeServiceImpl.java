@@ -28,7 +28,7 @@ public class UnionCodeServiceImpl extends MicroServiceImpl<IUnionCodeMapper, Uni
     private final EmailService emailService;
 
     @Override
-    public boolean sendCodeMail(Integer category, String unionId, String email) {
+    public boolean sendCodeMail(Integer category, String email) {
         UnionCodeCategoryEnum unionCodeCategoryEnum = UnionCodeCategoryEnum.get(category);
         EmailCategoryEnum emailCategoryEnum = EmailCategoryEnum.get(unionCodeCategoryEnum.getCategory());
 
