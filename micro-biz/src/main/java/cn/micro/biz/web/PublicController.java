@@ -52,7 +52,7 @@ public class PublicController {
     }
 
     @PreAuth
-    @RequestMapping(value = "sms-send", method = RequestMethod.GET)
+    @RequestMapping(value = "sms-send", method = RequestMethod.POST)
     public Boolean smsSend() throws Exception {
         return aliYunSmsService.send("SMS_151232xxx", "15888888888", "李景枫", "电脑", "10001");
     }
