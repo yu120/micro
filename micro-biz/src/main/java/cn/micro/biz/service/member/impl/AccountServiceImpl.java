@@ -206,6 +206,9 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
             return false;
         }
 
+        // 删除验证成功后的验证码
+        unionCodeService.removeById(unionCode.getId());
+
         Member member = memberMapper.selectOne(Member::getEmail, unionCode.getAccount());
         if (member == null) {
             throw new MicroBadRequestException("账号不存在");
