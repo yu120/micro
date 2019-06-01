@@ -11,10 +11,12 @@ import cn.micro.biz.service.member.IUnionCodeService;
 import cn.micro.biz.type.EmailCategoryEnum;
 import cn.micro.biz.type.UnionCodeCategoryEnum;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Union Code Service Implements
@@ -31,17 +33,24 @@ public class UnionCodeServiceImpl extends MicroServiceImpl<IUnionCodeMapper, Uni
     public boolean sendCodeMail(Integer category, String email) {
         UnionCodeCategoryEnum unionCodeCategoryEnum = UnionCodeCategoryEnum.get(category);
         EmailCategoryEnum emailCategoryEnum = EmailCategoryEnum.get(unionCodeCategoryEnum.getCategory());
+        Long memberId = MicroAuthContext.getNonMemberId();
+        if (memberId != null) {
+            List<UnionCode> unionCodeList = super.list(UnionCode::getCategory, category, UnionCode::getMemberId, memberId);
+            if (CollectionUtils.isNotEmpty(unionCodeList)) {
+                super.removeByIds(unionCodeList.stream().map(UnionCode::getId).collect(Collectors.toList()));
+            }
+        }
 
         try {
             String captcha = this.getFixLengthCode(6);
             UnionCode unionCode = new UnionCode();
-            unionCode.setMemberId(MicroAuthContext.getNonMemberId());
+            unionCode.setMemberId(memberId);
             unionCode.setIp(IPUtils.getRequestIPAddress());
             unionCode.setCode(captcha);
             unionCode.setCategory(unionCodeCategoryEnum.getValue());
             unionCode.setExpire(unionCodeCategoryEnum.getExpire());
             unionCode.setStartTime(new Date());
-            if (this.save(unionCode)) {
+            if (super.save(unionCode)) {
                 EmailMessage emailMessage = new EmailMessage();
                 emailMessage.setRecipients(Collections.singletonList(email));
                 emailMessage.setTemplate(emailCategoryEnum.getTemplate());
