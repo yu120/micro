@@ -6,6 +6,7 @@ import cn.micro.biz.model.vo.OssTokenVO;
 import cn.micro.biz.pubsrv.email.EmailService;
 import cn.micro.biz.pubsrv.oss.QiNiuOssService;
 import cn.micro.biz.pubsrv.sms.AliYunSmsService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -13,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.Resource;
 
 /**
  * Public Service Controller
@@ -25,14 +24,12 @@ import javax.annotation.Resource;
 @PreAuth
 @Validated
 @RestController
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class PublicController {
 
-    @Resource
-    private QiNiuOssService qiNiuOssService;
-    @Resource
-    private AliYunSmsService aliYunSmsService;
-    @Autowired
-    private EmailService emailService;
+    private final QiNiuOssService qiNiuOssService;
+    private final AliYunSmsService aliYunSmsService;
+    private final EmailService emailService;
 
     @NonAuth
     @RequestMapping(value = "oss-token", method = RequestMethod.GET)
