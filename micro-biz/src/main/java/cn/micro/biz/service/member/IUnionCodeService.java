@@ -10,6 +10,6 @@ import cn.micro.biz.entity.UnionCode;
  */
 public interface IUnionCodeService extends IMicroService<UnionCode> {
 
-    boolean sendMail(Integer category, String email);
+    boolean sendCodeMail(Integer category, String email);
 
 }

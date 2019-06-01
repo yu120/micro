@@ -42,9 +42,9 @@ public class PublicController {
         return aliYunSmsService.send("SMS_151232xxx", "15888888888", "李景枫", "电脑", "10001");
     }
 
-    @RequestMapping(value = "email-send", method = RequestMethod.POST)
-    public Boolean sendSimpleMail(@RequestParam("category") Integer category, @RequestParam("email") String email) {
-        return unionCodeService.sendMail(category, email);
+    @RequestMapping(value = "email-send-code", method = RequestMethod.POST)
+    public Boolean sendCodeMail(@RequestParam("category") Integer category, @RequestParam("email") String email) {
+        return unionCodeService.sendCodeMail(category, email);
     }
 
 }
