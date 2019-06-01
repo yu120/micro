@@ -4,6 +4,7 @@ import cn.micro.biz.commons.auth.MicroToken;
 import cn.micro.biz.commons.auth.PreAuth;
 import cn.micro.biz.model.add.RegisterAccount;
 import cn.micro.biz.model.edit.ChangePassword;
+import cn.micro.biz.model.edit.ForgetPassword;
 import cn.micro.biz.model.query.LoginAccount;
 import cn.micro.biz.pubsrv.wx.WxAuthCode2Session;
 import cn.micro.biz.service.member.IAccountService;
@@ -62,8 +63,8 @@ public class AccountController {
     }
 
     @RequestMapping(value = "forget-password", method = RequestMethod.POST)
-    public MicroToken forgetPassword(@RequestBody @Validated LoginAccount loginAccount) {
-        return accountService.doLogin(loginAccount);
+    public Boolean forgetPassword(@RequestBody @Validated ForgetPassword forgetPassword) {
+        return accountService.doForgetPassword(forgetPassword);
     }
 
     @PreAuth

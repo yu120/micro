@@ -31,6 +31,10 @@ public class UnionCode extends MicroEntity<UnionCode> {
      */
     private String ip;
     /**
+     * 全局ID(UUID填充)
+     */
+    private String unionId;
+    /**
      * Union code category
      * <p>
      * {@link cn.micro.biz.type.UnionCodeCategoryEnum}

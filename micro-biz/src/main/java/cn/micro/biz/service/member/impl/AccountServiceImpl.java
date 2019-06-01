@@ -13,6 +13,7 @@ import cn.micro.biz.mapper.member.IMemberGroupMemberMapper;
 import cn.micro.biz.mapper.member.IMemberMapper;
 import cn.micro.biz.model.add.RegisterAccount;
 import cn.micro.biz.model.edit.ChangePassword;
+import cn.micro.biz.model.edit.ForgetPassword;
 import cn.micro.biz.model.query.LoginAccount;
 import cn.micro.biz.pubsrv.wx.MicroWxService;
 import cn.micro.biz.pubsrv.wx.WxAuthCode2Session;
@@ -174,6 +175,11 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
         }
 
         return wxAuthCode2Session;
+    }
+
+    @Override
+    public Boolean doForgetPassword(ForgetPassword forgetPassword) {
+        return null;
     }
 
     @Override

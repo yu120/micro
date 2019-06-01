@@ -30,7 +30,7 @@ public class UnionCodeServiceImpl extends MicroServiceImpl<IUnionCodeMapper, Uni
     private final EmailService emailService;
 
     @Override
-    public boolean sendCodeMail(Integer category, String email) {
+    public boolean sendCodeMail(Integer category, String unionId, String email) {
         UnionCodeCategoryEnum unionCodeCategoryEnum = UnionCodeCategoryEnum.get(category);
         EmailCategoryEnum emailCategoryEnum = EmailCategoryEnum.get(unionCodeCategoryEnum.getCategory());
         Long memberId = MicroAuthContext.getNonMemberId();
@@ -46,6 +46,7 @@ public class UnionCodeServiceImpl extends MicroServiceImpl<IUnionCodeMapper, Uni
             UnionCode unionCode = new UnionCode();
             unionCode.setMemberId(memberId);
             unionCode.setIp(IPUtils.getRequestIPAddress());
+            unionCode.setUnionId(unionId);
             unionCode.setCode(captcha);
             unionCode.setCategory(unionCodeCategoryEnum.getValue());
             unionCode.setExpire(unionCodeCategoryEnum.getExpire());
