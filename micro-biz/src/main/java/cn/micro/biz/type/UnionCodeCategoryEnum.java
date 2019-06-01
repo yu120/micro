@@ -15,9 +15,10 @@ public enum UnionCodeCategoryEnum {
 
     // ======
 
-    FORGET_PASSWORD(0, "忘记密码验证码", 30 * 60);
+    FORGET_PASSWORD(0, EmailCategoryEnum.FORGET_PASSWORD.name(), "忘记密码验证码", 30 * 60);
 
     private final int value;
+    private final String category;
     private final String title;
     /**
      * 单位：秒

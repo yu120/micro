@@ -29,8 +29,8 @@ public class UnionCodeServiceImpl extends MicroServiceImpl<IUnionCodeMapper, Uni
 
     @Override
     public boolean sendCodeMail(Integer category, String email) {
-        EmailCategoryEnum emailCategoryEnum = EmailCategoryEnum.get(category);
         UnionCodeCategoryEnum unionCodeCategoryEnum = UnionCodeCategoryEnum.get(category);
+        EmailCategoryEnum emailCategoryEnum = EmailCategoryEnum.get(unionCodeCategoryEnum.getCategory());
 
         try {
             String captcha = this.getFixLengthCode(6);
