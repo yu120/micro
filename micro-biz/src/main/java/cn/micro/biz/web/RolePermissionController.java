@@ -4,20 +4,16 @@ import cn.micro.biz.commons.auth.PreAuth;
 import cn.micro.biz.commons.mybatis.entity.MicroEntity;
 import cn.micro.biz.commons.mybatis.entity.PageQuery;
 import cn.micro.biz.entity.member.RolePermission;
-import cn.micro.biz.mapper.member.IRolePermissionMapper;
+import cn.micro.biz.service.member.IRolePermissionService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.enums.SqlMethod;
-import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.ibatis.session.SqlSession;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -30,45 +26,25 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("role-permission")
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RolePermissionController {
 
-    @Resource
-    private IRolePermissionMapper rolePermissionMapper;
+    private final IRolePermissionService rolePermissionService;
 
     @Transactional(rollbackFor = Exception.class)
     @RequestMapping(value = "add", method = RequestMethod.POST)
     public boolean addRolePermission(@RequestBody @Size(min = 1, message = "至少添加1条记录") List<RolePermission> rolePermissions) {
-        if (CollectionUtils.isEmpty(rolePermissions)) {
-            throw new IllegalArgumentException("Error: entityList must not be empty");
-        }
-
-        SqlSession batchSqlSession = SqlHelper.sqlSessionBatch(RolePermission.class);
-        try {
-            int size = rolePermissions.size();
-            String sqlStatement = SqlHelper.table(RolePermission.class).getSqlStatement(SqlMethod.INSERT_ONE.getMethod());
-            for (int i = 0; i < size; i++) {
-                batchSqlSession.insert(sqlStatement, rolePermissions.get(i));
-                if (i >= 1 && i % 30 == 0) {
-                    batchSqlSession.flushStatements();
-                }
-            }
-
-            batchSqlSession.flushStatements();
-        } catch (Throwable e) {
-            throw new MybatisPlusException("Error: Cannot execute insertBatch Method. Cause", e);
-        }
-
-        return true;
+        return rolePermissionService.saveBatch(rolePermissions);
     }
 
     @RequestMapping(value = "delete", method = RequestMethod.DELETE)
     public boolean deleteRolePermissionById(@RequestBody @Size(min = 1, message = "至少删除1条记录") List<Long> ids) {
-        return rolePermissionMapper.deleteBatchIds(ids) > 0;
+        return rolePermissionService.removeByIds(ids);
     }
 
     @RequestMapping(value = "update", method = RequestMethod.PUT)
     public boolean updateRolePermissionById(@RequestBody RolePermission rolePermission) {
-        return rolePermissionMapper.updateById(rolePermission) > 0;
+        return rolePermissionService.updateById(rolePermission);
     }
 
     @RequestMapping(value = "page", method = RequestMethod.POST)
@@ -87,10 +63,10 @@ public class RolePermissionController {
             entityWrapper.setEntity(rolePermission);
         }
 
-        page.setTotal(Long.valueOf(rolePermissionMapper.selectCount(entityWrapper)));
+        page.setTotal(rolePermissionService.count(entityWrapper));
         if (page.getTotal() > 0) {
             IPage<RolePermission> tempPage = new Page<>((query.getCurrent() - 1) * query.getSize(), query.getSize());
-            page.setRecords(rolePermissionMapper.selectPage(tempPage, entityWrapper).getRecords());
+            page.setRecords(rolePermissionService.page(tempPage, entityWrapper).getRecords());
         }
 
         return page;
