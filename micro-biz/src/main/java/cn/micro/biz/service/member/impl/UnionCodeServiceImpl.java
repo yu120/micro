@@ -1,8 +1,6 @@
 package cn.micro.biz.service.member.impl;
 
-import cn.micro.biz.commons.auth.MicroAuthContext;
 import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
-import cn.micro.biz.commons.utils.IPUtils;
 import cn.micro.biz.entity.UnionCode;
 import cn.micro.biz.mapper.member.IUnionCodeMapper;
 import cn.micro.biz.pubsrv.email.EmailMessage;
@@ -33,21 +31,20 @@ public class UnionCodeServiceImpl extends MicroServiceImpl<IUnionCodeMapper, Uni
     public boolean sendCodeMail(Integer category, String unionId, String email) {
         UnionCodeCategoryEnum unionCodeCategoryEnum = UnionCodeCategoryEnum.get(category);
         EmailCategoryEnum emailCategoryEnum = EmailCategoryEnum.get(unionCodeCategoryEnum.getCategory());
-        Long memberId = MicroAuthContext.getNonMemberId();
-        if (memberId != null) {
-            List<UnionCode> unionCodeList = super.list(UnionCode::getCategory, category, UnionCode::getMemberId, memberId);
-            if (CollectionUtils.isNotEmpty(unionCodeList)) {
-                super.removeByIds(unionCodeList.stream().map(UnionCode::getId).collect(Collectors.toList()));
-            }
+
+        // 清理历史验证码
+        List<UnionCode> unionCodeList = super.list(UnionCode::getCategory, category, UnionCode::getAccount, email);
+        if (CollectionUtils.isNotEmpty(unionCodeList)) {
+            super.removeByIds(unionCodeList.stream().map(UnionCode::getId).collect(Collectors.toList()));
         }
 
         try {
             String captcha = this.getFixLengthCode(6);
             UnionCode unionCode = new UnionCode();
-            unionCode.setMemberId(memberId);
-            unionCode.setIp(IPUtils.getRequestIPAddress());
-            unionCode.setUnionId(unionId);
+            unionCode.setAccount(email);
             unionCode.setCode(captcha);
+            unionCode.setMaxTimes(unionCodeCategoryEnum.getMaxTimes());
+            unionCode.setFailTimes(0);
             unionCode.setCategory(unionCodeCategoryEnum.getValue());
             unionCode.setExpire(unionCodeCategoryEnum.getExpire());
             unionCode.setStartTime(new Date());

@@ -16,11 +16,11 @@ import java.io.Serializable;
 public class ForgetPassword implements Serializable {
 
     /**
-     * Code unionId
+     * Account eg:email or mobile
      * <p>
      */
-    @NotBlank(message = "验证码ID不为空")
-    private String unionId;
+    @NotBlank(message = "账号不能为空")
+    private String account;
     /**
      * Code value
      */
@@ -31,6 +31,6 @@ public class ForgetPassword implements Serializable {
      * <p>
      */
     @NotBlank(message = "新密码不能为空")
-    private String newPassword;
+    private String password;
 
 }

@@ -15,15 +15,19 @@ public enum UnionCodeCategoryEnum {
 
     // ======
 
-    FORGET_PASSWORD(0, EmailCategoryEnum.FORGET_PASSWORD.name(), "忘记密码验证码", 30 * 60);
+    FORGET_PASSWORD(0, EmailCategoryEnum.FORGET_PASSWORD.name(), 3, 30 * 60, "忘记密码验证码");
 
     private final int value;
     private final String category;
-    private final String title;
+    /**
+     * 最大验证次数
+     */
+    private final int maxTimes;
     /**
      * 单位：秒
      */
     private final int expire;
+    private final String title;
 
     public static UnionCodeCategoryEnum get(Integer value) {
         if (value == null) {

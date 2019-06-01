@@ -7,6 +7,7 @@ import cn.micro.biz.commons.exception.MicroErrorException;
 import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
 import cn.micro.biz.commons.utils.IPUtils;
 import cn.micro.biz.commons.utils.RSAUtils;
+import cn.micro.biz.entity.UnionCode;
 import cn.micro.biz.entity.member.*;
 import cn.micro.biz.mapper.member.IAccountMapper;
 import cn.micro.biz.mapper.member.IMemberGroupMemberMapper;
@@ -19,6 +20,8 @@ import cn.micro.biz.pubsrv.wx.MicroWxService;
 import cn.micro.biz.pubsrv.wx.WxAuthCode2Session;
 import cn.micro.biz.service.member.IAccountService;
 import cn.micro.biz.service.member.IMemberRoleService;
+import cn.micro.biz.service.member.IUnionCodeService;
+import cn.micro.biz.type.UnionCodeCategoryEnum;
 import cn.micro.biz.type.member.AccountEnum;
 import cn.micro.biz.type.member.MemberGroupEnum;
 import cn.micro.biz.type.member.PlatformEnum;
@@ -47,6 +50,9 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
 
     @Resource
     private IMemberRoleService memberRoleService;
+    @Resource
+    private IUnionCodeService unionCodeService;
+
     @Resource
     private MicroWxService microWxService;
 
@@ -179,7 +185,42 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
 
     @Override
     public Boolean doForgetPassword(ForgetPassword forgetPassword) {
-        return null;
+        UnionCode unionCode = unionCodeService.getOne(UnionCode::getCategory,
+                UnionCodeCategoryEnum.FORGET_PASSWORD.getValue(),
+                UnionCode::getAccount, forgetPassword.getAccount());
+        if (unionCode == null) {
+            throw new MicroBadRequestException("验证码不存在");
+        }
+        if (!unionCode.getCode().equals(forgetPassword.getCode())) {
+            // 验证失败，则失败次数+1
+            UnionCode updateUnionCode = new UnionCode();
+            updateUnionCode.setId(unionCode.getId());
+            updateUnionCode.setFailTimes(unionCode.getFailTimes() + 1);
+            unionCodeService.updateById(updateUnionCode);
+
+            // 失败次数达到上限后,直接删除验证码
+            if (updateUnionCode.getFailTimes() >= unionCode.getMaxTimes()) {
+                unionCodeService.removeById(unionCode.getId());
+            }
+
+            return false;
+        }
+
+        Member member = memberMapper.selectOne(Member::getEmail, unionCode.getAccount());
+        if (member == null) {
+            throw new MicroBadRequestException("账号不存在");
+        }
+
+        // 重置密码
+        Member updateMember = new Member();
+        updateMember.setId(member.getId());
+        updateMember.setPwd(RSAUtils.encryptPwd(forgetPassword.getPassword(), member.getSalt()));
+        updateMember.setPassword(RSAUtils.encryptPassword(updateMember.getPwd()));
+        if (memberMapper.updateById(updateMember) <= 0) {
+            throw new MicroErrorException("重置密码失败");
+        }
+
+        return true;
     }
 
     @Override

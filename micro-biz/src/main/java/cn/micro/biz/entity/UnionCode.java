@@ -23,17 +23,9 @@ public class UnionCode extends MicroEntity<UnionCode> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Member id
-     */
-    private Long memberId;
-    /**
-     * IP address
-     */
-    private String ip;
-    /**
      * 全局ID(UUID填充)
      */
-    private String unionId;
+    private String account;
     /**
      * Union code category
      * <p>
@@ -44,6 +36,14 @@ public class UnionCode extends MicroEntity<UnionCode> {
      * Union code value
      */
     private String code;
+    /**
+     * 最大验证次数
+     */
+    private Integer maxTimes;
+    /**
+     * 失败次数
+     */
+    private Integer failTimes;
     /**
      * Start time
      */
