@@ -1,9 +1,9 @@
 package cn.micro.biz.commons.trace;
 
 import cn.micro.biz.commons.exception.GlobalExceptionFilter;
-import cn.micro.biz.commons.response.NonMeta;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -14,10 +14,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -31,7 +27,6 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -51,6 +46,7 @@ public class GlobalTraceInterceptor implements InitializingBean, DisposableBean,
     private static final PathMatcher PATH_MATCHER = new AntPathMatcher();
     private static final Map<String, RequestMappingInfo> REQUEST_MAPPING_INFO_MAP = new ConcurrentHashMap<>();
 
+    @Getter
     private static Cache<String, String> cache;
 
 
@@ -160,29 +156,4 @@ public class GlobalTraceInterceptor implements InitializingBean, DisposableBean,
         return request.getMethod() + "@" + request.getRequestURI();
     }
 
-    @RestController
-    @RequestMapping("trace")
-    public static class TraceController implements Serializable {
-
-        @NonMeta
-        @RequestMapping(value = "{traceId}", method = RequestMethod.GET)
-        public String getDump(@PathVariable("traceId") String traceId) {
-            if (cache == null) {
-                return "No start trace cache.";
-            }
-
-            String dump = cache.getIfPresent(traceId);
-            if (dump == null) {
-                return "Not found requestId: " + traceId;
-            }
-
-            StringBuilder sb = new StringBuilder();
-            for (String lineStr : dump.split("\n")) {
-                sb.append(lineStr).append("<br/>");
-            }
-
-            return sb.toString();
-        }
-
-    }
 }
