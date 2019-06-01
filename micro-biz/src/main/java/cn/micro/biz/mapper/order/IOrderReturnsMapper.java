@@ -1,13 +1,13 @@
 package cn.micro.biz.mapper.order;
 
+import cn.micro.biz.commons.mybatis.extension.IMicroMapper;
 import cn.micro.biz.entity.order.OrderReturns;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
  * Order Returns Mapper
  *
  * @author lry
  */
-public interface IOrderReturnsMapper extends BaseMapper<OrderReturns> {
+public interface IOrderReturnsMapper extends IMicroMapper<OrderReturns> {
 
 }

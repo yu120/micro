@@ -1,7 +1,7 @@
 package cn.micro.biz.mapper.member;
 
+import cn.micro.biz.commons.mybatis.extension.IMicroMapper;
 import cn.micro.biz.entity.member.MemberRole;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author lry
  */
-public interface IMemberRoleMapper extends BaseMapper<MemberRole> {
+public interface IMemberRoleMapper extends IMicroMapper<MemberRole> {
 
     /**
      * 查询用户直接拥有的角色CODE列表
