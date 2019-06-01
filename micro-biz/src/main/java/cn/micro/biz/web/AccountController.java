@@ -75,19 +75,19 @@ public class AccountController {
     }
 
     @PreAuth
-    @RequestMapping(value = "change-password", method = RequestMethod.POST)
+    @RequestMapping(value = "change-password", method = RequestMethod.PUT)
     public Boolean changePassword(@RequestBody @Validated ChangePassword changePassword) {
         return accountService.doChangePassword(changePassword);
     }
 
     @PreAuth
-    @RequestMapping(value = "change-email", method = RequestMethod.POST)
+    @RequestMapping(value = "change-email", method = RequestMethod.PUT)
     public Boolean changeEmail(@RequestBody @Validated ForgetPassword forgetPassword) {
         return accountService.doForgetPassword(forgetPassword);
     }
 
     @PreAuth
-    @RequestMapping(value = "change-mobile", method = RequestMethod.POST)
+    @RequestMapping(value = "change-mobile", method = RequestMethod.PUT)
     public Boolean changeMobile(@RequestBody @Validated ForgetPassword forgetPassword) {
         return accountService.doForgetPassword(forgetPassword);
     }
