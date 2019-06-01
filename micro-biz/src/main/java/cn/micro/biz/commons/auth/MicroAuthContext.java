@@ -346,6 +346,14 @@ public class MicroAuthContext implements InitializingBean {
         return microTokenBody.getMemberId();
     }
 
+    public static Long getNonMemberId() {
+        try {
+            return getMemberId();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public static Long getTenantId() {
         MicroTokenBody microTokenBody;
         try {

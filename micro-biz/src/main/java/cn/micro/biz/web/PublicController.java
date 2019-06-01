@@ -3,9 +3,9 @@ package cn.micro.biz.web;
 import cn.micro.biz.commons.auth.NonAuth;
 import cn.micro.biz.commons.auth.PreAuth;
 import cn.micro.biz.model.vo.OssTokenVO;
-import cn.micro.biz.pubsrv.email.EmailService;
 import cn.micro.biz.pubsrv.oss.QiNiuOssService;
 import cn.micro.biz.pubsrv.sms.AliYunSmsService;
+import cn.micro.biz.service.member.IUnionCodeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class PublicController {
 
     private final QiNiuOssService qiNiuOssService;
     private final AliYunSmsService aliYunSmsService;
-    private final EmailService emailService;
+    private final IUnionCodeService unionCodeService;
 
     @NonAuth
     @RequestMapping(value = "oss-token", method = RequestMethod.GET)
@@ -44,7 +44,7 @@ public class PublicController {
 
     @RequestMapping(value = "email-send", method = RequestMethod.POST)
     public Boolean sendSimpleMail(@RequestParam("category") Integer category, @RequestParam("email") String email) {
-        return emailService.sendMail(category, email);
+        return unionCodeService.sendMail(category, email);
     }
 
 }
