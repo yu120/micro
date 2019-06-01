@@ -1,13 +1,13 @@
 package cn.micro.biz.mapper.member;
 
+import cn.micro.biz.commons.mybatis.extension.IMicroMapper;
 import cn.micro.biz.entity.member.Permission;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
  * Permission Mapper
  *
  * @author lry
  */
-public interface IPermissionMapper extends BaseMapper<Permission> {
+public interface IPermissionMapper extends IMicroMapper<Permission> {
 
 }
