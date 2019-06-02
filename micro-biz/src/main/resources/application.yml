@@ -152,7 +152,7 @@ micro:
     host: smtp.163.com
     personal: 木子李
     username: lry2017@163.com
-    password: yu120123
+    password: xxx
   mq:
     enable: false
     uri: amqp://192.168.2.56:5672
