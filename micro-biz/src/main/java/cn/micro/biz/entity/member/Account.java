@@ -40,6 +40,6 @@ public class Account extends MicroEntity<Account> {
      * <p>
      * {@link AccountEnum}
      */
-    private Integer category;
+    private AccountEnum category;
 
 }

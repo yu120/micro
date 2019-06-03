@@ -2,6 +2,7 @@ package cn.micro.biz.web;
 
 import cn.micro.biz.commons.auth.MicroToken;
 import cn.micro.biz.commons.auth.PreAuth;
+import cn.micro.biz.entity.member.Account;
 import cn.micro.biz.model.add.RegisterAccount;
 import cn.micro.biz.model.edit.ChangeEmailOrMobile;
 import cn.micro.biz.model.edit.ChangePassword;
@@ -9,10 +10,13 @@ import cn.micro.biz.model.edit.ForgetPassword;
 import cn.micro.biz.model.query.LoginAccount;
 import cn.micro.biz.pubsrv.wx.WxAuthCode2Session;
 import cn.micro.biz.service.member.IAccountService;
+import cn.micro.biz.type.member.AccountEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Account Controller
@@ -26,6 +30,19 @@ import org.springframework.web.bind.annotation.*;
 public class AccountController {
 
     private final IAccountService accountService;
+
+    @RequestMapping(value = "add", method = RequestMethod.GET)
+    public Boolean add() {
+        Account account = new Account();
+        account.setCategory(AccountEnum.EMAIL);
+        return accountService.save(account);
+    }
+
+    @RequestMapping(value = "list", method = RequestMethod.GET)
+    public List<Account> list() {
+        return accountService.list();
+    }
+
 
     @RequestMapping(value = "register", method = RequestMethod.PUT)
     public Boolean register(@RequestBody @Validated RegisterAccount registerAccount) {
