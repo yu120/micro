@@ -80,7 +80,7 @@ public interface IMicroMapper<T> extends BaseMapper<T> {
      * @param eqValue  eg: "Tom"
      * @return {@link T }
      */
-    default boolean delete(SFunction<T, Serializable> eqColumn, Serializable eqValue) {
+    default int delete(SFunction<T, Serializable> eqColumn, Serializable eqValue) {
         return delete(eqColumn, eqValue, null, null);
     }
 
@@ -93,15 +93,9 @@ public interface IMicroMapper<T> extends BaseMapper<T> {
      * @param eqValue2  eg: "STUDENT"
      * @return {@link T }
      */
-    default boolean delete(
-            SFunction<T, Serializable> eqColumn1, Serializable eqValue1,
-            SFunction<T, Serializable> eqColumn2, Serializable eqValue2) {
-        LambdaQueryWrapper<T> wrapper = new LambdaQueryWrapper<T>().eq(eqColumn1, eqValue1);
-        if (eqColumn2 != null && eqValue2 != null) {
-            wrapper.eq(eqColumn2, eqValue2);
-        }
-
-        return this.delete(wrapper) > 0;
+    default int delete(SFunction<T, Serializable> eqColumn1, Serializable eqValue1,
+                       SFunction<T, Serializable> eqColumn2, Serializable eqValue2) {
+        return this.delete(buildEqQuery(eqColumn1, eqValue1, eqColumn2, eqValue2));
     }
 
     // ====== lambda equals(eq) to one object
@@ -114,7 +108,7 @@ public interface IMicroMapper<T> extends BaseMapper<T> {
      * @param eqValue  eg: "Tom"
      * @return {@link T }
      */
-    default boolean update(T entity, SFunction<T, Serializable> eqColumn, Serializable eqValue) {
+    default int update(T entity, SFunction<T, Serializable> eqColumn, Serializable eqValue) {
         return update(entity, eqColumn, eqValue, null, null);
     }
 
@@ -128,16 +122,10 @@ public interface IMicroMapper<T> extends BaseMapper<T> {
      * @param eqValue2  eg: "STUDENT"
      * @return {@link T }
      */
-    default boolean update(
-            T entity,
-            SFunction<T, Serializable> eqColumn1, Serializable eqValue1,
-            SFunction<T, Serializable> eqColumn2, Serializable eqValue2) {
-        LambdaQueryWrapper<T> wrapper = new LambdaQueryWrapper<T>().eq(eqColumn1, eqValue1);
-        if (eqColumn2 != null && eqValue2 != null) {
-            wrapper.eq(eqColumn2, eqValue2);
-        }
-
-        return this.update(entity, wrapper) > 0;
+    default int update(T entity,
+                       SFunction<T, Serializable> eqColumn1, Serializable eqValue1,
+                       SFunction<T, Serializable> eqColumn2, Serializable eqValue2) {
+        return this.update(entity, buildEqQuery(eqColumn1, eqValue1, eqColumn2, eqValue2));
     }
 
     // ====== lambda in to list object
@@ -175,9 +163,8 @@ public interface IMicroMapper<T> extends BaseMapper<T> {
      * @param inValues eg: "beijing", "shanghai"
      * @return {@link List<T> }
      */
-    default List<T> selectListEqAndIn(
-            SFunction<T, Serializable> eqColumn, Serializable eqValue,
-            SFunction<T, Serializable> inColumn, Object... inValues) {
+    default List<T> selectListEqAndIn(SFunction<T, Serializable> eqColumn, Serializable eqValue,
+                                      SFunction<T, Serializable> inColumn, Object... inValues) {
         return selectListEqAndIn(eqColumn, eqValue, null, null, inColumn, inValues);
     }
 
@@ -192,10 +179,9 @@ public interface IMicroMapper<T> extends BaseMapper<T> {
      * @param inValues  eg: "beijing", "shanghai"
      * @return {@link List<T> }
      */
-    default List<T> selectListEqAndIn(
-            SFunction<T, Serializable> eqColumn1, Serializable eqValue1,
-            SFunction<T, Serializable> eqColumn2, Serializable eqValue2,
-            SFunction<T, Serializable> inColumn, Object... inValues) {
+    default List<T> selectListEqAndIn(SFunction<T, Serializable> eqColumn1, Serializable eqValue1,
+                                      SFunction<T, Serializable> eqColumn2, Serializable eqValue2,
+                                      SFunction<T, Serializable> inColumn, Object... inValues) {
         return this.selectList(buildEqQuery(eqColumn1, eqValue1, eqColumn2, eqValue2).in(inColumn, inValues));
     }
 
@@ -208,9 +194,8 @@ public interface IMicroMapper<T> extends BaseMapper<T> {
      * @param inValues eg: Arrays.asList("beijing", "shanghai")
      * @return {@link List<T> }
      */
-    default List<T> selectListEqAndIn(
-            SFunction<T, Serializable> eqColumn, Serializable eqValue,
-            SFunction<T, Serializable> inColumn, Collection<Serializable> inValues) {
+    default List<T> selectListEqAndIn(SFunction<T, Serializable> eqColumn, Serializable eqValue,
+                                      SFunction<T, Serializable> inColumn, Collection<Serializable> inValues) {
         return selectListEqAndIn(eqColumn, eqValue, null, null, inColumn, inValues);
     }
 
@@ -225,10 +210,9 @@ public interface IMicroMapper<T> extends BaseMapper<T> {
      * @param inValues  eg: Arrays.asList("beijing", "shanghai")
      * @return {@link List<T> }
      */
-    default List<T> selectListEqAndIn(
-            SFunction<T, Serializable> eqColumn1, Serializable eqValue1,
-            SFunction<T, Serializable> eqColumn2, Serializable eqValue2,
-            SFunction<T, Serializable> inColumn, Collection<Serializable> inValues) {
+    default List<T> selectListEqAndIn(SFunction<T, Serializable> eqColumn1, Serializable eqValue1,
+                                      SFunction<T, Serializable> eqColumn2, Serializable eqValue2,
+                                      SFunction<T, Serializable> inColumn, Collection<Serializable> inValues) {
         return this.selectList(buildEqQuery(eqColumn1, eqValue1, eqColumn2, eqValue2).in(inColumn, inValues));
     }
 
@@ -241,15 +225,13 @@ public interface IMicroMapper<T> extends BaseMapper<T> {
      * @param value2  eg: "STUDENT"
      * @return {@link LambdaQueryWrapper<T>}
      */
-    default LambdaQueryWrapper<T> buildEqQuery(
-            SFunction<T, Serializable> column1, Serializable value1,
-            SFunction<T, Serializable> column2, Serializable value2) {
-        LambdaQueryWrapper<T> wrapper = new LambdaQueryWrapper<T>().eq(column1, value1);
-        if (column2 != null && value2 != null) {
-            wrapper.eq(column2, value2);
+    static <T> LambdaQueryWrapper<T> buildEqQuery(SFunction<T, Serializable> column1, Serializable value1,
+                                                  SFunction<T, Serializable> column2, Serializable value2) {
+        if (column2 == null || value2 == null) {
+            return new LambdaQueryWrapper<T>().eq(column1, value1);
+        } else {
+            return new LambdaQueryWrapper<T>().eq(column1, value1).eq(column2, value2);
         }
-
-        return wrapper;
     }
 
 }
