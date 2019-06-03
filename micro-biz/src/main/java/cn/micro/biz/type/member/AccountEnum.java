@@ -3,6 +3,7 @@ package cn.micro.biz.type.member;
 import cn.micro.biz.commons.mybatis.extension.enums.IEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Account Category
@@ -10,6 +11,7 @@ import lombok.Getter;
  * @author lry
  */
 @Getter
+@ToString
 @AllArgsConstructor
 public enum AccountEnum implements IEnum<AccountEnum, Integer> {
 

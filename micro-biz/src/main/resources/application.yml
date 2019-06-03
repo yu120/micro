@@ -13,6 +13,7 @@ spring:
       ALLOW_UNQUOTED_CONTROL_CHARS: true
     serialization:
       INDENT_OUTPUT: true
+      WRITE_ENUMS_USING_TO_STRING: true
   thymeleaf:
     cache: false
     prefix: classpath:/static/
