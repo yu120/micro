@@ -2,9 +2,12 @@ package cn.micro.biz.commons.mybatis;
 
 import cn.micro.biz.commons.auth.MicroAuthContext;
 import cn.micro.biz.commons.exception.MicroErrorException;
+import cn.micro.biz.commons.mybatis.extension.EnumTypeHandler;
 import cn.micro.biz.commons.mybatis.extension.TraceExpendInterceptor;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
+import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
+import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.injector.DefaultSqlInjector;
 import com.baomidou.mybatisplus.core.parser.ISqlParser;
 import com.baomidou.mybatisplus.core.parser.SqlParserHelper;
@@ -204,10 +207,15 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
     /**
      * Mybatis Mapper Scanner Configurer
      *
+     * @param mybatisPlusProperties {@link MybatisPlusProperties}
      * @return {@link MapperScannerConfigurer}
      */
     @Bean
-    public MapperScannerConfigurer mapperScannerConfigurer() {
+    public MapperScannerConfigurer mapperScannerConfigurer(MybatisPlusProperties mybatisPlusProperties) {
+        MybatisConfiguration mybatisConfiguration = new MybatisConfiguration();
+        mybatisConfiguration.setDefaultEnumTypeHandler(EnumTypeHandler.class);
+        mybatisPlusProperties.setConfiguration(mybatisConfiguration);
+
         MapperScannerConfigurer scannerConfigurer = new MapperScannerConfigurer();
         scannerConfigurer.setBasePackage(mapperPackage);
         return scannerConfigurer;
@@ -222,7 +230,16 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
     public DefaultSqlInjector defaultSqlInjector() {
         return new DefaultSqlInjector();
     }
-
+//
+//    @Bean
+//    @ConfigurationProperties(prefix = MybatisPlusProperties.MYBATIS_PREFIX)
+//    public MybatisPlusProperties mybatisPlusProperties() {
+//        MybatisPlusProperties mybatisPlusProperties = new MybatisPlusProperties();
+//        MybatisConfiguration configuration = new MybatisConfiguration();
+//        configuration.setDefaultEnumTypeHandler(EnumTypeHandler.class);
+//        mybatisPlusProperties.setConfiguration(configuration);
+//        return mybatisPlusProperties;
+//    }
 
     // ============ Custom Mybatis Interceptor ==============
 
