@@ -1,6 +1,7 @@
 package cn.micro.biz.commons.mybatis.extension;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 
@@ -95,7 +96,7 @@ public interface IMicroMapper<T> extends BaseMapper<T> {
      */
     default int delete(SFunction<T, Serializable> eqColumn1, Serializable eqValue1,
                        SFunction<T, Serializable> eqColumn2, Serializable eqValue2) {
-        return this.delete(buildEqQuery(eqColumn1, eqValue1, eqColumn2, eqValue2));
+        return this.delete(buildEqUpdate(eqColumn1, eqValue1, eqColumn2, eqValue2));
     }
 
     // ====== lambda equals(eq) to one object
@@ -125,7 +126,7 @@ public interface IMicroMapper<T> extends BaseMapper<T> {
     default int update(T entity,
                        SFunction<T, Serializable> eqColumn1, Serializable eqValue1,
                        SFunction<T, Serializable> eqColumn2, Serializable eqValue2) {
-        return this.update(entity, buildEqQuery(eqColumn1, eqValue1, eqColumn2, eqValue2));
+        return this.update(entity, buildEqUpdate(eqColumn1, eqValue1, eqColumn2, eqValue2));
     }
 
     // ====== lambda in to list object
@@ -217,7 +218,7 @@ public interface IMicroMapper<T> extends BaseMapper<T> {
     }
 
     /**
-     * Build eq in
+     * Build select eq in
      *
      * @param column1 eg: User::getName
      * @param value1  eg: "Tom"
@@ -231,6 +232,24 @@ public interface IMicroMapper<T> extends BaseMapper<T> {
             return new LambdaQueryWrapper<T>().eq(column1, value1);
         } else {
             return new LambdaQueryWrapper<T>().eq(column1, value1).eq(column2, value2);
+        }
+    }
+
+    /**
+     * Build update eq in
+     *
+     * @param column1 eg: User::getName
+     * @param value1  eg: "Tom"
+     * @param column2 eg: User::getCategory
+     * @param value2  eg: "STUDENT"
+     * @return {@link LambdaQueryWrapper<T>}
+     */
+    static <T> LambdaUpdateWrapper<T> buildEqUpdate(SFunction<T, Serializable> column1, Serializable value1,
+                                                    SFunction<T, Serializable> column2, Serializable value2) {
+        if (column2 == null || value2 == null) {
+            return new LambdaUpdateWrapper<T>().eq(column1, value1);
+        } else {
+            return new LambdaUpdateWrapper<T>().eq(column1, value1).eq(column2, value2);
         }
     }
 

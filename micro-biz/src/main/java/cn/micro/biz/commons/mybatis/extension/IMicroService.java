@@ -95,7 +95,7 @@ public interface IMicroService<T> extends IService<T> {
      */
     default boolean remove(SFunction<T, Serializable> eqColumn1, Serializable eqValue1,
                            SFunction<T, Serializable> eqColumn2, Serializable eqValue2) {
-        return this.remove(IMicroMapper.buildEqQuery(eqColumn1, eqValue1, eqColumn2, eqValue2));
+        return this.remove(IMicroMapper.buildEqUpdate(eqColumn1, eqValue1, eqColumn2, eqValue2));
     }
 
     // ====== lambda equals(eq) to one object
@@ -125,7 +125,7 @@ public interface IMicroService<T> extends IService<T> {
     default boolean update(T entity,
                            SFunction<T, Serializable> eqColumn1, Serializable eqValue1,
                            SFunction<T, Serializable> eqColumn2, Serializable eqValue2) {
-        return this.update(entity, IMicroMapper.buildEqQuery(eqColumn1, eqValue1, eqColumn2, eqValue2));
+        return this.update(entity, IMicroMapper.buildEqUpdate(eqColumn1, eqValue1, eqColumn2, eqValue2));
     }
 
     // ====== lambda in to list object
