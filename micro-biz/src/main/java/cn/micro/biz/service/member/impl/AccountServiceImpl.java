@@ -6,6 +6,7 @@ import cn.micro.biz.commons.auth.MicroTokenBody;
 import cn.micro.biz.commons.exception.MicroBadRequestException;
 import cn.micro.biz.commons.exception.MicroErrorException;
 import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
+import cn.micro.biz.commons.mybatis.extension.enums.IEnum;
 import cn.micro.biz.commons.utils.IPUtils;
 import cn.micro.biz.commons.utils.RSAUtils;
 import cn.micro.biz.entity.member.Account;
@@ -113,7 +114,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
             Account addAccount = new Account();
             addAccount.setMemberId(addOrUpdateMember.getId());
             addAccount.setCode(registerAccount.getAccount());
-            addAccount.setCategory(AccountEnum.parse(registerAccount.getCategory()));
+            addAccount.setCategory(IEnum.parse(AccountEnum.class, registerAccount.getCategory()));
             if (baseMapper.insert(addAccount) <= 0) {
                 throw new MicroErrorException("账号注册失败");
             }
@@ -301,7 +302,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
             // 5.1.新增登录账号
             Account addAccount = new Account();
             addAccount.setMemberId(currentMemberId);
-            addAccount.setCategory(AccountEnum.parse(changeEmailOrMobile.getCategory()));
+            addAccount.setCategory(IEnum.parse(AccountEnum.class, changeEmailOrMobile.getCategory()));
             addAccount.setCode(changeEmailOrMobile.getAccount());
             if (!super.save(addAccount)) {
                 throw new MicroBadRequestException("修改失败");
@@ -318,7 +319,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
             // 5.2.修改登录账号
             Account updateAccount = new Account();
             updateAccount.setId(currentAccount.getId());
-            updateAccount.setCategory(AccountEnum.parse(changeEmailOrMobile.getCategory()));
+            updateAccount.setCategory(IEnum.parse(AccountEnum.class, changeEmailOrMobile.getCategory()));
             updateAccount.setCode(changeEmailOrMobile.getAccount());
             if (!super.updateById(updateAccount)) {
                 throw new MicroBadRequestException("修改失败");
