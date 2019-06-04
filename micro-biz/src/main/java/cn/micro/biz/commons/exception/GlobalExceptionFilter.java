@@ -31,7 +31,7 @@ import java.nio.charset.StandardCharsets;
 @Order(SpringOrder.GLOBAL_EXCEPTION)
 public class GlobalExceptionFilter extends OncePerRequestFilter {
 
-    public static final String X_TRACE_ID = "X-Trace-ID";
+    public static final String X_TRACE_ID = "X-Trace-Id";
     private static final IdGenerator ID_GENERATOR = new IdGenerator(0, 0);
 
     @Override
@@ -56,7 +56,7 @@ public class GlobalExceptionFilter extends OncePerRequestFilter {
         request.setAttribute(X_TRACE_ID, traceId);
         response.setHeader(X_TRACE_ID, traceId);
         wrapperCORS(response);
-        String ipAddress = IPUtils.getRequestIPAddress();
+        String ipAddress = IPUtils.getRequestIPAddress(request);
 
         try {
             MDC.put(X_TRACE_ID, traceId);
@@ -89,7 +89,8 @@ public class GlobalExceptionFilter extends OncePerRequestFilter {
         response.setHeader(HttpHeaders.ACCESS_CONTROL_MAX_AGE, "3600");
         response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
         response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
-        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "POST, GET, OPTIONS, DELETE, PUT, HEADER");
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS,
+                "POST, GET, OPTIONS, DELETE, PUT, HEADER");
         response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS,
                 "Content-Type, X-Access-Token, X-Refresh-Token, X-Trace-Id, X-Requested-With");
     }
