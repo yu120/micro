@@ -26,7 +26,7 @@ public class MicroProperties implements Serializable {
     /**
      * true表示查看所有错误日志
      */
-    private boolean showAllError;
+    private boolean exceptionDebug;
     /**
      * Stack max length
      */

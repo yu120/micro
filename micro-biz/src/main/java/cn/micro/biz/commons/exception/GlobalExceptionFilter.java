@@ -1,12 +1,15 @@
 package cn.micro.biz.commons.exception;
 
+import cn.micro.biz.commons.configuration.MicroProperties;
 import cn.micro.biz.commons.configuration.SpringOrder;
 import cn.micro.biz.commons.response.MetaData;
 import cn.micro.biz.commons.utils.IPUtils;
 import cn.micro.biz.commons.utils.IdGenerator;
 import com.alibaba.fastjson.JSON;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -29,10 +32,13 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 @Configuration
 @Order(SpringOrder.GLOBAL_EXCEPTION)
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class GlobalExceptionFilter extends OncePerRequestFilter {
 
     public static final String X_TRACE_ID = "X-Trace-Id";
     private static final IdGenerator ID_GENERATOR = new IdGenerator(0, 0);
+
+    private final MicroProperties microProperties;
 
     @Override
     protected void doFilterInternal(
@@ -63,17 +69,24 @@ public class GlobalExceptionFilter extends OncePerRequestFilter {
             log.debug("Request enter: {}", ipAddress);
             filterChain.doFilter(request, response);
         } catch (Throwable t) {
-            if (t.getCause() != null) {
-                if (t.getCause() instanceof AbstractMicroException) {
-                    AbstractMicroException e = (AbstractMicroException) t.getCause();
-                    this.buildFailResponse(MetaData.build(traceId, e.getCode(), e.getMessage(), null), response);
-                    return;
-                }
+            if (microProperties.isExceptionDebug()) {
+                log.error("Internal Server Error", t);
             }
 
-            log.error("Internal Server Error", t);
-            this.buildFailResponse(MetaData.build(traceId, HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                    HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), t.getMessage()), response);
+            if ((t.getCause() != null) && (t.getCause() instanceof AbstractMicroException)) {
+                AbstractMicroException ame = (AbstractMicroException) t.getCause();
+                this.buildFailResponse(MetaData.build(traceId, ame.getCode(), ame.getMessage(), null), response);
+                return;
+            }
+
+            // print internal server error
+            if (!microProperties.isExceptionDebug()) {
+                log.error("Internal Server Error", t);
+            }
+
+            // write fail response
+            this.buildFailResponse(MetaData.build(traceId, MicroStatus.MICRO_ERROR_EXCEPTION.getCode(),
+                    MicroStatus.MICRO_ERROR_EXCEPTION.getMessage(), t.getMessage()), response);
         } finally {
             log.debug("Request exist: {}", ipAddress);
             MDC.remove(X_TRACE_ID);
