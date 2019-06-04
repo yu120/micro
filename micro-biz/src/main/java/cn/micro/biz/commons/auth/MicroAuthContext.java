@@ -356,8 +356,7 @@ public class MicroAuthContext implements InitializingBean {
 
 
     public static Long getMemberId() {
-        MicroTokenBody microTokenBody = getContextAccessToken();
-        return microTokenBody.getMemberId();
+        return getContextAccessToken().getMemberId();
     }
 
     public static Long getNonMemberId() {
@@ -383,8 +382,7 @@ public class MicroAuthContext implements InitializingBean {
     }
 
     public static List<String> getAuthorities() {
-        MicroTokenBody microTokenBody = getContextAccessToken();
-        return microTokenBody.getAuthorities();
+        return getContextAccessToken().getAuthorities();
     }
 
     private static void withObjectClaim(JWTCreator.Builder builder, String key, Object value) {
