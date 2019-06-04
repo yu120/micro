@@ -13,7 +13,7 @@ import lombok.Getter;
 public class MicroCacheException extends AbstractMicroException {
 
     public MicroCacheException(Throwable exception) {
-        super(null, null, exception);
+        super(null, null, null, exception);
     }
 
 }

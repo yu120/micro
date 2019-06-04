@@ -13,7 +13,7 @@ import lombok.Getter;
 public class MicroPermissionException extends AbstractMicroException {
 
     public MicroPermissionException(String message) {
-        super(message, null, null);
+        super(null, message, null, null);
     }
 
 }

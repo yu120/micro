@@ -13,11 +13,11 @@ import lombok.Getter;
 public class MicroErrorException extends AbstractMicroException {
 
     public MicroErrorException(String message) {
-        super(message, null, null);
+        super(null, message, null, null);
     }
 
     public MicroErrorException(String message, Throwable cause) {
-        super(message, null, cause);
+        super(null, message, null, cause);
     }
 
 }

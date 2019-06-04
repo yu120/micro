@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
         }
 
         Object traceId = request.getAttribute(GlobalExceptionFilter.X_TRACE_ID);
-        MetaData metaData = MicroStatus.buildMetaData(traceId, e);
+        MetaData metaData = MicroStatus.buildErrorMetaData(traceId, e);
 
         // print internal server error
         if (metaData.getCode() >= HttpStatus.INTERNAL_SERVER_ERROR.value() && !microProperties.isShowAllError()) {

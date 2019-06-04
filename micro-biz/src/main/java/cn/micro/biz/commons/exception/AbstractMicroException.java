@@ -14,16 +14,12 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = false)
 public abstract class AbstractMicroException extends RuntimeException {
 
-    protected int code;
+    protected Integer code;
     protected String message;
 
     protected String stack;
 
-    public AbstractMicroException(String message, String stack, Throwable cause) {
-        this(400, message, stack, cause);
-    }
-
-    public AbstractMicroException(int code, String message, String stack, Throwable cause) {
+    public AbstractMicroException(Integer code, String message, String stack, Throwable cause) {
         super(message, cause);
         this.code = code;
         this.message = message;
