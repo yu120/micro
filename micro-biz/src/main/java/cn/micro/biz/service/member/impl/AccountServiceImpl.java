@@ -206,7 +206,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
         microTokenBody.setMemberName(member.getName());
         microTokenBody.setAuthorities(roleCodes);
 
-        // wrapper new token
+        // build new token
         return MicroAuthContext.build(microTokenBody);
     }
 

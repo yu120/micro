@@ -11,7 +11,7 @@
     <description>The Micro Service/Frame</description>
 
     <properties>
-        <project.wrapper.sourceEncoding>UTF-8</project.wrapper.sourceEncoding>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
     </properties>
 
@@ -35,7 +35,7 @@
         </dependencies>
     </dependencyManagement>
 
-    <wrapper>
+    <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -47,6 +47,6 @@
                 </configuration>
             </plugin>
         </plugins>
-    </wrapper>
+    </build>
 
 </project>

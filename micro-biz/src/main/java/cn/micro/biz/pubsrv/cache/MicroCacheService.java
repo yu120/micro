@@ -112,7 +112,7 @@ public class MicroCacheService implements InitializingBean, DisposableBean {
     }
 
     /**
-     * The wrapper cache key
+     * The build cache key
      *
      * @param microCache {@link MicroCache}
      * @param parameters cache parameter list
@@ -123,7 +123,7 @@ public class MicroCacheService implements InitializingBean, DisposableBean {
     }
 
     /**
-     * The wrapper evict cache key
+     * The build evict cache key
      *
      * @param microEvictCache {@link MicroEvictCache}
      * @param parameters      cache parameter list
@@ -134,7 +134,7 @@ public class MicroCacheService implements InitializingBean, DisposableBean {
     }
 
     /**
-     * The wrapper cache key
+     * The build cache key
      *
      * @param cacheKey   {@link CacheKey}
      * @param memberId   memberId
@@ -196,7 +196,7 @@ public class MicroCacheService implements InitializingBean, DisposableBean {
     }
 
     /**
-     * The wrapper key suffix
+     * The build key suffix
      *
      * @param args       args
      * @param parameters parameter list
@@ -220,7 +220,7 @@ public class MicroCacheService implements InitializingBean, DisposableBean {
     }
 
     /**
-     * The wrapper cache
+     * The build cache
      *
      * @param microCacheRuleProperties {@link MicroCacheRuleProperties}
      * @return {@link Cache}
@@ -255,7 +255,7 @@ public class MicroCacheService implements InitializingBean, DisposableBean {
     }
 
     /**
-     * The wrapper cache
+     * The build cache
      *
      * @param microCacheType   {@link MicroCacheType}
      * @param expireAfterWrite expireAfterWrite
@@ -278,7 +278,7 @@ public class MicroCacheService implements InitializingBean, DisposableBean {
     }
 
     /**
-     * The wrapper redis lettuce cache
+     * The build redis lettuce cache
      *
      * @param localExpireAfterWrite local expire after write
      * @param timeUnit              {@link TimeUnit}
@@ -294,7 +294,7 @@ public class MicroCacheService implements InitializingBean, DisposableBean {
     }
 
     /**
-     * The wrapper redis lettuce cache
+     * The build redis lettuce cache
      *
      * @param remoteExpireAfterWrite remote expire after write
      * @param timeUnit               {@link TimeUnit}
