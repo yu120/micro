@@ -114,8 +114,10 @@ public class MicroAuthContext implements InitializingBean {
 
             if (properties.isTokenExpire()) {
                 try {
-                    RedisService.commandSetSec(MicroAuthContext.buildAccessTokenKey(memberId), accessTokenStr, properties.getTokenExpires().getSeconds());
-                    RedisService.commandSetSec(MicroAuthContext.buildRefreshTokenKey(memberId), refreshTokenStr, properties.getRefreshToken().getSeconds());
+                    RedisService.commandSetSec(MicroAuthContext.buildAccessTokenKey(memberId),
+                            accessTokenStr, properties.getTokenExpires().getSeconds());
+                    RedisService.commandSetSec(MicroAuthContext.buildRefreshTokenKey(memberId),
+                            refreshTokenStr, properties.getRefreshToken().getSeconds());
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                 }
