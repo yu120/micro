@@ -172,6 +172,9 @@ public enum MicroStatusCode {
                 log.error("Internal Server Error", t);
             }
         }
+        if (metaData != null) {
+            return metaData;
+        }
 
         // Unknown Internal Server Error
         return MetaData.build(traceId, 500, "Unknown Internal Server Error", t.getMessage());
