@@ -69,7 +69,7 @@ mybatis-plus:
 # Custom Config
 micro:
   swagger: true
-  exception-debug: true
+  exception-debug: false
   mybatis:
     block-attack: true
     performance: true

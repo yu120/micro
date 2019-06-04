@@ -5,15 +5,15 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 /**
- * Micro Not Sign In Exception
+ * Micro Token Expired Exception
  *
  * @author lry
  */
 @Getter
 @EqualsAndHashCode(callSuper = false)
-public class MicroSignInException extends AbstractMicroException {
+public class MicroTokenExpiredException extends AbstractMicroException {
 
-    public MicroSignInException(String message) {
+    public MicroTokenExpiredException(String message) {
         super(null, message, null, null);
     }
 

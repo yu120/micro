@@ -3,7 +3,7 @@ package cn.micro.biz.commons.auth;
 import cn.micro.biz.commons.exception.support.MicroBadRequestException;
 import cn.micro.biz.commons.exception.support.MicroErrorException;
 import cn.micro.biz.commons.exception.support.MicroPermissionException;
-import cn.micro.biz.commons.exception.support.MicroSignInException;
+import cn.micro.biz.commons.exception.support.MicroTokenExpiredException;
 import cn.micro.biz.commons.mybatis.MicroTenantProperties;
 import cn.micro.biz.commons.utils.IPUtils;
 import cn.micro.biz.pubsrv.redis.RedisService;
@@ -218,7 +218,7 @@ public class MicroAuthContext implements InitializingBean {
         try {
             VERIFIER.verify(token);
         } catch (TokenExpiredException e) {
-            throw new MicroSignInException("Signature token has expired");
+            throw new MicroTokenExpiredException("Signature token has expired");
         } catch (Exception e) {
             throw new MicroBadRequestException("Signature verification exception");
         }
@@ -294,7 +294,7 @@ public class MicroAuthContext implements InitializingBean {
     private static void verifyTokenExpire(Long memberId, String token) throws Exception {
         String tokenStr = RedisService.commandGet(MicroAuthContext.buildAccessTokenKey(memberId));
         if (tokenStr == null || tokenStr.length() == 0) {
-            throw new MicroSignInException("Server token has expired");
+            throw new MicroTokenExpiredException("Server token has expired");
         }
         if (!tokenStr.equals(token)) {
             throw new MicroBadRequestException("Illegal token");

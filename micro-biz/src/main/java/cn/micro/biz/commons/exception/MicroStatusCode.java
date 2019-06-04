@@ -1,10 +1,7 @@
 package cn.micro.biz.commons.exception;
 
 import cn.micro.biz.commons.configuration.MicroSpringConfiguration;
-import cn.micro.biz.commons.exception.support.MicroBadRequestException;
-import cn.micro.biz.commons.exception.support.MicroErrorException;
-import cn.micro.biz.commons.exception.support.MicroPermissionException;
-import cn.micro.biz.commons.exception.support.MicroSignInException;
+import cn.micro.biz.commons.exception.support.*;
 import cn.micro.biz.commons.response.MetaData;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
@@ -39,7 +36,8 @@ public enum MicroStatusCode {
     SUCCESS(200, null, "success"),
     MICRO_BAD_REQUEST_EXCEPTION(400, MicroBadRequestException.class, "Bad Request"),
     MICRO_PERMISSION_EXCEPTION(401, MicroPermissionException.class, "Unauthorized"),
-    MICRO_SIGN_IN_EXCEPTION(403, MicroSignInException.class, "Token has expired"),
+    MICRO_TOKEN_NOT_FOUND_EXCEPTION(402, MicroTokenNotFoundException.class, "Not Logged On"),
+    MICRO_TOKEN_EXPIRED_EXCEPTION(403, MicroTokenExpiredException.class, "Token Has Expired"),
     MICRO_ERROR_EXCEPTION(500, MicroErrorException.class, "Internal Server Error"),
     ABSTRACT_MICRO_EXCEPTION(null, AbstractMicroException.class, null) {
         @Override
