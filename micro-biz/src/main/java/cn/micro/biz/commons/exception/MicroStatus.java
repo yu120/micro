@@ -36,16 +36,16 @@ public enum MicroStatus {
     MICRO_ERROR_EXCEPTION(500, MicroErrorException.class, "Internal Server Error"),
     ABSTRACT_MICRO_EXCEPTION(null, AbstractMicroException.class, null) {
         @Override
-        protected MetaData wrapper(Object traceId, Exception e) {
-            MetaData metaData = super.wrapper(traceId, e);
-            AbstractMicroException ex = (AbstractMicroException) e;
+        protected MetaData wrapper(Object traceId, Throwable t) {
+            MetaData metaData = super.wrapper(traceId, t);
+            AbstractMicroException ex = (AbstractMicroException) t;
             metaData.setCode(ex.getCode());
             metaData.setMessage(ex.getMessage());
             if (ex.getCode() == null) {
-                log.error("The 'code' value[" + ex.getCode() + "] must be set", e);
+                log.error("The 'code' value[" + ex.getCode() + "] must be set", t);
             }
             if (ex.getMessage() == null || ex.getMessage().length() == 0) {
-                log.error("The 'message' value[" + ex.getCode() + "] must be set", e);
+                log.error("The 'message' value[" + ex.getCode() + "] must be set", t);
             }
 
             return metaData;
@@ -57,9 +57,9 @@ public enum MicroStatus {
     HTTP_MESSAGE_NOT_READABLE_EXCEPTION(400, HttpMessageNotReadableException.class, "Message Not Readable"),
     CONSTRAINT_VIOLATION_EXCEPTION(400, ConstraintViolationException.class, "Bad Request Parameter") {
         @Override
-        protected MetaData wrapper(Object traceId, Exception e) {
-            MetaData metaData = super.wrapper(traceId, e);
-            Iterator<ConstraintViolation<?>> iterator = ((ConstraintViolationException) e).getConstraintViolations().iterator();
+        protected MetaData wrapper(Object traceId, Throwable t) {
+            MetaData metaData = super.wrapper(traceId, t);
+            Iterator<ConstraintViolation<?>> iterator = ((ConstraintViolationException) t).getConstraintViolations().iterator();
             if (iterator.hasNext()) {
                 metaData.setMessage(iterator.next().getMessageTemplate());
             }
@@ -69,9 +69,9 @@ public enum MicroStatus {
     },
     METHOD_ARGUMENT_NOT_VALID_EXCEPTION(400, MethodArgumentNotValidException.class, "Method Argument Not Valid") {
         @Override
-        protected MetaData wrapper(Object traceId, Exception e) {
-            MetaData metaData = super.wrapper(traceId, e);
-            Iterator<ObjectError> iterator = ((MethodArgumentNotValidException) e).getBindingResult().getAllErrors().iterator();
+        protected MetaData wrapper(Object traceId, Throwable t) {
+            MetaData metaData = super.wrapper(traceId, t);
+            Iterator<ObjectError> iterator = ((MethodArgumentNotValidException) t).getBindingResult().getAllErrors().iterator();
             if (iterator.hasNext()) {
                 metaData.setMessage(iterator.next().getDefaultMessage());
             }
@@ -85,12 +85,12 @@ public enum MicroStatus {
     MAX_UPLOAD_SIZE_EXCEEDED_EXCEPTION(413, MaxUploadSizeExceededException.class, "Payload Too Large"),
     BAD_SQL_GRAMMAR_EXCEPTION(500, BadSqlGrammarException.class, "Unknown Bad SQL Exception") {
         @Override
-        protected MetaData wrapper(Object traceId, Exception e) {
-            MetaData metaData = super.wrapper(traceId, e);
-            if (e.getCause() != null) {
+        protected MetaData wrapper(Object traceId, Throwable t) {
+            MetaData metaData = super.wrapper(traceId, t);
+            if (t.getCause() != null) {
                 // SQL Syntax Error Exception
-                if (e.getCause() instanceof SQLException) {
-                    SQLException se = ((SQLException) e.getCause());
+                if (t.getCause() instanceof SQLException) {
+                    SQLException se = ((SQLException) t.getCause());
                     metaData.setMessage("Bad SQL Exception");
                     metaData.setStack(String.format("Bad SQL[Code:%s(State:%s)] %s",
                             se.getErrorCode(), se.getSQLState(), se.getMessage()));
@@ -105,19 +105,32 @@ public enum MicroStatus {
     private final Class<? extends Exception> error;
     private final String message;
 
-    protected MetaData wrapper(Object traceId, Exception e) {
-        return MetaData.build(traceId, this.code, this.message, e.getMessage());
+    protected MetaData wrapper(Object traceId, Throwable t) {
+        return MetaData.build(traceId, this.code, this.message, t.getMessage());
     }
 
-    public static MetaData buildErrorMetaData(Object traceId, Exception e) {
+    public static MetaData buildErrorMetaData(boolean exceptionDebug, Object traceId, Throwable t) {
+        if (exceptionDebug) {
+            log.error("Internal Server Error", t);
+        }
+
+        MetaData metaData = null;
         for (MicroStatus microStatus : values()) {
-            if (microStatus.getError().isAssignableFrom(e.getClass())) {
-                return microStatus.wrapper(traceId, e);
+            if (microStatus.getError().isAssignableFrom(t.getClass())) {
+                metaData = microStatus.wrapper(traceId, t);
+                break;
+            }
+        }
+
+        // print internal server error
+        if (!exceptionDebug) {
+            if (metaData == null || metaData.getCode() >= MICRO_ERROR_EXCEPTION.getCode()) {
+                log.error("Internal Server Error", t);
             }
         }
 
         // Unknown Internal Server Error
-        return MetaData.build(traceId, 500, "Unknown Internal Server Error", e.getMessage());
+        return MetaData.build(traceId, 500, "Unknown Internal Server Error", t.getMessage());
     }
 
 }

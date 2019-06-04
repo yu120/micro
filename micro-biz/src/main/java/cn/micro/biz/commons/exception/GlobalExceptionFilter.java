@@ -69,24 +69,9 @@ public class GlobalExceptionFilter extends OncePerRequestFilter {
             log.debug("Request enter: {}", ipAddress);
             filterChain.doFilter(request, response);
         } catch (Throwable t) {
-            if (microProperties.isExceptionDebug()) {
-                log.error("Internal Server Error", t);
-            }
-
-            if ((t.getCause() != null) && (t.getCause() instanceof AbstractMicroException)) {
-                AbstractMicroException ame = (AbstractMicroException) t.getCause();
-                this.buildFailResponse(MetaData.build(traceId, ame.getCode(), ame.getMessage(), null), response);
-                return;
-            }
-
-            // print internal server error
-            if (!microProperties.isExceptionDebug()) {
-                log.error("Internal Server Error", t);
-            }
-
+            MetaData metaData = MicroStatus.buildErrorMetaData(microProperties.isExceptionDebug(), traceId, t);
             // write fail response
-            this.buildFailResponse(MetaData.build(traceId, MicroStatus.MICRO_ERROR_EXCEPTION.getCode(),
-                    MicroStatus.MICRO_ERROR_EXCEPTION.getMessage(), t.getMessage()), response);
+            this.buildFailResponse(metaData, response);
         } finally {
             log.debug("Request exist: {}", ipAddress);
             MDC.remove(X_TRACE_ID);
@@ -102,8 +87,7 @@ public class GlobalExceptionFilter extends OncePerRequestFilter {
         response.setHeader(HttpHeaders.ACCESS_CONTROL_MAX_AGE, "3600");
         response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
         response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
-        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS,
-                "POST, GET, OPTIONS, DELETE, PUT, HEADER");
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "POST, GET, OPTIONS, DELETE, PUT, HEADER");
         response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS,
                 "Content-Type, X-Access-Token, X-Refresh-Token, X-Trace-Id, X-Requested-With");
     }
