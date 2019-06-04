@@ -47,9 +47,7 @@ public class MetaData implements Serializable {
         }
         headers.put(TRACE_KEY, traceId);
         headers.put(TIME_KEY, new SimpleDateFormat(SDF_PATTERN).format(new Date()));
-        if (stack == null) {
-            headers.put(STACK_KEY, "");
-        } else {
+        if (stack != null) {
             if (stack.length() > MicroSpringConfiguration.STACK_MAX_LENGTH) {
                 headers.put(STACK_KEY, stack.substring(0, MicroSpringConfiguration.STACK_MAX_LENGTH));
             } else {
@@ -59,7 +57,12 @@ public class MetaData implements Serializable {
 
         return new MetaData(code, message, obj, headers);
     }
-    public void setStack(String stack){
+
+    public void setStack(String stack) {
+        if (stack != null) {
+            return;
+        }
+
         if (headers == null) {
             headers = new LinkedHashMap<>();
         }
