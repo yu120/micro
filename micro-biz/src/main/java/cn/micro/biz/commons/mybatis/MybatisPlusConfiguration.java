@@ -1,8 +1,8 @@
 package cn.micro.biz.commons.mybatis;
 
-import cn.micro.biz.commons.auth.MicroAuthContext;
 import cn.micro.biz.commons.exception.support.MicroErrorException;
 import cn.micro.biz.commons.mybatis.extension.EnumTypeHandler;
+import cn.micro.biz.commons.mybatis.extension.MicroTenantSqlParser;
 import cn.micro.biz.commons.mybatis.extension.TraceExpendInterceptor;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
@@ -15,13 +15,9 @@ import com.baomidou.mybatisplus.extension.parsers.BlockAttackSqlParser;
 import com.baomidou.mybatisplus.extension.plugins.OptimisticLockerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.PerformanceInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.tenant.TenantHandler;
-import com.baomidou.mybatisplus.extension.plugins.tenant.TenantSqlParser;
 import io.seata.rm.datasource.DataSourceProxy;
 import io.seata.spring.annotation.GlobalTransactionScanner;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.LongValue;
 import org.apache.ibatis.builder.xml.XMLMapperEntityResolver;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.parsing.XNode;
@@ -252,29 +248,7 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
             sqlParserList.add(new BlockAttackSqlParser());
         }
         if (microTenantProperties.isEnable()) {
-            sqlParserList.add(new TenantSqlParser()
-                    .setTenantHandler(new TenantHandler() {
-                        @Override
-                        public Expression getTenantId() {
-                            Long tenantId = MicroAuthContext.getTenantId();
-                            if (tenantId != null) {
-                                return new LongValue(tenantId);
-                            }
-
-                            return null;
-                        }
-
-                        @Override
-                        public String getTenantIdColumn() {
-                            return microTenantProperties.getColumn();
-                        }
-
-                        @Override
-                        public boolean doTableFilter(String tableName) {
-                            return microTenantProperties.getExcludeTables().contains(tableName);
-                        }
-                    }));
-
+            sqlParserList.add(new MicroTenantSqlParser(microTenantProperties));
             paginationInterceptor.setSqlParserFilter(metaObject -> {
                 MappedStatement mappedStatement = SqlParserHelper.getMappedStatement(metaObject);
                 return microTenantProperties.getSkipMapperIds().contains(mappedStatement.getId());

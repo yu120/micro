@@ -30,17 +30,6 @@ public class GlobalAutoFillHandler implements MetaObjectHandler {
         this.setFieldValByName(MicroEntity.EDITED_FIELD, timestamp, metaObject);
         this.setFieldValByName(MicroEntity.EDITOR_FIELD, operator, metaObject);
         this.setFieldValByName(MicroEntity.DELETED_FIELD, DeletedEnum.UN_DELETE.getValue(), metaObject);
-
-        Object originalObject = metaObject.getOriginalObject();
-        if (originalObject instanceof MicroEntity) {
-            MicroEntity microEntity = (MicroEntity) originalObject;
-            if (microEntity.getTenantId() == null) {
-                Long tenantId = MicroAuthContext.getTenantId();
-                if (tenantId != null) {
-                    this.setFieldValByName(MicroEntity.TENANT_ID_FIELD, tenantId, metaObject);
-                }
-            }
-        }
     }
 
     @Override
