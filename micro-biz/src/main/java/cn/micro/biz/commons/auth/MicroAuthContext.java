@@ -218,9 +218,9 @@ public class MicroAuthContext implements InitializingBean {
         try {
             VERIFIER.verify(token);
         } catch (TokenExpiredException e) {
-            throw new MicroSignInException("Token has expired");
+            throw new MicroSignInException("Signature token has expired");
         } catch (Exception e) {
-            throw new MicroSignInException("Signature verification exception");
+            throw new MicroBadRequestException("Signature verification exception");
         }
     }
 
@@ -294,10 +294,10 @@ public class MicroAuthContext implements InitializingBean {
     private static void verifyTokenExpire(Long memberId, String token) throws Exception {
         String tokenStr = RedisService.commandGet(MicroAuthContext.buildAccessTokenKey(memberId));
         if (tokenStr == null || tokenStr.length() == 0) {
-            throw new MicroSignInException("Token has expired");
+            throw new MicroSignInException("Server token has expired");
         }
         if (!tokenStr.equals(token)) {
-            throw new MicroSignInException("Illegal token");
+            throw new MicroBadRequestException("Illegal token");
         }
     }
 
