@@ -264,7 +264,7 @@ public class TraceStackContext {
                     for (int i = 0; i < level; i++) {
                         sb.append("    ");
                     }
-                    sb.append("    [IN:").append(argsMsg).append("]");
+                    sb.append("    [IN]:").append(argsMsg);
                 }
                 String retMsg = (this.args == null) ? null : JSON.toJSONString(this.ret);
                 if (retMsg != null) {
@@ -272,12 +272,16 @@ public class TraceStackContext {
                     for (int i = 0; i < level; i++) {
                         sb.append("    ");
                     }
-                    sb.append("    [OUT:").append(retMsg).append("]");
+                    sb.append("    [OUT]:").append(retMsg);
                 }
             }
 
             if (!(stack == null || stack.length() == 0)) {
-                sb.append("[Stack:").append(stack).append("]");
+                sb.append("\n");
+                for (int i = 0; i < level; i++) {
+                    sb.append("    ");
+                }
+                sb.append("    [Stack]:").append(stack).append("]");
             }
 
             return sb.toString();
