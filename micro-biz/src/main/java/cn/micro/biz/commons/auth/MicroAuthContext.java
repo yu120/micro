@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -221,7 +220,7 @@ public class MicroAuthContext implements InitializingBean {
         } catch (TokenExpiredException e) {
             throw new MicroSignInException("Token has expired");
         } catch (Exception e) {
-            throw new MicroSignInException(HttpStatus.FORBIDDEN.value(), "Signature verification exception");
+            throw new MicroSignInException("Signature verification exception");
         }
     }
 

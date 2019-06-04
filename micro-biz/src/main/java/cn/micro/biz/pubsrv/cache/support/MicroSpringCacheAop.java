@@ -69,7 +69,7 @@ public class MicroSpringCacheAop {
                 });
             }
         } catch (MicroCacheException e) {
-            throw e.getException();
+            throw e.getCause();
         } catch (Throwable t) {
             return pjp.proceed();
         }

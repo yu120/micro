@@ -12,10 +12,8 @@ import lombok.Getter;
 @EqualsAndHashCode(callSuper = false)
 public class MicroCacheException extends AbstractMicroException {
 
-    private Throwable exception;
-
     public MicroCacheException(Throwable exception) {
-        this.exception = exception;
+        super(null, null, exception);
     }
 
 }

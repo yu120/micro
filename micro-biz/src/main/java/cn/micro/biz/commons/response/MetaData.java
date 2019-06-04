@@ -59,5 +59,11 @@ public class MetaData implements Serializable {
 
         return new MetaData(code, message, obj, headers);
     }
+    public void setStack(String stack){
+        if (headers == null) {
+            headers = new LinkedHashMap<>();
+        }
+        headers.put(STACK_KEY, stack);
+    }
 
 }

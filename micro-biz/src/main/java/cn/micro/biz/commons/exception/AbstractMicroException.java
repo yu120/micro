@@ -19,12 +19,8 @@ public abstract class AbstractMicroException extends RuntimeException {
 
     protected String stack;
 
-    public AbstractMicroException(int code, String message) {
-        this(code, message, null);
-    }
-
-    public AbstractMicroException(int code, String message, Throwable cause) {
-        this(code, message, null, cause);
+    public AbstractMicroException(String message, String stack, Throwable cause) {
+        this(400, message, stack, cause);
     }
 
     public AbstractMicroException(int code, String message, String stack, Throwable cause) {
