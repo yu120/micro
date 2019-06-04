@@ -3,6 +3,7 @@ package cn.micro.biz.commons.response;
 import cn.micro.biz.commons.configuration.MicroProperties;
 import cn.micro.biz.commons.configuration.MicroSpringConfiguration;
 import cn.micro.biz.commons.exception.GlobalExceptionFilter;
+import cn.micro.biz.commons.exception.MicroStatus;
 import com.alibaba.fastjson.JSON;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +11,6 @@ import org.slf4j.MDC;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -79,12 +79,12 @@ public class GlobalResponseBodyAdvice implements InitializingBean, ResponseBodyA
         }
 
         // need wrapper metaData data model
+        MetaData metaData = MicroStatus.buildSuccess(traceId, obj);
         if (converterType == null || !converterType.isAssignableFrom(StringHttpMessageConverter.class)) {
-            return MetaData.build(traceId, HttpStatus.OK.value(), HttpStatus.OK.getReasonPhrase(), obj);
+            return metaData;
         }
 
         // return type is String
-        MetaData metaData = MetaData.build(traceId, HttpStatus.OK.value(), HttpStatus.OK.getReasonPhrase(), obj);
         return JSON.toJSONString(metaData);
     }
 

@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
     public MetaData defaultErrorHandler(HttpServletRequest request, Exception e) throws Exception {
         Object traceId = request.getAttribute(GlobalExceptionFilter.X_TRACE_ID);
         boolean exceptionDebug = microProperties.isExceptionDebug();
-        return MicroStatus.buildErrorMetaData(exceptionDebug, traceId, e);
+        return MicroStatus.buildFailure(exceptionDebug, traceId, e);
     }
 
 }

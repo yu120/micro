@@ -69,7 +69,7 @@ public class GlobalExceptionFilter extends OncePerRequestFilter {
             log.debug("Request enter: {}", ipAddress);
             filterChain.doFilter(request, response);
         } catch (Throwable t) {
-            MetaData metaData = MicroStatus.buildErrorMetaData(microProperties.isExceptionDebug(), traceId, t);
+            MetaData metaData = MicroStatus.buildFailure(microProperties.isExceptionDebug(), traceId, t);
             // write fail response
             this.buildFailResponse(metaData, response);
         } finally {

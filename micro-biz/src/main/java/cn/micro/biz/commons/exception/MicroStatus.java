@@ -30,6 +30,7 @@ public enum MicroStatus {
 
     // ======= Micro Framework Exception
 
+    SUCCESS(200, null, "success"),
     MICRO_BAD_REQUEST_EXCEPTION(400, MicroBadRequestException.class, "Bad Request"),
     MICRO_PERMISSION_EXCEPTION(401, MicroPermissionException.class, "Unauthorized"),
     MICRO_SIGN_IN_EXCEPTION(403, MicroSignInException.class, "Token has expired"),
@@ -105,17 +106,40 @@ public enum MicroStatus {
     private final Class<? extends Exception> error;
     private final String message;
 
-    protected MetaData wrapper(Object traceId, Throwable t) {
+    MetaData wrapper(Object traceId, Throwable t) {
         return MetaData.build(traceId, this.code, this.message, t.getMessage());
     }
 
-    public static MetaData buildErrorMetaData(boolean exceptionDebug, Object traceId, Throwable t) {
+    /**
+     * The build success {@link MetaData}
+     *
+     * @param traceId trace id
+     * @param obj     response body
+     * @return {@link MetaData}
+     */
+    public static MetaData buildSuccess(Object traceId, Object obj) {
+        return MetaData.build(traceId, SUCCESS.getCode(), SUCCESS.getMessage(), obj);
+    }
+
+    /**
+     * The build success {@link MetaData}
+     *
+     * @param exceptionDebug exception debug switch
+     * @param traceId        trace id
+     * @param t              {@link Throwable}
+     * @return {@link MetaData}
+     */
+    public static MetaData buildFailure(boolean exceptionDebug, Object traceId, Throwable t) {
         if (exceptionDebug) {
             log.error("Internal Server Error", t);
         }
 
         MetaData metaData = null;
         for (MicroStatus microStatus : values()) {
+            if (microStatus.getError() == null) {
+                continue;
+            }
+
             if (microStatus.getError().isAssignableFrom(t.getClass())) {
                 metaData = microStatus.wrapper(traceId, t);
                 break;
