@@ -43,83 +43,95 @@ public class GlobalExceptionHandler {
         if (microProperties.isShowAllError()) {
             log.error("Internal Server Error", e);
         }
-
+        String stack = e.getMessage();
         Object traceId = request.getAttribute(GlobalExceptionFilter.X_TRACE_ID);
 
-        // Custom exception
+        // AbstractMicroException
         if (e instanceof AbstractMicroException) {
             AbstractMicroException ex = (AbstractMicroException) e;
-            return MetaData.build(traceId, ex.getCode(), ex.getMessage(), e.getMessage());
+            return MetaData.build(traceId, ex.getCode(), ex.getMessage(), stack);
         }
 
-        // Third party exception
+        // NoHandlerFoundException
         if (e instanceof NoHandlerFoundException) {
-            return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), "Bad Request", e.getMessage());
+            return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), "Bad Request", stack);
         }
+        
+        // MaxUploadSizeExceededException
         if (e instanceof MaxUploadSizeExceededException) {
-            return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), "Bad Request", "Upload file size should not exceed 1M");
+            return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), "Upload file size should not exceed 1M", stack);
         }
+
+        // ConstraintViolationException
         if (e instanceof ConstraintViolationException) {
             Iterator<ConstraintViolation<?>> iterator = ((ConstraintViolationException) e).getConstraintViolations().iterator();
             if (iterator.hasNext()) {
-                return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), iterator.next().getMessageTemplate(), e.getMessage());
+                return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), iterator.next().getMessageTemplate(), stack);
             }
-            return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), "Bad Request", e.getMessage());
+            return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), "Bad Request", stack);
         }
+
+        // MethodArgumentNotValidException
         if (e instanceof MethodArgumentNotValidException) {
             Iterator<ObjectError> iterator = ((MethodArgumentNotValidException) e).getBindingResult().getAllErrors().iterator();
             if (iterator.hasNext()) {
                 return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), iterator.next().getDefaultMessage(), null);
             }
-            return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), "Bad Request", e.getMessage());
+            return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), "Bad Request", stack);
         }
-        // Illegal Body by JSON Parse Fail
+
+        // HttpMessageNotReadableException
         if (e instanceof HttpMessageNotReadableException) {
             if (e.getCause() != null) {
                 if (e.getCause() instanceof JsonParseException
                         || e.getCause() instanceof com.google.gson.JsonParseException
                         || e.getCause() instanceof org.springframework.boot.json.JsonParseException) {
-                    return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), "Illegal Body by JSON Parse Fail", e.getMessage());
-                }
-                if (e.getCause() instanceof InvalidFormatException) {
+                    return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), "Illegal Body by JSON Parse Fail", stack);
+                } else if (e.getCause() instanceof InvalidFormatException) {
                     if (e.getMessage().contains("Cannot deserialize value of type")) {
-                        return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), "Illegal value type cannot be deserialize", e.getMessage());
+                        return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), "Illegal value type cannot be deserialize", stack);
                     }
                 }
             }
+
             if (e.getMessage().contains("JSON parse error")) {
-                return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), "JSON parse error", e.getMessage());
+                return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), "JSON parse error", stack);
             }
-            return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), "Message Not Readable", e.getMessage());
+
+            return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), "Message Not Readable", stack);
         }
-        // Illegal Argument Type
+
+        // MethodArgumentTypeMismatchException
         if (e instanceof MethodArgumentTypeMismatchException) {
-            return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), "Illegal Argument Type", e.getMessage());
+            return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), "Illegal Argument Type", stack);
         }
-        // Method Not Allowed
+
+        // HttpRequestMethodNotSupportedException
         if (e instanceof HttpRequestMethodNotSupportedException) {
             return MetaData.build(traceId, HttpStatus.METHOD_NOT_ALLOWED.value(), "Method Not Allowed", null);
         }
 
+        // print internal server error
         if (!microProperties.isShowAllError()) {
             log.error("Internal Server Error", e);
         }
 
-        // SQL Exception
+        // BadSqlGrammarException
         if (e instanceof BadSqlGrammarException) {
             if (e.getCause() != null) {
                 // SQL Syntax Error Exception
                 if (e.getCause() instanceof SQLException) {
                     SQLException se = ((SQLException) e.getCause());
-                    String stack = String.format("Bad SQL[Code:%s(State:%s)] %s", se.getErrorCode(), se.getSQLState(), se.getMessage());
+                    stack = String.format("Bad SQL[Code:%s(State:%s)] %s", se.getErrorCode(), se.getSQLState(), se.getMessage());
                     return MetaData.build(traceId, HttpStatus.INTERNAL_SERVER_ERROR.value(), "Bad SQL Exception", stack);
                 }
             }
-            return MetaData.build(traceId, HttpStatus.INTERNAL_SERVER_ERROR.value(), "Unknown SQL Exception", e.getMessage());
+
+            return MetaData.build(traceId, HttpStatus.INTERNAL_SERVER_ERROR.value(), "Unknown Bad SQL Exception", stack);
         }
 
         // Unknown Internal Server Error
-        return MetaData.build(traceId, HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal Server Error", e.getMessage());
+        return MetaData.build(traceId, HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal Server Error", stack);
     }
 
 }
