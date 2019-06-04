@@ -2,6 +2,7 @@ package cn.micro.biz.commons.trace;
 
 import cn.micro.biz.commons.configuration.MicroSpringConfiguration;
 import cn.micro.biz.commons.mybatis.extension.IMicroService;
+import cn.micro.biz.commons.mybatis.extension.MybatisMapperProxyUtils;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +56,7 @@ public class SpringTraceInterceptor implements MethodInterceptor {
             }
         }
 
-        String signature = invocation.getMethod().toString();
+        String signature = MybatisMapperProxyUtils.getSignature(invocation);
         Object[] argsPre = invocation.getArguments();
         List<Object> args = null;
         if (!(argsPre == null || argsPre.length == 0)) {

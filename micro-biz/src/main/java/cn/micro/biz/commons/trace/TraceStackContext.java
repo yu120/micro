@@ -31,7 +31,6 @@ public class TraceStackContext {
         SKIP_URLS.add("/favicon.ico");
     }
 
-    private static final SimpleDateFormat SDF_LONG = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
     private static final SimpleDateFormat SDF_SHORT = new SimpleDateFormat("HH:mm:ss.SSS");
     /**
      * 调用堆栈信息记录，每次在start和stop时，都进行清理，避免出现引用仍然存在的问题
@@ -252,26 +251,36 @@ public class TraceStackContext {
 
         @Override
         public String toString() {
-            String sb = "+---";
+            StringBuilder sb = new StringBuilder("+---");
 
-            sb += "[" + (this.exitTimestamp - this.enterTimestamp) + "ms][" + signature + "]";
-            sb += "[" + SDF_LONG.format(this.enterTimestamp) + "->" + SDF_SHORT.format(this.exitTimestamp) + "]";
+            sb.append("[").append(this.exitTimestamp - this.enterTimestamp)
+                    .append("ms][").append(signature).append("]");
+            sb.append("[").append(SDF_SHORT.format(this.enterTimestamp))
+                    .append("->").append(SDF_SHORT.format(this.exitTimestamp)).append("]");
             if (properties.isPrintArgs()) {
                 String argsMsg = (this.args == null) ? null : JSON.toJSONString(this.args);
                 if (argsMsg != null) {
-                    sb += "[IN:" + argsMsg + "]";
+                    sb.append("\n");
+                    for (int i = 0; i < level; i++) {
+                        sb.append("    ");
+                    }
+                    sb.append("    [IN:").append(argsMsg).append("]");
                 }
                 String retMsg = (this.args == null) ? null : JSON.toJSONString(this.ret);
                 if (retMsg != null) {
-                    sb += "[OUT:" + retMsg + "]";
+                    sb.append("\n");
+                    for (int i = 0; i < level; i++) {
+                        sb.append("    ");
+                    }
+                    sb.append("    [OUT:").append(retMsg).append("]");
                 }
             }
 
             if (!(stack == null || stack.length() == 0)) {
-                sb += "[Stack:" + stack + "]";
+                sb.append("[Stack:").append(stack).append("]");
             }
 
-            return sb;
+            return sb.toString();
         }
 
     }
