@@ -158,7 +158,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
 
         // 5.组装响应模型
         return MicroAuthContext.build(member.getTenantId(), member.getId(),
-                member.getName(), loginAccount.getPlatform(), roleCodes);
+                member.getName(), loginAccount.getPlatform(), roleCodes, null);
     }
 
     @Override
@@ -207,7 +207,13 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
         microTokenBody.setAuthorities(roleCodes);
 
         // build new token
-        return MicroAuthContext.build(microTokenBody);
+        return MicroAuthContext.build(
+                microTokenBody.getTenantId(),
+                microTokenBody.getMemberId(),
+                microTokenBody.getMemberName(),
+                microTokenBody.getDeviceType(),
+                microTokenBody.getAuthorities(),
+                microTokenBody.getOthers());
     }
 
     @Override

@@ -59,7 +59,7 @@ public class MicroAuthContext implements InitializingBean {
     private static Algorithm ALGORITHM;
     private static JWTVerifier VERIFIER;
     private static MicroAuthProperties properties;
-    private static Long defaultTenantValue;
+    private static Long DEFAULT_TENANT_VALUE;
 
     private final MicroAuthProperties microAuthProperties;
     private final MicroTenantProperties microTenantProperties;
@@ -67,7 +67,7 @@ public class MicroAuthContext implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         MicroAuthContext.properties = microAuthProperties;
-        MicroAuthContext.defaultTenantValue = microTenantProperties.getDefaultValue();
+        MicroAuthContext.DEFAULT_TENANT_VALUE = microTenantProperties.getDefaultValue();
 
         try {
             ALGORITHM = Algorithm.HMAC256(SECRET);
@@ -77,17 +77,9 @@ public class MicroAuthContext implements InitializingBean {
         }
     }
 
-    public static MicroToken build(MicroTokenBody microTokenBody) {
-        return build(microTokenBody.getTenantId(), microTokenBody.getMemberId(), microTokenBody.getMemberName(),
-                microTokenBody.getDeviceType(), microTokenBody.getAuthorities(), microTokenBody.getOthers());
-    }
-
-    public static MicroToken build(Long tenantId, Long memberId, String memberName, Integer platform, List<String> authorities) {
-        return build(tenantId, memberId, memberName, platform, authorities, null);
-    }
-
-    public static MicroToken build(Long tenantId, Long memberId, String memberName, Integer platform,
-                                   List<String> authorities, Map<String, Object> others) {
+    public static MicroToken build(
+            Long tenantId, Long memberId, String memberName,
+            Integer platform, List<String> authorities, Map<String, Object> others) {
         try {
             String jti = UUID.randomUUID().toString();
 
@@ -198,15 +190,15 @@ public class MicroAuthContext implements InitializingBean {
         return refreshAccessTokenValue;
     }
 
-    public static String buildAccessTokenKey(Long memberId) {
+    private static String buildAccessTokenKey(Long memberId) {
         return CACHE_ACCESS_TOKEN_KEY + memberId;
     }
 
-    public static String buildRefreshTokenKey(Long memberId) {
+    private static String buildRefreshTokenKey(Long memberId) {
         return CACHE_REFRESH_TOKEN_KEY + memberId;
     }
 
-    public static void verifyTokenExpiredSignature(String token) {
+    private static void verifyTokenExpiredSignature(String token) {
         if (token == null || token.length() == 0) {
             throw new MicroTokenNotFoundException();
         }
@@ -373,10 +365,10 @@ public class MicroAuthContext implements InitializingBean {
         try {
             microTokenBody = getContextAccessToken();
             if (microTokenBody == null) {
-                return defaultTenantValue;
+                return DEFAULT_TENANT_VALUE;
             }
         } catch (Exception e) {
-            return defaultTenantValue;
+            return DEFAULT_TENANT_VALUE;
         }
 
         return microTokenBody.getTenantId();
