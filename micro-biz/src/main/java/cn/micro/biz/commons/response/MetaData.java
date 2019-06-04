@@ -26,7 +26,7 @@ public class MetaData implements Serializable {
     private static final String TRACE_KEY = "trace";
     private static final String STACK_KEY = "stack";
     private static final String TIME_KEY = "time";
-    private static final String SDF_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+    private static final String SDF_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
 
     private int code;
     private String message;
