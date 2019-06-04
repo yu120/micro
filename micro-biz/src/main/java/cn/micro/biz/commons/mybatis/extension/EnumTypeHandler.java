@@ -1,8 +1,6 @@
 package cn.micro.biz.commons.mybatis.extension;
 
 import cn.micro.biz.commons.exception.MicroErrorException;
-import cn.micro.biz.commons.mybatis.extension.enums.EnumValue;
-import cn.micro.biz.commons.mybatis.extension.enums.IEnum;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.type.BaseTypeHandler;

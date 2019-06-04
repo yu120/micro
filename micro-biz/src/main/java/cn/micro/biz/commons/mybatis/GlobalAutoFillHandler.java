@@ -3,7 +3,6 @@ package cn.micro.biz.commons.mybatis;
 import cn.micro.biz.commons.auth.MicroTokenBody;
 import cn.micro.biz.type.DeletedEnum;
 import cn.micro.biz.commons.auth.MicroAuthContext;
-import cn.micro.biz.commons.mybatis.entity.MicroEntity;
 import cn.micro.biz.commons.utils.IPUtils;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import lombok.extern.slf4j.Slf4j;

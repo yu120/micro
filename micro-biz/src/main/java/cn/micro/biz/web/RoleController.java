@@ -2,8 +2,8 @@ package cn.micro.biz.web;
 
 import cn.micro.biz.commons.auth.PreAuth;
 import cn.micro.biz.commons.exception.MicroBadRequestException;
-import cn.micro.biz.commons.mybatis.entity.MicroEntity;
-import cn.micro.biz.commons.mybatis.entity.PageQuery;
+import cn.micro.biz.commons.mybatis.MicroEntity;
+import cn.micro.biz.commons.mybatis.PageQuery;
 import cn.micro.biz.entity.member.Role;
 import cn.micro.biz.service.member.IRoleService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;

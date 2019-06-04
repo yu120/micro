@@ -1,6 +1,6 @@
 package cn.micro.biz.entity.member;
 
-import cn.micro.biz.commons.mybatis.entity.MicroEntity;
+import cn.micro.biz.commons.mybatis.MicroEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 

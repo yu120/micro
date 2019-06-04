@@ -1,4 +1,4 @@
-package cn.micro.biz.commons.mybatis.entity;
+package cn.micro.biz.commons.mybatis;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

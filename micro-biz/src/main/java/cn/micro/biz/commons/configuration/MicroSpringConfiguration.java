@@ -1,7 +1,7 @@
 package cn.micro.biz.commons.configuration;
 
 import cn.micro.biz.commons.auth.GlobalAuthHandlerInterceptor;
-import cn.micro.biz.commons.mybatis.extension.enums.IEnum;
+import cn.micro.biz.commons.mybatis.extension.IEnum;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;

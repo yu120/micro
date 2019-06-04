@@ -1,4 +1,4 @@
-package cn.micro.biz.commons.mybatis.entity;
+package cn.micro.biz.commons.mybatis;
 
 import cn.micro.biz.type.DeletedEnum;
 import com.alibaba.fastjson.annotation.JSONField;

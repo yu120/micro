@@ -1,6 +1,6 @@
 package cn.micro.biz.entity.order;
 
-import cn.micro.biz.commons.mybatis.entity.MicroEntity;
+import cn.micro.biz.commons.mybatis.MicroEntity;
 import cn.micro.biz.entity.goods.Goods;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;

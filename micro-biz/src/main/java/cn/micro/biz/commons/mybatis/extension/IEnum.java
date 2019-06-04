@@ -1,4 +1,4 @@
-package cn.micro.biz.commons.mybatis.extension.enums;
+package cn.micro.biz.commons.mybatis.extension;
 
 import java.io.Serializable;
 
