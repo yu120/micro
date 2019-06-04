@@ -230,16 +230,7 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
     public DefaultSqlInjector defaultSqlInjector() {
         return new DefaultSqlInjector();
     }
-//
-//    @Bean
-//    @ConfigurationProperties(prefix = MybatisPlusProperties.MYBATIS_PREFIX)
-//    public MybatisPlusProperties mybatisPlusProperties() {
-//        MybatisPlusProperties mybatisPlusProperties = new MybatisPlusProperties();
-//        MybatisConfiguration configuration = new MybatisConfiguration();
-//        configuration.setDefaultEnumTypeHandler(EnumTypeHandler.class);
-//        mybatisPlusProperties.setConfiguration(configuration);
-//        return mybatisPlusProperties;
-//    }
+
 
     // ============ Custom Mybatis Interceptor ==============
 
