@@ -32,7 +32,7 @@ public enum MicroStatus {
 
     MICRO_BAD_REQUEST_EXCEPTION(400, MicroBadRequestException.class, "Bad Request"),
     MICRO_PERMISSION_EXCEPTION(401, MicroPermissionException.class, "Unauthorized"),
-    MICRO_SIGN_IN_EXCEPTION(403, MicroSignInException.class, "Bad Request"),
+    MICRO_SIGN_IN_EXCEPTION(403, MicroSignInException.class, "Token has expired"),
     MICRO_ERROR_EXCEPTION(500, MicroErrorException.class, "Internal Server Error"),
     ABSTRACT_MICRO_EXCEPTION(null, AbstractMicroException.class, null) {
         @Override
