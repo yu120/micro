@@ -87,7 +87,7 @@ public enum MicroStatusCode {
     NO_HANDLER_FOUND_EXCEPTION(404, NoHandlerFoundException.class, "Not Found Handler"),
     HTTP_REQUEST_METHOD_NOT_SUPPORTED_EXCEPTION(405, HttpRequestMethodNotSupportedException.class, "Method Not Allowed"),
     METHOD_ARGUMENT_TYPE_MISMATCH_EXCEPTION(406, MethodArgumentTypeMismatchException.class, "Not Acceptable Argument Type"),
-    MAX_UPLOAD_SIZE_EXCEEDED_EXCEPTION(413, MaxUploadSizeExceededException.class, "Payload Too Large"),
+    MAX_UPLOAD_SIZE_EXCEEDED_EXCEPTION(413, MaxUploadSizeExceededException.class, "Upload Max Exceeded"),
     BAD_SQL_GRAMMAR_EXCEPTION(500, BadSqlGrammarException.class, "Unknown Bad SQL Exception") {
         @Override
         protected MetaData wrapper(Object traceId, Throwable t) {
