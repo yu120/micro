@@ -13,8 +13,4 @@ import lombok.Getter;
 @EqualsAndHashCode(callSuper = false)
 public class MicroTokenNotFoundException extends AbstractMicroException {
 
-    public MicroTokenNotFoundException(String message) {
-        super(null, message, null, null);
-    }
-
 }

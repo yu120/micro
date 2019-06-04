@@ -1,9 +1,6 @@
 package cn.micro.biz.commons.auth;
 
-import cn.micro.biz.commons.exception.support.MicroBadRequestException;
-import cn.micro.biz.commons.exception.support.MicroErrorException;
-import cn.micro.biz.commons.exception.support.MicroPermissionException;
-import cn.micro.biz.commons.exception.support.MicroTokenExpiredException;
+import cn.micro.biz.commons.exception.support.*;
 import cn.micro.biz.commons.mybatis.MicroTenantProperties;
 import cn.micro.biz.commons.utils.IPUtils;
 import cn.micro.biz.pubsrv.redis.RedisService;
@@ -141,19 +138,19 @@ public class MicroAuthContext implements InitializingBean {
      */
     public static void verify(String timestamp, String token, String sign, String path) throws Exception {
         if (properties.isCheckTime()) {
-            verifyClientTime(timestamp);
+            verifyClientRequestTime(timestamp);
         }
         if (properties.isCheckToken()) {
-            verifyToken(token);
+            verifyTokenExpiredSignature(token);
         }
         if (properties.isCheckSign()) {
-            verifySign(timestamp, token, sign);
+            verifyClientRequestSign(timestamp, token, sign);
         }
         if (properties.isRequestExpire()) {
-            verifyRequestExpire(path, sign);
+            verifyServerRequestExpire(path, sign);
         }
         if (properties.isTokenExpire()) {
-            verifyTokenExpire(MicroAuthContext.getContextAccessToken().getMemberId(), token);
+            verifyServerTokenExpire(MicroAuthContext.getContextAccessToken().getMemberId(), token);
         }
     }
 
@@ -207,12 +204,9 @@ public class MicroAuthContext implements InitializingBean {
         return CACHE_REFRESH_TOKEN_KEY + memberId;
     }
 
-    public static void verifyToken(String token) {
-        if (token == null) {
-            throw new MicroBadRequestException("Not found token");
-        }
-        if (token.length() == 0) {
-            throw new MicroBadRequestException("Token cannot be empty");
+    public static void verifyTokenExpiredSignature(String token) {
+        if (token == null || token.length() == 0) {
+            throw new MicroTokenNotFoundException();
         }
 
         try {
@@ -229,7 +223,7 @@ public class MicroAuthContext implements InitializingBean {
      *
      * @param timestamp timestamp str
      */
-    private static void verifyClientTime(String timestamp) {
+    private static void verifyClientRequestTime(String timestamp) {
         if (timestamp == null) {
             throw new MicroBadRequestException("Illegal Request");
         }
@@ -261,8 +255,8 @@ public class MicroAuthContext implements InitializingBean {
      * @param token     token
      * @param sign      sign
      */
-    private static void verifySign(String timestamp, String token, String sign) {
-        if (!DigestUtils.md5Hex(timestamp + token).equals(token)) {
+    private static void verifyClientRequestSign(String timestamp, String token, String sign) {
+        if (!DigestUtils.md5Hex(timestamp + token).equals(sign)) {
             throw new MicroBadRequestException("Illegal Sign");
         }
     }
@@ -274,7 +268,7 @@ public class MicroAuthContext implements InitializingBean {
      * @param sign sign
      * @throws Exception throw exception
      */
-    private static void verifyRequestExpire(String path, String sign) throws Exception {
+    private static void verifyServerRequestExpire(String path, String sign) throws Exception {
         String key = DigestUtils.md5Hex(sign + path);
         String tempSign = RedisService.commandGet(key);
         if (tempSign == null || tempSign.length() == 0) {
@@ -291,7 +285,7 @@ public class MicroAuthContext implements InitializingBean {
      * @param token    token
      * @throws Exception throw exception
      */
-    private static void verifyTokenExpire(Long memberId, String token) throws Exception {
+    private static void verifyServerTokenExpire(Long memberId, String token) throws Exception {
         String tokenStr = RedisService.commandGet(MicroAuthContext.buildAccessTokenKey(memberId));
         if (tokenStr == null || tokenStr.length() == 0) {
             throw new MicroTokenExpiredException("Server token has expired");
@@ -354,7 +348,7 @@ public class MicroAuthContext implements InitializingBean {
         }
 
         // verify token
-        MicroAuthContext.verifyToken(refreshTokenValue);
+        MicroAuthContext.verifyTokenExpiredSignature(refreshTokenValue);
 
         // parse token
         return MicroAuthContext.parseToken(refreshTokenValue);
