@@ -1,6 +1,6 @@
 package cn.micro.biz.pubsrv.mq;
 
-import cn.micro.biz.commons.exception.MicroErrorException;
+import cn.micro.biz.commons.exception.support.MicroErrorException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.micro.URL;

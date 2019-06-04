@@ -1,6 +1,6 @@
 package cn.micro.biz.pubsrv.cache.support;
 
-import cn.micro.biz.commons.exception.MicroCacheException;
+import cn.micro.biz.commons.exception.support.MicroCacheException;
 import cn.micro.biz.pubsrv.cache.MicroCache;
 import cn.micro.biz.pubsrv.cache.MicroCacheService;
 import com.alicp.jetcache.Cache;

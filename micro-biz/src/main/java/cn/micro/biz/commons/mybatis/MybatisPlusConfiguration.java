@@ -1,7 +1,7 @@
 package cn.micro.biz.commons.mybatis;
 
 import cn.micro.biz.commons.auth.MicroAuthContext;
-import cn.micro.biz.commons.exception.MicroErrorException;
+import cn.micro.biz.commons.exception.support.MicroErrorException;
 import cn.micro.biz.commons.mybatis.extension.EnumTypeHandler;
 import cn.micro.biz.commons.mybatis.extension.TraceExpendInterceptor;
 import com.alibaba.druid.pool.DruidDataSource;

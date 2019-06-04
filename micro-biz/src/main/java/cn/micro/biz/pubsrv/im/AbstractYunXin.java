@@ -1,6 +1,6 @@
 package cn.micro.biz.pubsrv.im;
 
-import cn.micro.biz.commons.exception.MicroErrorException;
+import cn.micro.biz.commons.exception.support.MicroErrorException;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;

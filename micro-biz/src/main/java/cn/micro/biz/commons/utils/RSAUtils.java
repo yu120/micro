@@ -1,6 +1,6 @@
 package cn.micro.biz.commons.utils;
 
-import cn.micro.biz.commons.exception.MicroErrorException;
+import cn.micro.biz.commons.exception.support.MicroErrorException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 

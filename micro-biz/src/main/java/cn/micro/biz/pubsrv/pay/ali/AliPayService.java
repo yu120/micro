@@ -1,6 +1,6 @@
 package cn.micro.biz.pubsrv.pay.ali;
 
-import cn.micro.biz.commons.exception.MicroErrorException;
+import cn.micro.biz.commons.exception.support.MicroErrorException;
 import cn.micro.biz.entity.order.Order;
 import cn.micro.biz.entity.order.OrderGoods;
 import cn.micro.biz.pubsrv.pay.OrderStatusEnum;

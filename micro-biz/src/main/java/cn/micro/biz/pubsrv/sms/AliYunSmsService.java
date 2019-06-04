@@ -1,6 +1,6 @@
 package cn.micro.biz.pubsrv.sms;
 
-import cn.micro.biz.commons.exception.MicroErrorException;
+import cn.micro.biz.commons.exception.support.MicroErrorException;
 import cn.micro.biz.commons.trace.Trace;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;

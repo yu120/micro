@@ -1,5 +1,6 @@
-package cn.micro.biz.commons.exception;
+package cn.micro.biz.commons.exception.support;
 
+import cn.micro.biz.commons.exception.AbstractMicroException;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 

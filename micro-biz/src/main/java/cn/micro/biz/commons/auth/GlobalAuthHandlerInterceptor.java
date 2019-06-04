@@ -1,7 +1,7 @@
 package cn.micro.biz.commons.auth;
 
 import cn.micro.biz.commons.configuration.SpringOrder;
-import cn.micro.biz.commons.exception.MicroPermissionException;
+import cn.micro.biz.commons.exception.support.MicroPermissionException;
 import cn.micro.biz.entity.member.Permission;
 import cn.micro.biz.entity.member.Role;
 import cn.micro.biz.entity.member.RolePermission;

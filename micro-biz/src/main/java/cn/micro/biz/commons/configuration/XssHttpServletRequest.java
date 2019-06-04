@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
  *
  * @author lry
  */
-public class XSSHttpServletRequestWrapper extends HttpServletRequestWrapper {
+public class XssHttpServletRequest extends HttpServletRequestWrapper {
 
     private static final String BAD_SQL_STR = "'|and|exec|execute|insert|select|delete|update|" +
             "count|drop|%|chr|mid|master|truncate|char|declare|sitename|net user|" +
@@ -17,7 +17,7 @@ public class XSSHttpServletRequestWrapper extends HttpServletRequestWrapper {
             "table_schema|union|where|select|delete|update|order|by|count|" +
             "chr|mid|master|truncate|char|declare|or|;|-|--|,|like|//|/|%|#";
 
-    public XSSHttpServletRequestWrapper(HttpServletRequest servletRequest) {
+    public XssHttpServletRequest(HttpServletRequest servletRequest) {
         super(servletRequest);
     }
 

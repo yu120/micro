@@ -1,7 +1,7 @@
 package cn.micro.biz.pubsrv.pay.wx;
 
-import cn.micro.biz.commons.exception.MicroBadRequestException;
-import cn.micro.biz.commons.exception.MicroErrorException;
+import cn.micro.biz.commons.exception.support.MicroBadRequestException;
+import cn.micro.biz.commons.exception.support.MicroErrorException;
 import cn.micro.biz.commons.utils.IPUtils;
 import cn.micro.biz.entity.order.OrderGoods;
 import cn.micro.biz.pubsrv.pay.PayChannelEnum;

@@ -1,6 +1,6 @@
 package cn.micro.biz.commons.validate.support;
 
-import cn.micro.biz.commons.exception.MicroErrorException;
+import cn.micro.biz.commons.exception.support.MicroErrorException;
 import cn.micro.biz.commons.validate.Length;
 
 import javax.validation.ConstraintValidator;

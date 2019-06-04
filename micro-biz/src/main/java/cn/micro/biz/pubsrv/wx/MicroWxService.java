@@ -1,6 +1,6 @@
 package cn.micro.biz.pubsrv.wx;
 
-import cn.micro.biz.commons.exception.MicroBadRequestException;
+import cn.micro.biz.commons.exception.support.MicroBadRequestException;
 import com.alibaba.fastjson.JSON;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

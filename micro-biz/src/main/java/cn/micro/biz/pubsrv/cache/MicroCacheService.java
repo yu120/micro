@@ -1,7 +1,7 @@
 package cn.micro.biz.pubsrv.cache;
 
 import cn.micro.biz.commons.auth.MicroAuthContext;
-import cn.micro.biz.commons.exception.MicroErrorException;
+import cn.micro.biz.commons.exception.support.MicroErrorException;
 import cn.micro.biz.pubsrv.cache.support.MicroCacheProperties;
 import cn.micro.biz.pubsrv.cache.support.MicroCacheRuleProperties;
 import cn.micro.biz.pubsrv.cache.serializer.FastjsonValueDecoder;

@@ -13,7 +13,7 @@ import java.io.IOException;
 @Configuration
 @Order(SpringOrder.XSS)
 @WebFilter(urlPatterns = "/**")
-public class XSSFilter implements Filter {
+public class XssFilter implements Filter {
 
     private FilterConfig filterConfig;
 
@@ -29,7 +29,7 @@ public class XSSFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        chain.doFilter(new XSSHttpServletRequestWrapper((HttpServletRequest) request), response);
+        chain.doFilter(new XssHttpServletRequest((HttpServletRequest) request), response);
     }
 
 }

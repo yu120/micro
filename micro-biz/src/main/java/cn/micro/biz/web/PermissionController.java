@@ -1,7 +1,7 @@
 package cn.micro.biz.web;
 
 import cn.micro.biz.commons.auth.PreAuth;
-import cn.micro.biz.commons.exception.MicroBadRequestException;
+import cn.micro.biz.commons.exception.support.MicroBadRequestException;
 import cn.micro.biz.commons.mybatis.MicroEntity;
 import cn.micro.biz.commons.mybatis.PageQuery;
 import cn.micro.biz.entity.member.Permission;

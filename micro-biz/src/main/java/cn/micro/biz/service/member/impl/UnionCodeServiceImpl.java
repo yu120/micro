@@ -1,6 +1,6 @@
 package cn.micro.biz.service.member.impl;
 
-import cn.micro.biz.commons.exception.MicroBadRequestException;
+import cn.micro.biz.commons.exception.support.MicroBadRequestException;
 import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
 import cn.micro.biz.entity.UnionCode;
 import cn.micro.biz.mapper.member.IUnionCodeMapper;

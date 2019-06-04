@@ -1,9 +1,9 @@
 package cn.micro.biz.commons.auth;
 
-import cn.micro.biz.commons.exception.MicroBadRequestException;
-import cn.micro.biz.commons.exception.MicroErrorException;
-import cn.micro.biz.commons.exception.MicroPermissionException;
-import cn.micro.biz.commons.exception.MicroSignInException;
+import cn.micro.biz.commons.exception.support.MicroBadRequestException;
+import cn.micro.biz.commons.exception.support.MicroErrorException;
+import cn.micro.biz.commons.exception.support.MicroPermissionException;
+import cn.micro.biz.commons.exception.support.MicroSignInException;
 import cn.micro.biz.commons.mybatis.MicroTenantProperties;
 import cn.micro.biz.commons.utils.IPUtils;
 import cn.micro.biz.pubsrv.redis.RedisService;

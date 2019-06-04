@@ -1,6 +1,6 @@
 package cn.micro.biz.type;
 
-import cn.micro.biz.commons.exception.MicroBadRequestException;
+import cn.micro.biz.commons.exception.support.MicroBadRequestException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
