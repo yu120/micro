@@ -28,17 +28,12 @@ import java.util.Iterator;
 @AllArgsConstructor
 public enum MicroStatus {
 
-    // =======
+    // ======= Micro Framework Exception
 
     MICRO_BAD_REQUEST_EXCEPTION(400, MicroBadRequestException.class, "Bad Request"),
     MICRO_ERROR_EXCEPTION(400, MicroErrorException.class, "Bad Request"),
     MICRO_PERMISSION_EXCEPTION(401, MicroPermissionException.class, "Unauthorized"),
     MICRO_SIGN_IN_EXCEPTION(400, MicroSignInException.class, "Bad Request"),
-
-    NO_HANDLER_FOUND_EXCEPTION(400, NoHandlerFoundException.class, "Bad Request"),
-    MAX_UPLOAD_SIZE_EXCEEDED_EXCEPTION(400, MaxUploadSizeExceededException.class, "Upload file size should not exceed 1M"),
-    METHOD_ARGUMENT_TYPE_MISMATCH_EXCEPTION(400, MethodArgumentTypeMismatchException.class, "Illegal Argument Type"),
-    HTTP_REQUEST_METHOD_NOT_SUPPORTED_EXCEPTION(405, HttpRequestMethodNotSupportedException.class, "Method Not Allowed"),
     ABSTRACT_MICRO_EXCEPTION(400, AbstractMicroException.class, "Bad Request") {
         @Override
         protected MetaData build(Object traceId, Exception e) {
@@ -52,6 +47,13 @@ public enum MicroStatus {
             return metaData;
         }
     },
+
+    // ======= 3th Framework Exception
+
+    NO_HANDLER_FOUND_EXCEPTION(400, NoHandlerFoundException.class, "Bad Request"),
+    MAX_UPLOAD_SIZE_EXCEEDED_EXCEPTION(400, MaxUploadSizeExceededException.class, "Upload file size should not exceed 1M"),
+    METHOD_ARGUMENT_TYPE_MISMATCH_EXCEPTION(400, MethodArgumentTypeMismatchException.class, "Illegal Argument Type"),
+    HTTP_REQUEST_METHOD_NOT_SUPPORTED_EXCEPTION(405, HttpRequestMethodNotSupportedException.class, "Method Not Allowed"),
     CONSTRAINT_VIOLATION_EXCEPTION(400, ConstraintViolationException.class, "Bad Request") {
         @Override
         protected MetaData build(Object traceId, Exception e) {
