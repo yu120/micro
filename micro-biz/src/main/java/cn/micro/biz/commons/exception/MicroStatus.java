@@ -1,6 +1,8 @@
 package cn.micro.biz.commons.exception;
 
+import cn.micro.biz.commons.configuration.MicroSpringConfiguration;
 import cn.micro.biz.commons.response.MetaData;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -119,6 +121,24 @@ public enum MicroStatus {
      */
     public static MetaData buildSuccess(Object traceId, Object obj) {
         return MetaData.build(traceId, SUCCESS.getCode(), SUCCESS.getMessage(), obj);
+    }
+
+    /**
+     * The build success {@link MetaData}
+     *
+     * @param exceptionDebug exception debug switch
+     * @param traceId        trace id
+     * @param t              {@link Throwable}
+     * @return {@link MetaData}
+     */
+    public static String buildFailureJSON(boolean exceptionDebug, Object traceId, Throwable t) {
+        MetaData metaData = buildFailure(exceptionDebug, traceId, t);
+
+        try {
+            return MicroSpringConfiguration.getObjectMapper().writeValueAsString(metaData);
+        } catch (JsonProcessingException e) {
+            throw new MicroErrorException("Write to json exception", e);
+        }
     }
 
     /**

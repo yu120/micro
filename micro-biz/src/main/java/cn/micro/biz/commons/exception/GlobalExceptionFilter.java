@@ -2,10 +2,8 @@ package cn.micro.biz.commons.exception;
 
 import cn.micro.biz.commons.configuration.MicroProperties;
 import cn.micro.biz.commons.configuration.SpringOrder;
-import cn.micro.biz.commons.response.MetaData;
 import cn.micro.biz.commons.utils.IPUtils;
 import cn.micro.biz.commons.utils.IdGenerator;
-import com.alibaba.fastjson.JSON;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
@@ -69,9 +67,11 @@ public class GlobalExceptionFilter extends OncePerRequestFilter {
             log.debug("Request enter: {}", ipAddress);
             filterChain.doFilter(request, response);
         } catch (Throwable t) {
-            MetaData metaData = MicroStatus.buildFailure(microProperties.isExceptionDebug(), traceId, t);
             // write fail response
-            this.buildFailResponse(metaData, response);
+            response.setStatus(HttpStatus.OK.value());
+            response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+            response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+            response.getWriter().print(MicroStatus.buildFailureJSON(microProperties.isExceptionDebug(), traceId, t));
         } finally {
             log.debug("Request exist: {}", ipAddress);
             MDC.remove(X_TRACE_ID);
@@ -90,13 +90,6 @@ public class GlobalExceptionFilter extends OncePerRequestFilter {
         response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "POST, GET, OPTIONS, DELETE, PUT, HEADER");
         response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS,
                 "Content-Type, X-Access-Token, X-Refresh-Token, X-Trace-Id, X-Requested-With");
-    }
-
-    private void buildFailResponse(MetaData metaData, HttpServletResponse response) throws IOException {
-        response.setStatus(HttpStatus.OK.value());
-        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-        response.getWriter().print(JSON.toJSONString(metaData));
     }
 
 }

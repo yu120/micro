@@ -48,6 +48,10 @@ public class MicroSpringConfiguration implements ApplicationContextAware, Initia
     private final GlobalAuthHandlerInterceptor globalAuthHandlerInterceptor;
     private final MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter;
 
+    public static ObjectMapper getObjectMapper() {
+        return APPLICATION_CONTEXT.getBean(MappingJackson2HttpMessageConverter.class).getObjectMapper();
+    }
+
     @Override
     public void setApplicationContext(@Nullable ApplicationContext applicationContext) throws BeansException {
         if (applicationContext != null) {
@@ -55,22 +59,6 @@ public class MicroSpringConfiguration implements ApplicationContextAware, Initia
             MicroSpringConfiguration.BASE_PACKAGES = AutoConfigurationPackages.get(applicationContext);
             // set enum object mapper
             mappingJackson2HttpMessageConverter.setObjectMapper(new MicroObjectMapper());
-        }
-    }
-
-    public static class MicroObjectMapper extends ObjectMapper {
-        public MicroObjectMapper() {
-            super();
-            SimpleModule module = new SimpleModule();
-            module.addSerializer(IEnum.class, new JsonSerializer<IEnum>() {
-                @Override
-                public void serialize(IEnum value, JsonGenerator gen,
-                                      SerializerProvider serializers) throws IOException {
-                    gen.writeObject(value.getValue());
-                }
-            });
-
-            super.registerModule(module);
         }
     }
 
@@ -108,5 +96,20 @@ public class MicroSpringConfiguration implements ApplicationContextAware, Initia
         return basePackages;
     }
 
+    public static class MicroObjectMapper extends ObjectMapper {
+        public MicroObjectMapper() {
+            super();
+            SimpleModule module = new SimpleModule();
+            module.addSerializer(IEnum.class, new JsonSerializer<IEnum>() {
+                @Override
+                public void serialize(IEnum value, JsonGenerator gen,
+                                      SerializerProvider serializers) throws IOException {
+                    gen.writeObject(value.getValue());
+                }
+            });
+
+            super.registerModule(module);
+        }
+    }
 
 }
