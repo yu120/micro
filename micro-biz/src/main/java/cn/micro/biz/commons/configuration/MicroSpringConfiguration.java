@@ -97,7 +97,7 @@ public class MicroSpringConfiguration implements ApplicationContextAware, Initia
     }
 
     public static class MicroObjectMapper extends ObjectMapper {
-        public MicroObjectMapper() {
+        MicroObjectMapper() {
             super();
             SimpleModule module = new SimpleModule();
             module.addSerializer(IEnum.class, new JsonSerializer<IEnum>() {
