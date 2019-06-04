@@ -79,13 +79,12 @@ public class GlobalResponseBodyAdvice implements InitializingBean, ResponseBodyA
         }
 
         // need wrapper metaData data model
-        MetaData metaData = MicroStatusCode.buildSuccess(traceId, obj);
         if (converterType == null || !converterType.isAssignableFrom(StringHttpMessageConverter.class)) {
-            return metaData;
+            return MicroStatusCode.buildSuccess(traceId, obj);
         }
 
         // return type is String
-        return JSON.toJSONString(metaData);
+        return JSON.toJSONString(MicroStatusCode.buildSuccess(traceId, obj));
     }
 
 }
