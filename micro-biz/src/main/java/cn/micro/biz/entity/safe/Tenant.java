@@ -4,6 +4,8 @@ import cn.micro.biz.commons.mybatis.MicroEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
+import java.sql.Date;
+
 /**
  * Tenant Entity
  *
@@ -20,6 +22,10 @@ public class Tenant extends MicroEntity<Tenant> {
     private static final long serialVersionUID = 1L;
 
     /**
+     * Tenant enable status
+     */
+    private Integer status;
+    /**
      * Tenant name
      */
     private String name;
@@ -27,5 +33,13 @@ public class Tenant extends MicroEntity<Tenant> {
      * Tenant intro
      */
     private String intro;
+    /**
+     * Start date
+     */
+    private Date startDate;
+    /**
+     * End date
+     */
+    private Date endDate;
 
 }
