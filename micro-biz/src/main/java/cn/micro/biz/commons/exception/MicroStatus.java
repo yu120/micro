@@ -36,8 +36,8 @@ public enum MicroStatus {
     MICRO_ERROR_EXCEPTION(500, MicroErrorException.class, "Internal Server Error"),
     ABSTRACT_MICRO_EXCEPTION(null, AbstractMicroException.class, null) {
         @Override
-        protected MetaData build(Object traceId, Exception e) {
-            MetaData metaData = super.build(traceId, e);
+        protected MetaData wrapper(Object traceId, Exception e) {
+            MetaData metaData = super.wrapper(traceId, e);
             AbstractMicroException ex = (AbstractMicroException) e;
             metaData.setCode(ex.getCode());
             metaData.setMessage(ex.getMessage());
@@ -57,8 +57,8 @@ public enum MicroStatus {
     HTTP_MESSAGE_NOT_READABLE_EXCEPTION(400, HttpMessageNotReadableException.class, "Message Not Readable"),
     CONSTRAINT_VIOLATION_EXCEPTION(400, ConstraintViolationException.class, "Bad Request Parameter") {
         @Override
-        protected MetaData build(Object traceId, Exception e) {
-            MetaData metaData = super.build(traceId, e);
+        protected MetaData wrapper(Object traceId, Exception e) {
+            MetaData metaData = super.wrapper(traceId, e);
             Iterator<ConstraintViolation<?>> iterator = ((ConstraintViolationException) e).getConstraintViolations().iterator();
             if (iterator.hasNext()) {
                 metaData.setMessage(iterator.next().getMessageTemplate());
@@ -69,8 +69,8 @@ public enum MicroStatus {
     },
     METHOD_ARGUMENT_NOT_VALID_EXCEPTION(400, MethodArgumentNotValidException.class, "Method Argument Not Valid") {
         @Override
-        protected MetaData build(Object traceId, Exception e) {
-            MetaData metaData = super.build(traceId, e);
+        protected MetaData wrapper(Object traceId, Exception e) {
+            MetaData metaData = super.wrapper(traceId, e);
             Iterator<ObjectError> iterator = ((MethodArgumentNotValidException) e).getBindingResult().getAllErrors().iterator();
             if (iterator.hasNext()) {
                 metaData.setMessage(iterator.next().getDefaultMessage());
@@ -85,8 +85,8 @@ public enum MicroStatus {
     MAX_UPLOAD_SIZE_EXCEEDED_EXCEPTION(413, MaxUploadSizeExceededException.class, "Payload Too Large"),
     BAD_SQL_GRAMMAR_EXCEPTION(500, BadSqlGrammarException.class, "Unknown Bad SQL Exception") {
         @Override
-        protected MetaData build(Object traceId, Exception e) {
-            MetaData metaData = super.build(traceId, e);
+        protected MetaData wrapper(Object traceId, Exception e) {
+            MetaData metaData = super.wrapper(traceId, e);
             if (e.getCause() != null) {
                 // SQL Syntax Error Exception
                 if (e.getCause() instanceof SQLException) {
@@ -105,14 +105,14 @@ public enum MicroStatus {
     private final Class<? extends Exception> error;
     private final String message;
 
-    protected MetaData build(Object traceId, Exception e) {
+    protected MetaData wrapper(Object traceId, Exception e) {
         return MetaData.build(traceId, this.code, this.message, e.getMessage());
     }
 
     public static MetaData buildErrorMetaData(Object traceId, Exception e) {
         for (MicroStatus microStatus : values()) {
             if (microStatus.getError().isAssignableFrom(e.getClass())) {
-                return microStatus.build(traceId, e);
+                return microStatus.wrapper(traceId, e);
             }
         }
 

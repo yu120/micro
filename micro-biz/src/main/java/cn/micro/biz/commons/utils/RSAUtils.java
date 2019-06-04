@@ -116,7 +116,7 @@ public class RSAUtils {
     }
 
     /**
-     * The build random salt str
+     * The wrapper random salt str
      *
      * @return salt str
      */

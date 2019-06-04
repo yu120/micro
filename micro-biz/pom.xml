@@ -397,7 +397,7 @@
         </repository>
     </repositories>
 
-    <build>
+    <wrapper>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -494,7 +494,7 @@
                     <verbose>true</verbose>
                     <dateFormat>yyyy-MM-dd'T'HH:mm:ssZ</dateFormat>
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
-                    <generateGitPropertiesFilename>${project.build.directory}/dist/jsw/app/conf/git.properties
+                    <generateGitPropertiesFilename>${project.wrapper.directory}/dist/jsw/app/conf/git.properties
                     </generateGitPropertiesFilename>
                 </configuration>
             </plugin>
@@ -511,7 +511,7 @@
                     <logsDirectory>logs</logsDirectory>
                     <repositoryName>lib</repositoryName>
                     <repositoryLayout>flat</repositoryLayout>
-                    <target>${project.build.directory}/dist</target>
+                    <target>${project.wrapper.directory}/dist</target>
                     <configurationDirectory>conf</configurationDirectory>
                     <copyConfigurationDirectory>true</copyConfigurationDirectory>
                     <configurationSourceDirectory>src/main/resources</configurationSourceDirectory>
@@ -643,6 +643,6 @@
                 </executions>
             </plugin>
         </plugins>
-    </build>
+    </wrapper>
 
 </project>
