@@ -2,7 +2,7 @@ package cn.micro.biz.web;
 
 import cn.micro.biz.commons.auth.NonAuth;
 import cn.micro.biz.commons.auth.PreAuth;
-import cn.micro.biz.commons.response.NonMeta;
+import cn.micro.biz.commons.response.NonMetaData;
 import cn.micro.biz.commons.trace.GlobalTraceInterceptor;
 import cn.micro.biz.model.vo.OssTokenVO;
 import cn.micro.biz.pubsrv.oss.QiNiuOssService;
@@ -62,7 +62,7 @@ public class PublicController {
         return unionCodeService.sendCodeMail(category, email);
     }
 
-    @NonMeta
+    @NonMetaData
     @RequestMapping(value = "trace/{traceId}", method = RequestMethod.GET)
     public String getDump(@PathVariable("traceId") String traceId) {
         if (GlobalTraceInterceptor.getCache() == null) {

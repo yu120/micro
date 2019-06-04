@@ -71,9 +71,9 @@ public class GlobalResponseBodyAdvice implements InitializingBean, ResponseBodyA
         }
 
         // Non Bean and Method Annotation
-        NonMeta methodNonMeta = methodParameter.getMethodAnnotation(NonMeta.class);
-        NonMeta beanNonMeta = methodParameter.getMember().getDeclaringClass().getAnnotation(NonMeta.class);
-        if (methodNonMeta != null || beanNonMeta != null || obj instanceof MetaData) {
+        NonMetaData methodNonMetaData = methodParameter.getMethodAnnotation(NonMetaData.class);
+        NonMetaData beanNonMetaData = methodParameter.getMember().getDeclaringClass().getAnnotation(NonMetaData.class);
+        if (methodNonMetaData != null || beanNonMetaData != null || obj instanceof MetaData) {
             // don't need wrapper metaData data model
             return obj;
         }
