@@ -71,7 +71,7 @@ public class GlobalExceptionFilter extends OncePerRequestFilter {
             response.setStatus(HttpStatus.OK.value());
             response.setCharacterEncoding(StandardCharsets.UTF_8.name());
             response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-            response.getWriter().print(MicroStatus.buildFailureJSON(microProperties.isExceptionDebug(), traceId, t));
+            response.getWriter().print(MicroStatusCode.buildFailureJSON(microProperties.isExceptionDebug(), traceId, t));
         } finally {
             log.debug("Request exist: {}", ipAddress);
             MDC.remove(X_TRACE_ID);

@@ -28,7 +28,7 @@ import java.util.Iterator;
 @Slf4j
 @Getter
 @AllArgsConstructor
-public enum MicroStatus {
+public enum MicroStatusCode {
 
     // ======= Micro Framework Exception
 
@@ -155,13 +155,13 @@ public enum MicroStatus {
         }
 
         MetaData metaData = null;
-        for (MicroStatus microStatus : values()) {
-            if (microStatus.getError() == null) {
+        for (MicroStatusCode microStatusCode : values()) {
+            if (microStatusCode.getError() == null) {
                 continue;
             }
 
-            if (microStatus.getError().isAssignableFrom(t.getClass())) {
-                metaData = microStatus.wrapper(traceId, t);
+            if (microStatusCode.getError().isAssignableFrom(t.getClass())) {
+                metaData = microStatusCode.wrapper(traceId, t);
                 break;
             }
         }

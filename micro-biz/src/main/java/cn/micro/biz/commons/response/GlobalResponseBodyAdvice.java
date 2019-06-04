@@ -3,7 +3,7 @@ package cn.micro.biz.commons.response;
 import cn.micro.biz.commons.configuration.MicroProperties;
 import cn.micro.biz.commons.configuration.MicroSpringConfiguration;
 import cn.micro.biz.commons.exception.GlobalExceptionFilter;
-import cn.micro.biz.commons.exception.MicroStatus;
+import cn.micro.biz.commons.exception.MicroStatusCode;
 import com.alibaba.fastjson.JSON;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -79,7 +79,7 @@ public class GlobalResponseBodyAdvice implements InitializingBean, ResponseBodyA
         }
 
         // need wrapper metaData data model
-        MetaData metaData = MicroStatus.buildSuccess(traceId, obj);
+        MetaData metaData = MicroStatusCode.buildSuccess(traceId, obj);
         if (converterType == null || !converterType.isAssignableFrom(StringHttpMessageConverter.class)) {
             return metaData;
         }
