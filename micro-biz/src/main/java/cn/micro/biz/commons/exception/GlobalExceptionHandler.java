@@ -1,7 +1,9 @@
 package cn.micro.biz.commons.exception;
 
+import cn.micro.biz.commons.configuration.MicroProperties;
 import cn.micro.biz.commons.response.MetaData;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -16,6 +18,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -31,9 +34,16 @@ import java.util.Iterator;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @Resource
+    private MicroProperties microProperties;
+
     @ResponseBody
     @ExceptionHandler(value = Throwable.class)
     public MetaData defaultErrorHandler(HttpServletRequest request, Exception e) throws Exception {
+        if (microProperties.isShowAllError()) {
+            log.error("Internal Server Error", e);
+        }
+
         Object traceId = request.getAttribute(GlobalExceptionFilter.X_TRACE_ID);
 
         // Custom exception
@@ -71,6 +81,14 @@ public class GlobalExceptionHandler {
                         || e.getCause() instanceof org.springframework.boot.json.JsonParseException) {
                     return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), "Illegal Body by JSON Parse Fail", e.getMessage());
                 }
+                if (e.getCause() instanceof InvalidFormatException) {
+                    if (e.getMessage().contains("Cannot deserialize value of type")) {
+                        return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), "Illegal value type cannot be deserialize", e.getMessage());
+                    }
+                }
+            }
+            if (e.getMessage().contains("JSON parse error")) {
+                return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), "JSON parse error", e.getMessage());
             }
             return MetaData.build(traceId, HttpStatus.BAD_REQUEST.value(), "Message Not Readable", e.getMessage());
         }
@@ -83,7 +101,9 @@ public class GlobalExceptionHandler {
             return MetaData.build(traceId, HttpStatus.METHOD_NOT_ALLOWED.value(), "Method Not Allowed", null);
         }
 
-        log.error("Internal Server Error", e);
+        if (!microProperties.isShowAllError()) {
+            log.error("Internal Server Error", e);
+        }
 
         // SQL Exception
         if (e instanceof BadSqlGrammarException) {

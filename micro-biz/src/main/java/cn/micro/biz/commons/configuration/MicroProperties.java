@@ -24,6 +24,10 @@ public class MicroProperties implements Serializable {
      */
     private boolean swagger;
     /**
+     * true表示查看所有错误日志
+     */
+    private boolean showAllError;
+    /**
      * Stack max length
      */
     private int stackMaxLength = 2000;
