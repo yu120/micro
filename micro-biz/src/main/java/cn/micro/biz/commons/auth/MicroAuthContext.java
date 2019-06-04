@@ -354,7 +354,6 @@ public class MicroAuthContext implements InitializingBean {
         return MicroAuthContext.parseToken(refreshTokenValue);
     }
 
-
     public static Long getMemberId() {
         return getContextAccessToken().getMemberId();
     }
