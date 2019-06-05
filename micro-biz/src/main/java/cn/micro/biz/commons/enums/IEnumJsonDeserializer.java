@@ -20,19 +20,19 @@ public class IEnumJsonDeserializer extends JsonDeserializer<IEnum> {
     @SuppressWarnings("unchecked")
     @Override
     public IEnum deserialize(JsonParser jp, DeserializationContext dc) throws IOException, JsonProcessingException {
-        JsonNode jsonNode = jp.getCodec().readTree(jp);
         String currentName = jp.currentName();
         Object currentValue = jp.getCurrentValue();
         Class findPropertyType = BeanUtils.findPropertyType(currentName, currentValue.getClass());
-        if (jsonNode.has(IEnum.VALUE_KEY)) {
-            JsonNode subJsonNode = jsonNode.get(IEnum.VALUE_KEY);
-            return IEnum.parse(findPropertyType, getValue(subJsonNode));
+
+        JsonNode jsonNode = jp.getCodec().readTree(jp);
+        if (!jsonNode.has(IEnum.VALUE_KEY)) {
+            return IEnum.parse(findPropertyType, asValue(jsonNode));
         } else {
-            return IEnum.parse(findPropertyType, getValue(jsonNode));
+            return IEnum.parse(findPropertyType, asValue(jsonNode.get(IEnum.VALUE_KEY)));
         }
     }
 
-    private Object getValue(JsonNode jsonNode) {
+    private Object asValue(JsonNode jsonNode) {
         if (jsonNode instanceof IntNode) {
             return jsonNode.asInt();
         } else if (jsonNode instanceof LongNode) {
