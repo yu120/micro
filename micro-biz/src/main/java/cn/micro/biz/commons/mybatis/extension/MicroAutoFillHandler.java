@@ -1,6 +1,7 @@
-package cn.micro.biz.commons.mybatis;
+package cn.micro.biz.commons.mybatis.extension;
 
 import cn.micro.biz.commons.auth.MicroTokenBody;
+import cn.micro.biz.commons.mybatis.MicroEntity;
 import cn.micro.biz.type.DeletedEnum;
 import cn.micro.biz.commons.auth.MicroAuthContext;
 import cn.micro.biz.commons.utils.IPUtils;
@@ -18,7 +19,7 @@ import java.sql.Timestamp;
  */
 @Slf4j
 @Configuration
-public class GlobalAutoFillHandler implements MetaObjectHandler {
+public class MicroAutoFillHandler implements MetaObjectHandler {
 
     @Override
     public void insertFill(MetaObject metaObject) {
