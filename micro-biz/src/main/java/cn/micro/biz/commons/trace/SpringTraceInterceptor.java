@@ -2,8 +2,8 @@ package cn.micro.biz.commons.trace;
 
 import cn.micro.biz.commons.configuration.MicroSpringConfiguration;
 import cn.micro.biz.commons.mybatis.extension.IMicroService;
-import cn.micro.biz.commons.mybatis.extension.MybatisMapperProxyUtils;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.override.MybatisMapperProxy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -11,6 +11,7 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
+import org.springframework.aop.framework.ReflectiveMethodInvocation;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +23,10 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -36,6 +41,7 @@ import java.util.stream.Collectors;
 public class SpringTraceInterceptor implements MethodInterceptor {
 
     private static final PathMatcher PATH_MATCHER = new AntPathMatcher();
+    private final Map<Object, String> targetMap = new HashMap<>();
     private List<String> expressions = new ArrayList<>();
 
     private final TraceProperties properties;
@@ -56,7 +62,7 @@ public class SpringTraceInterceptor implements MethodInterceptor {
             }
         }
 
-        String signature = MybatisMapperProxyUtils.getSignature(invocation);
+        String signature = this.getSignature(invocation);
         Object[] argsPre = invocation.getArguments();
         List<Object> args = null;
         if (!(argsPre == null || argsPre.length == 0)) {
@@ -123,6 +129,63 @@ public class SpringTraceInterceptor implements MethodInterceptor {
         pointcut.setExpression(sb.toString());
         log.info("The trace advisor expression: {}", pointcut.getExpression());
         return new DefaultPointcutAdvisor(pointcut, this);
+    }
+
+    private String getSignature(MethodInvocation invocation) {
+        Method method = invocation.getMethod();
+        Object[] argsPre = invocation.getArguments();
+
+        try {
+            if (invocation instanceof ReflectiveMethodInvocation) {
+                ReflectiveMethodInvocation rmi = (ReflectiveMethodInvocation) invocation;
+                Object target = rmi.getThis();
+                String targetSignature = targetMap.get(target);
+                if (targetSignature != null) {
+                    return targetSignature;
+                }
+
+                if (target instanceof Proxy) {
+                    Proxy proxy = (Proxy) target;
+                    InvocationHandler invocationHandler = Proxy.getInvocationHandler(proxy);
+                    if (invocationHandler instanceof MybatisMapperProxy) {
+                        MybatisMapperProxy mybatisMapperProxy = (MybatisMapperProxy) invocationHandler;
+                        Field field = mybatisMapperProxy.getClass().getDeclaredField("mapperInterface");
+                        field.setAccessible(true);
+                        Object obj = field.get(mybatisMapperProxy);
+                        if (obj != null) {
+                            String className = ((Class) obj).getName();
+                            targetSignature = buildSignature(className, method, argsPre);
+                            targetMap.put(target, targetSignature);
+                            return targetSignature;
+                        }
+                    }
+                } else {
+                    String className = method.getDeclaringClass().getName();
+                    targetSignature = buildSignature(className, method, argsPre);
+                    targetMap.put(target, targetSignature);
+                    return targetSignature;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return invocation.getMethod().toString();
+    }
+
+    private String buildSignature(String className, Method method, Object[] argsPre) {
+        StringBuilder sb = new StringBuilder();
+        if (!(argsPre == null || argsPre.length == 0)) {
+            for (int i = 0; i < argsPre.length; i++) {
+                sb.append(argsPre[i].getClass().getName());
+                if (i < argsPre.length - 1) {
+                    sb.append(",");
+                }
+            }
+        }
+
+        return method.getReturnType().getName() + " " + className
+                + "." + method.getName() + "(" + sb.toString() + ")";
     }
 
 }
