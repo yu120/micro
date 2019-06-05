@@ -96,14 +96,10 @@ public class GlobalAuthHandlerInterceptor extends HandlerInterceptorAdapter impl
 
         // === Check Handler PreAuth
         boolean needVerifyToken = false;
-        PreAuth methodPreAuth = handlerMethod.getMethodAnnotation(PreAuth.class);
-        PreAuth beanPreAuth = handlerMethod.getBeanType().getAnnotation(PreAuth.class);
-        if (methodPreAuth != null || beanPreAuth != null) {
+        if (handlerMethod.hasMethodAnnotation(PreAuth.class) || handlerMethod.hasMethodAnnotation(PreAuth.class)) {
             needVerifyToken = true;
         }
-        NonAuth methodNonAuth = handlerMethod.getMethodAnnotation(NonAuth.class);
-        NonAuth beanNonAuth = handlerMethod.getBeanType().getAnnotation(NonAuth.class);
-        if (methodNonAuth != null || beanNonAuth != null) {
+        if (handlerMethod.hasMethodAnnotation(NonAuth.class) || handlerMethod.hasMethodAnnotation(NonAuth.class)) {
             needVerifyToken = false;
         }
         if (!needVerifyToken) {
@@ -138,12 +134,14 @@ public class GlobalAuthHandlerInterceptor extends HandlerInterceptorAdapter impl
     }
 
     @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+    public void postHandle(HttpServletRequest request, HttpServletResponse response,
+                           Object handler, ModelAndView modelAndView) throws Exception {
         super.postHandle(request, response, handler, modelAndView);
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
+                                Object handler, Exception ex) throws Exception {
         super.afterCompletion(request, response, handler, ex);
     }
 
