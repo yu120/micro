@@ -88,14 +88,20 @@ public class GlobalAuthHandlerInterceptor extends HandlerInterceptorAdapter impl
 
             return true;
         }
-        HandlerMethod handlerMethod = (HandlerMethod) handler;
 
-        // === Check Handler PreAuth
-        boolean needVerifyToken = false;
-        if (handlerMethod.hasMethodAnnotation(PreAuth.class) || handlerMethod.hasMethodAnnotation(PreAuth.class)) {
+        // === check handler if need auth
+        boolean needVerifyToken;
+        HandlerMethod handlerMethod = (HandlerMethod) handler;
+        Class<?> beanTypeClass = handlerMethod.getBeanType();
+        if (handlerMethod.hasMethodAnnotation(PreAuth.class)) {
             needVerifyToken = true;
-        }
-        if (handlerMethod.hasMethodAnnotation(NonAuth.class) || handlerMethod.hasMethodAnnotation(NonAuth.class)) {
+        } else if (handlerMethod.hasMethodAnnotation(NonAuth.class)) {
+            needVerifyToken = false;
+        } else if (beanTypeClass.isAnnotationPresent(PreAuth.class)) {
+            needVerifyToken = true;
+        } else if (beanTypeClass.isAnnotationPresent(NonAuth.class)) {
+            needVerifyToken = false;
+        } else {
             needVerifyToken = false;
         }
         if (!needVerifyToken) {
