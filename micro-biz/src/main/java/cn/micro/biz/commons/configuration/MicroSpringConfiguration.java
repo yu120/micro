@@ -1,9 +1,12 @@
 package cn.micro.biz.commons.configuration;
 
 import cn.micro.biz.commons.auth.GlobalAuthHandlerInterceptor;
-import cn.micro.biz.commons.enums.MicroObjectMapper;
+import cn.micro.biz.commons.enums.IEnum;
+import cn.micro.biz.commons.enums.IEnumJsonDeserializer;
+import cn.micro.biz.commons.enums.IEnumJsonSerializer;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
@@ -40,7 +43,6 @@ public class MicroSpringConfiguration implements ApplicationContextAware, Initia
     private static List<String> BASE_PACKAGES;
 
     private final MicroProperties microProperties;
-    private final MicroObjectMapper microObjectMapper;
     private final GlobalAuthHandlerInterceptor globalAuthHandlerInterceptor;
     private final MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter;
 
@@ -53,8 +55,13 @@ public class MicroSpringConfiguration implements ApplicationContextAware, Initia
         if (applicationContext != null) {
             MicroSpringConfiguration.APPLICATION_CONTEXT = applicationContext;
             MicroSpringConfiguration.BASE_PACKAGES = AutoConfigurationPackages.get(applicationContext);
-            // set enum object mapper
-            mappingJackson2HttpMessageConverter.setObjectMapper(microObjectMapper);
+
+            // set enum serializer/deserializer object mapper
+            SimpleModule module = new SimpleModule();
+            module.addSerializer(IEnum.class, new IEnumJsonSerializer());
+            module.addDeserializer(IEnum.class, new IEnumJsonDeserializer());
+            ObjectMapper objectMapper = applicationContext.getBean(ObjectMapper.class);
+            objectMapper.registerModule(module);
         }
     }
 
