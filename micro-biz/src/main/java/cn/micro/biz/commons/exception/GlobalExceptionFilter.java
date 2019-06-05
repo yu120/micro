@@ -1,7 +1,7 @@
 package cn.micro.biz.commons.exception;
 
 import cn.micro.biz.commons.configuration.MicroProperties;
-import cn.micro.biz.commons.configuration.SpringOrder;
+import cn.micro.biz.commons.configuration.XssHttpServletRequest;
 import cn.micro.biz.commons.utils.IPUtils;
 import cn.micro.biz.commons.utils.IdGenerator;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +28,8 @@ import java.nio.charset.StandardCharsets;
  * @author lry
  */
 @Slf4j
+@Order(0)
 @Configuration
-@Order(SpringOrder.GLOBAL_EXCEPTION)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class GlobalExceptionFilter extends OncePerRequestFilter {
 
@@ -65,7 +65,7 @@ public class GlobalExceptionFilter extends OncePerRequestFilter {
         try {
             MDC.put(X_TRACE_ID, traceId);
             log.debug("Request enter: {}", ipAddress);
-            filterChain.doFilter(request, response);
+            filterChain.doFilter(new XssHttpServletRequest(request), response);
         } catch (Throwable t) {
             // write fail response
             response.setStatus(HttpStatus.OK.value());

@@ -1,6 +1,5 @@
 package cn.micro.biz.commons.auth;
 
-import cn.micro.biz.commons.configuration.SpringOrder;
 import cn.micro.biz.commons.exception.support.MicroPermissionException;
 import cn.micro.biz.entity.member.Permission;
 import cn.micro.biz.entity.member.Role;
@@ -15,7 +14,6 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -44,7 +42,6 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Configuration
-@Order(SpringOrder.GLOBAL_AUTH)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class GlobalAuthHandlerInterceptor extends HandlerInterceptorAdapter implements InitializingBean, DisposableBean {
 
