@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.io.Serializable;
 
 /**
- * 自定义枚举接口
+ * IEnum Interface
  *
  * @author lry
  */
