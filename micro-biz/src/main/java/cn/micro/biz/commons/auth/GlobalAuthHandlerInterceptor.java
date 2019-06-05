@@ -46,8 +46,9 @@ import java.util.stream.Collectors;
 public class GlobalAuthHandlerInterceptor extends HandlerInterceptorAdapter implements InitializingBean, DisposableBean {
 
     private static final AntPathMatcher ANT_PATH_MATCHER = new AntPathMatcher();
-    private ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = null;
+
     private final ConcurrentMap<String, List<Permission>> rolePermissions = new ConcurrentHashMap<>();
+    private ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = null;
     private final Object LOCK = new Object();
 
     private final MicroAuthProperties properties;
