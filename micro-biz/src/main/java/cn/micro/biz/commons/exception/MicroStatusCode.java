@@ -33,7 +33,7 @@ public enum MicroStatusCode {
 
     // ======= Micro Framework Exception
 
-    SUCCESS(200, "success", null),
+    SUCCESS(200, "Success", null),
     MICRO_BAD_REQUEST_EXCEPTION(400, "Bad Request", MicroBadRequestException.class),
     MICRO_PERMISSION_EXCEPTION(401, "Unauthorized", MicroPermissionException.class),
     MICRO_TOKEN_NOT_FOUND_EXCEPTION(402, "Not Logged On", MicroTokenNotFoundException.class),
