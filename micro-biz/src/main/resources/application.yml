@@ -74,7 +74,6 @@ micro:
     block-attack: true
     performance: true
     optimistic-locker: true
-    trace-expend: true
   tenant:
     enable: true
   transaction:

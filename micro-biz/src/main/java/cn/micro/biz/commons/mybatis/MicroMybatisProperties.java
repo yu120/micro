@@ -28,9 +28,5 @@ public class MicroMybatisProperties implements Serializable {
      * Optimistic locker interceptor enable
      */
     private boolean optimisticLocker = false;
-    /**
-     * Trace expend interceptor enable
-     */
-    private boolean traceExpend = false;
 
 }

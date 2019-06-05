@@ -3,7 +3,6 @@ package cn.micro.biz.commons.mybatis;
 import cn.micro.biz.commons.exception.support.MicroErrorException;
 import cn.micro.biz.commons.mybatis.extension.EnumTypeHandler;
 import cn.micro.biz.commons.mybatis.extension.MicroTenantSqlParser;
-import cn.micro.biz.commons.mybatis.extension.TraceExpendInterceptor;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
@@ -282,17 +281,6 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
     @ConditionalOnProperty(prefix = "micro.mybatis", name = {"optimisticLocker", "optimistic-locker"}, havingValue = "true")
     public OptimisticLockerInterceptor optimisticLockerInterceptor() {
         return new OptimisticLockerInterceptor();
-    }
-
-    /**
-     * IBatis Trace Interceptor
-     *
-     * @return {@link TraceExpendInterceptor}
-     */
-    @Bean
-    @ConditionalOnProperty(prefix = "micro.mybatis", name = {"traceExpend", "trace-expend"}, havingValue = "true")
-    public TraceExpendInterceptor iBatisTraceInterceptor() {
-        return new TraceExpendInterceptor();
     }
 
 }
