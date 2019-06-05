@@ -1,4 +1,6 @@
-package cn.micro.biz.commons.mybatis.extension;
+package cn.micro.biz.commons.enums;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.io.Serializable;
 
@@ -7,7 +9,15 @@ import java.io.Serializable;
  *
  * @author lry
  */
+@JsonDeserialize(using = IEnumJsonDeserializer.class)
 public interface IEnum<E, T extends Serializable> {
+
+    String VALUE_KEY = "value";
+    String TITLE_KEY = "title";
+
+    T getValue();
+
+    String getTitle();
 
     /**
      * The parse value
@@ -27,8 +37,6 @@ public interface IEnum<E, T extends Serializable> {
 
         throw new IllegalArgumentException("Illegal Argument");
     }
-
-    T getValue();
 
 }
 

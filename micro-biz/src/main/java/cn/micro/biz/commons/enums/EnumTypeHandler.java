@@ -1,4 +1,4 @@
-package cn.micro.biz.commons.mybatis.extension;
+package cn.micro.biz.commons.enums;
 
 import cn.micro.biz.commons.exception.support.MicroErrorException;
 import org.apache.ibatis.logging.Log;

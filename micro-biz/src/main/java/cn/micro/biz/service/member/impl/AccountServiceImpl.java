@@ -6,7 +6,7 @@ import cn.micro.biz.commons.auth.MicroTokenBody;
 import cn.micro.biz.commons.exception.support.MicroBadRequestException;
 import cn.micro.biz.commons.exception.support.MicroErrorException;
 import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
-import cn.micro.biz.commons.mybatis.extension.IEnum;
+import cn.micro.biz.commons.enums.IEnum;
 import cn.micro.biz.commons.utils.IPUtils;
 import cn.micro.biz.commons.utils.RSAUtils;
 import cn.micro.biz.entity.member.Account;

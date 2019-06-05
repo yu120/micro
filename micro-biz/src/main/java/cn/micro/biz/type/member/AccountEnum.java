@@ -1,6 +1,6 @@
 package cn.micro.biz.type.member;
 
-import cn.micro.biz.commons.mybatis.extension.IEnum;
+import cn.micro.biz.commons.enums.IEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;

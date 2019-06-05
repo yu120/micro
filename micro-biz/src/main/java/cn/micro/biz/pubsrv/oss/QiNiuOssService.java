@@ -2,7 +2,7 @@ package cn.micro.biz.pubsrv.oss;
 
 import cn.micro.biz.commons.trace.Trace;
 import cn.micro.biz.model.vo.OssTokenVO;
-import com.qiniu.common.Region;
+import com.qiniu.common.Zone;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class QiNiuOssService implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        com.qiniu.storage.Configuration cfg = new com.qiniu.storage.Configuration(Region.region0());
+        com.qiniu.storage.Configuration cfg = new com.qiniu.storage.Configuration(Zone.zone0());
         cfg.retryMax = properties.getRetryMax();
         cfg.putThreshold = properties.getPutThreshold();
         cfg.readTimeout = properties.getReadTimeoutSec();

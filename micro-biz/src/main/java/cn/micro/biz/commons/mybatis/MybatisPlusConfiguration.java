@@ -1,7 +1,7 @@
 package cn.micro.biz.commons.mybatis;
 
 import cn.micro.biz.commons.exception.support.MicroErrorException;
-import cn.micro.biz.commons.mybatis.extension.EnumTypeHandler;
+import cn.micro.biz.commons.enums.EnumTypeHandler;
 import cn.micro.biz.commons.mybatis.extension.MicroTenantSqlParser;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
