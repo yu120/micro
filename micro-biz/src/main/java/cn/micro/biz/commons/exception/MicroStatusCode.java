@@ -33,13 +33,13 @@ public enum MicroStatusCode {
 
     // ======= Micro Framework Exception
 
-    SUCCESS(200, null, "success"),
-    MICRO_BAD_REQUEST_EXCEPTION(400, MicroBadRequestException.class, "Bad Request"),
-    MICRO_PERMISSION_EXCEPTION(401, MicroPermissionException.class, "Unauthorized"),
-    MICRO_TOKEN_NOT_FOUND_EXCEPTION(402, MicroTokenNotFoundException.class, "Not Logged On"),
-    MICRO_TOKEN_EXPIRED_EXCEPTION(403, MicroTokenExpiredException.class, "Token Has Expired"),
-    MICRO_ERROR_EXCEPTION(500, MicroErrorException.class, "Internal Server Error"),
-    ABSTRACT_MICRO_EXCEPTION(null, AbstractMicroException.class, null) {
+    SUCCESS(200, "success", null),
+    MICRO_BAD_REQUEST_EXCEPTION(400, "Bad Request", MicroBadRequestException.class),
+    MICRO_PERMISSION_EXCEPTION(401, "Unauthorized", MicroPermissionException.class),
+    MICRO_TOKEN_NOT_FOUND_EXCEPTION(402, "Not Logged On", MicroTokenNotFoundException.class),
+    MICRO_TOKEN_EXPIRED_EXCEPTION(403, "Token Has Expired", MicroTokenExpiredException.class),
+    MICRO_ERROR_EXCEPTION(500, "Internal Server Error", MicroErrorException.class),
+    ABSTRACT_MICRO_EXCEPTION(null, null, AbstractMicroException.class) {
         @Override
         protected MetaData wrapper(Object traceId, Throwable t) {
             MetaData metaData = super.wrapper(traceId, t);
@@ -47,10 +47,16 @@ public enum MicroStatusCode {
             metaData.setCode(ex.getCode());
             metaData.setMessage(ex.getMessage());
             if (ex.getCode() == null) {
-                log.error("The 'code' value[" + ex.getCode() + "] must be set", t);
+                throw new MicroErrorException("The 'code' value[" + ex.getCode() + "] must be set", t);
             }
             if (ex.getMessage() == null || ex.getMessage().length() == 0) {
-                log.error("The 'message' value[" + ex.getCode() + "] must be set", t);
+                throw new MicroErrorException("The 'message' value[" + ex.getCode() + "] must be set", t);
+            }
+            if (ex.getCode() >= MIN_CODE) {
+                throw new MicroErrorException("The 'code' value[" + ex.getCode() + "] must more than or equal to " + MIN_CODE, t);
+            }
+            if (ex.getCode() <= MAX_CODE) {
+                throw new MicroErrorException("The 'code' value[" + ex.getCode() + "] must less than or equal to " + MAX_CODE, t);
             }
 
             return metaData;
@@ -59,8 +65,8 @@ public enum MicroStatusCode {
 
     // ======= 3th Framework Exception
 
-    HTTP_MESSAGE_NOT_READABLE_EXCEPTION(400, HttpMessageNotReadableException.class, "Message Not Readable"),
-    CONSTRAINT_VIOLATION_EXCEPTION(400, ConstraintViolationException.class, "Bad Request Parameter") {
+    HTTP_MESSAGE_NOT_READABLE_EXCEPTION(400, "Message Not Readable", HttpMessageNotReadableException.class),
+    CONSTRAINT_VIOLATION_EXCEPTION(400, "Bad Request Parameter", ConstraintViolationException.class) {
         @Override
         protected MetaData wrapper(Object traceId, Throwable t) {
             MetaData metaData = super.wrapper(traceId, t);
@@ -72,7 +78,7 @@ public enum MicroStatusCode {
             return metaData;
         }
     },
-    METHOD_ARGUMENT_NOT_VALID_EXCEPTION(400, MethodArgumentNotValidException.class, "Method Argument Not Valid") {
+    METHOD_ARGUMENT_NOT_VALID_EXCEPTION(400, "Method Argument Not Valid", MethodArgumentNotValidException.class) {
         @Override
         protected MetaData wrapper(Object traceId, Throwable t) {
             MetaData metaData = super.wrapper(traceId, t);
@@ -84,11 +90,11 @@ public enum MicroStatusCode {
             return metaData;
         }
     },
-    NO_HANDLER_FOUND_EXCEPTION(404, NoHandlerFoundException.class, "Not Found Handler"),
-    HTTP_REQUEST_METHOD_NOT_SUPPORTED_EXCEPTION(405, HttpRequestMethodNotSupportedException.class, "Method Not Allowed"),
-    METHOD_ARGUMENT_TYPE_MISMATCH_EXCEPTION(406, MethodArgumentTypeMismatchException.class, "Not Acceptable Argument Type"),
-    MAX_UPLOAD_SIZE_EXCEEDED_EXCEPTION(413, MaxUploadSizeExceededException.class, "Upload Max Exceeded"),
-    BAD_SQL_GRAMMAR_EXCEPTION(500, BadSqlGrammarException.class, "Unknown Bad SQL Exception") {
+    NO_HANDLER_FOUND_EXCEPTION(404, "Not Found Handler", NoHandlerFoundException.class),
+    HTTP_REQUEST_METHOD_NOT_SUPPORTED_EXCEPTION(405, "Method Not Allowed", HttpRequestMethodNotSupportedException.class),
+    METHOD_ARGUMENT_TYPE_MISMATCH_EXCEPTION(406, "Not Acceptable Argument Type", MethodArgumentTypeMismatchException.class),
+    MAX_UPLOAD_SIZE_EXCEEDED_EXCEPTION(413, "Upload Max Exceeded", MaxUploadSizeExceededException.class),
+    BAD_SQL_GRAMMAR_EXCEPTION(500, "Unknown Bad SQL Exception", BadSqlGrammarException.class) {
         @Override
         protected MetaData wrapper(Object traceId, Throwable t) {
             MetaData metaData = super.wrapper(traceId, t);
@@ -106,9 +112,12 @@ public enum MicroStatusCode {
         }
     };
 
+    private static final Integer MIN_CODE = 600;
+    private static final Integer MAX_CODE = 999;
+
     private final Integer code;
-    private final Class<? extends Exception> error;
     private final String message;
+    private final Class<? extends Exception> error;
 
     MetaData wrapper(Object traceId, Throwable t) {
         return MetaData.build(traceId, this.code, this.message, t.getMessage());

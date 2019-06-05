@@ -13,8 +13,8 @@ import lombok.Getter;
 @EqualsAndHashCode(callSuper = false)
 public class MicroBadRequestException extends AbstractMicroException {
 
-    public MicroBadRequestException(String message) {
-        super(null, message, null, null);
+    public MicroBadRequestException(String stack) {
+        super(null, null, stack, null);
     }
 
 }
