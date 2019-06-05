@@ -9,9 +9,11 @@ import cn.micro.biz.mapper.member.IPermissionMapper;
 import cn.micro.biz.mapper.member.IRoleMapper;
 import cn.micro.biz.mapper.member.IRolePermissionMapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.util.AntPathMatcher;
@@ -22,7 +24,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Configuration
 @Order(SpringOrder.GLOBAL_AUTH)
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class GlobalAuthHandlerInterceptor extends HandlerInterceptorAdapter implements InitializingBean, DisposableBean {
 
     private static final AntPathMatcher ANT_PATH_MATCHER = new AntPathMatcher();
@@ -51,14 +53,10 @@ public class GlobalAuthHandlerInterceptor extends HandlerInterceptorAdapter impl
     private final ConcurrentMap<String, List<Permission>> rolePermissions = new ConcurrentHashMap<>();
     private final Object LOCK = new Object();
 
-    @Resource
-    private MicroAuthProperties properties;
-    @Resource
-    private IRoleMapper roleMapper;
-    @Resource
-    private IPermissionMapper permissionMapper;
-    @Resource
-    private IRolePermissionMapper rolePermissionMapper;
+    private final MicroAuthProperties properties;
+    private final IRoleMapper roleMapper;
+    private final IPermissionMapper permissionMapper;
+    private final IRolePermissionMapper rolePermissionMapper;
 
     @Override
     public void afterPropertiesSet() throws Exception {

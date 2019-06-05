@@ -4,11 +4,13 @@ import cn.micro.biz.commons.exception.GlobalExceptionFilter;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -19,12 +21,10 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.handler.AbstractHandlerMethodMapping;
 import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
@@ -40,6 +40,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Configuration
 @EnableConfigurationProperties(TraceProperties.class)
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @ConditionalOnProperty(prefix = "micro.trace", name = "enable", havingValue = "true")
 public class GlobalTraceInterceptor implements InitializingBean, DisposableBean, WebMvcConfigurer, HandlerInterceptor {
 
@@ -48,12 +49,8 @@ public class GlobalTraceInterceptor implements InitializingBean, DisposableBean,
 
     @Getter
     private static Cache<String, String> cache;
-
-
-    @Resource
-    private TraceProperties properties;
-    @Resource
-    private RequestMappingHandlerMapping requestMappingHandlerMapping;
+    private final TraceProperties properties;
+    private final RequestMappingHandlerMapping requestMappingHandlerMapping;
 
     @Override
     public void afterPropertiesSet() {
@@ -67,8 +64,7 @@ public class GlobalTraceInterceptor implements InitializingBean, DisposableBean,
         TraceStatistic.INSTANCE.initialize(properties);
         log.info("[Initialize Global Trace Interceptor]: {}", this.getClass().getName());
 
-        AbstractHandlerMethodMapping<RequestMappingInfo> objHandlerMethodMapping = requestMappingHandlerMapping;
-        Map<RequestMappingInfo, HandlerMethod> mapRet = objHandlerMethodMapping.getHandlerMethods();
+        Map<RequestMappingInfo, HandlerMethod> mapRet = requestMappingHandlerMapping.getHandlerMethods();
         for (Map.Entry<RequestMappingInfo, HandlerMethod> entry : mapRet.entrySet()) {
             REQUEST_MAPPING_INFO_MAP.put(entry.getValue().getMethod().toString(), entry.getKey());
         }
