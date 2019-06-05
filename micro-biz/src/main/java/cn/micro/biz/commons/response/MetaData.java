@@ -23,9 +23,9 @@ import java.util.Map;
 @AllArgsConstructor
 public class MetaData implements Serializable {
 
-    private static final String TRACE_KEY = "trace";
-    private static final String STACK_KEY = "stack";
     private static final String TIME_KEY = "time";
+    private static final String STACK_KEY = "stack";
+    private static final String TRACE_ID_KEY = "traceId";
     private static final String SDF_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
 
     private int code;
@@ -45,7 +45,7 @@ public class MetaData implements Serializable {
         if (headers == null) {
             headers = new LinkedHashMap<>();
         }
-        headers.put(TRACE_KEY, traceId);
+        headers.put(TRACE_ID_KEY, traceId);
         headers.put(TIME_KEY, new SimpleDateFormat(SDF_PATTERN).format(new Date()));
         if (stack != null) {
             if (stack.length() > MicroSpringConfiguration.STACK_MAX_LENGTH) {
