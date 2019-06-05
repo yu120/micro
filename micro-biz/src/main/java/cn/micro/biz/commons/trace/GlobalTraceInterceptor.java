@@ -26,6 +26,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -82,7 +83,8 @@ public class GlobalTraceInterceptor implements InitializingBean, DisposableBean,
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request,
+                             HttpServletResponse response, Object handler) throws Exception {
         if (!(handler instanceof HandlerMethod)) {
             return true;
         }
@@ -106,12 +108,14 @@ public class GlobalTraceInterceptor implements InitializingBean, DisposableBean,
     }
 
     @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+    public void postHandle(HttpServletRequest request, HttpServletResponse response,
+                           Object handler, ModelAndView modelAndView) throws Exception {
 
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
+                                Object handler, Exception ex) throws Exception {
         if (!(handler instanceof HandlerMethod)) {
             return;
         }
@@ -144,8 +148,9 @@ public class GlobalTraceInterceptor implements InitializingBean, DisposableBean,
             if (requestMappingInfo != null) {
                 PatternsRequestCondition patternsRequestCondition = requestMappingInfo.getPatternsCondition();
                 Set<String> urlPatterns = patternsRequestCondition.getPatterns();
-                for (String urlPattern : urlPatterns) {
-                    return request.getMethod() + "@" + urlPattern;
+                Iterator<String> iterator = urlPatterns.iterator();
+                if (iterator.hasNext()) {
+                    return request.getMethod() + "@" + iterator.next();
                 }
             }
         }
