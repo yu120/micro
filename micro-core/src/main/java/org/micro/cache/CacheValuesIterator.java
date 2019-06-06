@@ -2,9 +2,6 @@ package org.micro.cache;
 
 import java.util.Iterator;
 
-/**
- * {@link com.xiaoleilu.hutool.cache.AbstractCache} 的值迭代器.
- */
 public class CacheValuesIterator<V> implements Iterator<V> {
 
 	private Iterator<? extends CacheObj<?, V>> iterator;
@@ -22,7 +19,7 @@ public class CacheValuesIterator<V> implements Iterator<V> {
 	private void nextValue() {
 		while (iterator.hasNext()) {
 			nextValue = iterator.next();
-			if (nextValue.isExpired() == false) {
+			if (!nextValue.isExpired()) {
 				return;
 			}
 		}
