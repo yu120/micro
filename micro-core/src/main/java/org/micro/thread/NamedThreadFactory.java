@@ -4,7 +4,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * InternalThreadFactory.
+ * Internal Thread Factory.
  *
  * @author lry
  */

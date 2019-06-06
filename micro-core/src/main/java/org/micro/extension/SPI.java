@@ -3,8 +3,9 @@ package org.micro.extension;
 import java.lang.annotation.*;
 
 /**
- * <b>SPI</b><br>
- * <font color="red"><br>
+ * <b>SPI</b>
+ * <br>
+ * <font color="red">
  * <b>功能特性：</b><br>
  * 1.支持自定义实现类为单例/多例<br>
  * 2.支持设置默认的实现类<br>
@@ -16,7 +17,7 @@ import java.lang.annotation.*;
  * 8.支持获取所有实现类<br>
  * 9.支持只创建所需实现类，解决JDK原生的全量方式<br>
  * 10.支持自定义ClassLoader来加载class<br>
- * </font> <br>
+ * </font>
  * TODO: 需要实现对扩展点IoC和AOP的支持，一个扩展点可以直接setter注入其它扩展点
  *
  * @author lry
@@ -27,12 +28,15 @@ import java.lang.annotation.*;
 public @interface SPI {
 
     /**
-     * 自定义默认的实现类ID
+     * The implements ID of default extension value.
+     * <p>
+     * {@link Extension#value()}
      **/
     String value() default "";
 
     /**
-     * 声明每次获取实现类时是否需要创建新对象,即是否单例
+     * Declares whether a new object needs to be created each time
+     * an implementation class is acquired, that is, whether it is singleton.
      **/
     boolean single() default false;
 

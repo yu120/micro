@@ -25,7 +25,7 @@ public class NetUtils {
     private static final Logger log = LoggerFactory.getLogger(NetUtils.class);
 
     public static final String LOCALHOST = "127.0.0.1";
-    public static final String ANYHOST = "0.0.0.0";
+    public static final String ANY_HOST = "0.0.0.0";
     private static final int RND_PORT_START = 30000;
     private static final int RND_PORT_RANGE = 10000;
 
@@ -43,20 +43,11 @@ public class NetUtils {
     }
 
     public static int getAvailablePort() {
-        ServerSocket ss = null;
-        try {
-            ss = new ServerSocket();
+        try (ServerSocket ss = new ServerSocket()) {
             ss.bind(null);
             return ss.getLocalPort();
         } catch (IOException e) {
             return getRandomPort();
-        } finally {
-            if (ss != null) {
-                try {
-                    ss.close();
-                } catch (IOException e) {
-                }
-            }
         }
     }
 
@@ -65,19 +56,10 @@ public class NetUtils {
             return getAvailablePort();
         }
         for (int i = port; i < MAX_PORT; i++) {
-            ServerSocket ss = null;
-            try {
-                ss = new ServerSocket(i);
+            try (ServerSocket ss = new ServerSocket(i)) {
                 return i;
             } catch (IOException e) {
                 // continue
-            } finally {
-                if (ss != null) {
-                    try {
-                        ss.close();
-                    } catch (IOException e) {
-                    }
-                }
             }
         }
         return port;
@@ -94,7 +76,7 @@ public class NetUtils {
     public static boolean isLocalHost(String host) {
         return host != null
                 && (LOCAL_IP_PATTERN.matcher(host).matches()
-                || host.equalsIgnoreCase("localhost"));
+                || "localhost".equalsIgnoreCase(host));
     }
 
     public static boolean isAnyHost(String host) {
@@ -104,8 +86,8 @@ public class NetUtils {
     public static boolean isInvalidLocalHost(String host) {
         return host == null
                 || host.length() == 0
-                || host.equalsIgnoreCase("localhost")
-                || host.equals("0.0.0.0")
+                || "localhost".equalsIgnoreCase(host)
+                || "0.0.0.0".equals(host)
                 || (LOCAL_IP_PATTERN.matcher(host).matches());
     }
 
@@ -124,7 +106,7 @@ public class NetUtils {
         }
         String name = address.getHostAddress();
         return (name != null
-                && !ANYHOST.equals(name)
+                && !ANY_HOST.equals(name)
                 && !LOCALHOST.equals(name)
                 && IP_PATTERN.matcher(name).matches());
     }
@@ -166,16 +148,14 @@ public class NetUtils {
                     try {
                         NetworkInterface network = interfaces.nextElement();
                         Enumeration<InetAddress> addresses = network.getInetAddresses();
-                        if (addresses != null) {
-                            while (addresses.hasMoreElements()) {
-                                try {
-                                    InetAddress address = addresses.nextElement();
-                                    if (isValidAddress(address)) {
-                                        return address;
-                                    }
-                                } catch (Throwable e) {
-                                    log.warn("Failed to retrieving ip address, " + e.getMessage(), e);
+                        while (addresses.hasMoreElements()) {
+                            try {
+                                InetAddress address = addresses.nextElement();
+                                if (isValidAddress(address)) {
+                                    return address;
                                 }
+                            } catch (Throwable e) {
+                                log.warn("Failed to retrieving ip address, " + e.getMessage(), e);
                             }
                         }
                     } catch (Throwable e) {

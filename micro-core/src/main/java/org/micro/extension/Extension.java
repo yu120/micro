@@ -3,7 +3,7 @@ package org.micro.extension;
 import java.lang.annotation.*;
 
 /**
- * SPI有多个实现时，可以根据条件进行过滤、排序后再返回。
+ * SPI Extension
  *
  * @author lry
  */
@@ -13,19 +13,21 @@ import java.lang.annotation.*;
 public @interface Extension {
 
     /**
-     * 自定义实现类ID
+     * Extension ID
      **/
     String value() default "";
 
     /**
-     * order号越小，在返回的list<Instance>中的位置越靠前
+     * Extension order value
+     * <p>
+     * The smaller the order number, the higher the position in the returned list.
      */
-    int order() default 20;
+    int order() default 1;
 
     /**
-     * SPI的category，获取SPI列表时，根据category进行匹配
+     * SPI category, matching according to category when obtaining SPI list
      * <p>
-     * 当category中存在待过滤的search-category时，匹配成功
+     * When there is a search-category to be filtered in category, the matching is successful.
      */
     String[] category() default "";
 

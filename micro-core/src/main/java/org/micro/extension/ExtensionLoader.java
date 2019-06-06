@@ -2,10 +2,7 @@ package org.micro.extension;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.net.URL;
@@ -15,23 +12,23 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * The ExtensionLoader
+ * The Extension Loader
  *
  * @param <T>
  * @author lry
  */
 @Slf4j
-public class ExtensionLoader<T> {
+public class ExtensionLoader<T> implements Serializable {
 
     private Class<T> type;
     private ClassLoader classLoader;
     private volatile boolean init = false;
     private static final String PREFIX_DEFAULT = "META-INF/";
-    private static final String PREFIX_NEURAL = "META-INF/neural/";
+    private static final String PREFIX_NEURAL = "META-INF/micro/";
     private static final String PREFIX_SERVICES = "META-INF/services/";
     private ConcurrentMap<String, T> singletonInstances = null;
     private ConcurrentMap<String, Class<T>> extensionClasses = null;
-    private static ConcurrentMap<Class<?>, ExtensionLoader<?>> extensionLoaders = new ConcurrentHashMap<Class<?>, ExtensionLoader<?>>();
+    private static ConcurrentMap<Class<?>, ExtensionLoader<?>> extensionLoaders = new ConcurrentHashMap<>();
 
     private ExtensionLoader(Class<T> type, ClassLoader classLoader) {
         this.type = type;
@@ -54,7 +51,8 @@ public class ExtensionLoader<T> {
 
         SPI spi = type.getAnnotation(SPI.class);
         if (spi == null || spi.value().length() == 0) {
-            throw new RuntimeException(type.getName() + ": The default implementation ID(@SPI.value()) is not set");
+            throw new RuntimeException(type.getName() +
+                    ": The default implementation ID(@SPI.value()) is not set");
         } else {
             try {
                 if (spi.single()) {
@@ -142,16 +140,16 @@ public class ExtensionLoader<T> {
         }
 
         extensionClasses = this.loadExtensionClasses(PREFIX_DEFAULT);
-        ConcurrentMap<String, Class<T>> neuralExtensionClasses = this.loadExtensionClasses(PREFIX_NEURAL);
-        if (!neuralExtensionClasses.isEmpty()) {
-            extensionClasses.putAll(neuralExtensionClasses);
+        ConcurrentMap<String, Class<T>> extensionClasses = this.loadExtensionClasses(PREFIX_NEURAL);
+        if (!extensionClasses.isEmpty()) {
+            extensionClasses.putAll(extensionClasses);
         }
         ConcurrentMap<String, Class<T>> serviceExtensionClasses = this.loadExtensionClasses(PREFIX_SERVICES);
         if (!serviceExtensionClasses.isEmpty()) {
             extensionClasses.putAll(serviceExtensionClasses);
         }
 
-        singletonInstances = new ConcurrentHashMap<String, T>();
+        singletonInstances = new ConcurrentHashMap<>();
         init = true;
     }
 
@@ -204,8 +202,6 @@ public class ExtensionLoader<T> {
      * 2 按照npiMeta中的order进行排序 <br>
      * <br>
      * FIXME： 是否需要对singleton来区分对待，后面再考虑 fishermen
-     *
-     * @return
      */
     public List<T> getExtensions(String key) {
         checkInit();
@@ -214,16 +210,16 @@ public class ExtensionLoader<T> {
         }
 
         // 如果只有一个实现，直接返回
-        List<T> exts = new ArrayList<T>(extensionClasses.size());
+        List<T> extensionClasseList = new ArrayList<T>(extensionClasses.size());
         // 多个实现，按优先级排序返回
         for (Map.Entry<String, Class<T>> entry : extensionClasses.entrySet()) {
             Extension extension = entry.getValue().getAnnotation(Extension.class);
             if (key == null || key.length() == 0) {
-                exts.add(getExtension(entry.getKey()));
+                extensionClasseList.add(getExtension(entry.getKey()));
             } else if (extension != null) {
                 for (String k : extension.category()) {
                     if (key.equals(k)) {
-                        exts.add(getExtension(entry.getKey()));
+                        extensionClasseList.add(getExtension(entry.getKey()));
                         break;
                     }
                 }
@@ -231,7 +227,7 @@ public class ExtensionLoader<T> {
         }
 
         // order 大的排在后面,如果没有设置order的排到最前面
-        exts.sort((o1, o2) -> {
+        extensionClasseList.sort((o1, o2) -> {
             Extension p1 = o1.getClass().getAnnotation(Extension.class);
             Extension p2 = o2.getClass().getAnnotation(Extension.class);
             if (p1 == null) {
@@ -243,7 +239,7 @@ public class ExtensionLoader<T> {
             }
         });
 
-        return exts;
+        return extensionClasseList;
     }
 
     private void checkExtensionType(Class<T> clz) {
@@ -285,7 +281,7 @@ public class ExtensionLoader<T> {
             }
 
             if (urls == null || !urls.hasMoreElements()) {
-                return new ConcurrentHashMap<String, Class<T>>();
+                return new ConcurrentHashMap<>();
             }
 
             while (urls.hasMoreElements()) {
@@ -293,7 +289,8 @@ public class ExtensionLoader<T> {
                 this.parseUrl(type, url, classNames);
             }
         } catch (Exception e) {
-            throw new RuntimeException("ExtensionLoader loadExtensionClasses error, prefix: " + prefix + " type: " + type, e);
+            throw new RuntimeException("ExtensionLoader loadExtensionClasses error, prefix: " +
+                    prefix + " type: " + type, e);
         }
 
         return loadClass(classNames);
@@ -359,7 +356,8 @@ public class ExtensionLoader<T> {
         }
     }
 
-    private void parseLine(Class<T> type, URL url, String line, List<String> names) throws IOException, ServiceConfigurationError {
+    private void parseLine(Class<T> type, URL url, String line, List<String> names)
+            throws IOException, ServiceConfigurationError {
         int ci = line.indexOf('#');
         if (ci >= 0) {
             line = line.substring(0, ci);
@@ -370,18 +368,21 @@ public class ExtensionLoader<T> {
             return;
         }
         if ((line.indexOf(' ') >= 0) || (line.indexOf('\t') >= 0)) {
-            throw new RuntimeException(type.getName() + ": " + url + ":" + line + ": Illegal npi configuration-file syntax: " + line);
+            throw new RuntimeException(type.getName() + ": " + url + ":" + line +
+                    ": Illegal npi configuration-file syntax: " + line);
         }
 
         int cp = line.codePointAt(0);
         if (!Character.isJavaIdentifierStart(cp)) {
-            throw new RuntimeException(type.getName() + ": " + url + ":" + line + ": Illegal npi provider-class name: " + line);
+            throw new RuntimeException(type.getName() + ": " + url + ":" + line +
+                    ": Illegal npi provider-class name: " + line);
         }
 
         for (int i = Character.charCount(cp); i < line.length(); i += Character.charCount(cp)) {
             cp = line.codePointAt(i);
             if (!Character.isJavaIdentifierPart(cp) && (cp != '.')) {
-                throw new RuntimeException(type.getName() + ": " + url + ":" + line + ": Illegal npi provider-class name: " + line);
+                throw new RuntimeException(type.getName() + ": " + url + ":" + line +
+                        ": Illegal npi provider-class name: " + line);
             }
         }
 
