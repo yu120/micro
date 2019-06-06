@@ -6,15 +6,14 @@ import java.util.Set;
 /**
  * The MultiHashMap
  *
- * @author lry
- *
  * @param <K>
  * @param <S>
  * @param <V>
+ * @author lry
  */
-public class MultiHashMap<K extends Object, S extends Object, V extends Object> extends HashMap<Object, Object> {
+public class MultiHashMap<K, S, V> extends HashMap<Object, Object> {
 
-    private static final long serialVersionUID = -3089161666190291052L;
+    private static final long serialVersionUID = 1;
 
     public MultiHashMap() {
         super();
@@ -25,16 +24,13 @@ public class MultiHashMap<K extends Object, S extends Object, V extends Object> 
      * map. If the map previously contained a mapping for this key and subKey ,
      * the old value is replaced.
      *
-     * @param key
-     *            Is a Primary key.
-     * @param subKey
-     *            with which the specified value is to be associated.
-     * @param value
-     *            to be associated with the specified key and subKey
+     * @param key    Is a Primary key.
+     * @param subKey with which the specified value is to be associated.
+     * @param value  to be associated with the specified key and subKey
      * @return previous value associated with specified key and subKey, or null
-     *         if there was no mapping for key and subKey. A null return can
-     *         also indicate that the HashMap previously associated null with
-     *         the specified key and subKey.
+     * if there was no mapping for key and subKey. A null return can
+     * also indicate that the HashMap previously associated null with
+     * the specified key and subKey.
      */
     @SuppressWarnings("unchecked")
     public Object put(K key, S subKey, V value) {
@@ -55,13 +51,11 @@ public class MultiHashMap<K extends Object, S extends Object, V extends Object> 
      * explicitly maps the key to null. The containsKey operation may be used to
      * distinguish these two cases.
      *
-     * @param key
-     *            whose associated value is to be returned.
-     * @param subKey
-     *            whose associated value is to be returned
+     * @param key    whose associated value is to be returned.
+     * @param subKey whose associated value is to be returned
      * @return the value to which this map maps the specified key.
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings("unchecked")
     public V get(K key, S subKey) {
         HashMap a = (HashMap) super.get(key);
         if (a != null) {
@@ -72,11 +66,13 @@ public class MultiHashMap<K extends Object, S extends Object, V extends Object> 
         return null;
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings("unchecked")
     public Set<S> getSubKeys(K key) {
         HashMap a = (HashMap) super.get(key);
-        if (a == null)
+        if (a == null) {
             return null;
+        }
+
         return a.keySet();
     }
 
