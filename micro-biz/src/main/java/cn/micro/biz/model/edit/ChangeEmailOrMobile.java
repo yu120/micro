@@ -23,7 +23,7 @@ public class ChangeEmailOrMobile implements Serializable {
      * {@link cn.micro.biz.type.member.AccountEnum}
      */
     @AssertEnum(AccountEnum.class)
-    private Integer category;
+    private AccountEnum category;
     /**
      * Account eg:email or mobile
      * <p>

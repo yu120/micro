@@ -6,20 +6,19 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * Account Category
+ * Member Status Category Enum
  *
  * @author lry
  */
 @Getter
 @ToString
 @AllArgsConstructor
-public enum AccountEnum implements IEnum<Integer> {
+public enum MemberStatusEnum implements IEnum<Integer> {
 
     // ======
 
-    MOBILE(0, "手机"),
-    EMAIL(1, "邮箱"),
-    WX_AUTO_LOGIN(2, "微信自动登录");
+    NORMAL(0, "正常"),
+    FORBIDDEN(1, "禁用");
 
     private final Integer value;
     private final String title;

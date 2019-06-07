@@ -28,6 +28,7 @@ import cn.micro.biz.service.member.IUnionCodeService;
 import cn.micro.biz.type.UnionCodeCategoryEnum;
 import cn.micro.biz.type.member.AccountEnum;
 import cn.micro.biz.type.member.MemberGroupEnum;
+import cn.micro.biz.type.member.MemberStatusEnum;
 import cn.micro.biz.type.member.PlatformEnum;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
@@ -69,7 +70,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
 
         // 2.检查账号是否存在用户信息
         Member addOrUpdateMember = new Member();
-        if (AccountEnum.WX_AUTO_LOGIN.getValue() == registerAccount.getCategory()) {
+        if (AccountEnum.WX_AUTO_LOGIN == registerAccount.getCategory()) {
             // 2.1.微信自动登录
             if (account != null) {
                 addOrUpdateMember = memberMapper.selectById(account.getMemberId());
@@ -83,10 +84,10 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
                 throw new MicroBadRequestException("账号已存在");
             }
             Member member;
-            if (AccountEnum.MOBILE.getValue() == registerAccount.getCategory()) {
+            if (AccountEnum.MOBILE == registerAccount.getCategory()) {
                 member = memberMapper.selectOne(Member::getMobile, registerAccount.getAccount());
                 addOrUpdateMember.setMobile(registerAccount.getAccount());
-            } else if (AccountEnum.EMAIL.getValue() == registerAccount.getCategory()) {
+            } else if (AccountEnum.EMAIL == registerAccount.getCategory()) {
                 member = memberMapper.selectOne(Member::getEmail, registerAccount.getAccount());
                 addOrUpdateMember.setEmail(registerAccount.getAccount());
             } else {
@@ -101,6 +102,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
             // 3.1.注册用户
             addOrUpdateMember.setName(registerAccount.getName());
             addOrUpdateMember.setIcon(registerAccount.getIcon());
+            addOrUpdateMember.setStatus(MemberStatusEnum.NORMAL);
             addOrUpdateMember.setSalt(RSAUtils.randomSalt());
             addOrUpdateMember.setPwd(RSAUtils.encryptPwd(registerAccount.getPassword(), addOrUpdateMember.getSalt()));
             addOrUpdateMember.setPassword(RSAUtils.encryptPassword(addOrUpdateMember.getPwd()));
@@ -158,7 +160,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
 
         // 5.组装响应模型
         return MicroAuthContext.build(member.getTenantId(), member.getId(),
-                member.getName(), loginAccount.getPlatform(), roleCodes, null);
+                member.getName(), loginAccount.getPlatform().getValue(), roleCodes, null);
     }
 
     @Override
@@ -174,8 +176,8 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
                 } else if (register) {
                     RegisterAccount registerAccount = new RegisterAccount();
                     registerAccount.setAccount(wxAuthCode2Session.getUnionId());
-                    registerAccount.setCategory(AccountEnum.WX_AUTO_LOGIN.getValue());
-                    registerAccount.setPlatform(PlatformEnum.WX.getValue());
+                    registerAccount.setCategory(AccountEnum.WX_AUTO_LOGIN);
+                    registerAccount.setPlatform(PlatformEnum.WX);
                     registerAccount.setPassword(RSAUtils.encryptByPublicKeyHex(wxAuthCode2Session.getUnionId()));
                     if (this.doRegister(registerAccount)) {
                         wxAuthCode2Session.setHasAccount(true);
@@ -271,9 +273,9 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
     public Boolean doChangeAccount(ChangeEmailOrMobile changeEmailOrMobile) {
         // 1.验证码校验
         UnionCodeCategoryEnum unionCodeCategoryEnum;
-        if (AccountEnum.EMAIL.getValue() == changeEmailOrMobile.getCategory()) {
+        if (AccountEnum.EMAIL == changeEmailOrMobile.getCategory()) {
             unionCodeCategoryEnum = UnionCodeCategoryEnum.CHANGE_EMAIL;
-        } else if (AccountEnum.MOBILE.getValue() == changeEmailOrMobile.getCategory()) {
+        } else if (AccountEnum.MOBILE == changeEmailOrMobile.getCategory()) {
             unionCodeCategoryEnum = UnionCodeCategoryEnum.CHANGE_MOBILE;
         } else {
             throw new MicroBadRequestException("暂不支持修改该类型账号");
@@ -288,12 +290,12 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
         }
 
         // 3.检查用户信息中的邮箱地址或手机号是否已被占用
-        if (AccountEnum.EMAIL.getValue() == changeEmailOrMobile.getCategory()) {
+        if (AccountEnum.EMAIL == changeEmailOrMobile.getCategory()) {
             Member member = memberMapper.selectOne(Member::getEmail, changeEmailOrMobile.getAccount());
             if (member != null) {
                 throw new MicroBadRequestException("该邮箱地址已被占用");
             }
-        } else if (AccountEnum.MOBILE.getValue() == changeEmailOrMobile.getCategory()) {
+        } else if (AccountEnum.MOBILE == changeEmailOrMobile.getCategory()) {
             Member member = memberMapper.selectOne(Member::getMobile, changeEmailOrMobile.getAccount());
             if (member != null) {
                 throw new MicroBadRequestException("该手机号已被占用");

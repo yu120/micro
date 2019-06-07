@@ -1,31 +1,30 @@
-package cn.micro.biz.entity.member;
+package cn.micro.biz.model.edit;
 
-import cn.micro.biz.commons.mybatis.MicroEntity;
-import cn.micro.biz.commons.utils.IdCardUtils;
-import cn.micro.biz.commons.utils.TelUtils;
-import cn.micro.biz.type.member.MemberStatusEnum;
-import cn.micro.biz.type.member.PlatformEnum;
 import cn.micro.biz.type.member.SexEnum;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Member Entity
+ * Edit Member Info
  *
  * @author lry
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
-@TableName("member")
-public class Member extends MicroEntity<Member> {
+@ToString
+@EqualsAndHashCode
+public class EditMemberInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * Member id
+     */
+    private Long id;
 
     /**
      * Member name
@@ -46,14 +45,6 @@ public class Member extends MicroEntity<Member> {
      */
     private Integer age;
     /**
-     * Email
-     */
-    private String email;
-    /**
-     * Mobile
-     */
-    private String mobile;
-    /**
      * Id card
      */
     private String idCard;
@@ -66,26 +57,6 @@ public class Member extends MicroEntity<Member> {
      * Member address
      */
     private String address;
-    /**
-     * Member enable status
-     * <p>
-     * {@link cn.micro.biz.type.member.MemberStatusEnum}
-     */
-    private MemberStatusEnum status;
-
-    // =========== Sensitive information
-    /**
-     * Password random salt
-     */
-    private String salt;
-    /**
-     * Login password md5
-     */
-    private String password;
-    /**
-     * Login password(禁止查询该字段)
-     */
-    private String pwd;
 
     /**
      * Province code
@@ -135,27 +106,5 @@ public class Member extends MicroEntity<Member> {
      * {@link cn.micro.biz.entity.Area#name}
      */
     private String townName;
-
-    /**
-     * Member register IP
-     */
-    private String ip;
-    /**
-     * Member register platform category
-     * <p>
-     * {@link cn.micro.biz.type.member.PlatformEnum}
-     */
-    private PlatformEnum platform;
-
-    /**
-     * 脱敏
-     */
-    public void desensitization() {
-        this.setSalt(null);
-        this.setPassword(null);
-        this.setPwd(null);
-        this.setMobile(TelUtils.hideMobile(mobile));
-        this.setIdCard(IdCardUtils.hide(idCard));
-    }
 
 }

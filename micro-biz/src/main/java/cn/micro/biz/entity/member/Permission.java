@@ -2,12 +2,9 @@ package cn.micro.biz.entity.member;
 
 import cn.micro.biz.commons.mybatis.MicroEntity;
 import cn.micro.biz.type.member.PermissionCategoryEnum;
+import cn.micro.biz.type.member.StatusEnum;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 /**
  * Permission Entity
@@ -42,11 +39,13 @@ public class Permission extends MicroEntity<Permission> {
      * <p>
      * {@link PermissionCategoryEnum}
      */
-    private Integer category;
+    private PermissionCategoryEnum category;
     /**
      * Permission enable status
+     * <p>
+     * {@link cn.micro.biz.type.member.StatusEnum}
      */
-    private Integer status;
+    private StatusEnum status;
     /**
      * Permission code
      */

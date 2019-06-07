@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @author lry
  */
 @JsonDeserialize(using = IEnumJsonDeserializer.class)
-public interface IEnum<E, T extends Serializable> {
+public interface IEnum<T extends Serializable> {
 
     String VALUE_KEY = "value";
     String TITLE_KEY = "title";

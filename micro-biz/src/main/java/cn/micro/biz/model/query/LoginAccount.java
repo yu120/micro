@@ -1,5 +1,6 @@
 package cn.micro.biz.model.query;
 
+import cn.micro.biz.type.member.PlatformEnum;
 import lombok.Data;
 import lombok.ToString;
 
@@ -17,6 +18,6 @@ public class LoginAccount implements Serializable {
      * <p>
      * {@link cn.micro.biz.type.member.PlatformEnum}
      */
-    private Integer platform;
+    private PlatformEnum platform;
 
 }

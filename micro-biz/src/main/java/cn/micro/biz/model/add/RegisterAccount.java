@@ -29,14 +29,14 @@ public class RegisterAccount implements Serializable {
      * {@link AccountEnum}
      */
     @AssertEnum(AccountEnum.class)
-    private Integer category;
+    private AccountEnum category;
     /**
      * Account register platform
      * <p>
      * {@link PlatformEnum}
      */
     @AssertEnum(PlatformEnum.class)
-    private Integer platform;
+    private PlatformEnum platform;
     /**
      * Account code
      */
