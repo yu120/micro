@@ -49,8 +49,8 @@ public class PermissionController {
         return permissionService.removeByIds(ids);
     }
 
-    @RequestMapping(value = "update", method = RequestMethod.PUT)
-    public boolean updatePermissionById(@RequestBody Permission permission) {
+    @RequestMapping(value = "edit", method = RequestMethod.PUT)
+    public boolean editPermissionById(@RequestBody Permission permission) {
         return permissionService.updateById(permission);
     }
 

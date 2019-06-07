@@ -49,8 +49,8 @@ public class RoleController {
         return roleService.removeByIds(ids);
     }
 
-    @RequestMapping(value = "update", method = RequestMethod.PUT)
-    public boolean updateRoleById(@RequestBody Role role) {
+    @RequestMapping(value = "edit", method = RequestMethod.PUT)
+    public boolean editRoleById(@RequestBody Role role) {
         Role queryRole = roleService.getOne(Role::getCode, role.getCode());
         if (queryRole != null) {
             if (!queryRole.getId().equals(role.getId())) {

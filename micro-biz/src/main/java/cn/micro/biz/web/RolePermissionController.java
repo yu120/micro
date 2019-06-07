@@ -42,8 +42,8 @@ public class RolePermissionController {
         return rolePermissionService.removeByIds(ids);
     }
 
-    @RequestMapping(value = "update", method = RequestMethod.PUT)
-    public boolean updateRolePermissionById(@RequestBody RolePermission rolePermission) {
+    @RequestMapping(value = "edit", method = RequestMethod.PUT)
+    public boolean editRolePermissionById(@RequestBody RolePermission rolePermission) {
         return rolePermissionService.updateById(rolePermission);
     }
 

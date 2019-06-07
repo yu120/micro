@@ -30,7 +30,6 @@ public class PublicController {
     private final QiNiuOssService qiNiuOssService;
     private final AliYunSmsService aliYunSmsService;
     private final IUnionCodeService unionCodeService;
-
     private final StringEncryptor stringEncryptor;
 
     @NonAuth
