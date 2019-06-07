@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 /**
- * Operation Log Entity
+ * Audit Log Entity
  *
  * @author lry
  */
@@ -15,26 +15,26 @@ import lombok.*;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@TableName("operation_log")
-public class OperationLog extends MicroEntity<OperationLog> {
+@TableName("audit_log")
+public class AuditLog extends MicroEntity<AuditLog> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Operation id
+     * Audit id
      * <p>
-     * {@link Operation#id}
+     * {@link Audit#id}
      */
     private Long operationId;
     /**
-     * Operation member id
+     * Audit member id
      * <p>
      * {@link Member#id}
      */
     private Long memberId;
 
     /**
-     * Operation content
+     * Audit content
      */
     private String content;
 

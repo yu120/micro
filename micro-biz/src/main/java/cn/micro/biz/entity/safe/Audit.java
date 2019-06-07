@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 /**
- * Operation Entity
+ * Audit Entity
  *
  * @author lry
  */
@@ -15,8 +15,8 @@ import lombok.*;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@TableName("operation")
-public class Operation extends MicroEntity<Operation> {
+@TableName("audit")
+public class Audit extends MicroEntity<Audit> {
 
     private static final long serialVersionUID = 1L;
 
@@ -28,19 +28,19 @@ public class Operation extends MicroEntity<Operation> {
     private Long parentId;
 
     /**
-     * Operation name
+     * Audit name
      */
     private String name;
     /**
-     * Operation code
+     * Audit code
      */
     private String code;
     /**
-     * Operation enable status
+     * Audit enable status
      */
     private Integer status;
     /**
-     * Operation intercept url matching rule
+     * Audit intercept url matching rule
      */
     private String urlMatching;
 

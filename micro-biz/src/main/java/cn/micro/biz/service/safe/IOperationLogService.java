@@ -1,13 +1,13 @@
 package cn.micro.biz.service.safe;
 
 import cn.micro.biz.commons.mybatis.extension.IMicroService;
-import cn.micro.biz.entity.safe.OperationLog;
+import cn.micro.biz.entity.safe.AuditLog;
 
 /**
- * Operation Log Service
+ * Audit Log Service
  *
  * @author lry
  */
-public interface IOperationLogService extends IMicroService<OperationLog> {
+public interface IOperationLogService extends IMicroService<AuditLog> {
 
 }
