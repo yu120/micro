@@ -22,11 +22,6 @@ public class EditMemberInfo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Member id
-     */
-    private Long id;
-
-    /**
      * Member name
      */
     private String name;

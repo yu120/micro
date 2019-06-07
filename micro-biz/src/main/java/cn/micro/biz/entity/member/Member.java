@@ -150,12 +150,13 @@ public class Member extends MicroEntity<Member> {
     /**
      * 脱敏
      */
-    public void desensitization() {
+    public Member desensitization() {
         this.setSalt(null);
         this.setPassword(null);
         this.setPwd(null);
         this.setMobile(TelUtils.hideMobile(mobile));
         this.setIdCard(IdCardUtils.hide(idCard));
+        return this;
     }
 
 }
