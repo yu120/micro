@@ -2,7 +2,6 @@ package cn.micro.biz.web;
 
 import cn.micro.biz.commons.auth.MicroToken;
 import cn.micro.biz.commons.auth.PreAuth;
-import cn.micro.biz.entity.member.Account;
 import cn.micro.biz.model.add.RegisterAccount;
 import cn.micro.biz.model.edit.ChangeEmailOrMobile;
 import cn.micro.biz.model.edit.ChangePassword;
@@ -14,8 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * Account Controller
@@ -29,17 +26,6 @@ import java.util.List;
 public class AccountController {
 
     private final IAccountService accountService;
-
-    @RequestMapping(value = "add", method = RequestMethod.POST)
-    public Boolean add(@RequestBody Account account) {
-        return accountService.save(account);
-    }
-
-    @RequestMapping(value = "list", method = RequestMethod.GET)
-    public List<Account> list() {
-        return accountService.list();
-    }
-
 
     @RequestMapping(value = "register", method = RequestMethod.PUT)
     public Boolean register(@RequestBody @Validated RegisterAccount registerAccount) {
