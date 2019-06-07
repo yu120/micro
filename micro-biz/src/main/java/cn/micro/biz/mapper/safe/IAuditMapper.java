@@ -8,6 +8,6 @@ import cn.micro.biz.entity.safe.Audit;
  *
  * @author lry
  */
-public interface IOperationMapper extends IMicroMapper<Audit> {
+public interface IAuditMapper extends IMicroMapper<Audit> {
 
 }

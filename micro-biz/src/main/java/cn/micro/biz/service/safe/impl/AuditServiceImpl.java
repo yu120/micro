@@ -2,8 +2,8 @@ package cn.micro.biz.service.safe.impl;
 
 import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
 import cn.micro.biz.entity.safe.Audit;
-import cn.micro.biz.mapper.safe.IOperationMapper;
-import cn.micro.biz.service.safe.IOperationService;
+import cn.micro.biz.mapper.safe.IAuditMapper;
+import cn.micro.biz.service.safe.IAuditService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,6 +12,6 @@ import org.springframework.stereotype.Service;
  * @author lry
  */
 @Service
-public class OperationServiceImpl extends MicroServiceImpl<IOperationMapper, Audit> implements IOperationService {
+public class AuditServiceImpl extends MicroServiceImpl<IAuditMapper, Audit> implements IAuditService {
 
 }
