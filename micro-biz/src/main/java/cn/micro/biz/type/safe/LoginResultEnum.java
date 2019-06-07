@@ -10,12 +10,13 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum LoginCategoryEnum {
+public enum LoginResultEnum {
 
     // ======
 
-    SUCCESS(1, "登录成功"),
-    FAILURE(2, "登录失败");
+    SUCCESS(0, "登录成功"),
+    FAILURE(1, "登录失败"),
+    UNKNOWN_FAILURE(2, "未知失败");
 
     private final int value;
     private final String title;

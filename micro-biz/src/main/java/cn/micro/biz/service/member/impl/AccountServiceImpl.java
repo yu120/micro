@@ -12,6 +12,7 @@ import cn.micro.biz.commons.utils.RSAUtils;
 import cn.micro.biz.entity.member.Account;
 import cn.micro.biz.entity.member.Member;
 import cn.micro.biz.entity.member.MemberGroupMember;
+import cn.micro.biz.entity.safe.LoginLog;
 import cn.micro.biz.mapper.member.IAccountMapper;
 import cn.micro.biz.mapper.member.IMemberGroupMemberMapper;
 import cn.micro.biz.mapper.member.IMemberMapper;
@@ -25,11 +26,13 @@ import cn.micro.biz.pubsrv.wx.WxAuthCode2Session;
 import cn.micro.biz.service.member.IAccountService;
 import cn.micro.biz.service.member.IMemberRoleService;
 import cn.micro.biz.service.member.IUnionCodeService;
+import cn.micro.biz.service.safe.ILoginLogService;
 import cn.micro.biz.type.UnionCodeCategoryEnum;
 import cn.micro.biz.type.member.AccountEnum;
 import cn.micro.biz.type.member.MemberGroupEnum;
 import cn.micro.biz.type.member.MemberStatusEnum;
 import cn.micro.biz.type.member.PlatformEnum;
+import cn.micro.biz.type.safe.LoginResultEnum;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -57,6 +60,8 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
     private IMemberRoleService memberRoleService;
     @Resource
     private IUnionCodeService unionCodeService;
+    @Resource
+    private ILoginLogService loginLogService;
 
     @Resource
     private MicroWxService microWxService;
@@ -135,32 +140,53 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
 
     @Override
     public MicroToken doLogin(LoginAccount loginAccount) {
-        // 1.校验账号信息
-        Account account = baseMapper.selectOne(Account::getCode, loginAccount.getAccount());
-        if (account == null) {
-            throw new MicroBadRequestException("账号不存在");
-        }
+        // 记录登录信息
+        LoginLog loginLog = new LoginLog();
+        loginLog.setResult(LoginResultEnum.SUCCESS);
+        loginLog.setIp(IPUtils.getRequestIPAddress());
+        loginLog.setAccount(loginAccount.getAccount());
+        loginLog.setPlatform(loginAccount.getPlatform());
 
-        // 2.查询用户信息
-        Member member = memberMapper.selectById(account.getMemberId());
-        if (member == null) {
-            throw new MicroBadRequestException("未找到用户");
-        }
+        try {
+            // 1.校验账号信息
+            Account account = baseMapper.selectOne(Account::getCode, loginAccount.getAccount());
+            if (account == null) {
+                throw new MicroBadRequestException("账号不存在");
+            }
+            loginLog.setCategory(account.getCategory());
 
-        // 3.校验密码
-        if (RSAUtils.checkNotEquals(loginAccount.getPassword(), member.getPassword(), member.getSalt())) {
-            throw new MicroBadRequestException("密码错误");
-        }
+            // 2.查询用户信息
+            Member member = memberMapper.selectById(account.getMemberId());
+            if (member == null) {
+                throw new MicroBadRequestException("未找到用户");
+            }
+            loginLog.setMemberId(member.getId());
 
-        // 4.查询拥有角色
-        List<String> roleCodes = memberRoleService.queryMemberRoles(account.getMemberId());
-        if (CollectionUtils.isEmpty(roleCodes)) {
-            throw new MicroBadRequestException("用户未分配角色或用户组");
-        }
+            // 3.校验密码
+            if (RSAUtils.checkNotEquals(loginAccount.getPassword(), member.getPassword(), member.getSalt())) {
+                throw new MicroBadRequestException("密码错误");
+            }
 
-        // 5.组装响应模型
-        return MicroAuthContext.build(member.getTenantId(), member.getId(),
-                member.getName(), loginAccount.getPlatform().getValue(), roleCodes, null);
+            // 4.查询拥有角色
+            List<String> roleCodes = memberRoleService.queryMemberRoles(account.getMemberId());
+            if (CollectionUtils.isEmpty(roleCodes)) {
+                throw new MicroBadRequestException("用户未分配角色或用户组");
+            }
+
+            // 5.组装响应模型
+            return MicroAuthContext.build(member.getTenantId(), member.getId(),
+                    member.getName(), loginAccount.getPlatform().getValue(), roleCodes, null);
+        } catch (MicroBadRequestException e) {
+            loginLog.setResult(LoginResultEnum.FAILURE);
+            loginLog.setRemark(e.getStack());
+            throw e;
+        } catch (Exception e) {
+            loginLog.setResult(LoginResultEnum.UNKNOWN_FAILURE);
+            loginLog.setRemark(e.getMessage());
+            throw e;
+        } finally {
+            loginLogService.save(loginLog);
+        }
     }
 
     @Override

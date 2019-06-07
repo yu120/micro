@@ -1,6 +1,9 @@
 package cn.micro.biz.entity.safe;
 
 import cn.micro.biz.commons.mybatis.MicroEntity;
+import cn.micro.biz.type.member.AccountEnum;
+import cn.micro.biz.type.member.PlatformEnum;
+import cn.micro.biz.type.safe.LoginResultEnum;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
@@ -24,9 +27,17 @@ public class LoginLog extends MicroEntity<LoginLog> {
      */
     private String account;
     /**
-     *
+     * Account category
+     * <p>
+     * {@link AccountEnum}
      */
-    private Integer accountType;
+    private AccountEnum category;
+    /**
+     * Account register platform
+     * <p>
+     * {@link cn.micro.biz.type.member.PlatformEnum}
+     */
+    private PlatformEnum platform;
     /**
      * Login member id
      * <p>
@@ -40,9 +51,9 @@ public class LoginLog extends MicroEntity<LoginLog> {
     /**
      * Login category
      * <p>
-     * {@link cn.micro.biz.type.safe.LoginCategoryEnum}
+     * {@link LoginResultEnum}
      */
-    private Integer category;
+    private LoginResultEnum result;
     /**
      * Login remark(reasons for failure)
      **/
