@@ -2,6 +2,11 @@ package cn.micro.biz.commons.utils;
 
 import java.util.regex.Pattern;
 
+/**
+ * Tel Utils
+ *
+ * @author lry
+ */
 public class TelUtils {
 
     /**
@@ -23,8 +28,8 @@ public class TelUtils {
     /**
      * 隐藏电话号码中间几位数
      *
-     * @param mobile
-     * @return
+     * @param mobile mobile
+     * @return hide mobile
      */
     public static String hideMobile(String mobile) {
         if (mobile == null || mobile.length() == 0 || mobile.length() != 11) {

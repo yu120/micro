@@ -1,14 +1,12 @@
 package cn.micro.biz.entity.member;
 
 import cn.micro.biz.commons.mybatis.MicroEntity;
+import cn.micro.biz.commons.utils.IdCardUtils;
+import cn.micro.biz.commons.utils.TelUtils;
 import cn.micro.biz.type.member.SexEnum;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.Date;
 
@@ -70,6 +68,8 @@ public class Member extends MicroEntity<Member> {
      * Member enable status
      */
     private Integer status;
+
+    // =========== Sensitive information
     /**
      * Password random salt
      */
@@ -142,5 +142,16 @@ public class Member extends MicroEntity<Member> {
      * {@link cn.micro.biz.type.member.PlatformEnum}
      */
     private Integer platform;
+
+    /**
+     * 脱敏
+     */
+    public void desensitization() {
+        this.setSalt(null);
+        this.setPassword(null);
+        this.setPwd(null);
+        this.setMobile(TelUtils.hideMobile(mobile));
+        this.setIdCard(IdCardUtils.hide(idCard));
+    }
 
 }
