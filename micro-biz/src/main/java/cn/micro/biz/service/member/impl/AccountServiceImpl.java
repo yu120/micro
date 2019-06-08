@@ -7,8 +7,8 @@ import cn.micro.biz.commons.exception.support.MicroBadRequestException;
 import cn.micro.biz.commons.exception.support.MicroErrorException;
 import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
 import cn.micro.biz.commons.enums.IEnum;
-import cn.micro.biz.commons.utils.IPUtils;
-import cn.micro.biz.commons.utils.RSAUtils;
+import cn.micro.biz.commons.utils.NetUtils;
+import cn.micro.biz.commons.utils.RsaUtils;
 import cn.micro.biz.entity.member.Account;
 import cn.micro.biz.entity.member.Member;
 import cn.micro.biz.entity.member.MemberGroupMember;
@@ -108,10 +108,10 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
             addOrUpdateMember.setName(registerAccount.getName());
             addOrUpdateMember.setIcon(registerAccount.getIcon());
             addOrUpdateMember.setStatus(MemberStatusEnum.NORMAL);
-            addOrUpdateMember.setSalt(RSAUtils.randomSalt());
-            addOrUpdateMember.setPwd(RSAUtils.encryptPwd(registerAccount.getPassword(), addOrUpdateMember.getSalt()));
-            addOrUpdateMember.setPassword(RSAUtils.encryptPassword(addOrUpdateMember.getPwd()));
-            addOrUpdateMember.setIp(IPUtils.getRequestIPAddress());
+            addOrUpdateMember.setSalt(RsaUtils.randomSalt());
+            addOrUpdateMember.setPwd(RsaUtils.encryptPwd(registerAccount.getPassword(), addOrUpdateMember.getSalt()));
+            addOrUpdateMember.setPassword(RsaUtils.encryptPassword(addOrUpdateMember.getPwd()));
+            addOrUpdateMember.setIp(NetUtils.getRequestIPAddress());
             addOrUpdateMember.setPlatform(registerAccount.getPlatform());
             if (memberMapper.insert(addOrUpdateMember) <= 0) {
                 throw new MicroErrorException("用户注册失败");
@@ -143,7 +143,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
         // 记录登录信息
         LoginLog loginLog = new LoginLog();
         loginLog.setResult(LoginResultEnum.SUCCESS);
-        loginLog.setIp(IPUtils.getRequestIPAddress());
+        loginLog.setIp(NetUtils.getRequestIPAddress());
         loginLog.setAccount(loginAccount.getAccount());
         loginLog.setPlatform(loginAccount.getPlatform());
 
@@ -163,7 +163,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
             loginLog.setMemberId(member.getId());
 
             // 3.校验密码
-            if (RSAUtils.checkNotEquals(loginAccount.getPassword(), member.getPassword(), member.getSalt())) {
+            if (RsaUtils.checkNotEquals(loginAccount.getPassword(), member.getPassword(), member.getSalt())) {
                 throw new MicroBadRequestException("密码错误");
             }
 
@@ -204,7 +204,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
                     registerAccount.setAccount(wxAuthCode2Session.getUnionId());
                     registerAccount.setCategory(AccountEnum.WX_AUTO_LOGIN);
                     registerAccount.setPlatform(PlatformEnum.WX);
-                    registerAccount.setPassword(RSAUtils.encryptByPublicKeyHex(wxAuthCode2Session.getUnionId()));
+                    registerAccount.setPassword(RsaUtils.encryptByPublicKeyHex(wxAuthCode2Session.getUnionId()));
                     if (this.doRegister(registerAccount)) {
                         wxAuthCode2Session.setHasAccount(true);
                     }
@@ -259,8 +259,8 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
         // 重置密码
         Member updateMember = new Member();
         updateMember.setId(member.getId());
-        updateMember.setPwd(RSAUtils.encryptPwd(forgetPassword.getPassword(), member.getSalt()));
-        updateMember.setPassword(RSAUtils.encryptPassword(updateMember.getPwd()));
+        updateMember.setPwd(RsaUtils.encryptPwd(forgetPassword.getPassword(), member.getSalt()));
+        updateMember.setPassword(RsaUtils.encryptPassword(updateMember.getPwd()));
         if (memberMapper.updateById(updateMember) <= 0) {
             throw new MicroErrorException("重置密码失败");
         }
@@ -278,15 +278,15 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
         }
 
         // 校验密码
-        if (RSAUtils.checkNotEquals(changePassword.getOldPassword(), member.getPassword(), member.getSalt())) {
+        if (RsaUtils.checkNotEquals(changePassword.getOldPassword(), member.getPassword(), member.getSalt())) {
             throw new MicroBadRequestException("旧密码错误");
         }
 
         // 修改密码
         Member updateMember = new Member();
         updateMember.setId(memberId);
-        updateMember.setPwd(RSAUtils.encryptPwd(changePassword.getNewPassword(), member.getSalt()));
-        updateMember.setPassword(RSAUtils.encryptPassword(updateMember.getPwd()));
+        updateMember.setPwd(RsaUtils.encryptPwd(changePassword.getNewPassword(), member.getSalt()));
+        updateMember.setPassword(RsaUtils.encryptPassword(updateMember.getPwd()));
         if (memberMapper.updateById(updateMember) <= 0) {
             throw new MicroErrorException("修改失败");
         }

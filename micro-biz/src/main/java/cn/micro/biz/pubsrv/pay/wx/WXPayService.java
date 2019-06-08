@@ -2,7 +2,7 @@ package cn.micro.biz.pubsrv.pay.wx;
 
 import cn.micro.biz.commons.exception.support.MicroBadRequestException;
 import cn.micro.biz.commons.exception.support.MicroErrorException;
-import cn.micro.biz.commons.utils.IPUtils;
+import cn.micro.biz.commons.utils.NetUtils;
 import cn.micro.biz.entity.order.OrderGoods;
 import cn.micro.biz.pubsrv.pay.PayChannelEnum;
 import cn.micro.biz.entity.order.Order;
@@ -59,7 +59,7 @@ public class WXPayService {
         // 商户订单号
         data.put(WxPayConstants.OUT_TRADE_NO, order.getOrderNo());
         // 终端IP
-        data.put(WxPayConstants.SP_BILL_CREATE_IP, IPUtils.getRequestIPAddress());
+        data.put(WxPayConstants.SP_BILL_CREATE_IP, NetUtils.getRequestIPAddress());
         // 商品ID
         data.put(WxPayConstants.PRODUCT_ID, String.valueOf(orderGoods.getGoodsId()));
         // 总金额

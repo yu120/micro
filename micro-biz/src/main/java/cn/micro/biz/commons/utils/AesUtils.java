@@ -13,7 +13,7 @@ import java.util.Base64;
  *
  * @author lry
  */
-public class AESUtils {
+public class AesUtils {
 
     private static final String ENCODE_RULES = "abc123def";
 

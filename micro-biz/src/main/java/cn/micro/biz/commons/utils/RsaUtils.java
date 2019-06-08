@@ -32,7 +32,7 @@ import java.util.UUID;
  * @author lry
  */
 @Slf4j
-public class RSAUtils {
+public class RsaUtils {
 
     private static final String SALT_SEPARATOR = ".";
 

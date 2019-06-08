@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author lry
  */
-public class IPUtils {
+public class NetUtils {
 
     public static String getRequestIPAddress() {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();

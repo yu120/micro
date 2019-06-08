@@ -2,7 +2,7 @@ package cn.micro.biz.commons.auth;
 
 import cn.micro.biz.commons.exception.support.*;
 import cn.micro.biz.commons.mybatis.MicroTenantProperties;
-import cn.micro.biz.commons.utils.IPUtils;
+import cn.micro.biz.commons.utils.NetUtils;
 import cn.micro.biz.pubsrv.redis.RedisService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
@@ -93,7 +93,7 @@ public class MicroAuthContext implements InitializingBean {
             builder.withClaim(MicroTokenBody.MEMBER_ID, memberId);
             builder.withClaim(MicroTokenBody.MEMBER_NAME, memberName);
             builder.withClaim(MicroTokenBody.PLATFORM, platform);
-            builder.withClaim(MicroTokenBody.IP, IPUtils.getRequestIPAddress());
+            builder.withClaim(MicroTokenBody.IP, NetUtils.getRequestIPAddress());
             builder.withClaim(MicroTokenBody.TIME, System.currentTimeMillis());
             if (!(authorities == null || authorities.size() == 0)) {
                 builder.withArrayClaim(MicroTokenBody.AUTHORITIES, authorities.toArray(new String[0]));

@@ -2,7 +2,7 @@ package cn.micro.biz.commons.exception;
 
 import cn.micro.biz.commons.configuration.MicroProperties;
 import cn.micro.biz.commons.configuration.XssHttpServletRequest;
-import cn.micro.biz.commons.utils.IPUtils;
+import cn.micro.biz.commons.utils.NetUtils;
 import cn.micro.biz.commons.utils.IdGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,7 +60,7 @@ public class GlobalExceptionFilter extends OncePerRequestFilter {
         request.setAttribute(X_TRACE_ID, traceId);
         response.setHeader(X_TRACE_ID, traceId);
         wrapperCORS(response);
-        String ipAddress = IPUtils.getRequestIPAddress(request);
+        String ipAddress = NetUtils.getRequestIPAddress(request);
 
         try {
             MDC.put(X_TRACE_ID, traceId);
