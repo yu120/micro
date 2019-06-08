@@ -33,6 +33,7 @@
 
         <druid-spring-boot-starter.version>1.1.10</druid-spring-boot-starter.version>
         <mysql-connector-java.version>5.1.46</mysql-connector-java.version>
+        <p6spy.version>3.8.2</p6spy.version>
         <mybatis-plus.version>3.1.1</mybatis-plus.version>
         <seata.version>0.6.1</seata.version>
 
@@ -210,6 +211,11 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql-connector-java.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>p6spy</groupId>
+            <artifactId>p6spy</artifactId>
+            <version>${p6spy.version}</version>
         </dependency>
 
         <!-- Mybatis Plus -->

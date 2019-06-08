@@ -20,7 +20,8 @@ spring:
   datasource:
     username: root
     password: 123456
-    driver-class-name: com.mysql.jdbc.Driver
+#    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: cn.micro.biz.commons.mybatis.p6spy.MicroP6SpyDriver
     type: com.alibaba.druid.pool.DruidDataSource
     url: jdbc:mysql://127.0.0.1:3306/micro?
       characterEncoding=UTF-8&useUnicode=true&useSSL=false&rewriteBatchedStatements=true&
@@ -71,13 +72,13 @@ micro:
   swagger: true
   exception-debug: true
   mybatis:
+    p6spy: true
     block-attack: true
-    performance: true
     optimistic-locker: true
   tenant:
     enable: true
   transaction:
-    enable: true
+    enable: false
     default-timeout: 60s
     seata: false
     application-id: ${spring.application.name}

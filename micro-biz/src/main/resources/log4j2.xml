@@ -97,13 +97,11 @@
         <logger name="org.apache.catalina.core.ContainerBase" level="OFF"/>
         <logger name="org.mybatis.spring.mapper.ClassPathMapperScanner" level="ERROR"/>
 
-        <!-- DEBUG: print SQL、TRACE: SQL+ResultSet
-        <logger name="cn.micro.biz.mapper" level="DEBUG"/>
-        <logger name="cn.micro.biz.mapper.member.IRoleMapper.selectList" level="INFO"/>
-        <logger name="cn.micro.biz.mapper.member.IRolePermissionMapper.selectList" level="INFO"/>
-        <logger name="cn.micro.biz.mapper.member.IPermissionMapper.selectList" level="INFO"/>
-        <logger name="cn.micro.biz.commons.mybatis.extension.TraceExpendInterceptor" level="DEBUG"/>
-        -->
+        <!-- DEBUG: print SQL、TRACE: SQL+ResultSet -->
+        <!--<logger name="cn.micro.biz.mapper" level="DEBUG"/>-->
+        <!--<logger name="cn.micro.biz.mapper.member.IRoleMapper.selectList" level="INFO"/>-->
+        <!--<logger name="cn.micro.biz.mapper.member.IRolePermissionMapper.selectList" level="INFO"/>-->
+        <!--<logger name="cn.micro.biz.mapper.member.IPermissionMapper.selectList" level="INFO"/>-->
 
         <!-- BIZ Logger -->
         <Logger name="cn.micro" level="DEBUG" additivity="true">

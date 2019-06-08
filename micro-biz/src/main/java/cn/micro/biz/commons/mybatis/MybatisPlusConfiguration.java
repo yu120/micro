@@ -1,8 +1,9 @@
 package cn.micro.biz.commons.mybatis;
 
-import cn.micro.biz.commons.exception.support.MicroErrorException;
 import cn.micro.biz.commons.enums.EnumTypeHandler;
+import cn.micro.biz.commons.exception.support.MicroErrorException;
 import cn.micro.biz.commons.mybatis.extension.MicroTenantSqlParser;
+import cn.micro.biz.commons.mybatis.p6spy.MicroP6SpyDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
@@ -13,7 +14,6 @@ import com.baomidou.mybatisplus.core.parser.SqlParserHelper;
 import com.baomidou.mybatisplus.extension.parsers.BlockAttackSqlParser;
 import com.baomidou.mybatisplus.extension.plugins.OptimisticLockerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.PerformanceInterceptor;
 import io.seata.rm.datasource.DataSourceProxy;
 import io.seata.spring.annotation.GlobalTransactionScanner;
 import lombok.extern.slf4j.Slf4j;
@@ -30,9 +30,7 @@ import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -79,7 +77,7 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
         }
 
         try {
-            for (Resource location : RESOURCE_RESOLVER.getResources(mapperLocation)) {
+            for (org.springframework.core.io.Resource location : RESOURCE_RESOLVER.getResources(mapperLocation)) {
                 if (location == null) {
                     continue;
                 }
@@ -110,6 +108,7 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
         }
         this.mapperPackage = String.join(",", mapperPackages);
         log.info("Scan to mapper packages: {}", mapperPackage);
+        MicroP6SpyDriver.initEnvironment();
     }
 
     /**
@@ -258,18 +257,6 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
             paginationInterceptor.setSqlParserList(sqlParserList);
         }
         return paginationInterceptor;
-    }
-
-    /**
-     * SQL Performance Interceptor
-     * <p>
-     * tip: dev,test environment enable=true
-     */
-    @Bean
-    @Profile({"dev", "test"})
-    @ConditionalOnProperty(prefix = "micro.mybatis", name = "performance", havingValue = "true")
-    public PerformanceInterceptor performanceInterceptor() {
-        return new PerformanceInterceptor();
     }
 
     /**

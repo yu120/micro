@@ -21,10 +21,6 @@ public class MicroMybatisProperties implements Serializable {
      */
     private boolean blockAttack = true;
     /**
-     * SQL performance interceptor enable
-     */
-    private boolean performance = true;
-    /**
      * Optimistic locker interceptor enable
      */
     private boolean optimisticLocker = false;
