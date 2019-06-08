@@ -75,27 +75,30 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
         if (mapperLocation == null || mapperLocation.length() == 0) {
             throw new MicroErrorException("Not found " + MAPPER_LOCATIONS);
         }
+        String[] mapperLocationArray = mapperLocation.split(",");
 
         try {
-            for (org.springframework.core.io.Resource location : RESOURCE_RESOLVER.getResources(mapperLocation)) {
-                if (location == null) {
-                    continue;
-                }
-
-                org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
-                try (InputStream inputStream = location.getInputStream()) {
-                    XPathParser parser = new XPathParser(inputStream, true,
-                            configuration.getVariables(), new XMLMapperEntityResolver());
-                    if (configuration.isResourceLoaded(mapperLocation)) {
-                        continue;
-                    }
-                    XNode xNode = parser.evalNode("/mapper");
-                    if (xNode == null) {
+            for (String mla : mapperLocationArray) {
+                for (org.springframework.core.io.Resource location : RESOURCE_RESOLVER.getResources(mla)) {
+                    if (location == null) {
                         continue;
                     }
 
-                    String mapperClass = xNode.getStringAttribute("namespace");
-                    mapperPackages.add(mapperClass.substring(0, mapperClass.lastIndexOf(".")) + "*");
+                    org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
+                    try (InputStream inputStream = location.getInputStream()) {
+                        XPathParser parser = new XPathParser(inputStream, true,
+                                configuration.getVariables(), new XMLMapperEntityResolver());
+                        if (configuration.isResourceLoaded(mla)) {
+                            continue;
+                        }
+                        XNode xNode = parser.evalNode("/mapper");
+                        if (xNode == null) {
+                            continue;
+                        }
+
+                        String mapperClass = xNode.getStringAttribute("namespace");
+                        mapperPackages.add(mapperClass.substring(0, mapperClass.lastIndexOf(".")) + "*");
+                    }
                 }
             }
         } catch (Exception e) {

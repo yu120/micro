@@ -72,13 +72,12 @@ micro:
   swagger: true
   exception-debug: true
   mybatis:
-    p6spy: true
     block-attack: true
     optimistic-locker: true
   tenant:
     enable: true
   transaction:
-    enable: false
+    enable: true
     default-timeout: 60s
     seata: false
     application-id: ${spring.application.name}

@@ -1,7 +1,7 @@
 package cn.micro.biz.service.order;
 
 import cn.micro.biz.commons.mybatis.extension.IMicroService;
-import cn.micro.biz.entity.pay.WxPayNotify;
+import cn.micro.biz.entity.order.WxPayNotify;
 
 /**
  * Wx Pay Notify Service
