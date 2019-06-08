@@ -1,4 +1,4 @@
-package cn.micro.biz.commons.utils;
+package org.micro.util;
 
 import java.io.File;
 import java.io.IOException;
