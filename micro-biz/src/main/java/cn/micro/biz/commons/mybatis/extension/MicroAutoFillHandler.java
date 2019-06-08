@@ -1,10 +1,9 @@
 package cn.micro.biz.commons.mybatis.extension;
 
+import cn.micro.biz.commons.auth.MicroAuthContext;
 import cn.micro.biz.commons.auth.MicroTokenBody;
 import cn.micro.biz.commons.mybatis.MicroEntity;
 import cn.micro.biz.type.DeletedEnum;
-import cn.micro.biz.commons.auth.MicroAuthContext;
-import cn.micro.biz.commons.utils.NetUtils;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
@@ -45,7 +44,7 @@ public class MicroAutoFillHandler implements MetaObjectHandler {
     private String getOperator() {
         MicroTokenBody tokenInfo = MicroAuthContext.getContextAccessToken();
         if (tokenInfo == null || tokenInfo.getMemberId() == null) {
-            return NetUtils.getRequestIPAddress();
+            return MicroAuthContext.getRequestIPAddress();
         }
 
         return String.valueOf(tokenInfo.getMemberId());

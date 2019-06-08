@@ -1,9 +1,8 @@
 package cn.micro.biz.commons.exception;
 
+import cn.micro.biz.commons.auth.MicroAuthContext;
 import cn.micro.biz.commons.configuration.MicroProperties;
 import cn.micro.biz.commons.configuration.XssHttpServletRequest;
-import cn.micro.biz.commons.utils.NetUtils;
-import cn.micro.biz.commons.utils.IdGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
@@ -21,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 /**
  * Exception Filter
@@ -34,7 +34,6 @@ import java.nio.charset.StandardCharsets;
 public class GlobalExceptionFilter extends OncePerRequestFilter {
 
     public static final String X_TRACE_ID = "X-Trace-Id";
-    private static final IdGenerator ID_GENERATOR = new IdGenerator(0, 0);
 
     private final MicroProperties microProperties;
 
@@ -53,14 +52,14 @@ public class GlobalExceptionFilter extends OncePerRequestFilter {
             traceId = request.getParameter(X_TRACE_ID);
         }
         if (traceId == null || traceId.length() == 0) {
-            traceId = String.valueOf(ID_GENERATOR.nextId());
+            traceId = UUID.randomUUID().toString();
         }
 
         // 响应头统一返回请求ID
         request.setAttribute(X_TRACE_ID, traceId);
         response.setHeader(X_TRACE_ID, traceId);
         wrapperCORS(response);
-        String ipAddress = NetUtils.getRequestIPAddress(request);
+        String ipAddress = MicroAuthContext.getRequestIPAddress();
 
         try {
             MDC.put(X_TRACE_ID, traceId);

@@ -1,12 +1,12 @@
 package cn.micro.biz.pubsrv.pay.wx;
 
+import cn.micro.biz.commons.auth.MicroAuthContext;
 import cn.micro.biz.commons.exception.support.MicroBadRequestException;
 import cn.micro.biz.commons.exception.support.MicroErrorException;
-import cn.micro.biz.commons.utils.NetUtils;
-import cn.micro.biz.entity.order.OrderGoods;
-import cn.micro.biz.pubsrv.pay.PayChannelEnum;
 import cn.micro.biz.entity.order.Order;
+import cn.micro.biz.entity.order.OrderGoods;
 import cn.micro.biz.pubsrv.pay.OrderStatusEnum;
+import cn.micro.biz.pubsrv.pay.PayChannelEnum;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.wxpay.sdk.WXPay;
@@ -21,11 +21,7 @@ import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TimeZone;
-import java.util.TreeMap;
+import java.util.*;
 
 @Slf4j
 public class WXPayService {
@@ -59,7 +55,7 @@ public class WXPayService {
         // 商户订单号
         data.put(WxPayConstants.OUT_TRADE_NO, order.getOrderNo());
         // 终端IP
-        data.put(WxPayConstants.SP_BILL_CREATE_IP, NetUtils.getRequestIPAddress());
+        data.put(WxPayConstants.SP_BILL_CREATE_IP, MicroAuthContext.getRequestIPAddress());
         // 商品ID
         data.put(WxPayConstants.PRODUCT_ID, String.valueOf(orderGoods.getGoodsId()));
         // 总金额

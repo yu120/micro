@@ -3,11 +3,10 @@ package cn.micro.biz.service.member.impl;
 import cn.micro.biz.commons.auth.MicroAuthContext;
 import cn.micro.biz.commons.auth.MicroToken;
 import cn.micro.biz.commons.auth.MicroTokenBody;
+import cn.micro.biz.commons.enums.IEnum;
 import cn.micro.biz.commons.exception.support.MicroBadRequestException;
 import cn.micro.biz.commons.exception.support.MicroErrorException;
 import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
-import cn.micro.biz.commons.enums.IEnum;
-import cn.micro.biz.commons.utils.NetUtils;
 import cn.micro.biz.commons.utils.RsaUtils;
 import cn.micro.biz.entity.member.Account;
 import cn.micro.biz.entity.member.Member;
@@ -111,7 +110,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
             addOrUpdateMember.setSalt(RsaUtils.randomSalt());
             addOrUpdateMember.setPwd(RsaUtils.encryptPwd(registerAccount.getPassword(), addOrUpdateMember.getSalt()));
             addOrUpdateMember.setPassword(RsaUtils.encryptPassword(addOrUpdateMember.getPwd()));
-            addOrUpdateMember.setIp(NetUtils.getRequestIPAddress());
+            addOrUpdateMember.setIp(MicroAuthContext.getRequestIPAddress());
             addOrUpdateMember.setPlatform(registerAccount.getPlatform());
             if (memberMapper.insert(addOrUpdateMember) <= 0) {
                 throw new MicroErrorException("用户注册失败");
@@ -143,7 +142,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
         // 记录登录信息
         LoginLog loginLog = new LoginLog();
         loginLog.setResult(LoginResultEnum.SUCCESS);
-        loginLog.setIp(NetUtils.getRequestIPAddress());
+        loginLog.setIp(MicroAuthContext.getRequestIPAddress());
         loginLog.setAccount(loginAccount.getAccount());
         loginLog.setPlatform(loginAccount.getPlatform());
 
