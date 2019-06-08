@@ -3,7 +3,6 @@ package cn.micro.biz.commons.mybatis;
 import cn.micro.biz.commons.enums.EnumTypeHandler;
 import cn.micro.biz.commons.exception.support.MicroErrorException;
 import cn.micro.biz.commons.mybatis.extension.MicroTenantSqlParser;
-import cn.micro.biz.commons.mybatis.p6spy.MicroP6SpyDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
@@ -111,7 +110,6 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
         }
         this.mapperPackage = String.join(",", mapperPackages);
         log.info("Scan to mapper packages: {}", mapperPackage);
-        MicroP6SpyDriver.initEnvironment();
     }
 
     /**
