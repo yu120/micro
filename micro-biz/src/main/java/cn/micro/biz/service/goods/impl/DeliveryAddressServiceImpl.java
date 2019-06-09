@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
  * @author lry
  */
 @Service
-public class DeliveryAddressServiceImpl extends MicroServiceImpl<IDeliveryAddressMapper, DeliveryAddress> implements IDeliveryAddressService {
+public class DeliveryAddressServiceImpl extends MicroServiceImpl<IDeliveryAddressMapper,
+        DeliveryAddress> implements IDeliveryAddressService {
 
 }

@@ -1,4 +1,4 @@
-package cn.micro.biz.service.member.impl;
+package cn.micro.biz.service.unified.impl;
 
 import cn.micro.biz.commons.exception.support.MicroBadRequestException;
 import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
@@ -6,7 +6,7 @@ import cn.micro.biz.entity.unified.UnionCode;
 import cn.micro.biz.mapper.unified.IUnionCodeMapper;
 import cn.micro.biz.pubsrv.email.EmailMessage;
 import cn.micro.biz.pubsrv.email.EmailService;
-import cn.micro.biz.service.member.IUnionCodeService;
+import cn.micro.biz.service.unified.IUnionCodeService;
 import cn.micro.biz.type.unified.EmailCategoryEnum;
 import cn.micro.biz.type.unified.UnionCodeCategoryEnum;
 import lombok.RequiredArgsConstructor;

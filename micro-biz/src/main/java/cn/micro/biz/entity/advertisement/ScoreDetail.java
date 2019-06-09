@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * Score Details Entity
+ * Score Detail Entity
  * <p>
  * https://blog.csdn.net/lzy_lizhiyang/article/details/77989582
  *
@@ -19,8 +19,8 @@ import java.util.Date;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@TableName("score_details")
-public class ScoreDetails extends MicroEntity<ScoreDetails> {
+@TableName("score_detail")
+public class ScoreDetail extends MicroEntity<ScoreDetail> {
 
     private static final long serialVersionUID = 1L;
 
@@ -58,7 +58,7 @@ public class ScoreDetails extends MicroEntity<ScoreDetails> {
     /**
      * 积分来源:当扣减积分时，存储扣减的积分记录id，用于追溯积分
      * <p>
-     * {@link ScoreDetails#id}
+     * {@link ScoreDetail#id}
      */
     private Long origin;
     /**

@@ -24,7 +24,7 @@ import cn.micro.biz.pubsrv.wx.MicroWxService;
 import cn.micro.biz.pubsrv.wx.WxAuthCode2Session;
 import cn.micro.biz.service.member.IAccountService;
 import cn.micro.biz.service.member.IMemberRoleService;
-import cn.micro.biz.service.member.IUnionCodeService;
+import cn.micro.biz.service.unified.IUnionCodeService;
 import cn.micro.biz.service.unified.ILoginLogService;
 import cn.micro.biz.type.unified.UnionCodeCategoryEnum;
 import cn.micro.biz.type.member.AccountEnum;

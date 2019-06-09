@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
  * @author lry
  */
 @Service
-public class GoodsCategoryServiceImpl extends MicroServiceImpl<IGoodsCategoryMapper, GoodsCategory> implements IGoodsCategoryService {
+public class GoodsCategoryServiceImpl extends MicroServiceImpl<IGoodsCategoryMapper,
+        GoodsCategory> implements IGoodsCategoryService {
 
 }

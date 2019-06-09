@@ -20,7 +20,7 @@ import java.util.Date;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @TableName("oder_returns")
-public class OrderReturns extends MicroEntity<OrderReturns> {
+public class OrderReturn extends MicroEntity<OrderReturn> {
 
     /**
      * Order id

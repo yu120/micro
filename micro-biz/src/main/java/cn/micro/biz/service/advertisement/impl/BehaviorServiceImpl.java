@@ -1,9 +1,9 @@
-package cn.micro.biz.service.goods.impl;
+package cn.micro.biz.service.advertisement.impl;
 
 import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
 import cn.micro.biz.entity.advertisement.Behavior;
 import cn.micro.biz.mapper.advertisement.IBehaviorMapper;
-import cn.micro.biz.service.goods.IBehaviorService;
+import cn.micro.biz.service.advertisement.IBehaviorService;
 import org.springframework.stereotype.Service;
 
 /**

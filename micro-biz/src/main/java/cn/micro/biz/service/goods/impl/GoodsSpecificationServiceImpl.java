@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
  * @author lry
  */
 @Service
-public class GoodsSpecificationServiceImpl extends MicroServiceImpl<IGoodsSpecificationMapper, GoodsSpecification> implements IGoodsSpecificationService {
+public class GoodsSpecificationServiceImpl extends MicroServiceImpl<IGoodsSpecificationMapper,
+        GoodsSpecification> implements IGoodsSpecificationService {
 
 }

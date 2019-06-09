@@ -7,7 +7,7 @@ import cn.micro.biz.commons.trace.GlobalTraceInterceptor;
 import cn.micro.biz.model.vo.OssTokenVO;
 import cn.micro.biz.pubsrv.oss.QiNiuOssService;
 import cn.micro.biz.pubsrv.sms.AliYunSmsService;
-import cn.micro.biz.service.member.IUnionCodeService;
+import cn.micro.biz.service.unified.IUnionCodeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;

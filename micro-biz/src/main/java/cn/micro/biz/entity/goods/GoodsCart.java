@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 /**
- * Goods Carts Entity
+ * Goods Cart Entity
  *
  * @author lry
  */
@@ -14,8 +14,8 @@ import lombok.*;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@TableName("goods_carts")
-public class GoodsCarts extends MicroEntity<GoodsCarts> {
+@TableName("goods_cart")
+public class GoodsCart extends MicroEntity<GoodsCart> {
 
     private static final long serialVersionUID = 1L;
 
