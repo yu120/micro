@@ -47,10 +47,6 @@ public class Permission extends MicroEntity<Permission> {
      */
     private StatusEnum status;
     /**
-     * Permission code
-     */
-    private String code;
-    /**
      * Permission name
      */
     private String name;
