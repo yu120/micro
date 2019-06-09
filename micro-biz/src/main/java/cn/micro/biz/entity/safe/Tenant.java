@@ -2,6 +2,7 @@ package cn.micro.biz.entity.safe;
 
 import cn.micro.biz.commons.mybatis.MicroEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.sql.Date;
@@ -36,10 +37,12 @@ public class Tenant extends MicroEntity<Tenant> {
     /**
      * Start date
      */
+    @JsonFormat(pattern = "yyyy-MM-dd 00:00:00")
     private Date startDate;
     /**
      * End date
      */
+    @JsonFormat(pattern = "yyyy-MM-dd 23:59:59")
     private Date endDate;
 
 }
