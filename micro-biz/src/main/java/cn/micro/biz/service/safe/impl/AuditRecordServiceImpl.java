@@ -7,7 +7,7 @@ import cn.micro.biz.service.safe.IAuditRecordService;
 import org.springframework.stereotype.Service;
 
 /**
- * Audit Log Service Implements
+ * Audit Record Service Implements
  *
  * @author lry
  */

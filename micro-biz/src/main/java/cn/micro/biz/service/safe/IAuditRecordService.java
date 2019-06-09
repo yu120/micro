@@ -4,7 +4,7 @@ import cn.micro.biz.commons.mybatis.extension.IMicroService;
 import cn.micro.biz.entity.safe.AuditRecord;
 
 /**
- * Audit Log Service
+ * Audit Record Service
  *
  * @author lry
  */

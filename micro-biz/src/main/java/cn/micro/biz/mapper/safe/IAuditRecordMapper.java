@@ -4,7 +4,7 @@ import cn.micro.biz.commons.mybatis.extension.IMicroMapper;
 import cn.micro.biz.entity.safe.AuditRecord;
 
 /**
- * Audit Log Mapper
+ * Audit Record Mapper
  *
  * @author lry
  */
