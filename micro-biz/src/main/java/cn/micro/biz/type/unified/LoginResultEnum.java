@@ -1,4 +1,4 @@
-package cn.micro.biz.type.safe;
+package cn.micro.biz.type.unified;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

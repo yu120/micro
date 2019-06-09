@@ -1,9 +1,9 @@
-package cn.micro.biz.service.safe.impl;
+package cn.micro.biz.service.unified.impl;
 
 import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
 import cn.micro.biz.entity.unified.Audit;
-import cn.micro.biz.mapper.safe.IAuditMapper;
-import cn.micro.biz.service.safe.IAuditService;
+import cn.micro.biz.mapper.unified.IAuditMapper;
+import cn.micro.biz.service.unified.IAuditService;
 import org.springframework.stereotype.Service;
 
 /**

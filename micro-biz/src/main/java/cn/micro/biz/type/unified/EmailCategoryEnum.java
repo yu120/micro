@@ -1,4 +1,4 @@
-package cn.micro.biz.type;
+package cn.micro.biz.type.unified;
 
 import cn.micro.biz.commons.exception.support.MicroBadRequestException;
 import lombok.AllArgsConstructor;

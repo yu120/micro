@@ -1,6 +1,7 @@
 package cn.micro.biz.entity.advertisement;
 
 import cn.micro.biz.commons.mybatis.MicroEntity;
+import cn.micro.biz.type.advertisement.BehaviorCategoryEnum;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
@@ -22,7 +23,7 @@ public class Behavior extends MicroEntity<Behavior> {
     /**
      * Behavior category
      * <p>
-     * {@link cn.micro.biz.type.comments.BehaviorCategoryEnum}
+     * {@link BehaviorCategoryEnum}
      **/
     private Integer category;
     /**

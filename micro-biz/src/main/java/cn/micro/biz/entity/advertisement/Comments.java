@@ -1,6 +1,7 @@
 package cn.micro.biz.entity.advertisement;
 
 import cn.micro.biz.commons.mybatis.MicroEntity;
+import cn.micro.biz.type.advertisement.CommentsCategoryEnum;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
@@ -24,7 +25,7 @@ public class Comments extends MicroEntity<Comments> {
     /**
      * Comments category
      * <p>
-     * {@link cn.micro.biz.type.comments.CommentsCategoryEnum}
+     * {@link CommentsCategoryEnum}
      */
     private Integer category;
     /**

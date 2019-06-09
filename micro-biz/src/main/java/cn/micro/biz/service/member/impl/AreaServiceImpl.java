@@ -2,7 +2,7 @@ package cn.micro.biz.service.member.impl;
 
 import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
 import cn.micro.biz.entity.unified.Area;
-import cn.micro.biz.mapper.member.IAreaMapper;
+import cn.micro.biz.mapper.unified.IAreaMapper;
 import cn.micro.biz.service.member.IAreaService;
 import org.springframework.stereotype.Service;
 

@@ -2,7 +2,7 @@ package cn.micro.biz.service.member;
 
 import cn.micro.biz.commons.mybatis.extension.IMicroService;
 import cn.micro.biz.entity.unified.UnionCode;
-import cn.micro.biz.type.UnionCodeCategoryEnum;
+import cn.micro.biz.type.unified.UnionCodeCategoryEnum;
 
 /**
  * Union Code Service
@@ -23,7 +23,7 @@ public interface IUnionCodeService extends IMicroService<UnionCode> {
     /**
      * 发送邮箱验证码
      *
-     * @param category {@link cn.micro.biz.type.UnionCodeCategoryEnum}
+     * @param category {@link UnionCodeCategoryEnum}
      * @param email    email
      * @return true表示发送成功
      */

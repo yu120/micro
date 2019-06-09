@@ -1,6 +1,6 @@
 package cn.micro.biz.commons.mybatis;
 
-import cn.micro.biz.type.DeletedEnum;
+import cn.micro.biz.type.unified.DeletedEnum;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.baomidou.mybatisplus.annotation.*;

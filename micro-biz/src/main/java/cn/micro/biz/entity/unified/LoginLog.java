@@ -3,7 +3,7 @@ package cn.micro.biz.entity.unified;
 import cn.micro.biz.commons.mybatis.MicroEntity;
 import cn.micro.biz.type.member.AccountEnum;
 import cn.micro.biz.type.member.PlatformEnum;
-import cn.micro.biz.type.safe.LoginResultEnum;
+import cn.micro.biz.type.unified.LoginResultEnum;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 

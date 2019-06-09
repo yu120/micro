@@ -2,7 +2,7 @@ package cn.micro.biz.service.goods.impl;
 
 import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
 import cn.micro.biz.entity.advertisement.Comments;
-import cn.micro.biz.mapper.goods.ICommentsMapper;
+import cn.micro.biz.mapper.advertisement.ICommentsMapper;
 import cn.micro.biz.service.goods.ICommentsService;
 import org.springframework.stereotype.Service;
 

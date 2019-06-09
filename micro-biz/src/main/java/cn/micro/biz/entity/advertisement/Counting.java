@@ -1,6 +1,7 @@
 package cn.micro.biz.entity.advertisement;
 
 import cn.micro.biz.commons.mybatis.MicroEntity;
+import cn.micro.biz.type.advertisement.CountingCategoryEnum;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
@@ -22,7 +23,7 @@ public class Counting extends MicroEntity<Counting> {
     /**
      * Counting category
      * <p>
-     * {@link cn.micro.biz.type.comments.CountingCategoryEnum}
+     * {@link CountingCategoryEnum}
      */
     private Integer category;
     /**

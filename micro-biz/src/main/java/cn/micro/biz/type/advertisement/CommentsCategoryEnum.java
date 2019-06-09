@@ -1,4 +1,4 @@
-package cn.micro.biz.type.comments;
+package cn.micro.biz.type.advertisement;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

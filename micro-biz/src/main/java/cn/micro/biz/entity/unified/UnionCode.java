@@ -1,6 +1,7 @@
 package cn.micro.biz.entity.unified;
 
 import cn.micro.biz.commons.mybatis.MicroEntity;
+import cn.micro.biz.type.unified.UnionCodeCategoryEnum;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
@@ -29,7 +30,7 @@ public class UnionCode extends MicroEntity<UnionCode> {
     /**
      * Union code category
      * <p>
-     * {@link cn.micro.biz.type.UnionCodeCategoryEnum}
+     * {@link UnionCodeCategoryEnum}
      */
     private Integer category;
     /**
