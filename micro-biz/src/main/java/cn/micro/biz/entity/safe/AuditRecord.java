@@ -16,7 +16,7 @@ import lombok.*;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @TableName("audit_log")
-public class AuditLog extends MicroEntity<AuditLog> {
+public class AuditRecord extends MicroEntity<AuditRecord> {
 
     private static final long serialVersionUID = 1L;
 

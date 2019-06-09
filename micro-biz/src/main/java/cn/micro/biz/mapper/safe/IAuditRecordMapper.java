@@ -1,13 +1,13 @@
 package cn.micro.biz.mapper.safe;
 
 import cn.micro.biz.commons.mybatis.extension.IMicroMapper;
-import cn.micro.biz.entity.safe.AuditLog;
+import cn.micro.biz.entity.safe.AuditRecord;
 
 /**
  * Audit Log Mapper
  *
  * @author lry
  */
-public interface IAuditLogMapper extends IMicroMapper<AuditLog> {
+public interface IAuditRecordMapper extends IMicroMapper<AuditRecord> {
 
 }
