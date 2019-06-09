@@ -1,7 +1,9 @@
 package cn.micro.biz.type.member;
 
+import cn.micro.biz.commons.enums.IEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,8 +14,9 @@ import java.util.List;
  * @author lry
  */
 @Getter
+@ToString
 @AllArgsConstructor
-public enum SexEnum {
+public enum SexEnum implements IEnum<Integer> {
 
     // ======
 
@@ -23,7 +26,7 @@ public enum SexEnum {
 
     public static final List<Integer> GROUP = Arrays.asList(0, 1, 2);
 
-    private final int value;
+    private final Integer value;
     private final String title;
 
 }

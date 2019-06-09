@@ -1,7 +1,9 @@
 package cn.micro.biz.type.member;
 
+import cn.micro.biz.commons.enums.IEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Member Group Enum
@@ -9,8 +11,9 @@ import lombok.Getter;
  * @author lry
  */
 @Getter
+@ToString
 @AllArgsConstructor
-public enum MemberGroupEnum {
+public enum MemberGroupEnum implements IEnum<Long> {
 
     // ======,
 
@@ -20,7 +23,7 @@ public enum MemberGroupEnum {
     TENANT_SUPER_ADMIN(3L, "租户超级管理员"),
     TENANT_ADMIN(4L, "租户管理员");
 
-    private final long value;
+    private final Long value;
     private final String title;
 
 }

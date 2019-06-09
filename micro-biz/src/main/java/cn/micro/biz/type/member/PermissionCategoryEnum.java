@@ -1,7 +1,9 @@
 package cn.micro.biz.type.member;
 
+import cn.micro.biz.commons.enums.IEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Permission Category Enum
@@ -9,17 +11,18 @@ import lombok.Getter;
  * @author lry
  */
 @Getter
+@ToString
 @AllArgsConstructor
-public enum PermissionCategoryEnum {
+public enum PermissionCategoryEnum implements IEnum<Integer> {
 
     // ======
 
-    TAB(1, "Tab"),
-    MENU(2, "菜单"),
-    ELEMENT(3, "页面元素"),
-    LINK(4, "超链接");
+    TAB(0, "Tab"),
+    MENU(1, "菜单"),
+    ELEMENT(2, "页面元素"),
+    LINK(3, "超链接");
 
-    private final int value;
+    private final Integer value;
     private final String title;
 
 }

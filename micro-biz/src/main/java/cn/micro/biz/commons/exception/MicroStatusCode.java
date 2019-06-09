@@ -6,6 +6,7 @@ import cn.micro.biz.commons.response.MetaData;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.jdbc.BadSqlGrammarException;
@@ -28,6 +29,7 @@ import java.util.Iterator;
  */
 @Slf4j
 @Getter
+@ToString
 @AllArgsConstructor
 public enum MicroStatusCode {
 

@@ -1,7 +1,9 @@
 package cn.micro.biz.type.advertisement;
 
+import cn.micro.biz.commons.enums.IEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Behavior Category
@@ -9,8 +11,9 @@ import lombok.Getter;
  * @author lry
  */
 @Getter
+@ToString
 @AllArgsConstructor
-public enum BehaviorCategoryEnum {
+public enum BehaviorCategoryEnum implements IEnum<Integer> {
 
     // ====== 商品
 
@@ -25,10 +28,9 @@ public enum BehaviorCategoryEnum {
     // ====== 动态
 
     NEWS_TRANSMIT(301, "动态", "转发"),
-    NEWS_COLLECT(302, "动态", "收藏"),
-    ;
+    NEWS_COLLECT(302, "动态", "收藏");
 
-    private final int value;
+    private final Integer value;
     private final String title;
     private final String msg;
 

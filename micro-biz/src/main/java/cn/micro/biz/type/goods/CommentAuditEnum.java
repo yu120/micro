@@ -1,7 +1,9 @@
 package cn.micro.biz.type.goods;
 
+import cn.micro.biz.commons.enums.IEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Comment Audit Category
@@ -9,15 +11,16 @@ import lombok.Getter;
  * @author lry
  */
 @Getter
+@ToString
 @AllArgsConstructor
-public enum CommentAuditEnum {
+public enum CommentAuditEnum  implements IEnum<Integer> {
 
     // ======
 
-    AUTOMATIC(1, "自动审核"),
-    ARTIFICIAL(2, "人工审核");
+    AUTOMATIC(0, "自动审核"),
+    ARTIFICIAL(1, "人工审核");
 
-    private final int value;
+    private final Integer value;
     private final String title;
 
 }

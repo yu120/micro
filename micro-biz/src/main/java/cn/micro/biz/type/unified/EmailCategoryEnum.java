@@ -3,6 +3,7 @@ package cn.micro.biz.type.unified;
 import cn.micro.biz.commons.exception.support.MicroBadRequestException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Email Category Enum
@@ -10,6 +11,7 @@ import lombok.Getter;
  * @author lry
  */
 @Getter
+@ToString
 @AllArgsConstructor
 public enum EmailCategoryEnum {
 

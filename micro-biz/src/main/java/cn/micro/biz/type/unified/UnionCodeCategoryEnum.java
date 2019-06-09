@@ -1,8 +1,10 @@
 package cn.micro.biz.type.unified;
 
+import cn.micro.biz.commons.enums.IEnum;
 import cn.micro.biz.commons.exception.support.MicroBadRequestException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Union Code Category Enum
@@ -10,8 +12,9 @@ import lombok.Getter;
  * @author lry
  */
 @Getter
+@ToString
 @AllArgsConstructor
-public enum UnionCodeCategoryEnum {
+public enum UnionCodeCategoryEnum implements IEnum<Integer> {
 
     // ======
 
@@ -19,7 +22,7 @@ public enum UnionCodeCategoryEnum {
     CHANGE_EMAIL(1, EmailCategoryEnum.FORGET_PASSWORD.name(), 3, 30 * 60, "修改邮箱验证码"),
     CHANGE_MOBILE(2, EmailCategoryEnum.FORGET_PASSWORD.name(), 3, 30 * 60, "修改手机号验证码");
 
-    private final int value;
+    private final Integer value;
     private final String category;
     /**
      * 最大验证次数
@@ -37,7 +40,7 @@ public enum UnionCodeCategoryEnum {
         }
 
         for (UnionCodeCategoryEnum e : values()) {
-            if (e.getValue() == value) {
+            if (e.getValue().equals(value)) {
                 return e;
             }
         }
