@@ -1,4 +1,4 @@
-package cn.micro.biz.web;
+package cn.micro.biz.web.unified;
 
 import cn.micro.biz.commons.auth.NonAuth;
 import cn.micro.biz.commons.auth.PreAuth;

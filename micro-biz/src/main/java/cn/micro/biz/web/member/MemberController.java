@@ -1,4 +1,4 @@
-package cn.micro.biz.web;
+package cn.micro.biz.web.member;
 
 import cn.micro.biz.commons.auth.PreAuth;
 import cn.micro.biz.entity.member.Member;

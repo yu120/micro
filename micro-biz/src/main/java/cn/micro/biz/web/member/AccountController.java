@@ -1,4 +1,4 @@
-package cn.micro.biz.web;
+package cn.micro.biz.web.member;
 
 import cn.micro.biz.commons.auth.MicroToken;
 import cn.micro.biz.commons.auth.PreAuth;
