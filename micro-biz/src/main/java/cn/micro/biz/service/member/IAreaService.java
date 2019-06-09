@@ -1,7 +1,7 @@
 package cn.micro.biz.service.member;
 
 import cn.micro.biz.commons.mybatis.extension.IMicroService;
-import cn.micro.biz.entity.Area;
+import cn.micro.biz.entity.unified.Area;
 
 /**
  * Area Service

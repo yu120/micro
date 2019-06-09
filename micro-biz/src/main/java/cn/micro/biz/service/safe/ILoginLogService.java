@@ -1,7 +1,7 @@
 package cn.micro.biz.service.safe;
 
 import cn.micro.biz.commons.mybatis.extension.IMicroService;
-import cn.micro.biz.entity.safe.LoginLog;
+import cn.micro.biz.entity.unified.LoginLog;
 
 /**
  * Login Log Service

@@ -1,7 +1,7 @@
 package cn.micro.biz.service.safe;
 
 import cn.micro.biz.commons.mybatis.extension.IMicroService;
-import cn.micro.biz.entity.safe.Tenant;
+import cn.micro.biz.entity.unified.Tenant;
 
 /**
  * Tenant Service

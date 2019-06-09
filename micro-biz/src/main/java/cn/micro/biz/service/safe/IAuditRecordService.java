@@ -1,7 +1,7 @@
 package cn.micro.biz.service.safe;
 
 import cn.micro.biz.commons.mybatis.extension.IMicroService;
-import cn.micro.biz.entity.safe.AuditRecord;
+import cn.micro.biz.entity.unified.AuditRecord;
 
 /**
  * Audit Record Service

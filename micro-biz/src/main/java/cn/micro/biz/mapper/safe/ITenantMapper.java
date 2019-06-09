@@ -1,7 +1,7 @@
 package cn.micro.biz.mapper.safe;
 
 import cn.micro.biz.commons.mybatis.extension.IMicroMapper;
-import cn.micro.biz.entity.safe.Tenant;
+import cn.micro.biz.entity.unified.Tenant;
 
 /**
  * Tenant Mapper

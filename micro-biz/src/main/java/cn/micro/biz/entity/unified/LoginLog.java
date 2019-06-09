@@ -1,4 +1,4 @@
-package cn.micro.biz.entity.safe;
+package cn.micro.biz.entity.unified;
 
 import cn.micro.biz.commons.mybatis.MicroEntity;
 import cn.micro.biz.type.member.AccountEnum;

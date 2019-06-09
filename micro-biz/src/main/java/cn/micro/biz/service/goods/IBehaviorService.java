@@ -1,7 +1,7 @@
 package cn.micro.biz.service.goods;
 
 import cn.micro.biz.commons.mybatis.extension.IMicroService;
-import cn.micro.biz.entity.comments.Behavior;
+import cn.micro.biz.entity.advertisement.Behavior;
 
 /**
  * Goods Comments Member Service

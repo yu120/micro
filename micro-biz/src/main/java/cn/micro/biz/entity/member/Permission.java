@@ -1,6 +1,7 @@
 package cn.micro.biz.entity.member;
 
 import cn.micro.biz.commons.mybatis.MicroEntity;
+import cn.micro.biz.entity.unified.App;
 import cn.micro.biz.type.member.PermissionCategoryEnum;
 import cn.micro.biz.type.member.StatusEnum;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -30,7 +31,7 @@ public class Permission extends MicroEntity<Permission> {
     /**
      * Application id
      * <p>
-     * {@link cn.micro.biz.entity.App#id}
+     * {@link App#id}
      */
     private Long appId;
 

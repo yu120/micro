@@ -1,13 +1,12 @@
-package cn.micro.biz.entity.score;
+package cn.micro.biz.entity.unified;
 
 import cn.micro.biz.commons.mybatis.MicroEntity;
+import cn.micro.biz.entity.member.Member;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
-import java.math.BigDecimal;
-
 /**
- * Member Score Entity
+ * Audit Record Entity
  *
  * @author lry
  */
@@ -16,20 +15,27 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@TableName("member_score")
-public class MemberScore extends MicroEntity<MemberScore> {
+@TableName("audit_record")
+public class AuditRecord extends MicroEntity<AuditRecord> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Score member id
+     * Audit id
      * <p>
-     * {@link cn.micro.biz.entity.member.Member#id}
+     * {@link Audit#id}
+     */
+    private Long operationId;
+    /**
+     * Audit member id
+     * <p>
+     * {@link Member#id}
      */
     private Long memberId;
+
     /**
-     * Score all amount
+     * Audit content
      */
-    private BigDecimal amount;
+    private String content;
 
 }

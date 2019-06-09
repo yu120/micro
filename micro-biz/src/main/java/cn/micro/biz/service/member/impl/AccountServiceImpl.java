@@ -11,7 +11,7 @@ import cn.micro.biz.commons.utils.RsaUtils;
 import cn.micro.biz.entity.member.Account;
 import cn.micro.biz.entity.member.Member;
 import cn.micro.biz.entity.member.MemberGroupMember;
-import cn.micro.biz.entity.safe.LoginLog;
+import cn.micro.biz.entity.unified.LoginLog;
 import cn.micro.biz.mapper.member.IAccountMapper;
 import cn.micro.biz.mapper.member.IMemberGroupMemberMapper;
 import cn.micro.biz.mapper.member.IMemberMapper;

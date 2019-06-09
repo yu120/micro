@@ -1,4 +1,4 @@
-package cn.micro.biz.entity.comments;
+package cn.micro.biz.entity.advertisement;
 
 import cn.micro.biz.commons.mybatis.MicroEntity;
 import com.baomidou.mybatisplus.annotation.TableName;

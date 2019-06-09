@@ -1,7 +1,7 @@
 package cn.micro.biz.mapper.member;
 
 import cn.micro.biz.commons.mybatis.extension.IMicroMapper;
-import cn.micro.biz.entity.UnionCode;
+import cn.micro.biz.entity.unified.UnionCode;
 
 /**
  * Union Code Mapper

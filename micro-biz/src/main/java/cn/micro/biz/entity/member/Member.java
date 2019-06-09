@@ -3,6 +3,7 @@ package cn.micro.biz.entity.member;
 import cn.micro.biz.commons.mybatis.MicroEntity;
 import cn.micro.biz.commons.utils.IdCardUtils;
 import cn.micro.biz.commons.utils.TelUtils;
+import cn.micro.biz.entity.unified.Area;
 import cn.micro.biz.type.member.MemberStatusEnum;
 import cn.micro.biz.type.member.PlatformEnum;
 import cn.micro.biz.type.member.SexEnum;
@@ -90,49 +91,49 @@ public class Member extends MicroEntity<Member> {
     /**
      * Province code
      * <p>
-     * {@link cn.micro.biz.entity.Area#code}
+     * {@link Area#code}
      */
     private String provinceCode;
     /**
      * Province name
      * <p>
-     * {@link cn.micro.biz.entity.Area#name}
+     * {@link Area#name}
      */
     private String provinceName;
     /**
      * City code
      * <p>
-     * {@link cn.micro.biz.entity.Area#code}
+     * {@link Area#code}
      */
     private String cityCode;
     /**
      * City name
      * <p>
-     * {@link cn.micro.biz.entity.Area#name}
+     * {@link Area#name}
      */
     private String cityName;
     /**
      * District code
      * <p>
-     * {@link cn.micro.biz.entity.Area#code}
+     * {@link Area#code}
      */
     private String districtCode;
     /**
      * District name
      * <p>
-     * {@link cn.micro.biz.entity.Area#name}
+     * {@link Area#name}
      */
     private String districtName;
     /**
      * Town code
      * <p>
-     * {@link cn.micro.biz.entity.Area#code}
+     * {@link Area#code}
      */
     private String townCode;
     /**
      * Town name
      * <p>
-     * {@link cn.micro.biz.entity.Area#name}
+     * {@link Area#name}
      */
     private String townName;
 

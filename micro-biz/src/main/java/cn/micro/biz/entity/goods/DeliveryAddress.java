@@ -1,7 +1,7 @@
 package cn.micro.biz.entity.goods;
 
 import cn.micro.biz.commons.mybatis.MicroEntity;
-import cn.micro.biz.entity.Area;
+import cn.micro.biz.entity.unified.Area;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
