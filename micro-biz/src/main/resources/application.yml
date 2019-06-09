@@ -62,7 +62,7 @@ jasypt:
 # Mybatis Plus
 mybatis-plus:
   type-aliases-package: cn.micro.biz.entity
-  mapper-locations: classpath*:mapper/*Mapper.xml
+  mapper-locations: classpath*:mapper/*/*Mapper.xml
   global-config:
     db-config:
       id-type: AUTO

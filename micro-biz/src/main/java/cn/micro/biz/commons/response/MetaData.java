@@ -59,7 +59,7 @@ public class MetaData implements Serializable {
     }
 
     public void setStack(String stack) {
-        if (stack != null) {
+        if (stack == null) {
             return;
         }
 

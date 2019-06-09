@@ -1,5 +1,6 @@
 package cn.micro.biz.type.unified;
 
+import cn.micro.biz.commons.enums.IEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,7 +11,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum LoginResultEnum {
+public enum LoginResultEnum implements IEnum<Integer> {
 
     // ======
 
@@ -18,7 +19,7 @@ public enum LoginResultEnum {
     FAILURE(1, "登录失败"),
     UNKNOWN_FAILURE(2, "未知失败");
 
-    private final int value;
+    private final Integer value;
     private final String title;
 
 }

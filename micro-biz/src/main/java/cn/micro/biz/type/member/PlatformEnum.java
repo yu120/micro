@@ -1,5 +1,6 @@
 package cn.micro.biz.type.member;
 
+import cn.micro.biz.commons.enums.IEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,7 +11,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum PlatformEnum {
+public enum PlatformEnum implements IEnum<Integer> {
 
     // ======
 
@@ -19,7 +20,7 @@ public enum PlatformEnum {
     WX(3, "微信"),
     ALI(4, "支付宝");
 
-    private final int value;
+    private final Integer value;
     private final String title;
 
 }
