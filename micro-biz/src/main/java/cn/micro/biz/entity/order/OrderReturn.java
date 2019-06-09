@@ -19,7 +19,7 @@ import java.util.Date;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@TableName("oder_returns")
+@TableName("oder_return")
 public class OrderReturn extends MicroEntity<OrderReturn> {
 
     /**
