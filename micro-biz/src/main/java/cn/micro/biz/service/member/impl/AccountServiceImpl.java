@@ -15,6 +15,7 @@ import cn.micro.biz.entity.unified.LoginLog;
 import cn.micro.biz.mapper.member.IAccountMapper;
 import cn.micro.biz.mapper.member.IMemberGroupMemberMapper;
 import cn.micro.biz.mapper.member.IMemberMapper;
+import cn.micro.biz.mapper.unified.ILoginLogMapper;
 import cn.micro.biz.model.add.RegisterAccount;
 import cn.micro.biz.model.edit.ChangeEmailOrMobile;
 import cn.micro.biz.model.edit.ChangePassword;
@@ -61,6 +62,8 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
     private IUnionCodeService unionCodeService;
     @Resource
     private ILoginLogService loginLogService;
+    @Resource
+    private ILoginLogMapper loginLogMapper;
 
     @Resource
     private MicroWxService microWxService;
@@ -184,7 +187,8 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
             loginLog.setRemark(e.getMessage());
             throw e;
         } finally {
-            loginLogService.save(loginLog);
+            loginLogMapper.insert(loginLog);
+//            loginLogService.save(loginLog);
         }
     }
 

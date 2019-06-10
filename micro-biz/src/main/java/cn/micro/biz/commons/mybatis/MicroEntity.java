@@ -12,6 +12,23 @@ import java.sql.Timestamp;
 
 /**
  * Micro Entity
+ * <p>
+ * <p>
+ * -- 添加created: 设置默认时间为CURRENT_TIMESTAMP
+ * ALTER TABLE table_name
+ * ADD COLUMN  created timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间';
+ * -- 添加updated: 设置默认时间为CURRENT_TIMESTAMP,设置更新时间为ON UPDATE CURRENT_TIMESTAMP
+ * ALTER TABLE table_name
+ * ADD COLUMN updated timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间';
+ * <p>
+ * -- 修改created: 设置默认时间为CURRENT_TIMESTAMP
+ * ALTER TABLE table_name
+ * MODIFY COLUMN created timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间';
+ * -- 修改updated: 设置默认时间为CURRENT_TIMESTAMP,设置更新时间为ON UPDATE CURRENT_TIMESTAMP
+ * ALTER TABLE table_name
+ * MODIFY COLUMN edited timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间';
+ * ALTER TABLE table_name
+ * MODIFY COLUMN deleted tinyint(1) UNSIGNED ZEROFILL NULL DEFAULT 0 COMMENT '创建时间';
  *
  * @param <T>
  * @author lry
@@ -38,7 +55,6 @@ public class MicroEntity<T extends Model<T>> extends Model<T> {
     /**
      * The created time
      */
-    @TableField(fill = FieldFill.INSERT)
     protected Timestamp created;
 
     /**
@@ -51,7 +67,6 @@ public class MicroEntity<T extends Model<T>> extends Model<T> {
     /**
      * The edited time
      */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
     protected Timestamp edited;
 
     /**
@@ -67,7 +82,6 @@ public class MicroEntity<T extends Model<T>> extends Model<T> {
      * {@link DeletedEnum}
      */
     @TableLogic
-    @TableField(fill = FieldFill.INSERT)
     protected Integer deleted;
 
     /**

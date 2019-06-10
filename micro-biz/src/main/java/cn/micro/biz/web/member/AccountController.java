@@ -2,6 +2,7 @@ package cn.micro.biz.web.member;
 
 import cn.micro.biz.commons.auth.MicroToken;
 import cn.micro.biz.commons.auth.PreAuth;
+import cn.micro.biz.entity.unified.LoginLog;
 import cn.micro.biz.model.add.RegisterAccount;
 import cn.micro.biz.model.edit.ChangeEmailOrMobile;
 import cn.micro.biz.model.edit.ChangePassword;
@@ -9,6 +10,7 @@ import cn.micro.biz.model.edit.ForgetPassword;
 import cn.micro.biz.model.query.LoginAccount;
 import cn.micro.biz.pubsrv.wx.WxAuthCode2Session;
 import cn.micro.biz.service.member.IAccountService;
+import cn.micro.biz.service.unified.ILoginLogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -26,6 +28,13 @@ import org.springframework.web.bind.annotation.*;
 public class AccountController {
 
     private final IAccountService accountService;
+    private final ILoginLogService loginLogService;
+
+    @RequestMapping(value = "log", method = RequestMethod.PUT)
+    public Boolean log(@RequestBody @Validated LoginLog loginLog) {
+        return loginLogService.updateById(loginLog);
+    }
+
 
     @RequestMapping(value = "register", method = RequestMethod.PUT)
     public Boolean register(@RequestBody @Validated RegisterAccount registerAccount) {

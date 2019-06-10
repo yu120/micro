@@ -3,7 +3,7 @@ package cn.micro.biz.type.member;
 import cn.micro.biz.commons.enums.IEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
+import org.micro.annotation.MicroToString;
 
 /**
  * 平台类型
@@ -11,7 +11,7 @@ import lombok.ToString;
  * @author lry
  */
 @Getter
-@ToString
+@MicroToString
 @AllArgsConstructor
 public enum PlatformEnum implements IEnum<Integer> {
 

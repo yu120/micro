@@ -1,6 +1,7 @@
 package cn.micro.biz.web.advertisement;
 
 import cn.micro.biz.commons.auth.PreAuth;
+import cn.micro.biz.service.advertisement.IAdvertisementStoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;

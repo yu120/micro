@@ -164,7 +164,11 @@ public enum MicroStatusCode {
      */
     public static MetaData buildFailure(boolean exceptionDebug, Object traceId, Throwable t) {
         if (exceptionDebug) {
-            log.error("Internal Server Error", t);
+            String stack = t.getMessage();
+            if (t instanceof AbstractMicroException) {
+                stack = ((AbstractMicroException) t).getStack();
+            }
+            log.error("Debug Exception:" + stack, t);
         }
 
         MetaData metaData = null;

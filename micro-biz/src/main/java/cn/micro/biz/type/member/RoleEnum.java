@@ -13,7 +13,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @AllArgsConstructor
-public enum RoleEnum implements IEnum<Integer> {
+public enum RoleEnum implements IEnum<Long> {
 
     // ======
 
