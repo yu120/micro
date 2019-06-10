@@ -41,16 +41,24 @@ import java.sql.Timestamp;
 public class MicroEntity<T extends Model<T>> extends Model<T> {
 
     public static final String ID_FIELD = "id";
+    public static final String TENANT_ID_FIELD = "tenantId";
     public static final String CREATED_FIELD = "created";
     public static final String CREATOR_FIELD = "creator";
     public static final String EDITED_FIELD = "edited";
     public static final String EDITOR_FIELD = "editor";
     public static final String DELETED_FIELD = "deleted";
-    public static final String TENANT_ID_FIELD = "tenantId";
 
+    /**
+     * Primary key
+     */
     @TableId(type = IdType.AUTO)
     @JSONField(serializeUsing = ToStringSerializer.class)
     protected Long id;
+
+    /**
+     * Tenant ID
+     */
+    protected Long tenantId;
 
     /**
      * The created time
@@ -83,11 +91,6 @@ public class MicroEntity<T extends Model<T>> extends Model<T> {
      */
     @TableLogic
     protected Integer deleted;
-
-    /**
-     * Tenant ID
-     */
-    protected Long tenantId;
 
     @Override
     protected Serializable pkVal() {
