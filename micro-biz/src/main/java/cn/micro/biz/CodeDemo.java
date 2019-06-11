@@ -1,12 +1,15 @@
 package cn.micro.biz;
 
 import cn.micro.biz.commons.mybatis.MicroEntity;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.FieldDoc;
 import com.sun.javadoc.RootDoc;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 import org.micro.util.ClassUtils;
@@ -21,14 +24,36 @@ public class CodeDemo {
 
     private static final String TABLE_SQL_PREFIX = "CREATE TABLE `%s` (\n";
     private static final String TABLE_SQL_SUFFIX = "\n) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '%s' ROW_FORMAT = Dynamic;";
-    private static Map<String, String> COLUMN_SQL_MAP = new HashMap<>();
 
-    static {
-        COLUMN_SQL_MAP.put("java.lang.String", "`%s` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '%s'");
-        COLUMN_SQL_MAP.put("java.lang.Long", "`%s` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '%s'");
-        COLUMN_SQL_MAP.put("java.lang.Integer", "`%s` tinyint(1) UNSIGNED ZEROFILL NULL DEFAULT 0 COMMENT '%s'");
-        COLUMN_SQL_MAP.put("java.lang.Enum", "`%s` tinyint(1) UNSIGNED ZEROFILL NULL DEFAULT 0 COMMENT '%s'");
-        COLUMN_SQL_MAP.put("java.sql.Timestamp", "`%s` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '%s'");
+    @Getter
+    @AllArgsConstructor
+    enum ColumnDataType {
+
+        // ===
+
+        TABLE_ID("TableId", "java.lang.Long", "PRIMARY KEY (`%s`) USING BTREE"),
+        STRING("", "java.lang.String", "`%s` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '%s'"),
+        PK_LONG("PK", "java.lang.Long", "`%s` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '%s'"),
+        LONG("", "java.lang.Long", "`%s` bigint(20) COMMENT '%s'"),
+        INTEGER("", "java.lang.Integer", "`%s` tinyint(1) UNSIGNED ZEROFILL NULL DEFAULT 0 COMMENT '%s'"),
+        ENUM("", "java.lang.Enum", "`%s` tinyint(1) UNSIGNED ZEROFILL NULL DEFAULT 0 COMMENT '%s'"),
+        TIMESTAMP("", "java.sql.Timestamp", "`%s` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '%s'");
+
+        private String key;
+        private String javaType;
+        private String sql;
+
+        public static String parse(String key, String javaType) {
+            for (ColumnDataType e : values()) {
+                if (e.getJavaType().equals(javaType)) {
+                    if (key == null || key.equals(e.getKey())) {
+                        return e.getSql();
+                    }
+                }
+            }
+
+            throw new IllegalArgumentException("未知类型");
+        }
     }
 
     public static void main(String[] args) {
@@ -179,30 +204,48 @@ public class CodeDemo {
     }
 
     private static String buildSql(MicroClassDoc microClassDoc, String tableName, List<Field> fields) {
+        StringBuilder pkSb = new StringBuilder();
         StringBuilder sb = new StringBuilder();
         sb.append(String.format(TABLE_SQL_PREFIX, tableName));
-        for (int i = 0; i < fields.size(); i++) {
-            Field field = fields.get(i);
-            String columnName = field.getName();
+        for (Field field : fields) {
+            String pk = null;
+            // 获取列类型
             String columnType = field.getType().getName();
-            String superColumnName = field.getType().getSuperclass().getName();
-            String columnSql;
-            if ("java.lang.Enum".equals(superColumnName)) {
-                columnSql = COLUMN_SQL_MAP.get(superColumnName);
-            } else {
-                columnSql = COLUMN_SQL_MAP.get(columnType);
+            // 获取列名
+            String columnName = field.getName();
+            TableField tableField = field.getAnnotation(TableField.class);
+            if (tableField != null) {
+                if (StringUtils.isNotBlank(tableField.value())) {
+                    columnName = tableField.value();
+                }
+            }
+            TableId tableId = field.getAnnotation(TableId.class);
+            if (tableId != null) {
+                pk = "PK";
+                if (StringUtils.isNotBlank(tableId.value())) {
+                    columnName = tableId.value();
+                }
+                String sqlTemplate = ColumnDataType.parse(TableId.class.getSimpleName(), columnType);
+                pkSb.append(String.format(sqlTemplate, columnName));
             }
 
-            if (columnSql == null) {
-                System.err.println(columnType + "-->" + columnName);
-                continue;
+            // 获取列父类型
+            String columnSql;
+            String superColumnName = field.getType().getSuperclass().getName();
+            if ("java.lang.Enum".equals(superColumnName)) {
+                columnSql = ColumnDataType.parse(null, superColumnName);
+            } else {
+                columnSql = ColumnDataType.parse(pk, columnType);
             }
 
             sb.append(String.format(columnSql, columnName, microClassDoc.getFieldMap().get(columnName)));
-            if (i < fields.size() - 1) {
-                sb.append(",\n");
-            }
+            sb.append(",\n");
         }
+        if (StringUtils.isBlank(pkSb.toString())) {
+            throw new IllegalArgumentException("必须要设置主键字段");
+        }
+
+        sb.append(pkSb.toString());
         sb.append(String.format(TABLE_SQL_SUFFIX, microClassDoc.getComment()));
         return sb.toString();
     }
