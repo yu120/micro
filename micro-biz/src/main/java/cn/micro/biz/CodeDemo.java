@@ -15,17 +15,13 @@ import java.io.File;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class CodeDemo {
 
-    static final String TABLE_SQL_PREFIX = "CREATE TABLE `%s` (\n";
-    static final String TABLE_SQL_SUFFIX = "\n) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '%s' ROW_FORMAT = Dynamic;";
-    static Map<String, String> COLUMN_SQL_MAP = new HashMap<>();
+    private static final String TABLE_SQL_PREFIX = "CREATE TABLE `%s` (\n";
+    private static final String TABLE_SQL_SUFFIX = "\n) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '%s' ROW_FORMAT = Dynamic;";
+    private static Map<String, String> COLUMN_SQL_MAP = new HashMap<>();
 
     static {
         COLUMN_SQL_MAP.put("java.lang.String", "`%s` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '%s'");
@@ -36,12 +32,14 @@ public class CodeDemo {
     }
 
     public static void main(String[] args) {
+        String realPath = CodeDemo.class.getResource("/").getPath();
+        realPath = realPath.substring(0, realPath.length() - 15) + "src/main/java/";
+
         String packageName = "cn.micro.biz";
-        String realPath = "/Users/lry/IdeaProjects/micro/micro-biz/src/main/java/";
         Set<Class<?>> classSet = ClassUtils.getClasses(packageName);
 
         // 读取注释文档
-        Map<String, MicroClassDoc> docMap = getDocment(realPath, classSet);
+        Map<String, MicroClassDoc> docMap = getDocument(realPath, classSet);
 
         for (Class<?> clz : classSet) {
             TableName tableNameAnnotation = clz.getDeclaredAnnotation(TableName.class);
@@ -74,7 +72,7 @@ public class CodeDemo {
         return null;
     }
 
-    private static Map<String, MicroClassDoc> getDocment(String realPath, Set<Class<?>> classSet) {
+    private static Map<String, MicroClassDoc> getDocument(String realPath, Set<Class<?>> classSet) {
         // 读取
         List<String> realPathList = new ArrayList<>();
         realPathList.add(realPath + MicroEntity.class.getName().replace(".", File.separator) + ".java");
@@ -155,16 +153,13 @@ public class CodeDemo {
 
     @Data
     @ToString
-    static class MicroClassDoc implements Serializable {
+    private static class MicroClassDoc implements Serializable {
         private String comment;
         private Map<String, String> fieldMap;
     }
 
     private static List<FieldDoc> recursionFieldDoc(List<FieldDoc> fieldDocList, ClassDoc classDoc) {
-        for (FieldDoc fieldDoc : classDoc.serializableFields()) {
-            fieldDocList.add(fieldDoc);
-        }
-
+        fieldDocList.addAll(Arrays.asList(classDoc.serializableFields()));
         ClassDoc superClassDoc = classDoc.superclass();
         if ("java.lang.Object".equals(superClassDoc.qualifiedTypeName())) {
             return fieldDocList;
