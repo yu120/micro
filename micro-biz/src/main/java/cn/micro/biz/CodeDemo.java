@@ -1,6 +1,7 @@
 package cn.micro.biz;
 
 import cn.micro.biz.commons.mybatis.MicroEntity;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.FieldDoc;
@@ -10,10 +11,15 @@ import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 import org.micro.util.ClassUtils;
 
+import java.io.File;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class CodeDemo {
 
@@ -31,25 +37,11 @@ public class CodeDemo {
 
     public static void main(String[] args) {
         String packageName = "cn.micro.biz";
-        String realPath = "C:\\Users\\lry\\IdeaProjects\\micro\\micro-biz\\src\\main\\java\\";
+        String realPath = "/Users/lry/IdeaProjects/micro/micro-biz/src/main/java/";
         Set<Class<?>> classSet = ClassUtils.getClasses(packageName);
 
-        List<String> realPathList = new ArrayList<>();
-        realPathList.add(realPath + MicroEntity.class.getName().replace(".", "\\") + ".java");
-        for (Class<?> clz : classSet) {
-            TableName tableNameAnnotation = clz.getDeclaredAnnotation(TableName.class);
-            if (tableNameAnnotation != null) {
-                if (!"login_log".equals(tableNameAnnotation.value())) {
-                    continue;
-                }
-
-                String path = realPath + clz.getName().replace(".", "\\") + ".java";
-                System.out.println(path);
-                realPathList.add(path);
-                break;
-            }
-        }
-        Map<String, MicroClassDoc> docMap = getDoc(realPathList);
+        // 读取注释文档
+        Map<String, MicroClassDoc> docMap = getDocment(realPath, classSet);
 
         for (Class<?> clz : classSet) {
             TableName tableNameAnnotation = clz.getDeclaredAnnotation(TableName.class);
@@ -62,15 +54,44 @@ public class CodeDemo {
                     tableName = clz.getName();
                 }
 
-                List<Field> fieldList = new ArrayList<>();
-                List<Field> fields = sortField(recursionField(fieldList, clz));
-
                 MicroClassDoc microClassDoc = docMap.get(clz.getName());
+                List<Field> fields = sortField(recursionField(new ArrayList<>(), clz));
                 String sql = buildSql(microClassDoc, tableName, fields);
                 System.out.println(sql);
                 break;
             }
         }
+    }
+
+    private static String getPrimaryKey(List<Field> fields) {
+        for (Field field : fields) {
+            TableId tableId = field.getAnnotation(TableId.class);
+            if (tableId != null) {
+
+            }
+        }
+
+        return null;
+    }
+
+    private static Map<String, MicroClassDoc> getDocment(String realPath, Set<Class<?>> classSet) {
+        // 读取
+        List<String> realPathList = new ArrayList<>();
+        realPathList.add(realPath + MicroEntity.class.getName().replace(".", File.separator) + ".java");
+        for (Class<?> clz : classSet) {
+            TableName tableNameAnnotation = clz.getDeclaredAnnotation(TableName.class);
+            if (tableNameAnnotation != null) {
+                if (!"login_log".equals(tableNameAnnotation.value())) {
+                    continue;
+                }
+
+                String path = realPath + clz.getName().replace(".", File.separator) + ".java";
+                System.out.println(path);
+                realPathList.add(path);
+                break;
+            }
+        }
+        return getDoc(realPathList);
     }
 
     private static Map<String, MicroClassDoc> getDoc(List<String> realPathList) {
