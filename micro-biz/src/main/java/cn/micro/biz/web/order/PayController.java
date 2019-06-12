@@ -4,9 +4,9 @@ import cn.micro.biz.commons.auth.PreAuth;
 import cn.micro.biz.pubsrv.pay.*;
 import cn.micro.biz.pubsrv.pay.PayChannelEnum;
 import cn.micro.biz.entity.order.Order;
-import cn.micro.biz.pubsrv.pay.OrderStatusEnum;
 import cn.micro.biz.pubsrv.pay.wx.WxPayConstants;
 import cn.micro.biz.pubsrv.pay.wx.WXPayService;
+import cn.micro.biz.type.order.OrderStatusEnum;
 import com.alibaba.fastjson.JSON;
 import com.github.wxpay.sdk.WXPayUtil;
 import lombok.RequiredArgsConstructor;
@@ -86,8 +86,8 @@ public class PayController {
 
             // 防止重复更新数据
             if (orders.getOrderStatus() != null
-                    && OrderStatusEnum.WAIT_SEND_PAY.getStatus() != orders.getOrderStatus()
-                    && OrderStatusEnum.WAIT_BUYER_PAY.getStatus() != orders.getOrderStatus()) {
+                    && OrderStatusEnum.WAIT_SEND_PAY != orders.getOrderStatus()
+                    && OrderStatusEnum.WAIT_BUYER_PAY != orders.getOrderStatus()) {
                 this.responseAliPayNotify(true, response);
                 return;
             }
@@ -160,13 +160,13 @@ public class PayController {
 
             // 防止重复更新数据
             if (orders.getOrderStatus() != null
-                    && OrderStatusEnum.WAIT_SEND_PAY.getStatus() != orders.getOrderStatus()
-                    && OrderStatusEnum.WAIT_BUYER_PAY.getStatus() != orders.getOrderStatus()) {
+                    && OrderStatusEnum.WAIT_SEND_PAY != orders.getOrderStatus()
+                    && OrderStatusEnum.WAIT_BUYER_PAY != orders.getOrderStatus()) {
                 this.responseWxPayNotify(false, response);
                 return;
             }
             // 如果订单已经成功了,则不能重复在操作
-            if (OrderStatusEnum.TRADE_SUCCESS.getStatus() == orders.getOrderStatus()) {
+            if (OrderStatusEnum.TRADE_SUCCESS == orders.getOrderStatus()) {
                 this.responseWxPayNotify(true, response);
                 return;
             }
@@ -175,7 +175,7 @@ public class PayController {
             Order updateOrders = new Order();
             updateOrders.setId(orders.getId());
             updateOrders.setOutTradeNo(tradeNo);
-            updateOrders.setOrderStatus(OrderStatusEnum.TRADE_SUCCESS.getStatus());
+            updateOrders.setOrderStatus(OrderStatusEnum.TRADE_SUCCESS);
 
             try {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");

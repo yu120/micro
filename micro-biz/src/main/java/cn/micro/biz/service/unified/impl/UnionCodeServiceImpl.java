@@ -72,7 +72,7 @@ public class UnionCodeServiceImpl extends MicroServiceImpl<IUnionCodeMapper, Uni
             unionCode.setCode(captcha);
             unionCode.setMaxTimes(unionCodeCategoryEnum.getMaxTimes());
             unionCode.setFailTimes(0);
-            unionCode.setCategory(unionCodeCategoryEnum.getValue());
+            unionCode.setCategory(unionCodeCategoryEnum);
             unionCode.setExpire(unionCodeCategoryEnum.getExpire());
             unionCode.setStartTime(new Date());
             if (super.save(unionCode)) {

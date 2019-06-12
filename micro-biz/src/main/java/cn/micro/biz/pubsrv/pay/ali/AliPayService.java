@@ -3,7 +3,7 @@ package cn.micro.biz.pubsrv.pay.ali;
 import cn.micro.biz.commons.exception.support.MicroErrorException;
 import cn.micro.biz.entity.order.Order;
 import cn.micro.biz.entity.order.OrderGoods;
-import cn.micro.biz.pubsrv.pay.OrderStatusEnum;
+import cn.micro.biz.type.order.OrderStatusEnum;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.NameFilter;
 import com.alipay.api.AlipayApiException;
@@ -106,11 +106,11 @@ public class AliPayService {
                     orders.setOutTradeNo(response.getTradeNo());
                     orders.setPayTime(new Timestamp(response.getSendPayDate().getTime()));
                     if ("TRADE_SUCCESS".equals(response.getTradeStatus())) {
-                        orders.setOrderStatus(OrderStatusEnum.TRADE_SUCCESS.getStatus());
+                        orders.setOrderStatus(OrderStatusEnum.TRADE_SUCCESS);
                     } else if ("TRADE_FINISHED".equals(response.getTradeStatus())) {
-                        orders.setOrderStatus(OrderStatusEnum.TRADE_FINISHED.getStatus());
+                        orders.setOrderStatus(OrderStatusEnum.TRADE_FINISHED);
                     } else if ("TRADE_CLOSED".equals(response.getTradeStatus())) {
-                        orders.setOrderStatus(OrderStatusEnum.TRADE_CLOSED.getStatus());
+                        orders.setOrderStatus(OrderStatusEnum.TRADE_CLOSED);
                     }
 
                     return orders;
