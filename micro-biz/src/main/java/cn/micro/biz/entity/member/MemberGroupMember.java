@@ -21,15 +21,15 @@ public class MemberGroupMember extends MicroEntity<MemberGroupMember> {
 
     /**
      * Member group id
-     * <p>
-     * {@link MemberGroup#id}
+     *
+     * @see MemberGroup#id
      */
     private Long memberGroupId;
 
     /**
      * Member id
-     * <p>
-     * {@link Member#id}
+     *
+     * @see Member#id
      */
     private Long memberId;
 

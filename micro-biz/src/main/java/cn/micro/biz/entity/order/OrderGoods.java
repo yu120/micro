@@ -1,7 +1,6 @@
 package cn.micro.biz.entity.order;
 
 import cn.micro.biz.commons.mybatis.MicroEntity;
-import cn.micro.biz.entity.goods.Goods;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
@@ -28,14 +27,14 @@ public class OrderGoods extends MicroEntity<OrderGoods> {
 
     /**
      * Order id
-     * <p>
-     * {@link Order#id}
+     *
+     * @see Order#id
      **/
     private Long orderId;
     /**
      * Goods id
-     * <p>
-     * {@link Goods#id}
+     *
+     * @see cn.micro.biz.entity.goods.Goods#id
      **/
     private Long goodsId;
 

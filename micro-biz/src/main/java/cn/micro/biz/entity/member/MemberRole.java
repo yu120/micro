@@ -25,15 +25,15 @@ public class MemberRole extends MicroEntity<MemberRole> {
 
     /**
      * Member id
-     * <p>
-     * {@link Member#id}
+     *
+     * @see Member#id
      */
     private Long memberId;
 
     /**
      * Role id
-     * <p>
-     * {@link Role#id}
+     *
+     * @see Role#id
      */
     private Long roleId;
 

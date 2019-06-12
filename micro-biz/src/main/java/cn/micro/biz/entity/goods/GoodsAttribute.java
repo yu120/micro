@@ -21,14 +21,14 @@ public class GoodsAttribute extends MicroEntity<GoodsAttribute> {
 
     /**
      * Goods id
-     * <p>
-     * {@link Goods#id}
+     *
+     * @see Goods#id
      **/
     private Long goodsId;
     /**
      * Goods specification id
-     * <p>
-     * {@link GoodsSpecification#id}
+     *
+     * @see GoodsSpecification#id
      **/
     private Long specificationId;
 

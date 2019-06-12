@@ -24,8 +24,8 @@ public class AvailableScore extends MicroEntity<AvailableScore> {
 
     /**
      * Score member id
-     * <p>
-     * {@link cn.micro.biz.entity.member.Member#id}
+     *
+     * @see cn.micro.biz.entity.member.Member#id
      */
     private Long memberId;
     /**

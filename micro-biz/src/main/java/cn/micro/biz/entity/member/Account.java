@@ -26,8 +26,8 @@ public class Account extends MicroEntity<Account> {
 
     /**
      * Member id
-     * <p>
-     * {@link Member#id}
+     *
+     * @see Member#id
      */
     private Long memberId;
 
@@ -37,8 +37,6 @@ public class Account extends MicroEntity<Account> {
     private String code;
     /**
      * Account category
-     * <p>
-     * {@link AccountEnum}
      */
     private AccountEnum category;
 

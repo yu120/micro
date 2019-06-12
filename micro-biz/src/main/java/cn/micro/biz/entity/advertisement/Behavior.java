@@ -22,18 +22,16 @@ public class Behavior extends MicroEntity<Behavior> {
 
     /**
      * Behavior category
-     * <p>
-     * {@link BehaviorCategoryEnum}
      **/
-    private Integer category;
+    private BehaviorCategoryEnum category;
     /**
      * Behavior origin id
      */
     private Long originId;
     /**
      * Behavior member id
-     * <p>
-     * {@link cn.micro.biz.entity.member.Member#id}
+     *
+     * @see cn.micro.biz.entity.member.Member#id
      **/
     private Long memberId;
 

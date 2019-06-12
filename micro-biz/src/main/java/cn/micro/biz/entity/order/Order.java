@@ -1,8 +1,7 @@
 package cn.micro.biz.entity.order;
 
 import cn.micro.biz.commons.mybatis.MicroEntity;
-import cn.micro.biz.entity.goods.DeliveryAddress;
-import cn.micro.biz.entity.member.Member;
+import cn.micro.biz.type.order.OrderStatusEnum;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
@@ -24,26 +23,26 @@ public class Order extends MicroEntity<Order> {
 
     /**
      * Member id
-     * <p>
-     * {@link Member#id}
+     *
+     * @see cn.micro.biz.entity.member.Member#id
      **/
     private Long memberId;
     /**
      * Delivery address id
-     * <p>
-     * {@link DeliveryAddress#id}
+     *
+     * @see cn.micro.biz.entity.goods.DeliveryAddress#id
      **/
     private Long addressId;
     /**
      * Order logistics id
-     * <p>
-     * {@link OrderLogistics#id}
+     *
+     * @see OrderLogistics#id
      **/
     private Long logisticsId;
     /**
      * Order invoice id
-     * <p>
-     * {@link OrderInvoice#id}
+     *
+     * @see OrderInvoice#id
      **/
     private Long invoiceId;
 
@@ -58,10 +57,8 @@ public class Order extends MicroEntity<Order> {
 
     /**
      * Order status(未付款,已付款,已发货,已签收,退货申请,退货中,已退货,取消交易)
-     * <p>
-     * {@link cn.micro.biz.pubsrv.pay.OrderStatusEnum}
      **/
-    private Integer orderStatus;
+    private OrderStatusEnum orderStatus;
     /**
      * 订单金额(实际付款金额)
      **/

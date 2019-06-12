@@ -21,8 +21,8 @@ public class MemberGroup extends MicroEntity<MemberGroup> {
 
     /**
      * Parent member group id
-     * <p>
-     * {@link MemberGroup#id}
+     *
+     * @see MemberGroup#id
      */
     private Long parentId;
 

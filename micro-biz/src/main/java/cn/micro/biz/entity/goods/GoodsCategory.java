@@ -50,20 +50,20 @@ public class GoodsCategory extends MicroEntity<GoodsCategory> {
 
     /**
      * Level 1 parent goods category id(Direct parent)
-     * <p>
-     * {@link GoodsCategory#id}
+     *
+     * @see GoodsCategory#id
      **/
     private Long parent1Id;
     /**
      * Level 2 parent goods category id
-     * <p>
-     * {@link GoodsCategory#id}
+     *
+     * @see GoodsCategory#id
      **/
     private Long parent2Id;
     /**
      * Level 3 parent goods category id
-     * <p>
-     * {@link GoodsCategory#id}
+     *
+     * @see GoodsCategory#id
      **/
     private Long parent3Id;
 

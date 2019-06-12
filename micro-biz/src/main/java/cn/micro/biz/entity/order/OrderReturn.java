@@ -24,8 +24,8 @@ public class OrderReturn extends MicroEntity<OrderReturn> {
 
     /**
      * Order id
-     * <p>
-     * {@link Order#id}
+     *
+     * @see Order#id
      **/
     private Long orderId;
 

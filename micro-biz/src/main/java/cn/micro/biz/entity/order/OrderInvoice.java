@@ -24,8 +24,8 @@ public class OrderInvoice extends MicroEntity<OrderInvoice> {
 
     /**
      * Order id
-     * <p>
-     * {@link Order#id}
+     *
+     * @see Order#id
      **/
     private Long orderId;
 

@@ -1,7 +1,6 @@
 package cn.micro.biz.entity.unified;
 
 import cn.micro.biz.commons.mybatis.MicroEntity;
-import cn.micro.biz.entity.member.Member;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
@@ -22,14 +21,14 @@ public class AuditRecord extends MicroEntity<AuditRecord> {
 
     /**
      * Audit id
-     * <p>
-     * {@link Audit#id}
+     *
+     * @see Audit#id
      */
-    private Long operationId;
+    private Long auditId;
     /**
      * Audit member id
-     * <p>
-     * {@link Member#id}
+     *
+     * @see cn.micro.biz.entity.member.Member#id
      */
     private Long memberId;
 

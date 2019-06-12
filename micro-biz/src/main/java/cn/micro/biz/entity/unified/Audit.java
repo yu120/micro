@@ -1,7 +1,6 @@
 package cn.micro.biz.entity.unified;
 
 import cn.micro.biz.commons.mybatis.MicroEntity;
-import cn.micro.biz.entity.member.Permission;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
@@ -22,8 +21,8 @@ public class Audit extends MicroEntity<Audit> {
 
     /**
      * Parent operation id
-     * <p>
-     * {@link Permission#id}
+     *
+     * @see Audit#id
      */
     private Long parentId;
 

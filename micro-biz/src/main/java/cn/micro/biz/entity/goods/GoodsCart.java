@@ -21,20 +21,20 @@ public class GoodsCart extends MicroEntity<GoodsCart> {
 
     /**
      * Member id
-     * <p>
-     * {@link cn.micro.biz.entity.member.Member#id}
+     *
+     * @see cn.micro.biz.entity.member.Member#id
      **/
     private Long memberId;
     /**
      * Goods id
-     * <p>
-     * {@link Goods#id}
+     *
+     * @see Goods#id
      **/
     private Long goodsId;
     /**
      * Goods specification id
-     * <p>
-     * {@link GoodsSpecification#id}
+     *
+     * @see GoodsSpecification#id
      **/
     private Long goodsSpecificationId;
 

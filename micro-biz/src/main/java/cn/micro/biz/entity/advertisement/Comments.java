@@ -23,28 +23,26 @@ public class Comments extends MicroEntity<Comments> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Comments category
-     * <p>
-     * {@link CommentsCategoryEnum}
-     */
-    private Integer category;
+     * Parent comments id
+     *
+     * @see Comments#id
+     **/
+    private Long parentId;
+    /**
+     * Comments member id
+     *
+     * @see cn.micro.biz.entity.member.Member#id
+     **/
+    private Long memberId;
     /**
      * Comments origin id
      */
     private Long originId;
-    /**
-     * Comments member id
-     * <p>
-     * {@link cn.micro.biz.entity.member.Member#id}
-     **/
-    private Long memberId;
-    /**
-     * Parent comments id
-     * <p>
-     * {@link Comments#id}
-     **/
-    private Long parentId;
 
+    /**
+     * Comments category
+     */
+    private CommentsCategoryEnum category;
     /**
      * Comments content
      **/
@@ -56,8 +54,8 @@ public class Comments extends MicroEntity<Comments> {
 
     /**
      * Auditor member id
-     * <p>
-     * {@link cn.micro.biz.entity.member.Member#id}
+     *
+     * @see cn.micro.biz.entity.member.Member#id
      **/
     private Long auditId;
     /**

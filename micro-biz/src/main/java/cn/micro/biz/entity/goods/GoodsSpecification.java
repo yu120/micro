@@ -24,7 +24,7 @@ public class GoodsSpecification extends MicroEntity<GoodsSpecification> {
     /**
      * Goods id
      *
-     * {@link Goods#id}
+     * @see Goods#id
      **/
     private Long goodsId;
 

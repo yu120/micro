@@ -24,8 +24,8 @@ public class OrderLogistics extends MicroEntity<OrderLogistics> {
 
     /**
      * Order id
-     * <p>
-     * {@link Order#id}
+     *
+     * @see Order#id
      **/
     private Long orderId;
 

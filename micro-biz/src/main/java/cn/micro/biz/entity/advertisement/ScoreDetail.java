@@ -26,8 +26,8 @@ public class ScoreDetail extends MicroEntity<ScoreDetail> {
 
     /**
      * Score member id
-     * <p>
-     * {@link cn.micro.biz.entity.member.Member#id}
+     *
+     * @see cn.micro.biz.entity.member.Member#id
      */
     private Long memberId;
     /**
@@ -57,8 +57,8 @@ public class ScoreDetail extends MicroEntity<ScoreDetail> {
 
     /**
      * 积分来源:当扣减积分时，存储扣减的积分记录id，用于追溯积分
-     * <p>
-     * {@link ScoreDetail#id}
+     *
+     * @see ScoreDetail#id
      */
     private Long origin;
     /**

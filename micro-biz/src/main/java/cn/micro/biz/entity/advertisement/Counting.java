@@ -22,10 +22,8 @@ public class Counting extends MicroEntity<Counting> {
 
     /**
      * Counting category
-     * <p>
-     * {@link CountingCategoryEnum}
      */
-    private Integer category;
+    private CountingCategoryEnum category;
     /**
      * Counting origin id
      */

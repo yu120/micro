@@ -21,8 +21,8 @@ public class AdvertisementVisit extends MicroEntity<AdvertisementVisit> {
 
     /**
      * Advertisement id
-     * <p>
-     * {@link Advertisement#id}
+     *
+     * @see Advertisement#id}
      */
     private Long advertisementId;
 

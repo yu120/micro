@@ -1,6 +1,7 @@
 package cn.micro.biz.entity.goods;
 
 import cn.micro.biz.commons.mybatis.MicroEntity;
+import cn.micro.biz.type.goods.CommentAuditEnum;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
@@ -21,20 +22,20 @@ public class Goods extends MicroEntity<Goods> {
 
     /**
      * Goods category id
-     * <p>
-     * {@link GoodsCategory#id}
+     *
+     * @see GoodsCategory#id
      */
     private Long categoryId;
     /**
      * Goods brand id
-     * <p>
-     * {@link GoodsBrand#id}
+     *
+     * @see GoodsBrand#id
      */
     private Long brandId;
     /**
      * Goods default specification id
-     * <p>
-     * {@link GoodsSpecification#id}
+     *
+     * @see GoodsSpecification#id
      */
     private Long specificationId;
 
@@ -60,10 +61,8 @@ public class Goods extends MicroEntity<Goods> {
     private Integer status;
     /**
      * Comment audit way(automatic/artificial)
-     * <p>
-     * {@link cn.micro.biz.type.goods.CommentAuditEnum}
      */
-    private Integer commentAudit;
+    private CommentAuditEnum commentAudit;
     /**
      * Goods remark
      **/

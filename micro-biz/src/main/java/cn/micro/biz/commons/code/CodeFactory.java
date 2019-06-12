@@ -96,6 +96,9 @@ public enum CodeFactory {
         for (ClassDoc classDoc : classes) {
             String className = classDoc.qualifiedTypeName();
             String classCommentText = getCommentText(classDoc.commentText());
+            if (classCommentText.endsWith(" Entity")) {
+                classCommentText = classCommentText.substring(0, classCommentText.length() - 7);
+            }
 
             List<FieldDoc> fieldDocList = new ArrayList<>();
             recursionFieldDoc(fieldDocList, classDoc);

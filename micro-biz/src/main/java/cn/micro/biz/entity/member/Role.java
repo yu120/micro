@@ -25,8 +25,8 @@ public class Role extends MicroEntity<Role> {
 
     /**
      * Parent role id
-     * <p>
-     * {@link Role#id}
+     *
+     * @see Role#id
      */
     private Long parentId;
 

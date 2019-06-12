@@ -23,8 +23,8 @@ public class MemberScore extends MicroEntity<MemberScore> {
 
     /**
      * Score member id
-     * <p>
-     * {@link cn.micro.biz.entity.member.Member#id}
+     *
+     * @see cn.micro.biz.entity.member.Member#id
      */
     private Long memberId;
     /**

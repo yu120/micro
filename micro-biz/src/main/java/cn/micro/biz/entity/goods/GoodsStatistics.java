@@ -23,8 +23,8 @@ public class GoodsStatistics extends MicroEntity<GoodsStatistics> {
 
     /**
      * Goods id
-     * <p>
-     * {@link Goods#id}
+     *
+     * @see Goods#id
      **/
     private Long goodsId;
 

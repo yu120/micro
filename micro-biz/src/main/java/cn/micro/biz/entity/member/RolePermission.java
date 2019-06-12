@@ -25,14 +25,14 @@ public class RolePermission extends MicroEntity<RolePermission> {
 
     /**
      * Role id
-     * <p>
-     * {@link Role#id}
+     *
+     * @see Role#id
      */
     private Long roleId;
     /**
      * Permission id
-     * <p>
-     * {@link Permission#id}
+     *
+     * @see Permission#id
      */
     private Long permissionId;
 

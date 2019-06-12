@@ -3,7 +3,6 @@ package cn.micro.biz.entity.member;
 import cn.micro.biz.commons.mybatis.MicroEntity;
 import cn.micro.biz.commons.utils.IdCardUtils;
 import cn.micro.biz.commons.utils.TelUtils;
-import cn.micro.biz.entity.unified.Area;
 import cn.micro.biz.type.member.MemberStatusEnum;
 import cn.micro.biz.type.member.PlatformEnum;
 import cn.micro.biz.type.member.SexEnum;
@@ -38,8 +37,6 @@ public class Member extends MicroEntity<Member> {
     private String icon;
     /**
      * Member sex
-     * <p>
-     * {@link SexEnum}
      */
     private SexEnum sex;
     /**
@@ -69,8 +66,6 @@ public class Member extends MicroEntity<Member> {
     private String address;
     /**
      * Member enable status
-     * <p>
-     * {@link cn.micro.biz.type.member.MemberStatusEnum}
      */
     private MemberStatusEnum status;
 
@@ -84,56 +79,56 @@ public class Member extends MicroEntity<Member> {
      */
     private String password;
     /**
-     * Login password(禁止查询该字段)
+     * Login password(Forbid query this field)
      */
     private String pwd;
 
     /**
      * Province code
-     * <p>
-     * {@link Area#code}
+     *
+     * @see cn.micro.biz.entity.unified.Area#code
      */
     private String provinceCode;
     /**
      * Province name
-     * <p>
-     * {@link Area#name}
+     *
+     * @see cn.micro.biz.entity.unified.Area#name
      */
     private String provinceName;
     /**
      * City code
-     * <p>
-     * {@link Area#code}
+     *
+     * @see cn.micro.biz.entity.unified.Area#code
      */
     private String cityCode;
     /**
      * City name
-     * <p>
-     * {@link Area#name}
+     *
+     * @see cn.micro.biz.entity.unified.Area#name
      */
     private String cityName;
     /**
      * District code
-     * <p>
-     * {@link Area#code}
+     *
+     * @see cn.micro.biz.entity.unified.Area#code
      */
     private String districtCode;
     /**
      * District name
-     * <p>
-     * {@link Area#name}
+     *
+     * @see cn.micro.biz.entity.unified.Area#name
      */
     private String districtName;
     /**
      * Town code
-     * <p>
-     * {@link Area#code}
+     *
+     * @see cn.micro.biz.entity.unified.Area#code
      */
     private String townCode;
     /**
      * Town name
-     * <p>
-     * {@link Area#name}
+     *
+     * @see cn.micro.biz.entity.unified.Area#name
      */
     private String townName;
 
@@ -143,8 +138,6 @@ public class Member extends MicroEntity<Member> {
     private String ip;
     /**
      * Member register platform category
-     * <p>
-     * {@link cn.micro.biz.type.member.PlatformEnum}
      */
     private PlatformEnum platform;
 

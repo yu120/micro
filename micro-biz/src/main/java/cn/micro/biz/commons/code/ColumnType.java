@@ -12,9 +12,13 @@ public enum ColumnType {
 
     STRING("java.lang.String", "varchar(100)", "CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL"),
     LONG("java.lang.Long", "bigint(20)", null),
+    DOUBLE("java.lang.Double", "bigint(20)", null),
     INTEGER("java.lang.Integer", "int(11)", null),
     ENUM("java.lang.Enum", "tinyint(1)", "UNSIGNED ZEROFILL"),
-    TIMESTAMP("java.sql.Timestamp", "timestamp", "NULL");
+    TIMESTAMP("java.sql.Timestamp", "timestamp", "NULL"),
+    BIG_DECIMAL("java.math.BigDecimal", "timestamp", "NULL"),
+    DATE("java.util.Date", "timestamp", "NULL"),
+    ;
 
     private String javaType;
     private String sqlType;
