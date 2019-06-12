@@ -20,6 +20,7 @@ public enum ColumnType {
     private String sqlType;
     private String otherType;
 
+    public static final String NEWLINE = "\n";
     public static final String JAVA_ENUM = "java.lang.Enum";
     public static final String PRIMARY_KEY_SQL_COLUMN = " NOT NULL AUTO_INCREMENT";
     public static final String PRIMARY_KEY = "PRIMARY KEY (`%s`) USING BTREE";
@@ -35,6 +36,20 @@ public enum ColumnType {
                     return e.getSqlType() + " " + e.getOtherType();
                 } else {
                     return e.getSqlType();
+                }
+            }
+        }
+
+        throw new IllegalArgumentException("未知类型");
+    }
+
+    public static String parse(String serial, String javaType) {
+        for (ColumnType e : values()) {
+            if (e.getJavaType().equals(javaType)) {
+                if (StringUtils.isNotBlank(e.getOtherType())) {
+                    return serial + " " + e.getOtherType();
+                } else {
+                    return serial;
                 }
             }
         }

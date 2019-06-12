@@ -11,7 +11,8 @@ import java.util.Map;
 public class MicroFieldDoc implements Serializable {
 
     private String fieldName;
-    private String serialField;
     private String comment;
+    private String serial;
+    private String serialField;
 
 }

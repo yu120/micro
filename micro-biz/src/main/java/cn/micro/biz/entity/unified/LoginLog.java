@@ -36,8 +36,7 @@ public class LoginLog extends MicroEntity<LoginLog> {
     private PlatformEnum platform;
     /**
      * Login member id
-     *
-     * @serial bigint(20)
+     * <p>
      * {@link cn.micro.biz.entity.member.Member#id}
      */
     private Long memberId;
@@ -53,6 +52,8 @@ public class LoginLog extends MicroEntity<LoginLog> {
     private LoginResultEnum result;
     /**
      * Login remark(reasons for failure)
+     *
+     * @serial varchar(300)
      **/
     private String remark;
 

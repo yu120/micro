@@ -57,6 +57,8 @@ public class MicroEntity<T extends Model<T>> extends Model<T> {
 
     /**
      * Tenant ID
+     *
+     * @serial bigint(20) NOT NULL
      */
     protected Long tenantId;
 

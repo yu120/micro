@@ -113,6 +113,7 @@ public class CodeDemo {
 
                 MicroFieldDoc microFieldDoc = new MicroFieldDoc();
                 microFieldDoc.setFieldName(fieldName);
+                microFieldDoc.setSerial(getTag(DocTree.Kind.SERIAL.tagName, fieldDoc));
                 microFieldDoc.setSerialField(getTag(DocTree.Kind.SERIAL_FIELD.tagName, fieldDoc));
                 microFieldDoc.setComment(fieldCommentText);
                 microClassDoc.getFieldMap().put(fieldName, microFieldDoc);
@@ -130,12 +131,18 @@ public class CodeDemo {
             return null;
         }
 
-        return tags[0].text();
+        String tagStr = tags[0].text();
+        int index = tagStr.indexOf(ColumnType.NEWLINE);
+        if (index > 0) {
+            tagStr = tagStr.substring(0, index);
+        }
+        return tagStr;
     }
 
     private static String getCommentText(String commentText) {
-        if (commentText.indexOf("\n") > 0) {
-            return commentText.substring(0, commentText.indexOf("\n"));
+        int index = commentText.indexOf(ColumnType.NEWLINE);
+        if (index > 0) {
+            return commentText.substring(0, index);
         }
 
         return commentText;
@@ -186,12 +193,15 @@ public class CodeDemo {
             }
 
             MicroFieldDoc microFieldDoc = microClassDoc.getFieldMap().get(columnName);
+            if (StringUtils.isNotBlank(microFieldDoc.getSerial())) {
+                sqlType = ColumnType.parse(microFieldDoc.getSerial(), javaType);
+            }
             if (StringUtils.isBlank(microFieldDoc.getSerialField())) {
                 sb.append(String.format(ColumnType.TABLE_SQL_COLUMN,
-                        columnName, sqlType, microFieldDoc.getComment())).append("\n");
+                        columnName, sqlType, microFieldDoc.getComment())).append(ColumnType.NEWLINE);
             } else {
                 sb.append(String.format(MicroColumnType.parse(microFieldDoc.getSerialField()),
-                        columnName, microFieldDoc.getComment())).append("\n");
+                        columnName, microFieldDoc.getComment())).append(ColumnType.NEWLINE);
             }
         }
         if (StringUtils.isBlank(pkSb.toString())) {
