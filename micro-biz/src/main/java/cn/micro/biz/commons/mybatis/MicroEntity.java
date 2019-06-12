@@ -62,6 +62,8 @@ public class MicroEntity<T extends Model<T>> extends Model<T> {
 
     /**
      * The created time
+     *
+     * @serialField CREATED
      */
     protected Timestamp created;
 
@@ -74,6 +76,8 @@ public class MicroEntity<T extends Model<T>> extends Model<T> {
 
     /**
      * The edited time
+     *
+     * @serialField EDITED
      */
     protected Timestamp edited;
 
@@ -86,11 +90,11 @@ public class MicroEntity<T extends Model<T>> extends Model<T> {
 
     /**
      * Logic deleted
-     * <p>
-     * {@link DeletedEnum}
+     *
+     * @serialField DELETED
      */
     @TableLogic
-    protected Integer deleted;
+    protected DeletedEnum deleted;
 
     @Override
     protected Serializable pkVal() {

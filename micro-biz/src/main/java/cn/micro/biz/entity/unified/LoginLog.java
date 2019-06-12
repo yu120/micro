@@ -28,30 +28,27 @@ public class LoginLog extends MicroEntity<LoginLog> {
     private String account;
     /**
      * Account category
-     * <p>
-     * {@link AccountEnum}
      */
     private AccountEnum category;
     /**
      * Account register platform
-     * <p>
-     * {@link cn.micro.biz.type.member.PlatformEnum}
      */
     private PlatformEnum platform;
     /**
      * Login member id
-     * <p>
+     *
+     * @serial bigint(20)
      * {@link cn.micro.biz.entity.member.Member#id}
      */
     private Long memberId;
     /**
      * Login ip
+     *
+     * @serial varchar(20)
      */
     private String ip;
     /**
      * Login category
-     * <p>
-     * {@link LoginResultEnum}
      */
     private LoginResultEnum result;
     /**
