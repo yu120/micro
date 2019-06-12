@@ -14,4 +14,9 @@ public class MicroFieldDoc implements Serializable {
     private String serial;
     private String serialField;
 
+    private boolean foreignKey;
+    private String see;
+    private String seeWhere;
+    private String seeWhat;
+
 }

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.FieldDoc;
+import com.sun.javadoc.SeeTag;
 import com.sun.javadoc.Tag;
 import com.sun.source.doctree.DocTree;
 import org.apache.commons.lang3.StringUtils;
@@ -38,6 +39,7 @@ public enum CodeFactory {
                 if (StringUtils.isBlank(tableName)) {
                     tableName = clz.getName();
                 }
+                tableName = humpToUnderline(tableName);
 
                 MicroClassDoc microClassDoc = docMap.get(clz.getName());
                 List<Field> fields = sortField(recursionField(new ArrayList<>(), clz));
@@ -119,6 +121,27 @@ public enum CodeFactory {
                 microFieldDoc.setSerial(getTag(DocTree.Kind.SERIAL.tagName, fieldDoc));
                 microFieldDoc.setSerialField(getTag(DocTree.Kind.SERIAL_FIELD.tagName, fieldDoc));
                 microFieldDoc.setComment(fieldCommentText);
+                SeeTag seeTag = getSeeTag(fieldDoc);
+                if (seeTag != null) {
+                    microFieldDoc.setSee(seeTag.text());
+                    microFieldDoc.setSeeWhere(seeTag.referencedClassName());
+                    microFieldDoc.setSeeWhat(seeTag.referencedMemberName());
+                    try {
+                        Class<?> clz = Class.forName(microFieldDoc.getSeeWhere());
+                        Field field = null;
+                        try {
+                            field = clz.getDeclaredField(microFieldDoc.getSeeWhat());
+                        } catch (Exception ignore) {
+                        }
+                        if (field == null) {
+                            field = clz.getSuperclass().getDeclaredField(microFieldDoc.getSeeWhat());
+                        }
+                        TableId tableIdAnnotation = field.getDeclaredAnnotation(TableId.class);
+                        microFieldDoc.setForeignKey(tableIdAnnotation != null);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
                 microClassDoc.getFieldMap().put(fieldName, microFieldDoc);
             }
 
@@ -126,6 +149,15 @@ public enum CodeFactory {
         }
 
         return docMap;
+    }
+
+    private SeeTag getSeeTag(FieldDoc fieldDoc) {
+        SeeTag[] seeTags = fieldDoc.seeTags();
+        if (seeTags == null || seeTags.length == 0) {
+            return null;
+        }
+
+        return seeTags[0];
     }
 
     private String getTag(String tag, FieldDoc fieldDoc) {
@@ -162,27 +194,28 @@ public enum CodeFactory {
     }
 
     private String buildSql(MicroClassDoc microClassDoc, String tableName, List<Field> fields) {
-        StringBuilder pkSb = new StringBuilder();
+        StringBuilder indexSb = new StringBuilder();
         StringBuilder sb = new StringBuilder();
         sb.append(String.format(ColumnType.TABLE_SQL_PREFIX, tableName, tableName));
         for (Field field : fields) {
             // 获取列类型
             String javaType = field.getType().getName();
             // 获取列名
-            String columnName = field.getName();
+            String fieldName = field.getName();
             TableField tableField = field.getAnnotation(TableField.class);
             if (tableField != null) {
                 if (StringUtils.isNotBlank(tableField.value())) {
-                    columnName = tableField.value();
+                    fieldName = tableField.value();
                 }
             }
             TableId tableId = field.getAnnotation(TableId.class);
             if (tableId != null) {
                 if (StringUtils.isNotBlank(tableId.value())) {
-                    columnName = tableId.value();
+                    fieldName = tableId.value();
                 }
-                pkSb.append(String.format(ColumnType.PRIMARY_KEY, columnName));
+                indexSb.append(String.format(ColumnType.PRIMARY_KEY, fieldName));
             }
+            String columnName = humpToUnderline(fieldName);
 
             // 获取列父类型
             String sqlType;
@@ -195,7 +228,10 @@ public enum CodeFactory {
                 sqlType = ColumnType.parse(javaType);
             }
 
-            MicroFieldDoc microFieldDoc = microClassDoc.getFieldMap().get(columnName);
+            MicroFieldDoc microFieldDoc = microClassDoc.getFieldMap().get(fieldName);
+            if (microFieldDoc.isForeignKey()) {
+                indexSb.append(",\n").append(String.format(ColumnType.INDEX_SQL, columnName, columnName));
+            }
             if (StringUtils.isNotBlank(microFieldDoc.getSerial())) {
                 sqlType = ColumnType.parse(microFieldDoc.getSerial(), javaType);
             }
@@ -207,11 +243,11 @@ public enum CodeFactory {
                         columnName, microFieldDoc.getComment())).append(ColumnType.NEWLINE);
             }
         }
-        if (StringUtils.isBlank(pkSb.toString())) {
+        if (StringUtils.isBlank(indexSb.toString())) {
             throw new IllegalArgumentException("必须要设置主键字段");
         }
 
-        sb.append(pkSb.toString());
+        sb.append(indexSb.toString());
         sb.append(String.format(ColumnType.TABLE_SQL_SUFFIX, microClassDoc.getComment()));
         return sb.toString();
     }
@@ -250,6 +286,28 @@ public enum CodeFactory {
         }
 
         return fields;
+    }
+
+    /***
+     * 驼峰命名转为下划线命名
+     *
+     * @param para
+     *        驼峰命名的字符串
+     */
+
+    private String humpToUnderline(String para) {
+        StringBuilder sb = new StringBuilder(para);
+        int temp = 0;
+        if (!para.contains("_")) {
+            for (int i = 0; i < para.length(); i++) {
+                if (Character.isUpperCase(para.charAt(i))) {
+                    sb.insert(i + temp, "_");
+                    temp += 1;
+                }
+            }
+        }
+
+        return sb.toString().toLowerCase();
     }
 
 }

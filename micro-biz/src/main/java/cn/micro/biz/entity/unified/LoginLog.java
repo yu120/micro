@@ -36,8 +36,8 @@ public class LoginLog extends MicroEntity<LoginLog> {
     private PlatformEnum platform;
     /**
      * Login member id
-     * <p>
-     * {@link cn.micro.biz.entity.member.Member#id}
+     *
+     * @see cn.micro.biz.entity.member.Member#id
      */
     private Long memberId;
     /**
