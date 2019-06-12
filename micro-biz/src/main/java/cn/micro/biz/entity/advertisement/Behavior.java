@@ -22,6 +22,8 @@ public class Behavior extends MicroEntity<Behavior> {
 
     /**
      * Behavior category
+     *
+     * @serial tinyint(3)
      **/
     private BehaviorCategoryEnum category;
     /**

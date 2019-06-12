@@ -41,6 +41,8 @@ public class Comments extends MicroEntity<Comments> {
 
     /**
      * Comments category
+     *
+     * @serial tinyint(3)
      */
     private CommentsCategoryEnum category;
     /**

@@ -22,6 +22,8 @@ public class Counting extends MicroEntity<Counting> {
 
     /**
      * Counting category
+     *
+     * @serial tinyint(3)
      */
     private CountingCategoryEnum category;
     /**
