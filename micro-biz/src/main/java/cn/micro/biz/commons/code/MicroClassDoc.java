@@ -11,6 +11,7 @@ import java.util.Map;
 @ToString
 public class MicroClassDoc implements Serializable {
 
+    private String className;
     private String comment;
     private Map<String, MicroFieldDoc> fieldMap = new LinkedHashMap<>();
 

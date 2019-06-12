@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum MicroColumnType {
+public enum ColumnTemplate {
 
     // ===
 
@@ -13,13 +13,13 @@ public enum MicroColumnType {
     CREATED("CREATED", "`%s` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '%s',"),
     EDITED("EDITED", "`%s` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '%s',");
 
-    private String javaType;
-    private String sqlType;
+    private String id;
+    private String sql;
 
-    public static String parse(String javaType) {
-        for (MicroColumnType e : values()) {
-            if (e.getJavaType().equals(javaType)) {
-                return e.getSqlType();
+    public static String parse(String id) {
+        for (ColumnTemplate e : values()) {
+            if (e.getId().equals(id)) {
+                return e.getSql();
             }
         }
 

@@ -4,7 +4,7 @@ import com.sun.javadoc.RootDoc;
 
 public class MicroDoclet {
 
-    public static RootDoc rootDoc;
+    static RootDoc rootDoc;
 
     public static boolean start(RootDoc rootDoc) {
         MicroDoclet.rootDoc = rootDoc;
