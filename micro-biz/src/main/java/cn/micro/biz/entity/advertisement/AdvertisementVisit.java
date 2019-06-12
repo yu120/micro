@@ -22,7 +22,7 @@ public class AdvertisementVisit extends MicroEntity<AdvertisementVisit> {
     /**
      * Advertisement id
      *
-     * @see Advertisement#id}
+     * @see Advertisement#id
      */
     private Long advertisementId;
 

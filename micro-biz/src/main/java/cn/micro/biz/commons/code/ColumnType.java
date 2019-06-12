@@ -18,6 +18,7 @@ public enum ColumnType {
     TIMESTAMP("java.sql.Timestamp", "timestamp", "NULL"),
     BIG_DECIMAL("java.math.BigDecimal", "decimal(10, 2)", "NULL"),
     DATE("java.util.Date", "datetime(0)", "NULL"),
+    SQL_DATE("java.sql.Date", "datetime(0)", "NULL"),
     ;
 
     private String javaType;

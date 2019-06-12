@@ -11,6 +11,7 @@ public class CodeDemo {
         List<String> sqlList = CodeFactory.INSTANCE.handler(realPath, packageName);
         for (String sql : sqlList) {
             System.out.println(sql);
+            System.out.println();
         }
     }
 

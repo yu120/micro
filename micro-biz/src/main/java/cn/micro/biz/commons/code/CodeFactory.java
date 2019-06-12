@@ -33,9 +33,6 @@ public enum CodeFactory {
             TableName tableNameAnnotation = clz.getDeclaredAnnotation(TableName.class);
             if (tableNameAnnotation != null) {
                 String tableName = tableNameAnnotation.value();
-                if (!"login_log".equals(tableName)) {
-                    continue;
-                }
                 if (StringUtils.isBlank(tableName)) {
                     tableName = clz.getName();
                 }
@@ -45,7 +42,6 @@ public enum CodeFactory {
                 List<Field> fields = sortField(recursionField(new ArrayList<>(), clz));
                 String sql = buildSql(microClassDoc, tableName, fields);
                 sqlList.add(sql);
-                break;
             }
         }
 
@@ -59,16 +55,12 @@ public enum CodeFactory {
         for (Class<?> clz : classSet) {
             TableName tableNameAnnotation = clz.getDeclaredAnnotation(TableName.class);
             if (tableNameAnnotation != null) {
-                if (!"login_log".equals(tableNameAnnotation.value())) {
-                    continue;
-                }
-
                 String path = realPath + clz.getName().replace(".", File.separator) + ".java";
                 System.out.println(path);
                 realPathList.add(path);
-                break;
             }
         }
+
         return getDoc(realPathList);
     }
 
@@ -99,6 +91,7 @@ public enum CodeFactory {
             if (classCommentText.endsWith(" Entity")) {
                 classCommentText = classCommentText.substring(0, classCommentText.length() - 7);
             }
+            classCommentText = classCommentText.replace("'", "");
 
             List<FieldDoc> fieldDocList = new ArrayList<>();
             recursionFieldDoc(fieldDocList, classDoc);
@@ -118,6 +111,7 @@ public enum CodeFactory {
                 } else {
                     fieldCommentText = getCommentText(fieldDoc.commentText());
                 }
+                fieldCommentText = fieldCommentText.replace("'", "");
 
                 MicroFieldDoc microFieldDoc = new MicroFieldDoc();
                 microFieldDoc.setFieldName(fieldName);
@@ -236,7 +230,11 @@ public enum CodeFactory {
                 indexSb.append(",\n").append(String.format(ColumnType.INDEX_SQL, columnName, columnName));
             }
             if (StringUtils.isNotBlank(microFieldDoc.getSerial())) {
-                sqlType = ColumnType.parse(microFieldDoc.getSerial(), javaType);
+                String tempJavaType = javaType;
+                if (ColumnType.JAVA_ENUM.equals(superColumnName)) {
+                    tempJavaType = ColumnType.JAVA_ENUM;
+                }
+                sqlType = ColumnType.parse(microFieldDoc.getSerial(), tempJavaType);
             }
             if (StringUtils.isBlank(microFieldDoc.getSerialField())) {
                 sb.append(String.format(ColumnType.TABLE_SQL_COLUMN,
