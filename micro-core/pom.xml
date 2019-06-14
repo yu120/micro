@@ -16,7 +16,7 @@
     <description>The Micro Core</description>
 
     <properties>
-        <guava.version>27.1-jre</guava.version>
+        <guava.version>28.0-jre</guava.version>
         <commons-lang3.version>3.9</commons-lang3.version>
         <slf4j-api.version>1.7.26</slf4j-api.version>
         <lombok.version>1.18.8</lombok.version>
