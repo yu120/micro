@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -58,7 +59,7 @@ public class GlobalExceptionFilter extends OncePerRequestFilter {
         // 响应头统一返回请求ID
         request.setAttribute(X_TRACE_ID, traceId);
         response.setHeader(X_TRACE_ID, traceId);
-        wrapperCORS(response);
+        wrapperCORS(request, response);
         String ipAddress = MicroAuthContext.getRequestIPAddress();
 
         try {
@@ -82,13 +83,16 @@ public class GlobalExceptionFilter extends OncePerRequestFilter {
      *
      * @param response {@link HttpServletResponse}
      */
-    private void wrapperCORS(HttpServletResponse response) {
-        response.setHeader(HttpHeaders.ACCESS_CONTROL_MAX_AGE, "3600");
+    private void wrapperCORS(HttpServletRequest request, HttpServletResponse response) {
         response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
-        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
-        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "POST, GET, OPTIONS, DELETE, PUT, HEADER");
-        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS,
-                "Content-Type, X-Access-Token, X-Refresh-Token, X-Trace-Id, X-Requested-With");
+        if (HttpMethod.OPTIONS.name().equals(request.getMethod())) {
+            response.setStatus(HttpStatus.NO_CONTENT.value());
+            response.setHeader(HttpHeaders.ACCESS_CONTROL_MAX_AGE, "3600");
+            response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+            response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "POST, GET, OPTIONS, DELETE, PUT, HEADER");
+            response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS,
+                    "Content-Type, X-Access-Token, X-Refresh-Token, X-Trace-Id, X-Requested-With");
+        }
     }
 
 }
