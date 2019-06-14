@@ -12,13 +12,10 @@ public class NamedThreadFactory implements ThreadFactory {
 
     private static final AtomicInteger POOL_SEQ = new AtomicInteger(1);
 
-    private final AtomicInteger mThreadNum = new AtomicInteger(1);
-
-    private final String mPrefix;
-
-    private final boolean daemon;
-
-    private final ThreadGroup group;
+    final AtomicInteger mThreadNum = new AtomicInteger(1);
+    final String mPrefix;
+    final boolean daemon;
+    final ThreadGroup group;
 
     public NamedThreadFactory() {
         this("pool-" + POOL_SEQ.getAndIncrement(), false);
