@@ -86,9 +86,7 @@ public class InternalThreadLocal<V> {
 
     @SuppressWarnings("unchecked")
     private static void removeFromVariablesToRemove(InternalThreadLocalMap threadLocalMap, InternalThreadLocal<?> variable) {
-
         Object v = threadLocalMap.indexedVariable(VARIABLES_TO_REMOVE_INDEX);
-
         if (v == InternalThreadLocalMap.UNSET || v == null) {
             return;
         }
@@ -112,7 +110,7 @@ public class InternalThreadLocal<V> {
     }
 
     private V initialize(InternalThreadLocalMap threadLocalMap) {
-        V v = null;
+        V v;
         try {
             v = initialValue();
         } catch (Exception e) {
@@ -159,7 +157,6 @@ public class InternalThreadLocal<V> {
 
         Object v = threadLocalMap.removeIndexedVariable(index);
         removeFromVariablesToRemove(threadLocalMap, this);
-
         if (v != InternalThreadLocalMap.UNSET) {
             try {
                 onRemoval((V) v);
@@ -181,4 +178,5 @@ public class InternalThreadLocal<V> {
      */
     protected void onRemoval(@SuppressWarnings("unused") V value) throws Exception {
     }
+
 }
