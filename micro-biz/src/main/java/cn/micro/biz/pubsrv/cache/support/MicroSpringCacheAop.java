@@ -40,14 +40,11 @@ public class MicroSpringCacheAop {
     public Object pjpService(ProceedingJoinPoint pjp) throws Throwable {
         try {
             Signature signature = pjp.getSignature();
-            if (signature == null) {
-                return pjp.proceed();
-            }
             if (!(signature instanceof MethodSignature)) {
                 return pjp.proceed();
             }
-            Method method = ((MethodSignature) signature).getMethod();
-            if (method == null) {
+            Method method;
+            if ((method = ((MethodSignature) signature).getMethod()) == null) {
                 return pjp.proceed();
             }
 
