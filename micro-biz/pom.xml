@@ -78,6 +78,11 @@
             <groupId>org.micro</groupId>
             <artifactId>micro</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.micro.doc</groupId>
+            <artifactId>micro-doc-generate</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
 
         <!-- Commons Dependencies -->
         <dependency>
@@ -416,6 +421,14 @@
             </resource>
         </resources>
         <plugins>
+            <plugin>
+                <groupId>org.micro.doc</groupId>
+                <artifactId>micro-doc-plugin</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+                <configuration>
+                    <projectPath>${basedir}</projectPath>
+                </configuration>
+            </plugin>
             <!-- Specify JDK compiler version -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

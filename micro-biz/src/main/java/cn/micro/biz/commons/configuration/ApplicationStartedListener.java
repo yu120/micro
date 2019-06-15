@@ -1,5 +1,8 @@
 package cn.micro.biz.commons.configuration;
 
+import com.alibaba.fastjson.JSON;
+import org.micro.doc.MicroDoc;
+import org.micro.doc.model.MicroClass;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationContext;
@@ -12,6 +15,7 @@ import springfox.documentation.spring.web.DocumentationCache;
 
 import javax.annotation.Nullable;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,6 +36,9 @@ public class ApplicationStartedListener implements ApplicationContextAware, Appl
 
     @Override
     public void onApplicationEvent(@Nullable ApplicationStartedEvent event) {
+        List<MicroClass> microClassList = MicroDoc.readInfo();
+        System.out.println(JSON.toJSONString(microClassList));
+
         DocumentationCache documentationCache = applicationContext.getBean(DocumentationCache.class);
         Map<String, Documentation> documentationMap = documentationCache.all();
         for (Map.Entry<String, Documentation> entry : documentationMap.entrySet()) {
