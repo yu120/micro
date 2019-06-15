@@ -1,4 +1,3 @@
 cn.micro.biz.pubsrv.mq.activemq.MicroActiveMQConnection
 cn.micro.biz.pubsrv.mq.rabbitmq.MicroRabbitMQConnection
 cn.micro.biz.pubsrv.mq.rocketmq.MicroRocketMQConnection
-cn.micro.biz.pubsrv.mq.kafka.MicroKafkaMQConnection
