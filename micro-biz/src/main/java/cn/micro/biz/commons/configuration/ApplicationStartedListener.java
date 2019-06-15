@@ -6,9 +6,14 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
+import springfox.documentation.service.Documentation;
+import springfox.documentation.service.Tag;
 import springfox.documentation.spring.web.DocumentationCache;
 
 import javax.annotation.Nullable;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Application Started Listener
@@ -28,6 +33,29 @@ public class ApplicationStartedListener implements ApplicationContextAware, Appl
     @Override
     public void onApplicationEvent(@Nullable ApplicationStartedEvent event) {
         DocumentationCache documentationCache = applicationContext.getBean(DocumentationCache.class);
+        Map<String, Documentation> documentationMap = documentationCache.all();
+        for (Map.Entry<String, Documentation> entry : documentationMap.entrySet()) {
+            Documentation documentation = entry.getValue();
+            Set<Tag> newTagSet = new LinkedHashSet<>();
+            Set<Tag> tagSet = documentation.getTags();
+            for (Tag tag : tagSet) {
+                String description = tag.getDescription() + "[自定义描述内容]";
+                newTagSet.add(new Tag(tag.getName(), description, tag.getOrder(), tag.getVendorExtensions()));
+            }
+            Documentation newDocumentation = new Documentation(
+                    documentation.getGroupName(),
+                    documentation.getBasePath(),
+                    newTagSet,
+                    documentation.getApiListings(),
+                    documentation.getResourceListing(),
+                    new LinkedHashSet<>(documentation.getProduces()),
+                    new LinkedHashSet<>(documentation.getConsumes()),
+                    documentation.getHost(),
+                    new LinkedHashSet<>(documentation.getSchemes()),
+                    documentation.getVendorExtensions());
+            documentationCache.addDocumentation(newDocumentation);
+        }
+
         System.out.println("启动成功:" + documentationCache);
     }
 
