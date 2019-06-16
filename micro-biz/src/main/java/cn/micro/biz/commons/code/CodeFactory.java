@@ -10,7 +10,7 @@ import com.sun.javadoc.SeeTag;
 import com.sun.javadoc.Tag;
 import com.sun.source.doctree.DocTree;
 import org.apache.commons.lang3.StringUtils;
-import org.micro.util.ClassUtils;
+import org.micro.neural.common.utils.ClassUtils;
 
 import java.io.File;
 import java.lang.reflect.Field;

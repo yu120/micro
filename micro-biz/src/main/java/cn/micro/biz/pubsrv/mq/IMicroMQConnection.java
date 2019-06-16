@@ -1,6 +1,6 @@
 package cn.micro.biz.pubsrv.mq;
 
-import org.micro.extension.SPI;
+import org.micro.neural.extension.SPI;
 
 import javax.jms.Connection;
 

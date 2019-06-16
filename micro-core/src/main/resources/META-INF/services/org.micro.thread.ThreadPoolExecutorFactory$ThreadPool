@@ -1,3 +1,0 @@
-org.micro.thread.ThreadPoolExecutorFactory$CachedThreadPool
-org.micro.thread.ThreadPoolExecutorFactory$FixedThreadPool
-org.micro.thread.ThreadPoolExecutorFactory$LimitedThreadPool

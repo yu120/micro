@@ -16,20 +16,20 @@
     </properties>
 
     <modules>
-        <module>micro-core</module>
         <module>micro-biz</module>
+        <module>micro-dubbo</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.micro</groupId>
-                <artifactId>micro</artifactId>
+                <artifactId>micro-biz</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.micro</groupId>
-                <artifactId>micro-biz</artifactId>
+                <artifactId>micro-dubbo</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

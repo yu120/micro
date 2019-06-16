@@ -1,6 +1,0 @@
-org.micro.metric.support.ClassLoadMetric
-org.micro.metric.support.CpuUsageMetric
-org.micro.metric.support.GarbageCollectorMetric
-org.micro.metric.support.MemoryUsageMetric
-org.micro.metric.support.OperatingSystemMetrice
-org.micro.metric.support.ThreadStatesMetric

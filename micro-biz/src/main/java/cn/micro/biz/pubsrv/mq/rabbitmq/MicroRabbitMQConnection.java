@@ -4,7 +4,7 @@ import cn.micro.biz.pubsrv.mq.IMicroMQConnection;
 import cn.micro.biz.pubsrv.mq.MicroMQProperties;
 import com.rabbitmq.jms.admin.RMQConnectionFactory;
 import org.apache.commons.lang3.StringUtils;
-import org.micro.extension.Extension;
+import org.micro.neural.extension.Extension;
 
 import javax.jms.Connection;
 
