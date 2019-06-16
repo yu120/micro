@@ -17,7 +17,7 @@ import java.nio.file.StandardOpenOption;
  */
 public class FileLock {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FileLock.class);
+    private static final Logger log = LoggerFactory.getLogger(FileLock.class);
     private File file;
 
     private FileChannel channel = null;
@@ -79,7 +79,7 @@ public class FileLock {
                 try {
                     channel.close();
                 } catch (IOException e) {
-                    LOGGER.error("file channel close failed.", e);
+                    log.error("file channel close failed.", e);
                 }
             }
         }
