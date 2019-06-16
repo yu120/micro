@@ -12,65 +12,67 @@ import org.micro.metric.Metric;
 import org.micro.metric.ThreadDeadlockDetector;
 
 /**
- * 线程的指标收集器 
+ * 线程的指标收集器
  * <br>
+ *
  * @author lry
  */
 @Extension("thread")
 public class ThreadStatesMetric implements Metric {
 
-	// do not compute stack traces.
-	private final static int STACK_TRACE_DEPTH = 0;
+    /**
+     * do not compute stack traces.
+     */
+    private final static int STACK_TRACE_DEPTH = 0;
 
-	private final ThreadMXBean threads;
-	private final ThreadDeadlockDetector deadlockDetector;
+    private final ThreadMXBean threads;
+    private final ThreadDeadlockDetector deadlockDetector;
 
-	/**
-	 * Creates a new set of gauges using the default MXBeans.
-	 */
-	public ThreadStatesMetric() {
-		this(ManagementFactory.getThreadMXBean(), new ThreadDeadlockDetector());
-	}
+    /**
+     * Creates a new set of gauges using the default MXBeans.
+     */
+    public ThreadStatesMetric() {
+        this(ManagementFactory.getThreadMXBean(), new ThreadDeadlockDetector());
+    }
 
-	/**
-	 * Creates a new set of gauges using the given MXBean and detector.
-	 *
-	 * @param threads a thread MXBean
-	 * @param deadlockDetector a deadlock detector
-	 */
-	public ThreadStatesMetric(ThreadMXBean threads, ThreadDeadlockDetector deadlockDetector) {
-		this.threads = threads;
-		this.deadlockDetector = deadlockDetector;
-	}
+    /**
+     * Creates a new set of gauges using the given MXBean and detector.
+     *
+     * @param threads          a thread MXBean
+     * @param deadlockDetector a deadlock detector
+     */
+    public ThreadStatesMetric(ThreadMXBean threads, ThreadDeadlockDetector deadlockDetector) {
+        this.threads = threads;
+        this.deadlockDetector = deadlockDetector;
+    }
 
-	@Override
-	public Map<String, Object> getMetrices() {
-		final Map<String, Object> gauges = new HashMap<String, Object>();
+    @Override
+    public Map<String, Object> getMetric() {
+        final Map<String, Object> gauges = new HashMap<>();
+        for (final Thread.State state : Thread.State.values()) {
+            gauges.put("thread_" + state.toString().toLowerCase() + "_count", getThreadCount(state));
+        }
 
-		for (final Thread.State state : Thread.State.values()) {
-			gauges.put("thread_"+state.toString().toLowerCase() + "_count", getThreadCount(state));
-		}
-		
-		gauges.put("thread_count", threads.getThreadCount());
-		gauges.put("thread_daemon_count", threads.getDaemonThreadCount());
-		gauges.put("thread_deadlock_count", deadlockDetector.getDeadlockedThreads().size());
-		
-		return Collections.unmodifiableMap(gauges);
-	}
+        gauges.put("thread_count", threads.getThreadCount());
+        gauges.put("thread_daemon_count", threads.getDaemonThreadCount());
+        gauges.put("thread_deadlock_count", deadlockDetector.getDeadlockedThreads().size());
 
-	private int getThreadCount(Thread.State state) {
-		final ThreadInfo[] allThreads = getThreadInfo();
-		int count = 0;
-		for (ThreadInfo info : allThreads) {
-			if (info != null && info.getThreadState() == state) {
-				count++;
-			}
-		}
-		return count;
-	}
+        return Collections.unmodifiableMap(gauges);
+    }
 
-	private ThreadInfo[] getThreadInfo() {
-		return threads.getThreadInfo(threads.getAllThreadIds(), STACK_TRACE_DEPTH);
-	}
+    private int getThreadCount(Thread.State state) {
+        final ThreadInfo[] allThreads = getThreadInfo();
+        int count = 0;
+        for (ThreadInfo info : allThreads) {
+            if (info != null && info.getThreadState() == state) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private ThreadInfo[] getThreadInfo() {
+        return threads.getThreadInfo(threads.getAllThreadIds(), STACK_TRACE_DEPTH);
+    }
 
 }

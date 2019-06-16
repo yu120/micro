@@ -7,6 +7,9 @@ import org.micro.extension.SPI;
 @SPI(single = true)
 public interface Metric {
 
-    Map<String, Object> getMetrices();
+    /**
+     * The get metric
+     */
+    Map<String, Object> getMetric();
 
 }
