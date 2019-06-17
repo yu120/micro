@@ -408,6 +408,7 @@
             </resource>
         </resources>
         <plugins>
+            <!--
             <plugin>
                 <groupId>org.micro.doc</groupId>
                 <artifactId>micro-doc-plugin</artifactId>
@@ -424,6 +425,7 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
             <!-- Specify JDK compiler version -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
