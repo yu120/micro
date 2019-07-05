@@ -39,7 +39,7 @@ public class Area extends MicroEntity<Area> {
      */
     private String parentCode;
     /**
-     * Parent area id
+     * Country area id
      *
      * @see Area#id
      */
@@ -57,6 +57,7 @@ public class Area extends MicroEntity<Area> {
      * @see Area#name
      */
     private String provinceName;
+
     /**
      * City code
      *
@@ -69,6 +70,7 @@ public class Area extends MicroEntity<Area> {
      * @see Area#name
      */
     private String cityName;
+
     /**
      * District code
      *
@@ -81,6 +83,7 @@ public class Area extends MicroEntity<Area> {
      * @see Area#name
      */
     private String districtName;
+
     /**
      * Town code
      *
