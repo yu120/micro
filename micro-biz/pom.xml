@@ -76,7 +76,7 @@
     <dependencies>
         <dependency>
             <groupId>org.micro</groupId>
-            <artifactId>neural</artifactId>
+            <artifactId>neural-core</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
