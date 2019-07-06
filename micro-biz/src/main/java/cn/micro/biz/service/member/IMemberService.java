@@ -22,7 +22,7 @@ public interface IMemberService extends IMicroService<Member> {
      * Edit Member Info
      *
      * @param memberInfo {@link EditMemberInfo}
-     * @return
+     * @return success return true
      */
     Boolean edit(EditMemberInfo memberInfo);
 

@@ -3,16 +3,8 @@
 <mapper namespace="cn.micro.biz.mapper.member.IPermissionMapper">
 
     <!-- 关联查询全部用户权限列表 -->
-    <select id="selectAllPermissions" resultType="cn.micro.biz.entity.member.Permission">
-        SELECT mr.member_id,p.* FROM role_permission rp
-        LEFT JOIN member_role mr ON rp.role_id=mr.role_id
-        LEFT JOIN permission p ON rp.permission_id=p.id
-        WHERE rp.deleted=0 AND mr.deleted=0 AND p.deleted=0
-    </select>
-
-    <!-- 关联查询全部用户权限列表 -->
     <select id="selectPermissionsByMemberId" resultType="cn.micro.biz.model.view.MemberPermission">
-        SELECT * FROM member_permission WHERE member_id=#{memberId} AND deleted=0
+        SELECT * FROM view_member_permission WHERE member_id=#{memberId} AND deleted=0
     </select>
 
 </mapper>
