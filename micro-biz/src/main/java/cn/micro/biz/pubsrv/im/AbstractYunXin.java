@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Abstract YunXin Client
+ * YunXin Client
  *
  * @author lry
  */

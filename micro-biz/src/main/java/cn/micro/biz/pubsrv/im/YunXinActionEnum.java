@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * Yun Xin Action Type
+ * YunXin Action Type
  *
  * @author lry
  */
