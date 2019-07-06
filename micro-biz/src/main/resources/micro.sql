@@ -11,7 +11,7 @@
  Target Server Version : 50724
  File Encoding         : 65001
 
- Date: 19/05/2019 22:24:50
+ Date: 06/07/2019 09:37:17
 */
 
 SET NAMES utf8mb4;
@@ -26,15 +26,17 @@ CREATE TABLE `account`  (
   `member_id` bigint(20) NULL DEFAULT NULL,
   `code` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `category` tinyint(1) NULL DEFAULT NULL,
-  `ip` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `platform` tinyint(1) NULL DEFAULT NULL,
+  `tenant_id` bigint(20) NULL DEFAULT NULL,
   `created` datetime(0) NULL DEFAULT NULL,
   `creator` varchar(36) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `edited` datetime(0) NULL DEFAULT NULL,
-  `editor` varchar(36) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `deleted` tinyint(1) UNSIGNED ZEROFILL NULL DEFAULT 0,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '账号' ROW_FORMAT = Dynamic;
+  `editor` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `deleted` double(1, 0) UNSIGNED ZEROFILL NULL DEFAULT 0,
+  `de` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `dd` double(11, 3) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_member_id`(`member_id`) USING BTREE COMMENT '普通索引'
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '账号' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ali_pay_notify
@@ -301,6 +303,30 @@ CREATE TABLE `goods_statistics`  (
   `deleted` tinyint(1) UNSIGNED ZEROFILL NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '商品统计' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for login_log
+-- ----------------------------
+DROP TABLE IF EXISTS `login_log`;
+CREATE TABLE `login_log`  (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `account` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `category` tinyint(1) NULL DEFAULT NULL,
+  `platform` tinyint(1) NULL DEFAULT NULL,
+  `member_id` bigint(20) NULL DEFAULT NULL,
+  `ip` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `result` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `remark` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `tenant_id` bigint(20) NULL DEFAULT NULL,
+  `created` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `creator` varchar(36) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `edited` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `editor` varchar(36) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `deleted` tinyint(1) UNSIGNED ZEROFILL NULL DEFAULT 0 COMMENT '逻辑删除：0=未删除、1=已删除',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `role_id`(`account`) USING BTREE COMMENT '角色ID',
+  INDEX `permission_id`(`category`) USING BTREE COMMENT '权限ID'
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '角色权限' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for member
@@ -688,5 +714,17 @@ CREATE TABLE `wx_pay_notify`  (
   `deleted` tinyint(1) UNSIGNED ZEROFILL NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '微信支付通知记录' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- View structure for view_member_permission
+-- ----------------------------
+DROP VIEW IF EXISTS `view_member_permission`;
+CREATE ALGORITHM = UNDEFINED DEFINER = `root`@`localhost` SQL SECURITY DEFINER VIEW `view_member_permission` AS select `mgm`.`member_id` AS `member_id`,`p`.`id` AS `id`,`p`.`parent_id` AS `parent_id`,`p`.`code` AS `code`,`p`.`name` AS `name`,`p`.`intro` AS `intro`,`p`.`category` AS `category`,`p`.`uri` AS `uri`,`p`.`created` AS `created`,`p`.`creator` AS `creator`,`p`.`edited` AS `edited`,`p`.`editor` AS `editor`,`p`.`deleted` AS `deleted` from (((`member_group_member` `mgm` left join `member_group_role` `mgr` on((`mgm`.`member_group_id` = `mgr`.`member_group_id`))) left join `role_permission` `rp` on((`mgr`.`role_id` = `rp`.`role_id`))) left join `permission` `p` on((`rp`.`permission_id` = `p`.`id`))) group by `mgm`.`member_id`,`p`.`id`;
+
+-- ----------------------------
+-- View structure for view_role_code_permission
+-- ----------------------------
+DROP VIEW IF EXISTS `view_role_code_permission`;
+CREATE ALGORITHM = UNDEFINED DEFINER = `root`@`localhost` SQL SECURITY DEFINER VIEW `view_role_code_permission` AS select `r`.`code` AS `role_code`,`p`.`id` AS `id`,`p`.`parent_id` AS `parent_id`,`p`.`code` AS `code`,`p`.`name` AS `name`,`p`.`intro` AS `intro`,`p`.`category` AS `category`,`p`.`uri` AS `uri`,`p`.`created` AS `created`,`p`.`creator` AS `creator`,`p`.`edited` AS `edited`,`p`.`editor` AS `editor`,`p`.`deleted` AS `deleted` from ((`role` `r` left join `role_permission` `rp` on((`r`.`id` = `rp`.`role_id`))) left join `permission` `p` on((`rp`.`permission_id` = `p`.`id`))) group by `r`.`code`,`p`.`id`;
 
 SET FOREIGN_KEY_CHECKS = 1;
