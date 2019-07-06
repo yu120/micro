@@ -7,9 +7,9 @@ import cn.micro.biz.mapper.member.IMemberMapper;
 import cn.micro.biz.model.edit.EditMemberInfo;
 import cn.micro.biz.service.member.IMemberService;
 import com.github.dozermapper.core.Mapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
 
 /**
  * Member Service Implements
@@ -17,10 +17,10 @@ import javax.annotation.Resource;
  * @author lry
  */
 @Service
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class MemberServiceImpl extends MicroServiceImpl<IMemberMapper, Member> implements IMemberService {
 
-    @Resource
-    private Mapper mapper;
+    private final Mapper mapper;
 
     @Override
     public Member info() {

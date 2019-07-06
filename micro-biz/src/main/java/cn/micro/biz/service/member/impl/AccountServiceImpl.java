@@ -33,9 +33,11 @@ import cn.micro.biz.type.member.MemberStatusEnum;
 import cn.micro.biz.type.member.PlatformEnum;
 import cn.micro.biz.type.unified.LoginResultEnum;
 import io.seata.spring.annotation.GlobalTransactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -48,22 +50,18 @@ import java.util.List;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account> implements IAccountService {
 
-    @Resource
-    private IMemberMapper memberMapper;
-    @Resource
-    private IMemberGroupMemberMapper memberGroupMemberMapper;
+    private final IMemberMapper memberMapper;
+    private final ILoginLogMapper loginLogMapper;
+    private final IMemberGroupMemberMapper memberGroupMemberMapper;
+    private final MicroWxService microWxService;
 
     @Resource
     private IMemberRoleService memberRoleService;
     @Resource
     private IUnionCodeService unionCodeService;
-    @Resource
-    private ILoginLogMapper loginLogMapper;
-
-    @Resource
-    private MicroWxService microWxService;
 
     @GlobalTransactional
     @Override

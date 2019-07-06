@@ -4,6 +4,8 @@ import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
 import cn.micro.biz.entity.member.MemberGroupRole;
 import cn.micro.biz.mapper.member.IMemberGroupRoleMapper;
 import cn.micro.biz.service.member.IMemberGroupRoleService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
  * @author lry
  */
 @Service
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class MemberGroupRoleServiceImpl extends MicroServiceImpl<IMemberGroupRoleMapper, MemberGroupRole> implements IMemberGroupRoleService {
 
 }
