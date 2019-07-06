@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * Public Status Category Enum
+ * Status Enable Category Enum
  *
  * @author lry
  */
@@ -17,8 +17,8 @@ public enum StatusEnum implements IEnum<Integer> {
 
     // ======
 
-    ENABLE(0, "Tab"),
-    DISABLE(1, "菜单");
+    ENABLE(0, "启用"),
+    DISABLE(1, "禁用");
 
     private final Integer value;
     private final String title;
