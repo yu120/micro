@@ -10,4 +10,9 @@
         WHERE rp.deleted=0 AND mr.deleted=0 AND p.deleted=0
     </select>
 
+    <!-- 关联查询全部用户权限列表 -->
+    <select id="queryPermissionsByMemberId" resultType="cn.micro.biz.model.view.MemberPermission">
+        SELECT * FROM member_permission WHERE member_id=#{memberId} AND deleted=0
+    </select>
+
 </mapper>
