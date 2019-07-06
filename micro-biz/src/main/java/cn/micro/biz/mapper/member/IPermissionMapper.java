@@ -14,6 +14,13 @@ import java.util.List;
 public interface IPermissionMapper extends IMicroMapper<Permission> {
 
     /**
+     * The query all permission list
+     *
+     * @return {@link List<Permission>}
+     */
+    List<Permission> queryAllPermissions();
+
+    /**
      * The query permission list by member id
      * <p>
      * Tip: Query View
