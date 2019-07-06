@@ -8,7 +8,7 @@ import cn.micro.biz.pubsrv.im.model.msg.YunXinMsgSendBatchAttachMsg;
 import com.alibaba.fastjson.JSONObject;
 
 /**
- * 消息功能
+ * YunXin Msg
  *
  * @author lry
  */

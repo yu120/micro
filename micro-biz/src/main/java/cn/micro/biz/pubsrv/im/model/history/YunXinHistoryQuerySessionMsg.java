@@ -5,6 +5,11 @@ import lombok.ToString;
 
 import java.io.Serializable;
 
+/**
+ * YunXin History Query Session Msg
+ *
+ * @author lry
+ */
 @Data
 @ToString
 public class YunXinHistoryQuerySessionMsg implements Serializable {

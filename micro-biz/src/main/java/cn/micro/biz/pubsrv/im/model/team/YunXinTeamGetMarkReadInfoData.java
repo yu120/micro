@@ -6,6 +6,11 @@ import lombok.ToString;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * YunXin Team Get Mark Read Info Data
+ *
+ * @author lry
+ */
 @Data
 @ToString
 public class YunXinTeamGetMarkReadInfoData implements Serializable {

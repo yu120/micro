@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 群组功能（高级群）
+ * YunXin Team
  *
  * @author lry
  */

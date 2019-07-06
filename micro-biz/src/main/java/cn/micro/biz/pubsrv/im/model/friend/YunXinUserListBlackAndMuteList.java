@@ -6,6 +6,11 @@ import lombok.ToString;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * YunXin User List Black And Mute List
+ *
+ * @author lry
+ */
 @Data
 @ToString
 public class YunXinUserListBlackAndMuteList implements Serializable {

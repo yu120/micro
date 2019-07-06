@@ -1,7 +1,7 @@
 package cn.micro.biz.pubsrv.im.support;
 
 /**
- * 历史记录
+ * YunXin History
  *
  * @author lry
  */

@@ -5,6 +5,11 @@ import lombok.ToString;
 
 import java.io.Serializable;
 
+/**
+ * YunXin Friend Get
+ *
+ * @author lry
+ */
 @Data
 @ToString
 public class YunXinFriendGet implements Serializable {

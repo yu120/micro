@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * Yun Xingit config --list Action Type
+ * Yun Xin Action Type
  *
  * @author lry
  */

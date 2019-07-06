@@ -5,6 +5,11 @@ import lombok.ToString;
 
 import java.io.Serializable;
 
+/**
+ * YunXin Msg Recall
+ *
+ * @author lry
+ */
 @Data
 @ToString
 public class YunXinMsgRecall implements Serializable {

@@ -5,6 +5,11 @@ import lombok.ToString;
 
 import java.io.Serializable;
 
+/**
+ * YunXin User Set Special Relation
+ *
+ * @author lry
+ */
 @Data
 @ToString
 public class YunXinUserSetSpecialRelation implements Serializable {

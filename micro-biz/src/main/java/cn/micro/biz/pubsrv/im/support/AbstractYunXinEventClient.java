@@ -1,7 +1,7 @@
 package cn.micro.biz.pubsrv.im.support;
 
 /**
- * 在线状态事件
+ * YunXin Event
  *
  * @author lry
  */

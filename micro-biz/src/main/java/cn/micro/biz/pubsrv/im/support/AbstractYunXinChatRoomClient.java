@@ -1,7 +1,7 @@
 package cn.micro.biz.pubsrv.im.support;
 
 /**
- * 聊天室
+ * YunXin Chat Room
  *
  * @author lry
  */

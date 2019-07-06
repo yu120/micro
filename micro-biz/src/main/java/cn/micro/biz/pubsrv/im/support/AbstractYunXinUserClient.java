@@ -11,7 +11,7 @@ import com.alibaba.fastjson.JSONObject;
 import java.util.List;
 
 /**
- * 通信用户
+ * YunXin User
  *
  * @author lry
  */

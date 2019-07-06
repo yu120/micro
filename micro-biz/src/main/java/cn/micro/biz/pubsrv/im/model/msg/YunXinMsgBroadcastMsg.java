@@ -5,6 +5,11 @@ import lombok.ToString;
 
 import java.io.Serializable;
 
+/**
+ * YunXin Msg Broadcast Msg
+ *
+ * @author lry
+ */
 @Data
 @ToString
 public class YunXinMsgBroadcastMsg implements Serializable {

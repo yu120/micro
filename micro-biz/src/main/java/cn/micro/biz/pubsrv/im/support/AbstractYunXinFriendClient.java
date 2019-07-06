@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 用户关系托管
+ * YunXin Friend
  *
  * @author lry
  */

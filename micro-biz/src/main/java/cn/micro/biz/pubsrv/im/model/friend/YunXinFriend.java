@@ -4,6 +4,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+/**
+ * YunXin Friend
+ *
+ * @author lry
+ */
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)

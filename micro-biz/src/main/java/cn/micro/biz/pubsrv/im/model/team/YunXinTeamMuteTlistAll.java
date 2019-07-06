@@ -5,6 +5,10 @@ import lombok.ToString;
 
 import java.io.Serializable;
 
+/**
+ * YunXin Team Mute Team List All
+ * @author lry
+ */
 @Data
 @ToString
 public class YunXinTeamMuteTlistAll implements Serializable {

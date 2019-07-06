@@ -23,7 +23,7 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Yun Xin Notify Service
+ * YunXin Notify Service
  *
  * @author lry
  */

@@ -5,6 +5,11 @@ import lombok.ToString;
 
 import java.io.Serializable;
 
+/**
+ * YunXin User Mute
+ *
+ * @author lry
+ */
 @Data
 @ToString
 public class YunXinUserMute implements Serializable {
