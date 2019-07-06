@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 会话具体类型
+ * Conversation Type Enum
  *
  * @author lry
  */

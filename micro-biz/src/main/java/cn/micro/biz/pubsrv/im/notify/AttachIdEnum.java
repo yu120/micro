@@ -3,6 +3,11 @@ package cn.micro.biz.pubsrv.im.notify;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * Attach Id Enum
+ *
+ * @author lry
+ */
 @Getter
 @AllArgsConstructor
 public enum AttachIdEnum {

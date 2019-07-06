@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Yun Xin Notify Event
+ * YunXin Notify Event
  *
  * @author lry
  */
