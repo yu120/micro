@@ -3,9 +3,10 @@
 <mapper namespace="cn.micro.biz.mapper.member.IMemberRoleMapper">
 
     <select id="selectRoleCodesByMemberId" parameterType="java.lang.Long" resultType="java.lang.String">
-        SELECT DISTINCT(r.code) FROM member_role mr
+        SELECT DISTINCT(r.code)
+        FROM member_role mr
         LEFT JOIN role r ON mr.role_id=r.id
-        WHERE mr.deleted=0 AND r.deleted=0 AND mr.member_id=#{memberId}
+        WHERE mr.member_id=#{memberId} AND mr.deleted=0 AND r.deleted=0
     </select>
 
 </mapper>
