@@ -18,7 +18,7 @@ public interface IPermissionMapper extends IMicroMapper<Permission> {
      *
      * @return {@link List<Permission>}
      */
-    List<Permission> queryAllPermissions();
+    List<Permission> selectAllPermissions();
 
     /**
      * The query permission list by member id
@@ -28,6 +28,6 @@ public interface IPermissionMapper extends IMicroMapper<Permission> {
      * @param memberId {@link cn.micro.biz.entity.member.Member#id}
      * @return {@link List<MemberPermission>}
      */
-    List<MemberPermission> queryPermissionsByMemberId(String memberId);
+    List<MemberPermission> selectPermissionsByMemberId(String memberId);
 
 }
