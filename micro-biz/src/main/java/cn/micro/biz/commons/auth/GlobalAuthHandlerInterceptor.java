@@ -2,12 +2,8 @@ package cn.micro.biz.commons.auth;
 
 import cn.micro.biz.commons.exception.support.MicroPermissionException;
 import cn.micro.biz.entity.member.Permission;
-import cn.micro.biz.entity.member.Role;
-import cn.micro.biz.entity.member.RolePermission;
-import cn.micro.biz.mapper.member.IPermissionMapper;
-import cn.micro.biz.mapper.member.IRoleMapper;
 import cn.micro.biz.mapper.member.IRolePermissionMapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import cn.micro.biz.model.view.RoleCodePermission;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
@@ -15,7 +11,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.AntPathMatcher;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -25,15 +20,11 @@ import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Auth Handler Interceptor
@@ -47,13 +38,11 @@ public class GlobalAuthHandlerInterceptor extends HandlerInterceptorAdapter impl
 
     private static final AntPathMatcher ANT_PATH_MATCHER = new AntPathMatcher();
 
-    private final ConcurrentMap<String, List<Permission>> rolePermissions = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, List<RoleCodePermission>> rolePermissions = new ConcurrentHashMap<>();
     private ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = null;
     private final Object LOCK = new Object();
 
     private final MicroAuthProperties properties;
-    private final IRoleMapper roleMapper;
-    private final IPermissionMapper permissionMapper;
     private final IRolePermissionMapper rolePermissionMapper;
 
     @Override
@@ -120,7 +109,7 @@ public class GlobalAuthHandlerInterceptor extends HandlerInterceptorAdapter impl
         }
         String servletPath = request.getServletPath();
         for (String role : microTokenBody.getAuthorities()) {
-            List<Permission> permissions = rolePermissions.get(role);
+            List<RoleCodePermission> permissions = rolePermissions.get(role);
             if (permissions == null || permissions.isEmpty()) {
                 continue;
             }
@@ -155,45 +144,14 @@ public class GlobalAuthHandlerInterceptor extends HandlerInterceptorAdapter impl
     }
 
     private void refresh() {
-        // select all role
-        List<Role> roleList = roleMapper.selectList(new QueryWrapper<>());
+        ConcurrentMap<String, List<RoleCodePermission>> tempRolePermissions = new ConcurrentHashMap<>();
 
-        // select all permission
-        List<Permission> permissionList = permissionMapper.selectList(new QueryWrapper<>());
-        Map<Long, Permission> permissionMap = new HashMap<>();
-        if (!(permissionList == null || permissionList.isEmpty())) {
-            permissionMap.putAll(permissionList.stream().collect(Collectors.toMap(Permission::getId, Function.identity())));
-        }
-
-        // select all role_permission
-        List<RolePermission> rolePermissionList = rolePermissionMapper.selectList(new QueryWrapper<>());
-        Map<Long, List<RolePermission>> rolePermissionMap = new HashMap<>();
-        if (!(rolePermissionList == null || rolePermissionList.isEmpty())) {
-            for (RolePermission rp : rolePermissionList) {
-                rolePermissionMap.computeIfAbsent(rp.getRoleId(), k -> new ArrayList<>()).add(rp);
-            }
-        }
-
-        ConcurrentMap<String, List<Permission>> tempRolePermissions = new ConcurrentHashMap<>();
-
+        List<RoleCodePermission> roleCodePermissionList = rolePermissionMapper.selectRoleCodePermissions();
         // calculation role->permission collection
-        for (Role role : roleList) {
-            List<Permission> tempPermissionList = tempRolePermissions.computeIfAbsent(role.getCode(), k -> new ArrayList<>());
-            List<RolePermission> tempRolePermissionList = rolePermissionMap.get(role.getId());
-            if (tempRolePermissionList == null) {
-                continue;
-            }
-
-            for (RolePermission rp : tempRolePermissionList) {
-                Permission tempPermission = permissionMap.get(rp.getPermissionId());
-                if (tempPermission == null) {
-                    continue;
-                }
-                if (StringUtils.isEmpty(tempPermission.getCode())) {
-                    continue;
-                }
-                tempPermissionList.add(tempPermission);
-            }
+        for (RoleCodePermission crp : roleCodePermissionList) {
+            List<RoleCodePermission> tempPermissionList =
+                    tempRolePermissions.computeIfAbsent(crp.getRoleCode(), k -> new ArrayList<>());
+            tempPermissionList.add(crp);
         }
 
         synchronized (LOCK) {
