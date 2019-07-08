@@ -18,6 +18,7 @@
     <modules>
         <module>micro-biz</module>
         <module>micro-dubbo</module>
+        <module>micro-gateway</module>
     </modules>
 
     <dependencyManagement>
