@@ -19,12 +19,12 @@ public enum DubboGateway {
 
     DubboGateway() {
         ApplicationConfig applicationConfig = new ApplicationConfig();
-        applicationConfig.setName("micro-dubbo-provider");
+        applicationConfig.setName("micro-dubbo-gateway");
         RegistryConfig registryConfig = new RegistryConfig();
         registryConfig.setAddress("zookeeper://127.0.0.1:2181");
         this.application = applicationConfig;
         this.registry = registryConfig;
-    }
+}
 
     public static void main(String[] args) {
         List<Map<String, Object>> parameters = new ArrayList<>();
