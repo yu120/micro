@@ -7,6 +7,7 @@ import org.apache.dubbo.config.ProtocolConfig;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.ServiceConfig;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
+import org.micro.neural.common.utils.ClassUtils;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.PropertySource;
 
@@ -17,6 +18,10 @@ import java.io.IOException;
 public class Application {
 
     public static void main(String[] args) throws IOException {
+        ClassUtils.getClasses("cn.micro.biz.dubbo.provider.impl");
+    }
+
+    public static void main() throws IOException {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
         context.register(Application.class);
         context.refresh();
@@ -52,6 +57,7 @@ public class Application {
         service.setRegistry(registry);
         // 多个协议可以用setProtocols()
         service.setProtocol(protocol);
+        service.setInterface(DemoService.class);
         service.setInterface(DemoService.class);
         service.setRef(xxxService);
         service.setVersion("1.0.0");
