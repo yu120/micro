@@ -6,7 +6,7 @@ import org.apache.dubbo.config.annotation.Service;
 
 import java.util.List;
 
-@Service
+@Service//(path = "demo001",interfaceName = "dddddddd")
 public class DemoServiceImpl implements DemoService {
 
     @Override
