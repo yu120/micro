@@ -4,9 +4,10 @@ import cn.micro.biz.dubbo.provider.DemoService;
 import cn.micro.biz.dubbo.provider.User;
 import org.apache.dubbo.config.annotation.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Service//(path = "demo001",interfaceName = "dddddddd")
+@Service
 public class DemoServiceImpl implements DemoService {
 
     @Override
@@ -22,8 +23,16 @@ public class DemoServiceImpl implements DemoService {
     }
 
     @Override
+    public List<User> testList(User user) {
+        System.out.println("3===" + user);
+        List<User> users = new ArrayList<>();
+        users.add(user);
+        return users;
+    }
+
+    @Override
     public List<User> demo(List<User> users) {
-        System.out.println("3===" + users);
+        System.out.println("4===" + users);
         return users;
     }
 

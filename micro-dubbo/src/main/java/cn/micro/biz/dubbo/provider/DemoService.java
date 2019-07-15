@@ -8,6 +8,8 @@ public interface DemoService {
 
     User test(User user);
 
+    List<User> testList(User user);
+
     List<User> demo(List<User> users);
 
 }
