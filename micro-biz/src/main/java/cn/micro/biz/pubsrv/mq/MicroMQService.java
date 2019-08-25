@@ -3,7 +3,7 @@ package cn.micro.biz.pubsrv.mq;
 import cn.micro.biz.commons.exception.support.MicroErrorException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.micro.neural.URL;
+import org.micro.neural.common.URL;
 import org.micro.neural.extension.ExtensionLoader;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;

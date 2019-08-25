@@ -1,0 +1,196 @@
+# Spring
+spring:
+  profiles:
+    active: dev
+  application:
+    name: micro-biz-${spring.profiles.active}
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+    #property-naming-strategy: CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES
+    parser:
+      ALLOW_SINGLE_QUOTES: true
+      ALLOW_UNQUOTED_CONTROL_CHARS: true
+    serialization:
+      INDENT_OUTPUT: true
+      WRITE_ENUMS_USING_TO_STRING: true
+  thymeleaf:
+    cache: false
+    prefix: classpath:/static/
+  datasource:
+    username: root
+    password: 123456
+#    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: cn.micro.biz.commons.mybatis.p6spy.MicroP6SpyDriver
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://127.0.0.1:3306/micro?characterEncoding=UTF-8&useUnicode=true&useSSL=false&rewriteBatchedStatements=true&autoReconnect=true&failOverReadOnly=false&connectTimeout=60000&socketTimeout=60000
+    druid:
+      min-idle: 10
+      max-active: 100
+      max-wait: 60000
+      initial-size: 10
+      validation-query: SELECT 1 FROM DUAL
+      time-between-log-stats-millis: 600000
+      connection-properties: druid.stat.slowSqlMillis=200;druid.stat.logSlowSql=true;config.decrypt=true
+      stat-view-servlet:
+        login-username: admin
+        login-password: admin
+
+# Server
+server:
+  port: 7777
+  connection-timeout: 20000ms
+  #servlet:
+  # context-path: /api
+  compression:
+    enabled: true
+    min-response-size: 2048
+  tomcat:
+    uri-encoding: UTF-8
+    max-threads: 200
+    accept-count: 100
+    min-spare-threads: 10
+    max-connections: 10000
+
+# Encrypted
+jasypt:
+  encryptor:
+    password: LFkbe45D46fb9210
+
+# Mybatis Plus
+mybatis-plus:
+  type-aliases-package: cn.micro.biz.entity
+  mapper-locations: classpath*:mapper/*/*Mapper.xml
+  global-config:
+    db-config:
+      id-type: AUTO
+
+# Custom Config
+micro:
+  swagger: true
+  exception-debug: true
+  mybatis:
+    block-attack: true
+    optimistic-locker: true
+  tenant:
+    enable: true
+  transaction:
+    enable: true
+    default-timeout: 60s
+    seata: false
+    application-id: ${spring.application.name}
+    tx-service-group: my_tx_group
+  auth:
+    auto-auth-refresh: true
+    auth-refresh: 120s
+    token-expires: 7200s
+    refresh-token: 86400s
+    request-expire: false
+    token-expire: false
+    check-token: true
+    check-time: false
+    check-sign: false
+    fault-tolerant: 60s
+  trace:
+    enable: true
+    print-args: true
+    threshold: 0ms
+    dump-period: 60s
+    default-expressions: true
+    cache-enable: true
+    cache-maximum-size: 500
+    cache-expire-after-write: 600s
+  webhook:
+    beary-chat-access-token: fe3901f23862dca2e15f4695bf845bdd
+    ding-talk-access-token: 0044bea6737e89921d27495e5d57592ccd10a74ab04a4b39b1ec7ff87db6106c
+  oss:
+    qi-niu:
+      enable: true
+      bucket: oss-eye
+      token-expires: 3600s
+      access-url: http://oss.eyehh.com/
+      access-key: L1CPuG6UxjQQ05QXEb3HhAE5uQCzlqcSBVlgfYCU
+      secret-key: vCZAtB4wie0kdM_x7R3GfZ2-DxCJB6fkNQSPRtMa
+    ali-yun:
+      enable: false
+      bucket-name: xxxx
+      access-key-id: xxxx
+      access-key-secret: xxxx
+      endpoint: xxxx
+      access-url: xxxx
+  sms:
+    ali-yun:
+      enable: true
+      access-key: LTAIpdCalQmXwJuz
+      secret-key: qOTV30SLxPoQdzTOezUj0Usg99NuAu
+      templates:
+        REGISTER: [xxx, SMS_151232xxx, code]
+        UPDATE_PW: [xxx, SMS_151232xxx, code]
+        UPDATE_TEL: [xxx, SMS_151232xxx, code]
+  pay:
+    enable: false
+    ali-pay:
+      seller-id: xxx
+      app-id: xxx
+      return-url: xxx
+      notify-url: xxx
+      private-key: xxx
+      ali-pay-public-key: xxx
+    wx-pay:
+      mch-id: xxx
+      app-id: xxx
+      key: xxx
+      app-secret: xxx
+      redirect-url: xxx
+      notify-url: xxx
+      http-connect-timeout-ms: 8000
+      http-read-timeout-ms: 10000
+  email:
+    enable: true
+    port: 465
+    host: smtp.163.com
+    personal: 木子李
+    username: lry2017@163.com
+    password: xxx
+  mq:
+    enable: false
+    uri: amqp://192.168.2.56:5672
+    username: xxx
+    password: xxx
+  redis:
+    enable: false
+    timeout: 60s
+    uri: redis://127.0.0.1:6379
+    min-idle: 0
+    max-idle: 8
+    max-total: 8
+  cache:
+    enable: false
+    key-prefix: MICRO:CACHE
+    # local config
+    local-type: LINKED_HASH_MAP
+    # remote config
+    remote-type: REDIS_LETTUCE
+    remote-serializer: FASTJSON
+    protocol: redis
+    host: 127.0.0.1
+    port: 6379
+    timeout: 60s
+    min-idle: 0
+    max-idle: 8
+    max-total: 8
+    # async reload config
+    reload-core: 5
+    reload-max: 30
+    reload-queue: 200
+    # global cache rule config
+    local-limit: 200
+    local-expire: 60s
+    remote-expire: 60s
+    # cache rule list
+    cache-rules:
+      ALL_ROLE: {cache-type: LOCAL, token: false, limit: 1, local-expire: 600s}
+      ALL_PERMISSION: {cache-type: LOCAL, token: false, limit: 1, local-expire: 600s}
+      ALL_ROLE_PERMISSION: {cache-type: LOCAL, token: false, limit: 1, local-expire: 600s}
+      ALL_MEMBER_GROUP: {cache-type: LOCAL, token: false, limit: 1, local-expire: 600s}
+      ALL_MEMBER_GROUP_ROLE: {cache-type: LOCAL, token: false, limit: 1, local-expire: 600s}
