@@ -52,6 +52,11 @@ public class SpiderGoods extends MicroEntity<SpiderGoods> {
     @SpiderAttr(app = SpiderApp.TAO_BAO, value = "view_price")
     private BigDecimal salePrice;
     /**
+     * 商品原价
+     */
+    @SpiderAttr(app = SpiderApp.TAO_BAO, value = "raw_price")
+    private BigDecimal rawPrice;
+    /**
      * 销量
      */
     @SpiderAttr(app = SpiderApp.TAO_BAO, value = "view_sales")
