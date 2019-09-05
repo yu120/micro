@@ -21,6 +21,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
+import java.util.zip.Deflater;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Excel导出工具
@@ -29,6 +33,31 @@ import java.util.List;
  */
 @Slf4j
 public class ExcelExportUtils {
+
+    /**
+     * 多个Excel压缩成一个zip
+     *
+     * @param fileBytes {@link Map <fileName, byte[]>}
+     * @return byte[]
+     * @throws IOException throw exception
+     */
+    public static byte[] toZipByte(Map<String, byte[]> fileBytes) throws IOException {
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream(); ZipOutputStream zos = new ZipOutputStream(bos)) {
+            // 进行压缩存储
+            zos.setMethod(ZipOutputStream.DEFLATED);
+            // 压缩级别值为0-9共10个级别(值越大，表示压缩越厉害)
+            zos.setLevel(Deflater.BEST_COMPRESSION);
+            for (Map.Entry<String, byte[]> entry : fileBytes.entrySet()) {
+                zos.putNextEntry(new ZipEntry(entry.getKey()));
+                zos.write(entry.getValue());
+                zos.closeEntry();
+            }
+
+            // 必须先关闭后才能转为byte[]
+            zos.close();
+            return bos.toByteArray();
+        }
+    }
 
     /**
      * Excel导出
@@ -40,9 +69,9 @@ public class ExcelExportUtils {
     public static byte[] export(String resourceName, List<ExcelCell> excelCellList) throws IOException {
         try (InputStream inputStream = ExcelExportUtils.class.getResourceAsStream(resourceName)) {
             Workbook workbook;
-            if (ExcelUtils.isExcel2003(resourceName)) {
+            if (resourceName.matches(ExcelCell.EXCEL_2003)) {
                 workbook = new HSSFWorkbook(inputStream);
-            } else if (ExcelUtils.isExcel2007(resourceName)) {
+            } else if (resourceName.matches(ExcelCell.EXCEL_2007)) {
                 workbook = new XSSFWorkbook(inputStream);
             } else {
                 throw new IllegalArgumentException(resourceName);
@@ -63,11 +92,18 @@ public class ExcelExportUtils {
         int maxColSize = 0;
         Sheet sheet = workbook.getSheetAt(0);
 
+        Font headFont = workbook.createFont();
+        headFont.setFontHeightInPoints((short) 12);
+        headFont.setBold(true);
+        headFont.setFontName("黑体");
+
         // 设置每个单元格内容
         CellStyle headCellStyle = workbook.createCellStyle();
         headCellStyle.setWrapText(true);
         headCellStyle.setAlignment(HorizontalAlignment.CENTER);
         headCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        headCellStyle.setFont(headFont);
+        headCellStyle.setWrapText(true);
 
         // 设置每个单元格内容
         CellStyle dataCellStyle = workbook.createCellStyle();
@@ -78,7 +114,7 @@ public class ExcelExportUtils {
         // 填充单元格
         if (CollectionUtils.isNotEmpty(excelCellList)) {
             for (ExcelCell excelCell : excelCellList) {
-                if (excelCell.isMergeRow() || excelCell.isMergeCol()) {
+                if (excelCell.isMergeRow() || excelCell.isMergeColumn()) {
                     // 填充合并了行或列
                     maxColSize = fillMergeCellData(maxColSize, headCellStyle, dataCellStyle, sheet, excelCell);
                 } else {
@@ -88,12 +124,12 @@ public class ExcelExportUtils {
                         row = sheet.createRow(excelCell.getRowIndex());
                     }
 
-                    Cell cell = row.createCell(excelCell.getColIndex());
+                    Cell cell = row.createCell(excelCell.getColumnIndex());
                     cell.setCellStyle(dataCellStyle);
                     cell.setCellValue(StringUtils.isBlank(excelCell.getRawValue()) ? "" : excelCell.getRawValue());
                     // 计算最大列
-                    if (excelCell.getColIndex() > maxColSize) {
-                        maxColSize = excelCell.getColIndex();
+                    if (excelCell.getColumnIndex() > maxColSize) {
+                        maxColSize = excelCell.getColumnIndex();
                     }
                 }
             }
@@ -169,9 +205,9 @@ public class ExcelExportUtils {
         if (firstRow == null) {
             firstRow = sheet.createRow(excelCell.getFirstRowIndex());
         }
-        Cell firstCell = firstRow.getCell(excelCell.getFirstColIndex());
+        Cell firstCell = firstRow.getCell(excelCell.getFirstColumnIndex());
         if (firstCell == null) {
-            firstCell = firstRow.createCell(excelCell.getFirstColIndex());
+            firstCell = firstRow.createCell(excelCell.getFirstColumnIndex());
         }
         firstCell.setCellStyle(dataCellStyle);
 
@@ -181,24 +217,24 @@ public class ExcelExportUtils {
         if (lastRow == null) {
             lastRow = sheet.createRow(excelCell.getLastRowIndex());
         }
-        Cell lastCell = lastRow.getCell(excelCell.getLastColIndex());
+        Cell lastCell = lastRow.getCell(excelCell.getLastColumnIndex());
         if (lastCell == null) {
-            lastCell = lastRow.createCell(excelCell.getLastColIndex());
+            lastCell = lastRow.createCell(excelCell.getLastColumnIndex());
         }
         lastCell.setCellStyle(dataCellStyle);
 
 
         // 计算最大列
-        if (excelCell.getFirstColIndex() > maxColSize) {
-            maxColSize = excelCell.getFirstColIndex();
+        if (excelCell.getFirstColumnIndex() > maxColSize) {
+            maxColSize = excelCell.getFirstColumnIndex();
         }
-        if (excelCell.getLastColIndex() > maxColSize) {
-            maxColSize = excelCell.getLastColIndex();
+        if (excelCell.getLastColumnIndex() > maxColSize) {
+            maxColSize = excelCell.getLastColumnIndex();
         }
 
         // 合并单元格
         sheet.addMergedRegion(new CellRangeAddress(excelCell.getFirstRowIndex(), excelCell.getLastRowIndex(),
-                excelCell.getFirstColIndex(), excelCell.getLastColIndex()));
+                excelCell.getFirstColumnIndex(), excelCell.getLastColumnIndex()));
 
         return maxColSize;
     }

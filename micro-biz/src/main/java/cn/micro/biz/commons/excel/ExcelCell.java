@@ -1,8 +1,6 @@
 package cn.micro.biz.commons.excel;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.apache.poi.ss.usermodel.Cell;
 
 import java.io.Serializable;
@@ -15,8 +13,6 @@ import java.util.List;
  * @author lry
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class ExcelCell implements Serializable {
 
     /**
@@ -27,23 +23,29 @@ public class ExcelCell implements Serializable {
      * 列分割符(默认为/)
      */
     public static final String CELL_DELIMITER = "/";
-
-
+    /**
+     * 是否是2003的Excel(xls)
+     */
+    public static final String EXCEL_2003 = "^.+\\.(?i)(xls)$";
+    /**
+     * 是否是2007的Excel(xls)
+     */
+    public static final String EXCEL_2007 = "^.+\\.(?i)(xlsx)$";
+    
     // ==== 基本必须参数
 
     /**
      * 单元格所属行索引
      */
-    private Integer rowIndex;
+    private int rowIndex;
     /**
      * 单元格所属列索引
      */
-    private Integer colIndex;
+    private int columnIndex;
     /**
      * true表示单元格为空对象,即{@link Cell} 对象取出来为空
      */
     private boolean cellNull = false;
-
 
     // ==== 单元格合并状态
 
@@ -54,7 +56,7 @@ public class ExcelCell implements Serializable {
     /**
      * true表示合并了列,默认为false
      */
-    private boolean mergeCol = false;
+    private boolean mergeColumn = false;
     /**
      * 单元格合并开始的行索引
      */
@@ -62,7 +64,7 @@ public class ExcelCell implements Serializable {
     /**
      * 单元格合并开始的列索引
      */
-    private Integer firstColIndex;
+    private Integer firstColumnIndex;
     /**
      * 单元格合并结束的行索引
      */
@@ -70,7 +72,7 @@ public class ExcelCell implements Serializable {
     /**
      * 单元格合并结束的列索引
      */
-    private Integer lastColIndex;
+    private Integer lastColumnIndex;
 
 
     // ==== 单元格值内容信息
@@ -103,5 +105,21 @@ public class ExcelCell implements Serializable {
      * 所属合并单元格的注释信息
      */
     private String mergeNote;
+
+    public ExcelCell(int rowIndex, int columnIndex, boolean cellNull) {
+        this.rowIndex = rowIndex;
+        this.columnIndex = columnIndex;
+        this.cellNull = cellNull;
+    }
+
+    public void copyRawDelimitValues(List<List<String>> rawDelimitValues) {
+        for (List<String> rawDelimitValueList : rawDelimitValues) {
+            if (rawDelimitValueList == null || rawDelimitValueList.isEmpty()) {
+                continue;
+            }
+
+            this.rawDelimitValues.add(new ArrayList<>(rawDelimitValueList));
+        }
+    }
 
 }
