@@ -11,9 +11,11 @@ package cn.micro.biz.commons.excel;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
+import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.ByteArrayOutputStream;
@@ -125,6 +127,23 @@ public class ExcelExportUtils {
                         maColumnSize = excelCell.getColumnIndex();
                     }
                 }
+
+                // 添加注释
+                Drawing drawing = sheet.createDrawingPatriarch();
+                ClientAnchor anchor;
+                RichTextString richTextString;
+                if (workbook instanceof HSSFWorkbook) {
+                    richTextString = new HSSFRichTextString(excelCell.getRawComment());
+                    anchor = new HSSFClientAnchor(0, 0, 0, 0, (short) 4, 2, (short) 6, 5);
+                } else if (workbook instanceof XSSFWorkbook) {
+                    richTextString = new XSSFRichTextString(excelCell.getRawComment());
+                    anchor = new XSSFClientAnchor(0, 0, 0, 0, (short) 4, 2, (short) 6, 5);
+                } else {
+                    continue;
+                }
+                Comment comment = drawing.createCellComment(anchor);
+                comment.setString(richTextString);
+                comment.setAuthor(excelCell.getRawCommentAuthor());
             }
         }
 

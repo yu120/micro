@@ -127,7 +127,7 @@ public class ExcelImportUtils {
     /**
      * 网络下载Excel文档
      *
-     * @param url
+     * @param url url address
      * @throws IOException
      */
     public static Workbook downloadWorkbook(String url) throws IOException {
@@ -179,9 +179,9 @@ public class ExcelImportUtils {
         Comment comment = cell.getCellComment();
         if (comment != null) {
             RichTextString richTextString = comment.getString();
-            excelCell.setRawNoteAuthor(comment.getAuthor());
+            excelCell.setRawCommentAuthor(comment.getAuthor());
             if (richTextString != null) {
-                excelCell.setRawNote(richTextString.getString());
+                excelCell.setRawComment(richTextString.getString());
             }
         }
 
@@ -209,9 +209,9 @@ public class ExcelImportUtils {
                         Comment firstComment = firstCell.getCellComment();
                         if (firstComment != null) {
                             RichTextString richTextString = firstComment.getString();
-                            excelCell.setMergeNoteAuthor(firstComment.getAuthor());
+                            excelCell.setMergeCommentAuthor(firstComment.getAuthor());
                             if (richTextString != null) {
-                                excelCell.setMergeNote(richTextString.getString());
+                                excelCell.setMergeComment(richTextString.getString());
                             }
                         }
                     }

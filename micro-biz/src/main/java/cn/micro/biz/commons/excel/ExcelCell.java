@@ -104,19 +104,19 @@ public class ExcelCell implements Serializable {
     /**
      * 单元格的注释信息
      */
-    private String rawNote;
+    private String rawComment;
     /**
      * 单元格的注释信息作者
      */
-    private String rawNoteAuthor;
+    private String rawCommentAuthor;
     /**
      * 所属合并单元格的注释信息
      */
-    private String mergeNote;
+    private String mergeComment;
     /**
      * 所属合并单元格的注释信息作者
      */
-    private String mergeNoteAuthor;
+    private String mergeCommentAuthor;
 
     public ExcelCell(int rowIndex, int columnIndex, boolean cellNull) {
         this.rowIndex = rowIndex;
