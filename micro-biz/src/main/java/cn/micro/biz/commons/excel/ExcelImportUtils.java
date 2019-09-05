@@ -10,6 +10,7 @@ import org.jsoup.Jsoup;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -18,26 +19,6 @@ import java.util.*;
  * @author lry
  */
 public class ExcelImportUtils {
-
-    /**
-     * 网络下载Excel文档
-     *
-     * @param url
-     * @throws IOException
-     */
-    public static Workbook downloadWorkbook(String url) throws IOException {
-        Connection connection = Jsoup.connect(url);
-        connection.ignoreContentType(true);
-        Connection.Response response = connection.execute();
-        BufferedInputStream inputStream = response.bodyStream();
-        if (url.matches(ExcelCell.EXCEL_2003)) {
-            return new HSSFWorkbook(inputStream);
-        } else if (url.matches(ExcelCell.EXCEL_2007)) {
-            return new XSSFWorkbook(inputStream);
-        }
-
-        throw new IllegalArgumentException(url);
-    }
 
     /**
      * 下载解析Excel
@@ -145,6 +126,36 @@ public class ExcelImportUtils {
     }
 
     /**
+     * 网络下载Excel文档
+     *
+     * @param url
+     * @throws IOException
+     */
+    public static Workbook downloadWorkbook(String url) throws IOException {
+        Connection connection = Jsoup.connect(url);
+        connection.ignoreContentType(true);
+        Connection.Response response = connection.execute();
+        BufferedInputStream inputStream = response.bodyStream();
+        return buildWorkbook(url, inputStream);
+    }
+
+    /**
+     * 构建Excel文档
+     *
+     * @param fileName
+     * @throws IOException
+     */
+    public static Workbook buildWorkbook(String fileName, InputStream inputStream) throws IOException {
+        if (fileName.matches(ExcelCell.EXCEL_2003)) {
+            return new HSSFWorkbook(inputStream);
+        } else if (fileName.matches(ExcelCell.EXCEL_2007)) {
+            return new XSSFWorkbook(inputStream);
+        }
+
+        throw new IllegalArgumentException(fileName);
+    }
+
+    /**
      * List转Map
      *
      * @param sheet {@link List}
@@ -217,23 +228,23 @@ public class ExcelImportUtils {
     /**
      * 判断是否合并了行
      *
-     * @param sheet
-     * @param row
-     * @param col
+     * @param sheet       {@link Sheet}
+     * @param rowIndex    row index
+     * @param columnIndex column index
      * @return true表示合并了行
      */
-    public static boolean isMergedRow(Sheet sheet, int row, int col) {
+    public static boolean isMergedRow(Sheet sheet, int rowIndex, int columnIndex) {
         int sheetMergeCount = sheet.getNumMergedRegions();
         for (int i = 0; i < sheetMergeCount; i++) {
             CellRangeAddress cellRangeAddress = sheet.getMergedRegion(i);
             int firstRow = cellRangeAddress.getFirstRow();
             int lastRow = cellRangeAddress.getLastRow();
 
-            if (row == firstRow && row == lastRow) {
+            if (rowIndex == firstRow && rowIndex == lastRow) {
                 int firstCol = cellRangeAddress.getFirstColumn();
                 int lastCol = cellRangeAddress.getLastColumn();
 
-                if (col >= firstCol && col <= lastCol) {
+                if (columnIndex >= firstCol && columnIndex <= lastCol) {
                     return true;
                 }
             }
@@ -245,12 +256,12 @@ public class ExcelImportUtils {
     /**
      * 判断指定的单元格是否是合并单元格
      *
-     * @param sheet
-     * @param row
-     * @param col
+     * @param sheet       {@link Sheet}
+     * @param rowIndex    row index
+     * @param columnIndex column index
      * @return true表示合并了列
      */
-    public static boolean isMergedRegion(Sheet sheet, int row, int col) {
+    public static boolean isMergedRegion(Sheet sheet, int rowIndex, int columnIndex) {
         int sheetMergeCount = sheet.getNumMergedRegions();
         for (int i = 0; i < sheetMergeCount; i++) {
             CellRangeAddress cellRangeAddress = sheet.getMergedRegion(i);
@@ -259,8 +270,8 @@ public class ExcelImportUtils {
             int firstRow = cellRangeAddress.getFirstRow();
             int lastRow = cellRangeAddress.getLastRow();
 
-            if (row >= firstRow && row <= lastRow) {
-                if (col >= firstCol && col <= lastCol) {
+            if (rowIndex >= firstRow && rowIndex <= lastRow) {
+                if (columnIndex >= firstCol && columnIndex <= lastCol) {
                     return true;
                 }
             }

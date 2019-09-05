@@ -9,7 +9,6 @@
  */
 package cn.micro.biz.commons.excel;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -31,7 +30,6 @@ import java.util.zip.ZipOutputStream;
  *
  * @author lry
  */
-@Slf4j
 public class ExcelExportUtils {
 
     /**
@@ -135,17 +133,8 @@ public class ExcelExportUtils {
             }
         }
 
-        // 调整文本自适应
-        try {
-            // 必须在单元格设值以后进行,设置为根据内容自动调整列宽
-            for (int k = 0; k < maxColSize + 1; k++) {
-                sheet.autoSizeColumn(k);
-            }
-            // 处理中文不能自动调整列宽的问题
-            selfAdaptionColumnWidth(sheet, maxColSize + 1);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
+        // 调整列宽度自适应(支持中文)
+        selfAdaptionColumnWidth(sheet, maxColSize + 1);
 
         // 输出内容
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -160,6 +149,11 @@ public class ExcelExportUtils {
      * @param maxColSize max {@link Cell} size
      */
     public static void selfAdaptionColumnWidth(Sheet sheet, int maxColSize) {
+        // 必须在单元格设值以后进行,设置为根据内容自动调整列宽
+        for (int k = 0; k < maxColSize + 1; k++) {
+            sheet.autoSizeColumn(k);
+        }
+
         for (int colIndex = 0; colIndex < maxColSize; colIndex++) {
             int maxColumnWidth = sheet.getColumnWidth(colIndex) / 300;
             for (int rowIndex = 0; rowIndex < sheet.getLastRowNum(); rowIndex++) {
