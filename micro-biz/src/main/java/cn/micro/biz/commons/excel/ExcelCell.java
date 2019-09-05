@@ -31,7 +31,7 @@ public class ExcelCell implements Serializable {
      * 是否是2007的Excel(xls)
      */
     public static final String EXCEL_2007 = "^.+\\.(?i)(xlsx)$";
-    
+
     // ==== 基本必须参数
 
     /**
@@ -45,18 +45,22 @@ public class ExcelCell implements Serializable {
     /**
      * true表示单元格为空对象,即{@link Cell} 对象取出来为空
      */
-    private boolean cellNull = false;
+    private boolean cellNull;
+    /**
+     * 是否锁住
+     */
+    private boolean locked;
 
     // ==== 单元格合并状态
 
     /**
      * true表示合并了行,默认为false
      */
-    private boolean mergeRow = false;
+    private boolean mergeRow;
     /**
      * true表示合并了列,默认为false
      */
-    private boolean mergeColumn = false;
+    private boolean mergeColumn;
     /**
      * 单元格合并开始的行索引
      */
@@ -102,9 +106,17 @@ public class ExcelCell implements Serializable {
      */
     private String rawNote;
     /**
+     * 单元格的注释信息作者
+     */
+    private String rawNoteAuthor;
+    /**
      * 所属合并单元格的注释信息
      */
     private String mergeNote;
+    /**
+     * 所属合并单元格的注释信息作者
+     */
+    private String mergeNoteAuthor;
 
     public ExcelCell(int rowIndex, int columnIndex, boolean cellNull) {
         this.rowIndex = rowIndex;
@@ -121,5 +133,6 @@ public class ExcelCell implements Serializable {
             this.rawDelimitValues.add(new ArrayList<>(rawDelimitValueList));
         }
     }
+
 
 }

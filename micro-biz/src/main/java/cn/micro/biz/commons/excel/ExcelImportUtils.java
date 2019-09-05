@@ -1,6 +1,5 @@
 package cn.micro.biz.commons.excel;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -10,7 +9,6 @@ import org.jsoup.Jsoup;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -27,8 +25,9 @@ public class ExcelImportUtils {
      * @return 数据结构从外至里为：Row List  -> Column List
      * @throws IOException throw I/O exception
      */
-    public static List<List<ExcelCell>> downloadParseExcel(String url) throws IOException {
-        List<List<List<ExcelCell>>> dataList = downloadParseExcel(false, url);
+    public static List<List<ExcelCell>> downloadParseExcelSheet0(String url) throws IOException {
+        List<List<List<ExcelCell>>> dataList = downloadParseExcelSheet(
+                false, ExcelCell.ROW_DELIMITER, ExcelCell.CELL_DELIMITER, url);
         if (dataList == null || dataList.size() == 0) {
             return Collections.emptyList();
         }
@@ -39,13 +38,12 @@ public class ExcelImportUtils {
     /**
      * 下载解析Excel
      *
-     * @param readAllSheet true表示读取所有Sheet,否则只读取第1张Sheet
-     * @param url          网络下载地址,必须以 .xls 或 .xlsx 结尾
+     * @param url 网络下载地址,必须以 .xls 或 .xlsx 结尾
      * @return 数据结构从外至里为：Sheet List -> Row List  -> Column List
      * @throws IOException throw I/O exception
      */
-    public static List<List<List<ExcelCell>>> downloadParseExcel(boolean readAllSheet, String url) throws IOException {
-        return downloadParseExcel(readAllSheet, ExcelCell.ROW_DELIMITER, ExcelCell.CELL_DELIMITER, url);
+    public static List<List<List<ExcelCell>>> downloadParseExcelSheet(String url) throws IOException {
+        return downloadParseExcelSheet(true, ExcelCell.ROW_DELIMITER, ExcelCell.CELL_DELIMITER, url);
     }
 
     /**
@@ -58,7 +56,8 @@ public class ExcelImportUtils {
      * @return 数据结构从外至里为：Sheet List -> Row List  -> Column List
      * @throws IOException throw I/O exception
      */
-    public static List<List<List<ExcelCell>>> downloadParseExcel(boolean readAllSheet, String rowDelimiter, String colDelimiter, String url) throws IOException {
+    public static List<List<List<ExcelCell>>> downloadParseExcelSheet(
+            boolean readAllSheet, String rowDelimiter, String colDelimiter, String url) throws IOException {
         List<List<List<ExcelCell>>> data = new ArrayList<>();
 
         // 下载文件
@@ -96,7 +95,7 @@ public class ExcelImportUtils {
 
                     List<ExcelCell> currentRowDataList = new ArrayList<>();
                     for (int columnIndex = firstCellIndex; columnIndex < lastCellIndex; columnIndex++) {
-                        ExcelCell excelCell = ExcelImportUtils.parseExcelCell(rowDelimiter, colDelimiter, sheet, rowIndex, columnIndex);
+                        ExcelCell excelCell = parseExcelCell(rowDelimiter, colDelimiter, workbook, sheet, rowIndex, columnIndex);
 
                         // 解决部分单元格因合并单元问题而读取为空对象,实际该返回合并单元格的相关信息
                         if (columnIndex == 0 && excelCell.isCellNull()) {
@@ -136,148 +135,14 @@ public class ExcelImportUtils {
         connection.ignoreContentType(true);
         Connection.Response response = connection.execute();
         BufferedInputStream inputStream = response.bodyStream();
-        return buildWorkbook(url, inputStream);
-    }
 
-    /**
-     * 构建Excel文档
-     *
-     * @param fileName
-     * @throws IOException
-     */
-    public static Workbook buildWorkbook(String fileName, InputStream inputStream) throws IOException {
-        if (fileName.matches(ExcelCell.EXCEL_2003)) {
+        if (url.matches(ExcelCell.EXCEL_2003)) {
             return new HSSFWorkbook(inputStream);
-        } else if (fileName.matches(ExcelCell.EXCEL_2007)) {
+        } else if (url.matches(ExcelCell.EXCEL_2007)) {
             return new XSSFWorkbook(inputStream);
         }
 
-        throw new IllegalArgumentException(fileName);
-    }
-
-    /**
-     * List转Map
-     *
-     * @param sheet {@link List}
-     * @return {@link List}
-     */
-    public static List<Map<ExcelCell, ExcelCell>> parseSheet(List<List<ExcelCell>> sheet) {
-        List<Map<ExcelCell, ExcelCell>> data = new ArrayList<>();
-
-        // Key
-        List<ExcelCell> firstRow = sheet.get(0);
-        int sheetSize = sheet.size();
-        for (int i = 1; i < sheetSize; i++) {
-            Map<ExcelCell, ExcelCell> rowMap = new LinkedHashMap<>();
-
-            // Value
-            List<ExcelCell> rowList = sheet.get(i);
-            int rowSize = rowList.size();
-            for (int j = 0; j < rowSize; j++) {
-                rowMap.put(firstRow.get(j), rowList.get(j));
-            }
-            data.add(rowMap);
-        }
-
-        return data;
-    }
-
-    /**
-     * 合并单元格
-     *
-     * @param sheet            {@link Sheet}
-     * @param firstRowIndex    开始行索引
-     * @param lastRowIndex     结束行索引
-     * @param firstColumnIndex 开始列索引
-     * @param lastColumnIndex  结束列索引
-     */
-    public static void mergeRegion(Sheet sheet, int firstRowIndex, int lastRowIndex, int firstColumnIndex, int lastColumnIndex) {
-        sheet.addMergedRegion(new CellRangeAddress(firstRowIndex, lastRowIndex, firstColumnIndex, lastColumnIndex));
-    }
-
-    /**
-     * 获取合并单元格的值
-     *
-     * @param sheet       {@link Sheet}
-     * @param rowIndex    行索引
-     * @param columnIndex 列索引
-     * @return merged region raw value
-     */
-    public static String getMergedRegionValue(Sheet sheet, int rowIndex, int columnIndex) {
-        int sheetMergeCount = sheet.getNumMergedRegions();
-        for (int i = 0; i < sheetMergeCount; i++) {
-            CellRangeAddress cellRangeAddress = sheet.getMergedRegion(i);
-            int firstRow = cellRangeAddress.getFirstRow();
-            int lastRow = cellRangeAddress.getLastRow();
-
-            if (rowIndex >= firstRow && rowIndex <= lastRow) {
-                int firstColumn = cellRangeAddress.getFirstColumn();
-                int lastColumn = cellRangeAddress.getLastColumn();
-
-                if (columnIndex >= firstColumn && columnIndex <= lastColumn) {
-                    Row row = sheet.getRow(firstRow);
-                    Cell cell = row.getCell(firstColumn);
-                    return getCellRawValue(cell);
-                }
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * 判断是否合并了行
-     *
-     * @param sheet       {@link Sheet}
-     * @param rowIndex    row index
-     * @param columnIndex column index
-     * @return true表示合并了行
-     */
-    public static boolean isMergedRow(Sheet sheet, int rowIndex, int columnIndex) {
-        int sheetMergeCount = sheet.getNumMergedRegions();
-        for (int i = 0; i < sheetMergeCount; i++) {
-            CellRangeAddress cellRangeAddress = sheet.getMergedRegion(i);
-            int firstRow = cellRangeAddress.getFirstRow();
-            int lastRow = cellRangeAddress.getLastRow();
-
-            if (rowIndex == firstRow && rowIndex == lastRow) {
-                int firstCol = cellRangeAddress.getFirstColumn();
-                int lastCol = cellRangeAddress.getLastColumn();
-
-                if (columnIndex >= firstCol && columnIndex <= lastCol) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * 判断指定的单元格是否是合并单元格
-     *
-     * @param sheet       {@link Sheet}
-     * @param rowIndex    row index
-     * @param columnIndex column index
-     * @return true表示合并了列
-     */
-    public static boolean isMergedRegion(Sheet sheet, int rowIndex, int columnIndex) {
-        int sheetMergeCount = sheet.getNumMergedRegions();
-        for (int i = 0; i < sheetMergeCount; i++) {
-            CellRangeAddress cellRangeAddress = sheet.getMergedRegion(i);
-            int firstCol = cellRangeAddress.getFirstColumn();
-            int lastCol = cellRangeAddress.getLastColumn();
-            int firstRow = cellRangeAddress.getFirstRow();
-            int lastRow = cellRangeAddress.getLastRow();
-
-            if (rowIndex >= firstRow && rowIndex <= lastRow) {
-                if (columnIndex >= firstCol && columnIndex <= lastCol) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        throw new IllegalArgumentException(url);
     }
 
     /**
@@ -285,12 +150,13 @@ public class ExcelImportUtils {
      *
      * @param rowDelimiter 行分隔符
      * @param colDelimiter 列分隔符
+     * @param workbook     {@link Workbook}
      * @param sheet        {@link Sheet}
      * @param rowIndex     行索引
      * @param columnIndex  列索引
      * @return {@link ExcelCell}
      */
-    public static ExcelCell parseExcelCell(String rowDelimiter, String colDelimiter, Sheet sheet, int rowIndex, int columnIndex) {
+    public static ExcelCell parseExcelCell(String rowDelimiter, String colDelimiter, Workbook workbook, Sheet sheet, int rowIndex, int columnIndex) {
         // 设置基本信息
         ExcelCell excelCell = new ExcelCell(rowIndex, columnIndex, false);
         Row row = sheet.getRow(rowIndex);
@@ -308,8 +174,16 @@ public class ExcelImportUtils {
         excelCell.setRawValue(rawValue);
         List<List<String>> rawDelimitValues = parseDelimiter(rowDelimiter, colDelimiter, rawValue);
         excelCell.setRawDelimitValues(rawDelimitValues);
-        // TODO
-        excelCell.setRawNote("");
+
+        // 读取注释
+        Comment comment = cell.getCellComment();
+        if (comment != null) {
+            RichTextString richTextString = comment.getString();
+            excelCell.setRawNoteAuthor(comment.getAuthor());
+            if (richTextString != null) {
+                excelCell.setRawNote(richTextString.getString());
+            }
+        }
 
         // 获取合并单元格信息
         int sheetMergeCount = sheet.getNumMergedRegions();
@@ -326,10 +200,20 @@ public class ExcelImportUtils {
                 //  列在合并单元格范围内
                 if (columnIndex >= craFirstColumn && columnIndex <= craLastColumn) {
                     // 获取合并单元格的第1个的值
-                    String firstRawValue = getRowCellRawValue(sheet, craFirstRow, craFirstColumn);
-                    if (StringUtils.isBlank(firstRawValue)) {
-                        // TODO
-                        firstRawValue = rawValue;
+                    Cell firstCell = getRowCell(sheet, craFirstRow, craFirstColumn);
+                    String firstRawValue = rawValue;
+                    if (firstCell != null) {
+                        firstRawValue = getCellRawValue(firstCell);
+
+                        // 读取注释
+                        Comment firstComment = firstCell.getCellComment();
+                        if (firstComment != null) {
+                            RichTextString richTextString = firstComment.getString();
+                            excelCell.setMergeNoteAuthor(firstComment.getAuthor());
+                            if (richTextString != null) {
+                                excelCell.setMergeNote(richTextString.getString());
+                            }
+                        }
                     }
 
                     excelCell.setMergeRow(craLastRow - craFirstRow > 0);
@@ -341,8 +225,6 @@ public class ExcelImportUtils {
 
                     excelCell.setMergeValue(firstRawValue);
                     excelCell.setMergeDelimitValues(parseDelimiter(rowDelimiter, colDelimiter, firstRawValue));
-                    // TODO
-                    excelCell.setMergeNote("");
                     break;
                 }
             }
@@ -367,21 +249,25 @@ public class ExcelImportUtils {
             cell.setCellType(CellType.STRING);
         }
 
-        switch (cell.getCellTypeEnum()) {
-            case NUMERIC:
-                return String.valueOf(cell.getNumericCellValue()).trim();
-            case STRING:
-                return String.valueOf(cell.getStringCellValue()).trim();
-            case BOOLEAN:
-                return String.valueOf(cell.getBooleanCellValue()).trim();
-            case FORMULA:
-                return String.valueOf(cell.getCellFormula()).trim();
-            case BLANK:
-                return "";
-            case ERROR:
-                return "[非法字符]";
-            default:
-                return "[未知类型]";
+        try {
+            switch (cell.getCellTypeEnum()) {
+                case NUMERIC:
+                    return String.valueOf(cell.getNumericCellValue()).trim();
+                case STRING:
+                    return String.valueOf(cell.getStringCellValue()).trim();
+                case BOOLEAN:
+                    return String.valueOf(cell.getBooleanCellValue()).trim();
+                case FORMULA:
+                    return String.valueOf(cell.getCellFormula()).trim();
+                case BLANK:
+                    return "";
+                case ERROR:
+                    return "[非法字符]";
+                default:
+                    return cell.getRichStringCellValue().getString();
+            }
+        } catch (Exception e) {
+            return FormulaError.forInt(cell.getErrorCellValue()).toString();
         }
     }
 
@@ -393,14 +279,10 @@ public class ExcelImportUtils {
      * @param columnIndex column index
      * @return raw value
      */
-    private static String getRowCellRawValue(Sheet sheet, int rowIndex, int columnIndex) {
+    private static Cell getRowCell(Sheet sheet, int rowIndex, int columnIndex) {
         Row firstRow = sheet.getRow(rowIndex);
         if (firstRow != null) {
-            Cell firstCell = firstRow.getCell(columnIndex);
-            if (firstCell != null) {
-                // 计算合并单元格的值
-                return getCellRawValue(firstCell);
-            }
+            return firstRow.getCell(columnIndex);
         }
 
         return null;

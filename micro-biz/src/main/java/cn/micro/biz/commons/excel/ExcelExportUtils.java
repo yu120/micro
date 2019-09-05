@@ -33,38 +33,13 @@ import java.util.zip.ZipOutputStream;
 public class ExcelExportUtils {
 
     /**
-     * 多个Excel压缩成一个zip
-     *
-     * @param fileBytes {@link Map <fileName, byte[]>}
-     * @return byte[]
-     * @throws IOException throw exception
-     */
-    public static byte[] toZipByte(Map<String, byte[]> fileBytes) throws IOException {
-        try (ByteArrayOutputStream bos = new ByteArrayOutputStream(); ZipOutputStream zos = new ZipOutputStream(bos)) {
-            // 进行压缩存储
-            zos.setMethod(ZipOutputStream.DEFLATED);
-            // 压缩级别值为0-9共10个级别(值越大，表示压缩越厉害)
-            zos.setLevel(Deflater.BEST_COMPRESSION);
-            for (Map.Entry<String, byte[]> entry : fileBytes.entrySet()) {
-                zos.putNextEntry(new ZipEntry(entry.getKey()));
-                zos.write(entry.getValue());
-                zos.closeEntry();
-            }
-
-            // 必须先关闭后才能转为byte[]
-            zos.close();
-            return bos.toByteArray();
-        }
-    }
-
-    /**
-     * Excel导出
+     * 导出Resources目录下的Excel模板
      *
      * @param resourceName  文件名称
      * @param excelCellList Excel数据列表
      * @throws IOException IO exception
      */
-    public static byte[] export(String resourceName, List<ExcelCell> excelCellList) throws IOException {
+    public static byte[] exportResourceExcel(String resourceName, List<ExcelCell> excelCellList) throws IOException {
         try (InputStream inputStream = ExcelExportUtils.class.getResourceAsStream(resourceName)) {
             Workbook workbook;
             if (resourceName.matches(ExcelCell.EXCEL_2003)) {
@@ -77,6 +52,26 @@ public class ExcelExportUtils {
 
             return export(workbook, excelCellList);
         }
+    }
+
+    /**
+     * 导出 Excel 2003
+     *
+     * @param excelCellList Excel数据列表
+     * @throws IOException IO exception
+     */
+    public static byte[] exportExcel2003(List<ExcelCell> excelCellList) throws IOException {
+        return export(new HSSFWorkbook(), excelCellList);
+    }
+
+    /**
+     * 导出 Excel 2007
+     *
+     * @param excelCellList Excel数据列表
+     * @throws IOException IO exception
+     */
+    public static byte[] exportExcel2007(List<ExcelCell> excelCellList) throws IOException {
+        return export(new XSSFWorkbook(), excelCellList);
     }
 
     /**
@@ -143,6 +138,31 @@ public class ExcelExportUtils {
     }
 
     /**
+     * 多个Excel压缩成一个zip
+     *
+     * @param fileBytes {@link Map <fileName, byte[]>}
+     * @return byte[]
+     * @throws IOException throw exception
+     */
+    public static byte[] toZipByte(Map<String, byte[]> fileBytes) throws IOException {
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream(); ZipOutputStream zos = new ZipOutputStream(bos)) {
+            // 进行压缩存储
+            zos.setMethod(ZipOutputStream.DEFLATED);
+            // 压缩级别值为0-9共10个级别(值越大，表示压缩越厉害)
+            zos.setLevel(Deflater.BEST_COMPRESSION);
+            for (Map.Entry<String, byte[]> entry : fileBytes.entrySet()) {
+                zos.putNextEntry(new ZipEntry(entry.getKey()));
+                zos.write(entry.getValue());
+                zos.closeEntry();
+            }
+
+            // 必须先关闭后才能转为byte[]
+            zos.close();
+            return bos.toByteArray();
+        }
+    }
+
+    /**
      * 自适应列宽度(中文支持)
      *
      * @param sheet      {@link Sheet}
@@ -181,6 +201,19 @@ public class ExcelExportUtils {
 
             sheet.setColumnWidth(colIndex, maxColumnWidth * 300);
         }
+    }
+
+    /**
+     * 合并单元格
+     *
+     * @param sheet            {@link Sheet}
+     * @param firstRowIndex    开始行索引
+     * @param lastRowIndex     结束行索引
+     * @param firstColumnIndex 开始列索引
+     * @param lastColumnIndex  结束列索引
+     */
+    public static void mergeRegion(Sheet sheet, int firstRowIndex, int lastRowIndex, int firstColumnIndex, int lastColumnIndex) {
+        sheet.addMergedRegion(new CellRangeAddress(firstRowIndex, lastRowIndex, firstColumnIndex, lastColumnIndex));
     }
 
     /**
