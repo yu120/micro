@@ -76,9 +76,9 @@ public class ExcelCell implements Serializable {
     // ==== 单元格值内容信息
 
     /**
-     * 单元格的内容值
+     * 单元格的原始内容值
      */
-    private String value;
+    private String rawValue;
     /**
      * 所属合并单元格的内容值
      */
@@ -86,11 +86,11 @@ public class ExcelCell implements Serializable {
     /**
      * 单元格的内容值分割清单
      */
-    private List<List<String>> values = new ArrayList<>();
+    private List<List<String>> rawDelimitValues = new ArrayList<>();
     /**
      * 所属合并单元格的内容值分割清单
      */
-    private List<List<String>> mergeValues = new ArrayList<>();
+    private List<List<String>> mergeDelimitValues = new ArrayList<>();
 
 
     // ==== 单元格值注释信息
@@ -98,7 +98,7 @@ public class ExcelCell implements Serializable {
     /**
      * 单元格的注释信息
      */
-    private String note;
+    private String rawNote;
     /**
      * 所属合并单元格的注释信息
      */

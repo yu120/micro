@@ -10,76 +10,11 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import java.util.*;
 
 /**
- * Excel Utils
+ * Excel导入工具
  *
  * @author lry
  */
 public class ExcelImportUtils {
-
-    /**
-     * POI获取指定元素的合并单元格数
-     *
-     * @param rowDelimiter
-     * @param cellDelimiter
-     * @param sheet
-     * @param cell
-     * @param rowIndex
-     * @param cellIndex
-     * @return
-     */
-    public static ExcelCell getMergeNum(String rowDelimiter, String cellDelimiter, Sheet sheet, Cell cell, Integer rowIndex, Integer cellIndex) {
-        ExcelCell excelCell = new ExcelCell();
-        excelCell.setRowIndex(rowIndex);
-        excelCell.setColIndex(cellIndex);
-        if (cell == null) {
-            excelCell.setCellNull(true);
-            return excelCell;
-        }
-
-        String gridValue = getCellValue(cell);
-        List<List<String>> gridValues = delimit(rowDelimiter, cellDelimiter, gridValue);
-        excelCell.setMergeValues(gridValues);
-        excelCell.setValues(gridValues);
-
-        int cellRowIndex = cell.getRowIndex();
-        int cellColumnIndex = cell.getColumnIndex();
-
-        // 获取合并单元格信息
-        int sheetMergeCount = sheet.getNumMergedRegions();
-        for (int i = 0; i < sheetMergeCount; i++) {
-            CellRangeAddress cra = sheet.getMergedRegion(i);
-            int craFirstRow = cra.getFirstRow();
-            int craLastRow = cra.getLastRow();
-            if (cellRowIndex >= craFirstRow && cellRowIndex <= craLastRow) {
-                int craFirstColumn = cra.getFirstColumn();
-                int craLastColumn = cra.getLastColumn();
-                if (cellColumnIndex >= craFirstColumn && cellColumnIndex <= craLastColumn) {
-                    // 合并单元格第一个值
-                    Row firstRow = sheet.getRow(craFirstRow);
-                    Cell firstCell = firstRow.getCell(craFirstColumn);
-
-                    // 计算合并单元格的值
-                    String firstValue = getCellValue(firstCell);
-                    if (StringUtils.isBlank(firstValue)) {
-                        firstValue = gridValue;
-                    }
-
-                    excelCell.setValues(delimit(rowDelimiter, cellDelimiter, firstValue));
-
-                    excelCell.setMergeRow(craLastRow - craFirstRow > 0);
-                    excelCell.setMergeColumn(craLastColumn - craFirstColumn > 0);
-
-                    excelCell.setFirstRowIndex(craFirstRow);
-                    excelCell.setFirstColIndex(craFirstColumn);
-                    excelCell.setLastRowIndex(craLastRow);
-                    excelCell.setLastColIndex(craLastColumn);
-                    break;
-                }
-            }
-        }
-
-        return excelCell;
-    }
 
     /**
      * List转Map
@@ -150,23 +85,25 @@ public class ExcelImportUtils {
     }
 
     /**
-     * 判断合并了行
+     * 判断是否合并了行
      *
      * @param sheet
      * @param row
-     * @param column
-     * @return
+     * @param col
+     * @return true表示合并了行
      */
-    public static boolean isMergedRow(Sheet sheet, int row, int column) {
+    public static boolean isMergedRow(Sheet sheet, int row, int col) {
         int sheetMergeCount = sheet.getNumMergedRegions();
         for (int i = 0; i < sheetMergeCount; i++) {
-            CellRangeAddress range = sheet.getMergedRegion(i);
-            int firstRow = range.getFirstRow();
-            int lastRow = range.getLastRow();
+            CellRangeAddress cellRangeAddress = sheet.getMergedRegion(i);
+            int firstRow = cellRangeAddress.getFirstRow();
+            int lastRow = cellRangeAddress.getLastRow();
+
             if (row == firstRow && row == lastRow) {
-                int firstColumn = range.getFirstColumn();
-                int lastColumn = range.getLastColumn();
-                if (column >= firstColumn && column <= lastColumn) {
+                int firstCol = cellRangeAddress.getFirstColumn();
+                int lastCol = cellRangeAddress.getLastColumn();
+
+                if (col >= firstCol && col <= lastCol) {
                     return true;
                 }
             }
@@ -179,20 +116,21 @@ public class ExcelImportUtils {
      * 判断指定的单元格是否是合并单元格
      *
      * @param sheet
-     * @param row    行下标
-     * @param column 列下标
-     * @return
+     * @param row
+     * @param col
+     * @return true表示合并了列
      */
-    public static boolean isMergedRegion(Sheet sheet, int row, int column) {
+    public static boolean isMergedRegion(Sheet sheet, int row, int col) {
         int sheetMergeCount = sheet.getNumMergedRegions();
         for (int i = 0; i < sheetMergeCount; i++) {
-            CellRangeAddress range = sheet.getMergedRegion(i);
-            int firstColumn = range.getFirstColumn();
-            int lastColumn = range.getLastColumn();
-            int firstRow = range.getFirstRow();
-            int lastRow = range.getLastRow();
+            CellRangeAddress cellRangeAddress = sheet.getMergedRegion(i);
+            int firstCol = cellRangeAddress.getFirstColumn();
+            int lastCol = cellRangeAddress.getLastColumn();
+            int firstRow = cellRangeAddress.getFirstRow();
+            int lastRow = cellRangeAddress.getLastRow();
+
             if (row >= firstRow && row <= lastRow) {
-                if (column >= firstColumn && column <= lastColumn) {
+                if (col >= firstCol && col <= lastCol) {
                     return true;
                 }
             }
@@ -202,7 +140,75 @@ public class ExcelImportUtils {
     }
 
     /**
+     * POI获取指定元素的合并单元格数
+     *
+     * @param rowDelimiter
+     * @param cellDelimiter
+     * @param sheet
+     * @param cell
+     * @param rowIndex
+     * @param cellIndex
+     * @return
+     */
+    public static ExcelCell getMergeNum(String rowDelimiter, String cellDelimiter, Sheet sheet, Cell cell, Integer rowIndex, Integer cellIndex) {
+        ExcelCell excelCell = new ExcelCell();
+        excelCell.setRowIndex(rowIndex);
+        excelCell.setColIndex(cellIndex);
+        if (cell == null) {
+            excelCell.setCellNull(true);
+            return excelCell;
+        }
+
+        String gridValue = getCellValue(cell);
+        List<List<String>> gridValues = parseDelimiter(rowDelimiter, cellDelimiter, gridValue);
+        excelCell.setMergeDelimitValues(gridValues);
+        excelCell.setRawDelimitValues(gridValues);
+
+        int cellRowIndex = cell.getRowIndex();
+        int cellColumnIndex = cell.getColumnIndex();
+
+        // 获取合并单元格信息
+        int sheetMergeCount = sheet.getNumMergedRegions();
+        for (int i = 0; i < sheetMergeCount; i++) {
+            CellRangeAddress cra = sheet.getMergedRegion(i);
+            int craFirstRow = cra.getFirstRow();
+            int craLastRow = cra.getLastRow();
+            if (cellRowIndex >= craFirstRow && cellRowIndex <= craLastRow) {
+                int craFirstColumn = cra.getFirstColumn();
+                int craLastColumn = cra.getLastColumn();
+                if (cellColumnIndex >= craFirstColumn && cellColumnIndex <= craLastColumn) {
+                    // 合并单元格第一个值
+                    Row firstRow = sheet.getRow(craFirstRow);
+                    Cell firstCell = firstRow.getCell(craFirstColumn);
+
+                    // 计算合并单元格的值
+                    String firstValue = getCellValue(firstCell);
+                    if (StringUtils.isBlank(firstValue)) {
+                        firstValue = gridValue;
+                    }
+
+                    excelCell.setRawDelimitValues(parseDelimiter(rowDelimiter, cellDelimiter, firstValue));
+
+                    excelCell.setMergeRow(craLastRow - craFirstRow > 0);
+                    excelCell.setMergeCol(craLastColumn - craFirstColumn > 0);
+
+                    excelCell.setFirstRowIndex(craFirstRow);
+                    excelCell.setFirstColIndex(craFirstColumn);
+                    excelCell.setLastRowIndex(craLastRow);
+                    excelCell.setLastColIndex(craLastColumn);
+                    break;
+                }
+            }
+        }
+
+        return excelCell;
+    }
+
+    /**
      * 读取单个单元格内容
+     *
+     * @param cell {@link Cell}
+     * @return string cell value
      */
     public static String getCellValue(Cell cell) {
         if (cell == null) {
@@ -232,19 +238,36 @@ public class ExcelImportUtils {
         }
     }
 
-    private static List<List<String>> delimit(String rowDelimiter, String cellDelimiter, String value) {
-        List<List<String>> rowList = new ArrayList<>();
+    /**
+     * 解析分隔单个单元格的值
+     *
+     * @param rowDelimiter 行分隔符
+     * @param colDelimiter 列分隔符
+     * @param rawValue     单元格原始值
+     * @return cell value delimiter collection
+     */
+    private static List<List<String>> parseDelimiter(String rowDelimiter, String colDelimiter, String rawValue) {
+        List<List<String>> valueList = new ArrayList<>();
         if (rowDelimiter == null || rowDelimiter.length() == 0) {
-            rowList.add(new ArrayList<>(Arrays.asList(value.split(cellDelimiter))));
-            return rowList;
+            if (colDelimiter == null || colDelimiter.length() == 0) {
+                valueList.add(new ArrayList<>(Collections.singletonList(rawValue)));
+            } else {
+                valueList.add(new ArrayList<>(Arrays.asList(rawValue.split(colDelimiter))));
+            }
+
+            return valueList;
         }
 
-        String[] rowArray = value.split(rowDelimiter);
-        for (String rowValue : rowArray) {
-            rowList.add(new ArrayList<>(Arrays.asList(rowValue.split(cellDelimiter))));
+        String[] rawValueArray = rawValue.split(rowDelimiter);
+        for (String tempRawValue : rawValueArray) {
+            if (colDelimiter == null || colDelimiter.length() == 0) {
+                valueList.add(new ArrayList<>(Collections.singletonList(tempRawValue)));
+            } else {
+                valueList.add(new ArrayList<>(Arrays.asList(tempRawValue.split(colDelimiter))));
+            }
         }
 
-        return rowList;
+        return valueList;
     }
 
 }

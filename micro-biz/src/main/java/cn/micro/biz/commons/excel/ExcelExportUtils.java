@@ -90,7 +90,7 @@ public class ExcelExportUtils {
 
                     Cell cell = row.createCell(excelCell.getColIndex());
                     cell.setCellStyle(dataCellStyle);
-                    cell.setCellValue(StringUtils.isBlank(excelCell.getValue()) ? "" : excelCell.getValue());
+                    cell.setCellValue(StringUtils.isBlank(excelCell.getRawValue()) ? "" : excelCell.getRawValue());
                     // 计算最大列
                     if (excelCell.getColIndex() > maxColSize) {
                         maxColSize = excelCell.getColIndex();
