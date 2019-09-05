@@ -38,11 +38,11 @@ public class ExcelCell implements Serializable {
     /**
      * 单元格所属列索引
      */
-    private Integer cellIndex;
+    private Integer colIndex;
     /**
      * true表示单元格为空对象,即{@link Cell} 对象取出来为空
      */
-    private Boolean cellNull = false;
+    private boolean cellNull = false;
 
 
     // ==== 单元格合并状态
@@ -50,27 +50,27 @@ public class ExcelCell implements Serializable {
     /**
      * true表示合并了行,默认为false
      */
-    private Boolean mergeRow = false;
+    private boolean mergeRow = false;
     /**
      * true表示合并了列,默认为false
      */
-    private Boolean mergeColumn = false;
+    private boolean mergeCol = false;
     /**
      * 单元格合并开始的行索引
      */
-    private Integer startRowIndex;
+    private Integer firstRowIndex;
     /**
      * 单元格合并开始的列索引
      */
-    private Integer startCellIndex;
+    private Integer firstColIndex;
     /**
      * 单元格合并结束的行索引
      */
-    private Integer endRowIndex;
+    private Integer lastRowIndex;
     /**
      * 单元格合并结束的列索引
      */
-    private Integer endCellIndex;
+    private Integer lastColIndex;
 
 
     // ==== 单元格值内容信息

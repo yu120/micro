@@ -30,7 +30,7 @@ public class ExcelImportUtils {
     public static ExcelCell getMergeNum(String rowDelimiter, String cellDelimiter, Sheet sheet, Cell cell, Integer rowIndex, Integer cellIndex) {
         ExcelCell excelCell = new ExcelCell();
         excelCell.setRowIndex(rowIndex);
-        excelCell.setCellIndex(cellIndex);
+        excelCell.setColIndex(cellIndex);
         if (cell == null) {
             excelCell.setCellNull(true);
             return excelCell;
@@ -69,10 +69,10 @@ public class ExcelImportUtils {
                     excelCell.setMergeRow(craLastRow - craFirstRow > 0);
                     excelCell.setMergeColumn(craLastColumn - craFirstColumn > 0);
 
-                    excelCell.setStartRowIndex(craFirstRow);
-                    excelCell.setStartCellIndex(craFirstColumn);
-                    excelCell.setEndRowIndex(craLastRow);
-                    excelCell.setEndCellIndex(craLastColumn);
+                    excelCell.setFirstRowIndex(craFirstRow);
+                    excelCell.setFirstColIndex(craFirstColumn);
+                    excelCell.setLastRowIndex(craLastRow);
+                    excelCell.setLastColIndex(craLastColumn);
                     break;
                 }
             }
