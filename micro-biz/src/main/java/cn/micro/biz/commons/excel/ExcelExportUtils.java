@@ -87,11 +87,11 @@ public class ExcelExportUtils {
      * @throws IOException I/O exception
      */
     public static byte[] export(Workbook workbook, List<ExcelCell> excelCellList) throws IOException {
-        int maxColSize = 0;
+        int maColumnSize = 0;
         Sheet sheet = workbook.getSheetAt(0);
 
         Font headFont = workbook.createFont();
-        headFont.setFontHeightInPoints((short) 12);
+        headFont.setFontHeightInPoints((short) 14);
         headFont.setBold(true);
         headFont.setFontName("黑体");
 
@@ -114,7 +114,7 @@ public class ExcelExportUtils {
             for (ExcelCell excelCell : excelCellList) {
                 if (excelCell.isMergeRow() || excelCell.isMergeColumn()) {
                     // 填充合并了行或列
-                    maxColSize = fillMergeCellData(maxColSize, headCellStyle, dataCellStyle, sheet, excelCell);
+                    maColumnSize = fillMergeCellData(maColumnSize, headCellStyle, dataCellStyle, sheet, excelCell);
                 } else {
                     // 填充未合并行或列
                     Row row = sheet.getRow(excelCell.getRowIndex());
@@ -126,15 +126,15 @@ public class ExcelExportUtils {
                     cell.setCellStyle(dataCellStyle);
                     cell.setCellValue(StringUtils.isBlank(excelCell.getRawValue()) ? "" : excelCell.getRawValue());
                     // 计算最大列
-                    if (excelCell.getColumnIndex() > maxColSize) {
-                        maxColSize = excelCell.getColumnIndex();
+                    if (excelCell.getColumnIndex() > maColumnSize) {
+                        maColumnSize = excelCell.getColumnIndex();
                     }
                 }
             }
         }
 
         // 调整列宽度自适应(支持中文)
-        selfAdaptionColumnWidth(sheet, maxColSize + 1);
+        selfAdaptionColumnWidth(sheet, maColumnSize + 1);
 
         // 输出内容
         ByteArrayOutputStream out = new ByteArrayOutputStream();
