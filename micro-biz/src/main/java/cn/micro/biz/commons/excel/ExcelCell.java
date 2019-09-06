@@ -22,7 +22,7 @@ public class ExcelCell implements Serializable {
     /**
      * 列分割符(默认为/)
      */
-    public static final String CELL_DELIMITER = "/";
+    public static final String COLUMN_DELIMITER = "/";
     /**
      * 是否是2003的Excel(xls)
      */

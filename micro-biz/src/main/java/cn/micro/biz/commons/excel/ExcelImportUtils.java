@@ -25,9 +25,8 @@ public class ExcelImportUtils {
      * @return 数据结构从外至里为：Row List  -> Column List
      * @throws IOException throw I/O exception
      */
-    public static List<List<ExcelCell>> downloadParseExcelSheet0(String url) throws IOException {
-        List<List<List<ExcelCell>>> dataList = downloadParseExcelSheet(
-                false, ExcelCell.ROW_DELIMITER, ExcelCell.CELL_DELIMITER, url);
+    public static List<List<ExcelCell>> downloadParseSheet0(String url) throws IOException {
+        List<List<List<ExcelCell>>> dataList = downloadParseSheet(false, null, null, url);
         if (dataList == null || dataList.size() == 0) {
             return Collections.emptyList();
         }
@@ -38,26 +37,57 @@ public class ExcelImportUtils {
     /**
      * 下载解析Excel
      *
+     * @param url             网络下载地址,必须以 .xls 或 .xlsx 结尾
+     * @param rowDelimiter    针对单个单元格({@link Cell})内,行的分隔符
+     * @param columnDelimiter 针对单个单元格({@link Cell})内,列的分隔符
+     * @return 数据结构从外至里为：Row List  -> Column List
+     * @throws IOException throw I/O exception
+     */
+    public static List<List<ExcelCell>> downloadParseSheet0(String url, String rowDelimiter, String columnDelimiter) throws IOException {
+        List<List<List<ExcelCell>>> dataList = downloadParseSheet(false, rowDelimiter, columnDelimiter, url);
+        if (dataList == null || dataList.size() == 0) {
+            return Collections.emptyList();
+        }
+
+        return dataList.get(0);
+    }
+
+
+    /**
+     * 下载解析Excel
+     *
      * @param url 网络下载地址,必须以 .xls 或 .xlsx 结尾
      * @return 数据结构从外至里为：Sheet List -> Row List  -> Column List
      * @throws IOException throw I/O exception
      */
-    public static List<List<List<ExcelCell>>> downloadParseExcelSheet(String url) throws IOException {
-        return downloadParseExcelSheet(true, ExcelCell.ROW_DELIMITER, ExcelCell.CELL_DELIMITER, url);
+    public static List<List<List<ExcelCell>>> downloadParseSheet(String url) throws IOException {
+        return downloadParseSheet(true, null, null, url);
     }
 
     /**
      * 下载解析Excel
      *
-     * @param readAllSheet true表示读取所有Sheet,否则只读取第1张Sheet
-     * @param rowDelimiter 针对单个单元格({@link Cell})内,行的分隔符
-     * @param colDelimiter 针对单个单元格({@link Cell})内,列的分隔符
-     * @param url          网络下载地址,必须以 .xls 或 .xlsx 结尾
+     * @param url             网络下载地址,必须以 .xls 或 .xlsx 结尾
+     * @param rowDelimiter    针对单个单元格({@link Cell})内,行的分隔符
+     * @param columnDelimiter 针对单个单元格({@link Cell})内,列的分隔符
      * @return 数据结构从外至里为：Sheet List -> Row List  -> Column List
      * @throws IOException throw I/O exception
      */
-    public static List<List<List<ExcelCell>>> downloadParseExcelSheet(
-            boolean readAllSheet, String rowDelimiter, String colDelimiter, String url) throws IOException {
+    public static List<List<List<ExcelCell>>> downloadParseDelimitSheet(String url, String rowDelimiter, String columnDelimiter) throws IOException {
+        return downloadParseSheet(true, rowDelimiter, columnDelimiter, url);
+    }
+
+    /**
+     * 下载解析Excel
+     *
+     * @param readAllSheet    true表示读取所有Sheet,否则只读取第1张Sheet
+     * @param rowDelimiter    针对单个单元格({@link Cell})内,行的分隔符
+     * @param columnDelimiter 针对单个单元格({@link Cell})内,列的分隔符
+     * @param url             网络下载地址,必须以 .xls 或 .xlsx 结尾
+     * @return 数据结构从外至里为：Sheet List -> Row List  -> Column List
+     * @throws IOException throw I/O exception
+     */
+    public static List<List<List<ExcelCell>>> downloadParseSheet(boolean readAllSheet, String rowDelimiter, String columnDelimiter, String url) throws IOException {
         List<List<List<ExcelCell>>> data = new ArrayList<>();
 
         // 下载文件
@@ -95,7 +125,7 @@ public class ExcelImportUtils {
 
                     List<ExcelCell> currentRowDataList = new ArrayList<>();
                     for (int columnIndex = firstCellIndex; columnIndex < lastCellIndex; columnIndex++) {
-                        ExcelCell excelCell = parseExcelCell(rowDelimiter, colDelimiter, workbook, sheet, rowIndex, columnIndex);
+                        ExcelCell excelCell = parseExcelCell(rowDelimiter, columnDelimiter, sheet, rowIndex, columnIndex);
 
                         // 解决部分单元格因合并单元问题而读取为空对象,实际该返回合并单元格的相关信息
                         if (columnIndex == 0 && excelCell.isCellNull()) {
@@ -155,15 +185,14 @@ public class ExcelImportUtils {
     /**
      * 解析指定位置的单元格内容
      *
-     * @param rowDelimiter 行分隔符
-     * @param colDelimiter 列分隔符
-     * @param workbook     {@link Workbook}
-     * @param sheet        {@link Sheet}
-     * @param rowIndex     行索引
-     * @param columnIndex  列索引
+     * @param rowDelimiter    行分隔符
+     * @param columnDelimiter 列分隔符
+     * @param sheet           {@link Sheet}
+     * @param rowIndex        行索引
+     * @param columnIndex     列索引
      * @return {@link ExcelCell}
      */
-    public static ExcelCell parseExcelCell(String rowDelimiter, String colDelimiter, Workbook workbook, Sheet sheet, int rowIndex, int columnIndex) {
+    public static ExcelCell parseExcelCell(String rowDelimiter, String columnDelimiter, Sheet sheet, int rowIndex, int columnIndex) {
         // 设置基本信息
         ExcelCell excelCell = new ExcelCell(rowIndex, columnIndex, false);
         Row row = sheet.getRow(rowIndex);
@@ -179,7 +208,7 @@ public class ExcelImportUtils {
 
         String rawValue = getCellRawValue(cell);
         excelCell.setRawValue(rawValue);
-        List<List<String>> rawDelimitValues = parseDelimiter(rowDelimiter, colDelimiter, rawValue);
+        List<List<String>> rawDelimitValues = parseDelimiter(rowDelimiter, columnDelimiter, rawValue);
         excelCell.setRawDelimitValues(rawDelimitValues);
 
         // 读取注释
@@ -231,7 +260,7 @@ public class ExcelImportUtils {
                     excelCell.setLastColumnIndex(craLastColumn);
 
                     excelCell.setMergeValue(firstRawValue);
-                    excelCell.setMergeDelimitValues(parseDelimiter(rowDelimiter, colDelimiter, firstRawValue));
+                    excelCell.setMergeDelimitValues(parseDelimiter(rowDelimiter, columnDelimiter, firstRawValue));
                     break;
                 }
             }
@@ -298,33 +327,39 @@ public class ExcelImportUtils {
     /**
      * 解析分隔单个单元格的值
      *
-     * @param rowDelimiter 行分隔符
-     * @param colDelimiter 列分隔符
-     * @param rawValue     单元格原始值
+     * @param rowDelimiter    行分隔符
+     * @param columnDelimiter 列分隔符
+     * @param rawValue        单元格原始值
      * @return cell value delimiter collection
      */
-    private static List<List<String>> parseDelimiter(String rowDelimiter, String colDelimiter, String rawValue) {
+    private static List<List<String>> parseDelimiter(String rowDelimiter, String columnDelimiter, String rawValue) {
         List<List<String>> valueList = new ArrayList<>();
         if (rowDelimiter == null || rowDelimiter.length() == 0) {
-            if (colDelimiter == null || colDelimiter.length() == 0) {
-                valueList.add(new ArrayList<>(Collections.singletonList(rawValue)));
-            } else {
-                valueList.add(new ArrayList<>(Arrays.asList(rawValue.split(colDelimiter))));
-            }
-
+            valueList.add(columnDelimiter(columnDelimiter, rawValue));
             return valueList;
         }
 
         String[] rawValueArray = rawValue.split(rowDelimiter);
         for (String tempRawValue : rawValueArray) {
-            if (colDelimiter == null || colDelimiter.length() == 0) {
-                valueList.add(new ArrayList<>(Collections.singletonList(tempRawValue)));
-            } else {
-                valueList.add(new ArrayList<>(Arrays.asList(tempRawValue.split(colDelimiter))));
-            }
+            valueList.add(columnDelimiter(columnDelimiter, tempRawValue));
         }
 
         return valueList;
+    }
+
+    /**
+     * 分割Column
+     *
+     * @param columnDelimiter column delimiter
+     * @param columnRawValue  column raw value
+     * @return column list value
+     */
+    private static List<String> columnDelimiter(String columnDelimiter, String columnRawValue) {
+        if (columnDelimiter == null || columnDelimiter.length() == 0) {
+            return Collections.singletonList(columnRawValue);
+        } else {
+            return Arrays.asList(columnRawValue.split(columnDelimiter));
+        }
     }
 
 }
