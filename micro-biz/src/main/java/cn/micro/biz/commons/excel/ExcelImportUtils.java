@@ -125,7 +125,7 @@ public class ExcelImportUtils {
 
                     List<ExcelCell> currentRowDataList = new ArrayList<>();
                     for (int columnIndex = firstCellIndex; columnIndex < lastCellIndex; columnIndex++) {
-                        ExcelCell excelCell = parseExcelCell(rowDelimiter, columnDelimiter, sheet, rowIndex, columnIndex);
+                        ExcelCell excelCell = parseExcelCell(sheet, rowDelimiter, columnDelimiter, rowIndex, columnIndex);
 
                         // 解决部分单元格因合并单元问题而读取为空对象,实际该返回合并单元格的相关信息
                         if (columnIndex == 0 && excelCell.isCellNull()) {
@@ -165,7 +165,7 @@ public class ExcelImportUtils {
      * 网络下载Excel文档
      *
      * @param url url address
-     * @throws IOException
+     * @throws IOException throw I/O exception
      */
     public static Workbook downloadWorkbook(String url) throws IOException {
         Connection connection = Jsoup.connect(url);
@@ -185,14 +185,14 @@ public class ExcelImportUtils {
     /**
      * 解析指定位置的单元格内容
      *
+     * @param sheet           {@link Sheet}
      * @param rowDelimiter    行分隔符
      * @param columnDelimiter 列分隔符
-     * @param sheet           {@link Sheet}
      * @param rowIndex        行索引
      * @param columnIndex     列索引
      * @return {@link ExcelCell}
      */
-    public static ExcelCell parseExcelCell(String rowDelimiter, String columnDelimiter, Sheet sheet, int rowIndex, int columnIndex) {
+    public static ExcelCell parseExcelCell(Sheet sheet, String rowDelimiter, String columnDelimiter, int rowIndex, int columnIndex) {
         // 设置基本信息
         ExcelCell excelCell = new ExcelCell(rowIndex, columnIndex, false);
         Row row = sheet.getRow(rowIndex);
