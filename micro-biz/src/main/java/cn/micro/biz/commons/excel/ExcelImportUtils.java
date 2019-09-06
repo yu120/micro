@@ -303,7 +303,11 @@ public class ExcelImportUtils {
                     return cell.getRichStringCellValue().getString();
             }
         } catch (Exception e) {
-            return FormulaError.forInt(cell.getErrorCellValue()).toString();
+            try {
+                return FormulaError.forInt(cell.getErrorCellValue()).toString();
+            } catch (Exception e1) {
+                return "[解析异常]";
+            }
         }
     }
 
