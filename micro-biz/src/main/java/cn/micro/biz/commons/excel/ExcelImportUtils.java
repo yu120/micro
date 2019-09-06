@@ -101,7 +101,14 @@ public class ExcelImportUtils {
                         if (columnIndex == 0 && excelCell.isCellNull()) {
                             ExcelCell lastExcelCell = lastRowDataList.get(columnIndex);
                             if (lastExcelCell != null) {
-                                excelCell.copyRawDelimitValues(lastExcelCell.getRawDelimitValues());
+                                // 复制值
+                                for (List<String> lastRawDelimitValueList : lastExcelCell.getRawDelimitValues()) {
+                                    if (lastRawDelimitValueList == null || lastRawDelimitValueList.isEmpty()) {
+                                        continue;
+                                    }
+
+                                    excelCell.getRawDelimitValues().add(lastRawDelimitValueList);
+                                }
                             }
                         }
 

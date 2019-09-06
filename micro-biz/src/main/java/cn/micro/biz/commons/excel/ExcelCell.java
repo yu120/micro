@@ -124,15 +124,4 @@ public class ExcelCell implements Serializable {
         this.cellNull = cellNull;
     }
 
-    public void copyRawDelimitValues(List<List<String>> rawDelimitValues) {
-        for (List<String> rawDelimitValueList : rawDelimitValues) {
-            if (rawDelimitValueList == null || rawDelimitValueList.isEmpty()) {
-                continue;
-            }
-
-            this.rawDelimitValues.add(new ArrayList<>(rawDelimitValueList));
-        }
-    }
-
-
 }
