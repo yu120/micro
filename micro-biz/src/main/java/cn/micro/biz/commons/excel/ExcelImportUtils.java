@@ -141,6 +141,10 @@ public class ExcelImportUtils {
             // 上一行数据
             List<ExcelCell> lastRowDataList = new ArrayList<>();
 
+            // 记录第一行的起始和结束列
+            int firstCellIndex = 0;
+            int lastCellIndex = 0;
+
             int firstRowNum = sheet.getFirstRowNum();
             int lastRowNum = sheet.getLastRowNum();
             for (int rowIndex = firstRowNum; rowIndex <= lastRowNum; rowIndex++) {
@@ -152,8 +156,6 @@ public class ExcelImportUtils {
                 List<ExcelCell> rowExcelCellList = new ArrayList<>();
 
                 // 记录第一行的起始和结束列
-                int firstCellIndex = 0;
-                int lastCellIndex = 0;
                 if (rowIndex == firstRowNum) {
                     firstCellIndex = row.getFirstCellNum();
                     lastCellIndex = row.getLastCellNum();
