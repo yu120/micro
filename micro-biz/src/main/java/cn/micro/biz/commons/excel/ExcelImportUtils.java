@@ -9,6 +9,7 @@ import org.jsoup.Jsoup;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -84,6 +85,7 @@ public class ExcelImportUtils {
         return downloadParseSheet(true, rowDelimiter, columnDelimiter, url);
     }
 
+
     /**
      * 下载解析Excel
      *
@@ -95,73 +97,99 @@ public class ExcelImportUtils {
      * @throws IOException throw I/O exception
      */
     public static List<List<List<ExcelCell>>> downloadParseSheet(boolean readAllSheet, String rowDelimiter, String columnDelimiter, String url) throws IOException {
-        List<List<List<ExcelCell>>> data = new ArrayList<>();
-
         // 下载文件
         try (Workbook workbook = downloadWorkbook(url)) {
-            // 循环Sheet
-            int sheetMaxNum = workbook.getNumberOfSheets();
-            for (int sheetIndex = 0; sheetIndex < sheetMaxNum; sheetIndex++) {
-                Sheet sheet = workbook.getSheetAt(sheetIndex);
-                if (sheet == null) {
+            return parseSheet(workbook, readAllSheet, rowDelimiter, columnDelimiter);
+        }
+    }
+
+    public static List<List<List<ExcelCell>>> parseSheet2003(boolean readAllSheet, String rowDelimiter, String columnDelimiter, InputStream inputStream) throws IOException {
+        try (Workbook workbook = new HSSFWorkbook(inputStream)) {
+            return parseSheet(workbook, readAllSheet, rowDelimiter, columnDelimiter);
+        }
+    }
+
+    public static List<List<List<ExcelCell>>> parseSheet2007(boolean readAllSheet, String rowDelimiter, String columnDelimiter, InputStream inputStream) throws IOException {
+        try (Workbook workbook = new XSSFWorkbook(inputStream)) {
+            return parseSheet(workbook, readAllSheet, rowDelimiter, columnDelimiter);
+        }
+    }
+
+    /**
+     * 下载解析Excel
+     *
+     * @param workbook        {@link Workbook}
+     * @param readAllSheet    true表示读取所有Sheet,否则只读取第1张Sheet
+     * @param rowDelimiter    针对单个单元格({@link Cell})内,行的分隔符
+     * @param columnDelimiter 针对单个单元格({@link Cell})内,列的分隔符
+     * @return 数据结构从外至里为：Sheet List -> Row List  -> Column List
+     * @throws IOException throw I/O exception
+     */
+    public static List<List<List<ExcelCell>>> parseSheet(Workbook workbook, boolean readAllSheet, String rowDelimiter, String columnDelimiter) throws IOException {
+        List<List<List<ExcelCell>>> data = new ArrayList<>();
+
+        // 循环Sheet
+        int sheetMaxNum = workbook.getNumberOfSheets();
+        for (int sheetIndex = 0; sheetIndex < sheetMaxNum; sheetIndex++) {
+            Sheet sheet = workbook.getSheetAt(sheetIndex);
+            if (sheet == null) {
+                continue;
+            }
+
+            // 单个Sheet空间的数据
+            List<List<ExcelCell>> sheetExcelCellList = new ArrayList<>();
+            // 上一行数据
+            List<ExcelCell> lastRowDataList = new ArrayList<>();
+
+            int firstRowNum = sheet.getFirstRowNum();
+            int lastRowNum = sheet.getLastRowNum();
+            for (int rowIndex = firstRowNum; rowIndex <= lastRowNum; rowIndex++) {
+                Row row = sheet.getRow(rowIndex);
+                if (row == null) {
                     continue;
                 }
 
-                // 单个Sheet空间的数据
-                List<List<ExcelCell>> sheetExcelCellList = new ArrayList<>();
-                // 上一行数据
-                List<ExcelCell> lastRowDataList = new ArrayList<>();
+                List<ExcelCell> rowExcelCellList = new ArrayList<>();
 
-                int firstRowNum = sheet.getFirstRowNum();
-                int lastRowNum = sheet.getLastRowNum();
-                for (int rowIndex = firstRowNum; rowIndex <= lastRowNum; rowIndex++) {
-                    Row row = sheet.getRow(rowIndex);
-                    if (row == null) {
-                        continue;
-                    }
+                // 记录第一行的起始和结束列
+                int firstCellIndex = 0;
+                int lastCellIndex = 0;
+                if (rowIndex == firstRowNum) {
+                    firstCellIndex = row.getFirstCellNum();
+                    lastCellIndex = row.getLastCellNum();
+                }
 
-                    List<ExcelCell> rowExcelCellList = new ArrayList<>();
+                List<ExcelCell> currentRowDataList = new ArrayList<>();
+                for (int columnIndex = firstCellIndex; columnIndex < lastCellIndex; columnIndex++) {
+                    ExcelCell excelCell = parseExcelCell(sheet, rowDelimiter, columnDelimiter, rowIndex, columnIndex);
 
-                    // 记录第一行的起始和结束列
-                    int firstCellIndex = 0;
-                    int lastCellIndex = 0;
-                    if (rowIndex == firstRowNum) {
-                        firstCellIndex = row.getFirstCellNum();
-                        lastCellIndex = row.getLastCellNum();
-                    }
-
-                    List<ExcelCell> currentRowDataList = new ArrayList<>();
-                    for (int columnIndex = firstCellIndex; columnIndex < lastCellIndex; columnIndex++) {
-                        ExcelCell excelCell = parseExcelCell(sheet, rowDelimiter, columnDelimiter, rowIndex, columnIndex);
-
-                        // 解决部分单元格因合并单元问题而读取为空对象,实际该返回合并单元格的相关信息
-                        if (columnIndex == 0 && excelCell.isCellNull()) {
-                            ExcelCell lastExcelCell = lastRowDataList.get(columnIndex);
-                            if (lastExcelCell != null) {
-                                // 复制值
-                                for (List<String> lastRawDelimitValueList : lastExcelCell.getRawDelimitValues()) {
-                                    if (lastRawDelimitValueList == null || lastRawDelimitValueList.isEmpty()) {
-                                        continue;
-                                    }
-
-                                    excelCell.getRawDelimitValues().add(lastRawDelimitValueList);
+                    // 解决部分单元格因合并单元问题而读取为空对象,实际该返回合并单元格的相关信息
+                    if (columnIndex == 0 && excelCell.isCellNull()) {
+                        ExcelCell lastExcelCell = lastRowDataList.get(columnIndex);
+                        if (lastExcelCell != null) {
+                            // 复制值
+                            for (List<String> lastRawDelimitValueList : lastExcelCell.getRawDelimitValues()) {
+                                if (lastRawDelimitValueList == null || lastRawDelimitValueList.isEmpty()) {
+                                    continue;
                                 }
+
+                                excelCell.getRawDelimitValues().add(lastRawDelimitValueList);
                             }
                         }
-
-                        rowExcelCellList.add(excelCell);
-                        currentRowDataList.add(excelCell);
                     }
 
-                    // 收集
-                    sheetExcelCellList.add(rowExcelCellList);
-                    lastRowDataList = new ArrayList<>(currentRowDataList);
+                    rowExcelCellList.add(excelCell);
+                    currentRowDataList.add(excelCell);
                 }
-                data.add(sheetExcelCellList);
 
-                if (!readAllSheet) {
-                    break;
-                }
+                // 收集
+                sheetExcelCellList.add(rowExcelCellList);
+                lastRowDataList = new ArrayList<>(currentRowDataList);
+            }
+            data.add(sheetExcelCellList);
+
+            if (!readAllSheet) {
+                break;
             }
         }
 
