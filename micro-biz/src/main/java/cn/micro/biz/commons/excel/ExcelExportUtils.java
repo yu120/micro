@@ -120,6 +120,7 @@ public class ExcelExportUtils {
                     }
 
                     Cell cell = row.createCell(excelCell.getColumnIndex());
+                    cell.setCellType(CellType.STRING);
                     cell.setCellStyle(dataCellStyle);
                     cell.setCellValue(StringUtils.isBlank(excelCell.getRawValue()) ? "" : excelCell.getRawValue());
                     // 计算最大列

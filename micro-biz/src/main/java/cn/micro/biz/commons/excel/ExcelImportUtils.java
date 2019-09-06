@@ -13,6 +13,13 @@ import java.util.*;
 
 /**
  * Excel导入工具
+ * <p>
+ * 功能特性:
+ * 1.支持网络完整URL地址下载Excel,并自动读取Excel内容(不产生中间临时文件)
+ * 2.支持单个单元格内自定义行分割符(如换行符等)
+ * 3.支持单个单元格内自定义列分割符(如逗号、顿号、斜杠等)
+ * 4.支持自动读取合并单元格信息(如合并单元的值、合并的位置范围、是否行合并、是否列合并等)
+ * 5.支持自动判断单元格是否为空对象(空对象的{@link Cell}为空)
  *
  * @author lry
  */
@@ -205,6 +212,7 @@ public class ExcelImportUtils {
             excelCell.setCellNull(true);
             return excelCell;
         }
+
 
         String rawValue = getCellRawValue(cell);
         excelCell.setRawValue(rawValue);
