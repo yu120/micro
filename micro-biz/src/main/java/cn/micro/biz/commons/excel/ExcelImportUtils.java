@@ -138,59 +138,39 @@ public class ExcelImportUtils {
 
             // 单个Sheet空间的数据
             List<List<ExcelCell>> sheetExcelCellList = new ArrayList<>();
-            // 上一行数据
-            List<ExcelCell> lastRowDataList = new ArrayList<>();
 
             // 记录第一行的起始和结束列
-            int firstCellIndex = 0;
-            int lastCellIndex = 0;
+            int firstColumnIndex = 0;
+            int lastColumnIndex = 0;
 
-            int firstRowNum = sheet.getFirstRowNum();
-            int lastRowNum = sheet.getLastRowNum();
-            for (int rowIndex = firstRowNum; rowIndex <= lastRowNum; rowIndex++) {
+            // 读取开始和结束行数量(0-based)
+            int firstRowIndex = sheet.getFirstRowNum();
+            int lastRowIndex = sheet.getLastRowNum();
+
+            // 循环读取每一行(循环包括：lastRowIndex)
+            for (int rowIndex = firstRowIndex; rowIndex <= lastRowIndex; rowIndex++) {
+                // 读取每行数据
                 Row row = sheet.getRow(rowIndex);
-                if (row == null) {
-                    continue;
-                }
-
-                List<ExcelCell> rowExcelCellList = new ArrayList<>();
-
-                // 记录第一行的起始和结束列
-                if (rowIndex == firstRowNum) {
-                    firstCellIndex = row.getFirstCellNum();
-                    lastCellIndex = row.getLastCellNum();
-                }
-
-                List<ExcelCell> currentRowDataList = new ArrayList<>();
-                for (int columnIndex = firstCellIndex; columnIndex < lastCellIndex; columnIndex++) {
-                    ExcelCell excelCell = parseExcelCell(sheet, rowDelimiter, columnDelimiter, rowIndex, columnIndex);
-
-                    // 解决部分单元格因合并单元问题而读取为空对象,实际该返回合并单元格的相关信息
-                    if (columnIndex == 0 && excelCell.isCellNull()) {
-                        ExcelCell lastExcelCell = lastRowDataList.get(columnIndex);
-                        if (lastExcelCell != null) {
-                            // 复制值
-                            for (List<String> lastRawDelimitValueList : lastExcelCell.getRawDelimitValues()) {
-                                if (lastRawDelimitValueList == null || lastRawDelimitValueList.isEmpty()) {
-                                    continue;
-                                }
-
-                                excelCell.getRawDelimitValues().add(lastRawDelimitValueList);
-                            }
-                        }
+                if (row != null) {
+                    // 记录第一行的起始和结束列索引大小(其它行全部参照第一行的列大小进行读取)
+                    if (rowIndex == firstRowIndex) {
+                        firstColumnIndex = row.getFirstCellNum();
+                        lastColumnIndex = row.getLastCellNum();
                     }
 
-                    rowExcelCellList.add(excelCell);
-                    currentRowDataList.add(excelCell);
+                    // 循环读去指定行的每个单元格内容(循环不包括：lastColumnIndex)
+                    List<ExcelCell> rowExcelCellList = new ArrayList<>();
+                    for (int columnIndex = firstColumnIndex; columnIndex < lastColumnIndex; columnIndex++) {
+                        ExcelCell excelCell = parseExcelCell(sheet, rowDelimiter, columnDelimiter, rowIndex, columnIndex);
+                        rowExcelCellList.add(excelCell);
+                    }
+                    sheetExcelCellList.add(rowExcelCellList);
                 }
-
-                // 收集
-                sheetExcelCellList.add(rowExcelCellList);
-                lastRowDataList = new ArrayList<>(currentRowDataList);
             }
-            data.add(sheetExcelCellList);
 
+            data.add(sheetExcelCellList);
             if (!readAllSheet) {
+                // 不需要多钱多个Sheet,则直接结束
                 break;
             }
         }
@@ -232,31 +212,32 @@ public class ExcelImportUtils {
     public static ExcelCell parseExcelCell(Sheet sheet, String rowDelimiter, String columnDelimiter, int rowIndex, int columnIndex) {
         // 设置基本信息
         ExcelCell excelCell = new ExcelCell(rowIndex, columnIndex, false);
+
+        // 读取单元格内容
+        String rawValue = "";
         Row row = sheet.getRow(rowIndex);
-        if (row == null) {
-            excelCell.setCellNull(true);
-            return excelCell;
-        }
-        Cell cell = row.getCell(columnIndex);
-        if (cell == null) {
-            excelCell.setCellNull(true);
-            return excelCell;
-        }
+        if (row != null) {
+            Cell cell = row.getCell(columnIndex);
+            if (cell != null) {
+                rawValue = getCellRawValue(cell);
+                excelCell.setRawValue(rawValue);
+                List<List<String>> rawDelimitValues = parseDelimiter(rowDelimiter, columnDelimiter, rawValue);
+                excelCell.setRawDelimitValues(rawDelimitValues);
 
-
-        String rawValue = getCellRawValue(cell);
-        excelCell.setRawValue(rawValue);
-        List<List<String>> rawDelimitValues = parseDelimiter(rowDelimiter, columnDelimiter, rawValue);
-        excelCell.setRawDelimitValues(rawDelimitValues);
-
-        // 读取注释
-        Comment comment = cell.getCellComment();
-        if (comment != null) {
-            RichTextString richTextString = comment.getString();
-            excelCell.setRawCommentAuthor(comment.getAuthor());
-            if (richTextString != null) {
-                excelCell.setRawComment(richTextString.getString());
+                // 读取注释
+                Comment comment = cell.getCellComment();
+                if (comment != null) {
+                    RichTextString richTextString = comment.getString();
+                    excelCell.setRawCommentAuthor(comment.getAuthor());
+                    if (richTextString != null) {
+                        excelCell.setRawComment(richTextString.getString());
+                    }
+                }
+            } else {
+                excelCell.setCellNull(true);
             }
+        } else {
+            excelCell.setCellNull(true);
         }
 
         // 获取合并单元格信息
