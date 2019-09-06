@@ -1,8 +1,13 @@
 package cn.micro.biz.commons.excel;
 
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFPalette;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -161,7 +166,7 @@ public class ExcelImportUtils {
                     // 循环读去指定行的每个单元格内容(循环不包括：lastColumnIndex)
                     List<ExcelCell> rowExcelCellList = new ArrayList<>();
                     for (int columnIndex = firstColumnIndex; columnIndex < lastColumnIndex; columnIndex++) {
-                        ExcelCell excelCell = parseExcelCell(sheet, rowDelimiter, columnDelimiter, rowIndex, columnIndex);
+                        ExcelCell excelCell = parseExcelCell(workbook, sheet, rowDelimiter, columnDelimiter, rowIndex, columnIndex);
                         rowExcelCellList.add(excelCell);
                     }
                     sheetExcelCellList.add(rowExcelCellList);
@@ -202,6 +207,7 @@ public class ExcelImportUtils {
     /**
      * 解析指定位置的单元格内容
      *
+     * @param workbook        {@link Workbook}
      * @param sheet           {@link Sheet}
      * @param rowDelimiter    行分隔符
      * @param columnDelimiter 列分隔符
@@ -209,7 +215,7 @@ public class ExcelImportUtils {
      * @param columnIndex     列索引
      * @return {@link ExcelCell}
      */
-    public static ExcelCell parseExcelCell(Sheet sheet, String rowDelimiter, String columnDelimiter, int rowIndex, int columnIndex) {
+    public static ExcelCell parseExcelCell(Workbook workbook, Sheet sheet, String rowDelimiter, String columnDelimiter, int rowIndex, int columnIndex) {
         // 设置基本信息
         ExcelCell excelCell = new ExcelCell(rowIndex, columnIndex, false);
 
@@ -219,19 +225,33 @@ public class ExcelImportUtils {
         if (row != null) {
             Cell cell = row.getCell(columnIndex);
             if (cell != null) {
+                // 读取内容
                 rawValue = getCellRawValue(cell);
                 excelCell.setRawValue(rawValue);
-                List<List<String>> rawDelimitValues = parseDelimiter(rowDelimiter, columnDelimiter, rawValue);
-                excelCell.setRawDelimitValues(rawDelimitValues);
+                excelCell.setRawDelimitValues(parseDelimiter(rowDelimiter, columnDelimiter, rawValue));
 
                 // 读取注释
                 Comment comment = cell.getCellComment();
                 if (comment != null) {
-                    RichTextString richTextString = comment.getString();
                     excelCell.setRawCommentAuthor(comment.getAuthor());
+                    RichTextString richTextString = comment.getString();
                     if (richTextString != null) {
                         excelCell.setRawComment(richTextString.getString());
                     }
+                }
+
+                // 读取字体
+                CellStyle cellStyle = cell.getCellStyle();
+                Font font = workbook.getFontAt(cellStyle.getFontIndex());
+                excelCell.setBold(font.getBold());
+                if (font instanceof HSSFFont) {
+                    HSSFFont hssfFont = (HSSFFont) font;
+                    HSSFColor hssfColor = hssfFont.getHSSFColor((HSSFWorkbook) workbook);
+                    excelCell.setFontColor(hssfColor.getHexString());
+                } else if (font instanceof XSSFFont) {
+                    XSSFFont xssfFont = (XSSFFont) font;
+                    XSSFColor xssfColor = xssfFont.getXSSFColor();
+                    excelCell.setFontColor(xssfColor.getARGBHex());
                 }
             } else {
                 excelCell.setCellNull(true);

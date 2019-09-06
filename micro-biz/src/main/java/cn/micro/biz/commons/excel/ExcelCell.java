@@ -118,6 +118,18 @@ public class ExcelCell implements Serializable {
      */
     private String mergeCommentAuthor;
 
+    // ==== 其它信息
+
+    /**
+     * 字体颜色
+     */
+    private String fontColor;
+    /**
+     * 背景颜色
+     */
+    private String color;
+    private boolean bold;
+
     public ExcelCell(int rowIndex, int columnIndex, boolean cellNull) {
         this.rowIndex = rowIndex;
         this.columnIndex = columnIndex;
