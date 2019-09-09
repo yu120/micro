@@ -85,7 +85,7 @@ public class ExcelImportUtils {
      * @return 数据结构从外至里为：Sheet List -> Row List  -> Column List
      * @throws IOException throw I/O exception
      */
-    public static List<List<List<ExcelCell>>> downloadDelimitSheet(String url, String rowDelimiter, String columnDelimiter) throws IOException {
+    public static List<List<List<ExcelCell>>> downloadSheet(String url, String rowDelimiter, String columnDelimiter) throws IOException {
         return downloadSheet(true, rowDelimiter, columnDelimiter, url);
     }
 
@@ -101,35 +101,85 @@ public class ExcelImportUtils {
      * @throws IOException throw I/O exception
      */
     public static List<List<List<ExcelCell>>> downloadSheet(boolean readAllSheet, String rowDelimiter, String columnDelimiter, String url) throws IOException {
-        // 下载文件
         try (Workbook workbook = downloadWorkbook(url)) {
             return parseSheet(workbook, readAllSheet, rowDelimiter, columnDelimiter);
         }
     }
 
-    public static List<List<List<ExcelCell>>> readSheet2003(boolean readAllSheet, String rowDelimiter, String columnDelimiter, InputStream inputStream) throws IOException {
-        try (Workbook workbook = new HSSFWorkbook(inputStream)) {
-            return parseSheet(workbook, readAllSheet, rowDelimiter, columnDelimiter);
-        }
-    }
-
-    public static List<List<List<ExcelCell>>> readSheet2007(boolean readAllSheet, String rowDelimiter, String columnDelimiter, InputStream inputStream) throws IOException {
-        try (Workbook workbook = new XSSFWorkbook(inputStream)) {
-            return parseSheet(workbook, readAllSheet, rowDelimiter, columnDelimiter);
+    /**
+     * 读取Excel的Sheet0
+     *
+     * @param fileName        文件名称,用于识别是什么类型的Excel
+     * @param rowDelimiter    针对单个单元格({@link Cell})内,行的分隔符
+     * @param columnDelimiter 针对单个单元格({@link Cell})内,列的分隔符
+     * @param inputStream     {@link InputStream}
+     * @return 数据结构从外至里为：Sheet List -> Row List  -> Column List
+     * @throws IOException throw I/O exception
+     */
+    public static List<List<ExcelCell>> readSheet0(String fileName, String rowDelimiter, String columnDelimiter, InputStream inputStream) throws IOException {
+        if (ExcelCell.EXCEL_2003.matches(fileName)) {
+            try (Workbook workbook = new HSSFWorkbook(inputStream)) {
+                return parseSheet0(workbook, rowDelimiter, columnDelimiter);
+            }
+        } else if (ExcelCell.EXCEL_2007.matches(fileName)) {
+            try (Workbook workbook = new XSSFWorkbook(inputStream)) {
+                return parseSheet0(workbook, rowDelimiter, columnDelimiter);
+            }
+        } else {
+            throw new IllegalArgumentException(fileName);
         }
     }
 
     /**
-     * 下载解析Excel
+     * 读取Excel的所有Sheet
+     *
+     * @param rowDelimiter    针对单个单元格({@link Cell})内,行的分隔符
+     * @param columnDelimiter 针对单个单元格({@link Cell})内,列的分隔符
+     * @param inputStream     {@link InputStream}
+     * @return 数据结构从外至里为：Sheet List -> Row List  -> Column List
+     * @throws IOException throw I/O exception
+     */
+    public static List<List<List<ExcelCell>>> readSheet(String fileName, String rowDelimiter, String columnDelimiter, InputStream inputStream) throws IOException {
+        if (ExcelCell.EXCEL_2003.matches(fileName)) {
+            try (Workbook workbook = new HSSFWorkbook(inputStream)) {
+                return parseSheet(workbook, true, rowDelimiter, columnDelimiter);
+            }
+        } else if (ExcelCell.EXCEL_2007.matches(fileName)) {
+            try (Workbook workbook = new XSSFWorkbook(inputStream)) {
+                return parseSheet(workbook, true, rowDelimiter, columnDelimiter);
+            }
+        } else {
+            throw new IllegalArgumentException(fileName);
+        }
+    }
+
+    /**
+     * 解析Excel
+     *
+     * @param workbook        {@link Workbook}
+     * @param rowDelimiter    针对单个单元格({@link Cell})内,行的分隔符
+     * @param columnDelimiter 针对单个单元格({@link Cell})内,列的分隔符
+     * @return 数据结构从外至里为：Sheet List -> Row List  -> Column List
+     */
+    public static List<List<ExcelCell>> parseSheet0(Workbook workbook, String rowDelimiter, String columnDelimiter) {
+        List<List<List<ExcelCell>>> dataList = parseSheet(workbook, false, rowDelimiter, columnDelimiter);
+        if (dataList == null || dataList.size() == 0) {
+            return Collections.emptyList();
+        }
+
+        return dataList.get(0);
+    }
+
+    /**
+     * 解析Excel
      *
      * @param workbook        {@link Workbook}
      * @param readAllSheet    true表示读取所有Sheet,否则只读取第1张Sheet
      * @param rowDelimiter    针对单个单元格({@link Cell})内,行的分隔符
      * @param columnDelimiter 针对单个单元格({@link Cell})内,列的分隔符
      * @return 数据结构从外至里为：Sheet List -> Row List  -> Column List
-     * @throws IOException throw I/O exception
      */
-    public static List<List<List<ExcelCell>>> parseSheet(Workbook workbook, boolean readAllSheet, String rowDelimiter, String columnDelimiter) throws IOException {
+    public static List<List<List<ExcelCell>>> parseSheet(Workbook workbook, boolean readAllSheet, String rowDelimiter, String columnDelimiter) {
         List<List<List<ExcelCell>>> data = new ArrayList<>();
 
         // 循环Sheet
