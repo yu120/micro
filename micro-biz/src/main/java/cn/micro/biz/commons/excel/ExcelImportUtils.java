@@ -37,8 +37,8 @@ public class ExcelImportUtils {
      * @return 数据结构从外至里为：Row List  -> Column List
      * @throws IOException throw I/O exception
      */
-    public static List<List<ExcelCell>> downloadParseSheet0(String url) throws IOException {
-        List<List<List<ExcelCell>>> dataList = downloadParseSheet(false, null, null, url);
+    public static List<List<ExcelCell>> downloadSheet0(String url) throws IOException {
+        List<List<List<ExcelCell>>> dataList = downloadSheet(false, null, null, url);
         if (dataList == null || dataList.size() == 0) {
             return Collections.emptyList();
         }
@@ -55,8 +55,8 @@ public class ExcelImportUtils {
      * @return 数据结构从外至里为：Row List  -> Column List
      * @throws IOException throw I/O exception
      */
-    public static List<List<ExcelCell>> downloadParseSheet0(String url, String rowDelimiter, String columnDelimiter) throws IOException {
-        List<List<List<ExcelCell>>> dataList = downloadParseSheet(false, rowDelimiter, columnDelimiter, url);
+    public static List<List<ExcelCell>> downloadSheet0(String url, String rowDelimiter, String columnDelimiter) throws IOException {
+        List<List<List<ExcelCell>>> dataList = downloadSheet(false, rowDelimiter, columnDelimiter, url);
         if (dataList == null || dataList.size() == 0) {
             return Collections.emptyList();
         }
@@ -72,8 +72,8 @@ public class ExcelImportUtils {
      * @return 数据结构从外至里为：Sheet List -> Row List  -> Column List
      * @throws IOException throw I/O exception
      */
-    public static List<List<List<ExcelCell>>> downloadParseSheet(String url) throws IOException {
-        return downloadParseSheet(true, null, null, url);
+    public static List<List<List<ExcelCell>>> downloadSheet(String url) throws IOException {
+        return downloadSheet(true, null, null, url);
     }
 
     /**
@@ -85,8 +85,8 @@ public class ExcelImportUtils {
      * @return 数据结构从外至里为：Sheet List -> Row List  -> Column List
      * @throws IOException throw I/O exception
      */
-    public static List<List<List<ExcelCell>>> downloadParseDelimitSheet(String url, String rowDelimiter, String columnDelimiter) throws IOException {
-        return downloadParseSheet(true, rowDelimiter, columnDelimiter, url);
+    public static List<List<List<ExcelCell>>> downloadDelimitSheet(String url, String rowDelimiter, String columnDelimiter) throws IOException {
+        return downloadSheet(true, rowDelimiter, columnDelimiter, url);
     }
 
 
@@ -100,20 +100,20 @@ public class ExcelImportUtils {
      * @return 数据结构从外至里为：Sheet List -> Row List  -> Column List
      * @throws IOException throw I/O exception
      */
-    public static List<List<List<ExcelCell>>> downloadParseSheet(boolean readAllSheet, String rowDelimiter, String columnDelimiter, String url) throws IOException {
+    public static List<List<List<ExcelCell>>> downloadSheet(boolean readAllSheet, String rowDelimiter, String columnDelimiter, String url) throws IOException {
         // 下载文件
         try (Workbook workbook = downloadWorkbook(url)) {
             return parseSheet(workbook, readAllSheet, rowDelimiter, columnDelimiter);
         }
     }
 
-    public static List<List<List<ExcelCell>>> parseSheet2003(boolean readAllSheet, String rowDelimiter, String columnDelimiter, InputStream inputStream) throws IOException {
+    public static List<List<List<ExcelCell>>> readSheet2003(boolean readAllSheet, String rowDelimiter, String columnDelimiter, InputStream inputStream) throws IOException {
         try (Workbook workbook = new HSSFWorkbook(inputStream)) {
             return parseSheet(workbook, readAllSheet, rowDelimiter, columnDelimiter);
         }
     }
 
-    public static List<List<List<ExcelCell>>> parseSheet2007(boolean readAllSheet, String rowDelimiter, String columnDelimiter, InputStream inputStream) throws IOException {
+    public static List<List<List<ExcelCell>>> readSheet2007(boolean readAllSheet, String rowDelimiter, String columnDelimiter, InputStream inputStream) throws IOException {
         try (Workbook workbook = new XSSFWorkbook(inputStream)) {
             return parseSheet(workbook, readAllSheet, rowDelimiter, columnDelimiter);
         }
@@ -219,39 +219,16 @@ public class ExcelImportUtils {
         ExcelCell excelCell = new ExcelCell(rowIndex, columnIndex, false);
 
         // 读取单元格内容
-        String rawValue = "";
         Row row = sheet.getRow(rowIndex);
         if (row != null) {
             Cell cell = row.getCell(columnIndex);
             if (cell != null) {
                 // 读取内容
-                rawValue = getCellRawValue(cell);
-                excelCell.setRawValue(rawValue);
-                excelCell.setRawDelimitValues(parseDelimiter(rowDelimiter, columnDelimiter, rawValue));
-
+                readRawValue(cell, rowDelimiter, columnDelimiter, excelCell);
                 // 读取注释
-                Comment comment = cell.getCellComment();
-                if (comment != null) {
-                    excelCell.setRawCommentAuthor(comment.getAuthor());
-                    RichTextString richTextString = comment.getString();
-                    if (richTextString != null) {
-                        excelCell.setRawComment(richTextString.getString());
-                    }
-                }
-
+                readComment(cell, excelCell);
                 // 读取字体
-                CellStyle cellStyle = cell.getCellStyle();
-                Font font = workbook.getFontAt(cellStyle.getFontIndex());
-                excelCell.setBold(font.getBold());
-                if (font instanceof HSSFFont) {
-                    HSSFFont hssfFont = (HSSFFont) font;
-                    HSSFColor hssfColor = hssfFont.getHSSFColor((HSSFWorkbook) workbook);
-                    excelCell.setFontColor(hssfColor.getHexString());
-                } else if (font instanceof XSSFFont) {
-                    XSSFFont xssfFont = (XSSFFont) font;
-                    XSSFColor xssfColor = xssfFont.getXSSFColor();
-                    excelCell.setFontColor(xssfColor.getARGBHex());
-                }
+                readFont(workbook, cell, excelCell);
             } else {
                 excelCell.setCellNull(true);
             }
@@ -259,51 +236,8 @@ public class ExcelImportUtils {
             excelCell.setCellNull(true);
         }
 
-        // 获取合并单元格信息
-        int sheetMergeCount = sheet.getNumMergedRegions();
-        for (int i = 0; i < sheetMergeCount; i++) {
-            CellRangeAddress cra = sheet.getMergedRegion(i);
-            int craFirstRow = cra.getFirstRow();
-            int craLastRow = cra.getLastRow();
-
-            //  行在合并单元格范围内
-            if (rowIndex >= craFirstRow && rowIndex <= craLastRow) {
-                int craFirstColumn = cra.getFirstColumn();
-                int craLastColumn = cra.getLastColumn();
-
-                //  列在合并单元格范围内
-                if (columnIndex >= craFirstColumn && columnIndex <= craLastColumn) {
-                    // 获取合并单元格的第1个的值
-                    Cell firstCell = getRowCell(sheet, craFirstRow, craFirstColumn);
-                    String firstRawValue = rawValue;
-                    if (firstCell != null) {
-                        firstRawValue = getCellRawValue(firstCell);
-
-                        // 读取注释
-                        Comment firstComment = firstCell.getCellComment();
-                        if (firstComment != null) {
-                            RichTextString richTextString = firstComment.getString();
-                            excelCell.setMergeCommentAuthor(firstComment.getAuthor());
-                            if (richTextString != null) {
-                                excelCell.setMergeComment(richTextString.getString());
-                            }
-                        }
-                    }
-
-                    excelCell.setMergeRow(craLastRow - craFirstRow > 0);
-                    excelCell.setMergeColumn(craLastColumn - craFirstColumn > 0);
-                    excelCell.setFirstRowIndex(craFirstRow);
-                    excelCell.setFirstColumnIndex(craFirstColumn);
-                    excelCell.setLastRowIndex(craLastRow);
-                    excelCell.setLastColumnIndex(craLastColumn);
-
-                    excelCell.setMergeValue(firstRawValue);
-                    excelCell.setMergeDelimitValues(parseDelimiter(rowDelimiter, columnDelimiter, firstRawValue));
-                    break;
-                }
-            }
-        }
-
+        // 解析合并单元格信息
+        parseMergeExcelCell(sheet, rowDelimiter, columnDelimiter, rowIndex, columnIndex, excelCell);
         return excelCell;
     }
 
@@ -350,20 +284,116 @@ public class ExcelImportUtils {
     }
 
     /**
-     * 获取指定位置的单元格原始内容值
+     * 读取原始内容
      *
-     * @param sheet       {@link Sheet}
-     * @param rowIndex    row index
-     * @param columnIndex column index
-     * @return raw value
+     * @param cell            {@link Cell}
+     * @param rowDelimiter    row delimiter
+     * @param columnDelimiter column delimiter
+     * @param excelCell       {@link ExcelCell}
      */
-    private static Cell getRowCell(Sheet sheet, int rowIndex, int columnIndex) {
-        Row firstRow = sheet.getRow(rowIndex);
-        if (firstRow != null) {
-            return firstRow.getCell(columnIndex);
-        }
+    private static void readRawValue(Cell cell, String rowDelimiter, String columnDelimiter, ExcelCell excelCell) {
+        String rawValue = getCellRawValue(cell);
+        excelCell.setRawValue(rawValue);
+        excelCell.setRawDelimitValues(parseDelimiter(rowDelimiter, columnDelimiter, rawValue));
+    }
 
-        return null;
+    /**
+     * 读取单元格注释
+     *
+     * @param cell      {@link Cell}
+     * @param excelCell {@link ExcelCell}
+     */
+    private static void readComment(Cell cell, ExcelCell excelCell) {
+        Comment comment = cell.getCellComment();
+        if (comment != null) {
+            excelCell.setRawCommentAuthor(comment.getAuthor());
+            RichTextString richTextString = comment.getString();
+            if (richTextString != null) {
+                excelCell.setRawComment(richTextString.getString());
+            }
+        }
+    }
+
+    /**
+     * 读取字体信息
+     *
+     * @param workbook  {@link Workbook}
+     * @param cell      {@link Cell}
+     * @param excelCell {@link ExcelCell}
+     */
+    private static void readFont(Workbook workbook, Cell cell, ExcelCell excelCell) {
+        CellStyle cellStyle = cell.getCellStyle();
+        Font font = workbook.getFontAt(cellStyle.getFontIndex());
+        excelCell.setBold(font.getBold());
+        if (font instanceof HSSFFont) {
+            HSSFFont hssfFont = (HSSFFont) font;
+            HSSFColor hssfColor = hssfFont.getHSSFColor((HSSFWorkbook) workbook);
+            excelCell.setFontColor(hssfColor.getHexString());
+        } else if (font instanceof XSSFFont) {
+            XSSFFont xssfFont = (XSSFFont) font;
+            XSSFColor xssfColor = xssfFont.getXSSFColor();
+            excelCell.setFontColor(xssfColor.getARGBHex());
+        }
+    }
+
+    /**
+     * 解析合并单元格信息
+     *
+     * @param sheet           {@link Sheet}
+     * @param rowDelimiter    row delimiter
+     * @param columnDelimiter column delimiter
+     * @param rowIndex        row index
+     * @param columnIndex     column index
+     * @param excelCell       {@link ExcelCell}
+     */
+    private static void parseMergeExcelCell(Sheet sheet, String rowDelimiter, String columnDelimiter, int rowIndex, int columnIndex, ExcelCell excelCell) {
+        int sheetMergeCount = sheet.getNumMergedRegions();
+        for (int i = 0; i < sheetMergeCount; i++) {
+            CellRangeAddress cra = sheet.getMergedRegion(i);
+            int craFirstRow = cra.getFirstRow();
+            int craLastRow = cra.getLastRow();
+
+            //  行在合并单元格范围内
+            if (rowIndex >= craFirstRow && rowIndex <= craLastRow) {
+                int craFirstColumn = cra.getFirstColumn();
+                int craLastColumn = cra.getLastColumn();
+
+                //  列在合并单元格范围内
+                if (columnIndex >= craFirstColumn && columnIndex <= craLastColumn) {
+                    // 获取合并单元格的第1个的值
+                    Cell firstCell = null;
+                    Row firstRow = sheet.getRow(craFirstRow);
+                    if (firstRow != null) {
+                        firstCell = firstRow.getCell(craFirstColumn);
+                    }
+
+                    String firstRawValue = excelCell.getRawValue();
+                    if (firstCell != null) {
+                        firstRawValue = getCellRawValue(firstCell);
+
+                        // 读取注释
+                        Comment firstComment = firstCell.getCellComment();
+                        if (firstComment != null) {
+                            RichTextString richTextString = firstComment.getString();
+                            excelCell.setMergeCommentAuthor(firstComment.getAuthor());
+                            if (richTextString != null) {
+                                excelCell.setMergeComment(richTextString.getString());
+                            }
+                        }
+                    }
+
+                    excelCell.setMergeRow(craLastRow - craFirstRow > 0);
+                    excelCell.setMergeColumn(craLastColumn - craFirstColumn > 0);
+                    excelCell.setFirstRowIndex(craFirstRow);
+                    excelCell.setFirstColumnIndex(craFirstColumn);
+                    excelCell.setLastRowIndex(craLastRow);
+                    excelCell.setLastColumnIndex(craLastColumn);
+                    excelCell.setMergeValue(firstRawValue);
+                    excelCell.setMergeDelimitValues(parseDelimiter(rowDelimiter, columnDelimiter, firstRawValue));
+                    break;
+                }
+            }
+        }
     }
 
     /**
