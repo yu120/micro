@@ -41,7 +41,7 @@ public class ExcelExportUtils {
      * @param excelCellList Excel数据列表
      * @throws IOException IO exception
      */
-    public static byte[] exportResourceExcel(String resourceName, List<ExcelCell> excelCellList) throws IOException {
+    public static byte[] exportResource(String resourceName, List<ExcelCell> excelCellList) throws IOException {
         try (InputStream inputStream = ExcelExportUtils.class.getResourceAsStream(resourceName)) {
             Workbook workbook;
             if (resourceName.matches(ExcelCell.EXCEL_2003)) {
@@ -57,23 +57,20 @@ public class ExcelExportUtils {
     }
 
     /**
-     * 导出 Excel 2003
+     * 导出 Excel 2003/2007
      *
+     * @param fileName      文件名称,用于识别是什么类型的Excel
      * @param excelCellList Excel数据列表
      * @throws IOException IO exception
      */
-    public static byte[] exportExcel2003(List<ExcelCell> excelCellList) throws IOException {
-        return export(new HSSFWorkbook(), excelCellList);
-    }
-
-    /**
-     * 导出 Excel 2007
-     *
-     * @param excelCellList Excel数据列表
-     * @throws IOException IO exception
-     */
-    public static byte[] exportExcel2007(List<ExcelCell> excelCellList) throws IOException {
-        return export(new XSSFWorkbook(), excelCellList);
+    public static byte[] export(String fileName, List<ExcelCell> excelCellList) throws IOException {
+        if (ExcelCell.EXCEL_2003.matches(fileName)) {
+            return export(new HSSFWorkbook(), excelCellList);
+        } else if (ExcelCell.EXCEL_2007.matches(fileName)) {
+            return export(new XSSFWorkbook(), excelCellList);
+        } else {
+            throw new IllegalArgumentException(fileName);
+        }
     }
 
     /**
@@ -164,7 +161,7 @@ public class ExcelExportUtils {
      * @return byte[]
      * @throws IOException throw exception
      */
-    public static byte[] toZipByte(Map<String, byte[]> fileBytes) throws IOException {
+    public static byte[] toZipBytes(Map<String, byte[]> fileBytes) throws IOException {
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream(); ZipOutputStream zos = new ZipOutputStream(bos)) {
             // 进行压缩存储
             zos.setMethod(ZipOutputStream.DEFLATED);

@@ -38,7 +38,7 @@ public class ExcelImportUtils {
      * @throws IOException throw I/O exception
      */
     public static List<List<ExcelCell>> downloadSheet0(String url) throws IOException {
-        List<List<List<ExcelCell>>> dataList = downloadSheet(false, null, null, url);
+        List<List<List<ExcelCell>>> dataList = downloadSheet(false, url, null, null);
         if (dataList == null || dataList.size() == 0) {
             return Collections.emptyList();
         }
@@ -56,7 +56,7 @@ public class ExcelImportUtils {
      * @throws IOException throw I/O exception
      */
     public static List<List<ExcelCell>> downloadSheet0(String url, String rowDelimiter, String columnDelimiter) throws IOException {
-        List<List<List<ExcelCell>>> dataList = downloadSheet(false, rowDelimiter, columnDelimiter, url);
+        List<List<List<ExcelCell>>> dataList = downloadSheet(false, url, rowDelimiter, columnDelimiter);
         if (dataList == null || dataList.size() == 0) {
             return Collections.emptyList();
         }
@@ -73,7 +73,7 @@ public class ExcelImportUtils {
      * @throws IOException throw I/O exception
      */
     public static List<List<List<ExcelCell>>> downloadSheet(String url) throws IOException {
-        return downloadSheet(true, null, null, url);
+        return downloadSheet(true, url, null, null);
     }
 
     /**
@@ -86,24 +86,7 @@ public class ExcelImportUtils {
      * @throws IOException throw I/O exception
      */
     public static List<List<List<ExcelCell>>> downloadSheet(String url, String rowDelimiter, String columnDelimiter) throws IOException {
-        return downloadSheet(true, rowDelimiter, columnDelimiter, url);
-    }
-
-
-    /**
-     * 下载解析Excel
-     *
-     * @param readAllSheet    true表示读取所有Sheet,否则只读取第1张Sheet
-     * @param rowDelimiter    针对单个单元格({@link Cell})内,行的分隔符
-     * @param columnDelimiter 针对单个单元格({@link Cell})内,列的分隔符
-     * @param url             网络下载地址,必须以 .xls 或 .xlsx 结尾
-     * @return 数据结构从外至里为：Sheet List -> Row List  -> Column List
-     * @throws IOException throw I/O exception
-     */
-    public static List<List<List<ExcelCell>>> downloadSheet(boolean readAllSheet, String rowDelimiter, String columnDelimiter, String url) throws IOException {
-        try (Workbook workbook = downloadWorkbook(url)) {
-            return parseSheet(workbook, readAllSheet, rowDelimiter, columnDelimiter);
-        }
+        return downloadSheet(true, url, rowDelimiter, columnDelimiter);
     }
 
     /**
@@ -168,6 +151,22 @@ public class ExcelImportUtils {
         }
 
         return dataList.get(0);
+    }
+
+    /**
+     * 下载解析Excel
+     *
+     * @param readAllSheet    true表示读取所有Sheet,否则只读取第1张Sheet
+     * @param url             网络下载地址,必须以 .xls 或 .xlsx 结尾
+     * @param rowDelimiter    针对单个单元格({@link Cell})内,行的分隔符
+     * @param columnDelimiter 针对单个单元格({@link Cell})内,列的分隔符
+     * @return 数据结构从外至里为：Sheet List -> Row List  -> Column List
+     * @throws IOException throw I/O exception
+     */
+    public static List<List<List<ExcelCell>>> downloadSheet(boolean readAllSheet, String url, String rowDelimiter, String columnDelimiter) throws IOException {
+        try (Workbook workbook = downloadWorkbook(url)) {
+            return parseSheet(workbook, readAllSheet, rowDelimiter, columnDelimiter);
+        }
     }
 
     /**
