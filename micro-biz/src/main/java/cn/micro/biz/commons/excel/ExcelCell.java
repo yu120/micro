@@ -121,13 +121,16 @@ public class ExcelCell implements Serializable {
     // ==== 其它信息
 
     /**
-     * 字体颜色
+     * 设置字体颜色
      */
     private String fontColor;
     /**
-     * 背景颜色
+     * 设置单元格背景颜色
      */
-    private String color;
+    private String bgColor;
+    /**
+     * true表示字体加粗
+     */
     private boolean bold;
 
     public ExcelCell(int rowIndex, int columnIndex, boolean cellNull) {

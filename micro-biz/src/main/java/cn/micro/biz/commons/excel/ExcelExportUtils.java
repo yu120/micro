@@ -14,9 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
-import org.apache.poi.xssf.usermodel.XSSFRichTextString;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -96,19 +94,23 @@ public class ExcelExportUtils {
         headCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
         headCellStyle.setFont(headFont);
         headCellStyle.setWrapText(true);
+        // 强制设置为
+        headCellStyle.setDataFormat(workbook.createDataFormat().getFormat("@"));
 
         // 设置每个单元格内容
         CellStyle dataCellStyle = workbook.createCellStyle();
         dataCellStyle.setWrapText(true);
         dataCellStyle.setAlignment(HorizontalAlignment.CENTER);
         dataCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        // 强制设置为
+        dataCellStyle.setDataFormat(workbook.createDataFormat().getFormat("@"));
 
         // 填充单元格
         if (CollectionUtils.isNotEmpty(excelCellList)) {
             for (ExcelCell excelCell : excelCellList) {
                 if (excelCell.isMergeRow() || excelCell.isMergeColumn()) {
                     // 填充合并了行或列
-                    maColumnSize = fillMergeCellData(maColumnSize, headCellStyle, dataCellStyle, sheet, excelCell);
+                    maColumnSize = fillMergeCellData(maColumnSize, dataCellStyle, sheet, excelCell);
                 } else {
                     // 填充未合并行或列
                     Row row = sheet.getRow(excelCell.getRowIndex());
@@ -237,13 +239,12 @@ public class ExcelExportUtils {
      * 填充合并类单元格
      *
      * @param maxColSize    max {@link Cell} size
-     * @param headCellStyle {@link CellStyle}
      * @param dataCellStyle {@link CellStyle}
      * @param sheet         {@link Sheet}
      * @param excelCell     {@link ExcelCell}
      * @return maxCellSize
      */
-    private static int fillMergeCellData(int maxColSize, CellStyle headCellStyle, CellStyle dataCellStyle, Sheet sheet, ExcelCell excelCell) {
+    private static int fillMergeCellData(int maxColSize, CellStyle dataCellStyle, Sheet sheet, ExcelCell excelCell) {
         // 设置合并单元格起始单元格的样式
         Row firstRow = sheet.getRow(excelCell.getFirstRowIndex());
         if (firstRow == null) {
