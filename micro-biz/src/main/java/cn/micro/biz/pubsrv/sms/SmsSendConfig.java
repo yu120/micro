@@ -2,13 +2,17 @@ package cn.micro.biz.pubsrv.sms;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * 短信配置
+ * <p>
+ * https://gitbook.cn/books/5bdbde731475c63d08c1f4f4/index.html
  *
  * @author lry
  */
 @Data
-public class SmsSendConfig {
+public class SmsSendConfig implements Serializable {
 
     /**
      * 应用代码
@@ -18,6 +22,10 @@ public class SmsSendConfig {
      * 业务代码
      */
     private String biz;
+    /**
+     * 短信类别: 验证码、通知
+     */
+    private String category;
 
     /**
      * 短信服务商代码

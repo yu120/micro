@@ -2,6 +2,7 @@ package cn.micro.biz.pubsrv.sms;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -10,7 +11,7 @@ import java.util.Map;
  * @author lry
  */
 @Data
-public class SmsSendParam {
+public class SmsSendParam implements Serializable {
 
     /**
      * 应用代码
@@ -29,7 +30,6 @@ public class SmsSendParam {
      * 请求追踪ID
      */
     private String traceId;
-
     /**
      * 手机号
      */

@@ -2,16 +2,19 @@ package cn.micro.biz.pubsrv.sms;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * 短信发送日志
- * https://gitbook.cn/books/5bdbde731475c63d08c1f4f4/index.html
  *
  * @author lry
  */
 @Data
-public class SmsRecordLog {
+public class SmsSendLog implements Serializable {
+
+
+    // === 时间信息
 
     /**
      * 准备时间(系统收到消息时间)
@@ -22,6 +25,9 @@ public class SmsRecordLog {
      */
     private Date sendTime;
 
+
+    // === 配置信息
+
     /**
      * 应用代码
      */
@@ -30,7 +36,11 @@ public class SmsRecordLog {
      * 业务代码
      */
     private String biz;
-
+    /**
+     * 短信类别: 验证码、通知
+     */
+    private String category;
+    
     /**
      * 短信服务商代码
      */
@@ -73,5 +83,25 @@ public class SmsRecordLog {
      * 钉钉群Token
      */
     private String dingTalkToken;
+
+
+    // === 请求参数
+
+    /**
+     * IP
+     */
+    private String ip;
+    /**
+     * 请求追踪ID
+     */
+    private String traceId;
+    /**
+     * 手机号
+     */
+    private String mobile;
+    /**
+     * 参数KEY-VALUE JSON
+     */
+    private String paramsJson;
 
 }
