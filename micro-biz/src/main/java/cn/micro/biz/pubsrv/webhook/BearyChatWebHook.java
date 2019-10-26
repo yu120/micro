@@ -19,7 +19,7 @@ import java.util.List;
  * @author lry
  */
 @Slf4j
-public class BearyChatWebHook implements IWebHook<BearyChatWebHook.RobotSendRequest> {
+public class BearyChatWebHook implements Serializable {
 
     private static final int RESPONSE_CODE_OK = 0;
     private static final String RESPONSE_CODE_KEY = "code";
@@ -47,7 +47,6 @@ public class BearyChatWebHook implements IWebHook<BearyChatWebHook.RobotSendRequ
      * @param robotSendRequest {@link RobotSendRequest}
      * @return success true
      */
-    @Override
     public boolean push(RobotSendRequest robotSendRequest) {
         String url = SERVER_URL + accessToken;
         Connection.Response response;
@@ -66,7 +65,10 @@ public class BearyChatWebHook implements IWebHook<BearyChatWebHook.RobotSendRequ
             throw new MicroErrorException(e.getMessage(), e);
         }
 
-        if (this.checkCode(response)) {
+        if (200 != response.statusCode()) {
+            log.warn("Network error:[code:{},message:{}]", response.statusCode(), response.statusMessage());
+            return false;
+        } else {
             String responseBody = response.charset(StandardCharsets.UTF_8.name()).body();
             log.debug("Beary Chat response body:{}", responseBody);
             JSONObject jsonObject = JSON.parseObject(responseBody);
@@ -77,13 +79,11 @@ public class BearyChatWebHook implements IWebHook<BearyChatWebHook.RobotSendRequ
 
             return RESPONSE_CODE_OK == jsonObject.getInteger(RESPONSE_CODE_KEY);
         }
-
-        return false;
     }
 
     @Data
     @ToString
-    public static class RobotSendRequest implements IRobotSendRequest {
+    public static class RobotSendRequest implements Serializable {
         /**
          * 必须字段。支持 inline md 的文本内容
          */

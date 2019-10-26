@@ -22,13 +22,13 @@ public class MicroWebHookService implements InitializingBean {
 
     private final MicroWebHookProperties properties;
 
-    private IWebHook dingTalkWebHook;
-    private IWebHook bearyChatWebHook;
+    private DingTalkWebHook dingTalkWebHook;
+    private BearyChatWebHook bearyChatWebHook;
 
     @Override
     public void afterPropertiesSet() {
         this.dingTalkWebHook = new DingTalkWebHook(properties.getDingTalkAccessToken());
-        this.bearyChatWebHook = new DingTalkWebHook(properties.getBearyChatAccessToken());
+        this.bearyChatWebHook = new BearyChatWebHook(properties.getBearyChatAccessToken());
     }
 
 }

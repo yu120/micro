@@ -18,7 +18,7 @@ import java.util.List;
  * @author lry
  */
 @Slf4j
-public class DingTalkWebHook implements IWebHook<DingTalkWebHook.RobotSendRequest> {
+public class DingTalkWebHook implements Serializable {
 
     private static final int RESPONSE_CODE_OK = 0;
     private static final String RESPONSE_CODE_KEY = "errcode";
@@ -47,7 +47,6 @@ public class DingTalkWebHook implements IWebHook<DingTalkWebHook.RobotSendReques
      * @param robotSendRequest {@link RobotSendRequest}
      * @return success true
      */
-    @Override
     public boolean push(RobotSendRequest robotSendRequest) {
         String url = SERVER_URL + accessToken;
         Connection.Response response;
@@ -66,7 +65,10 @@ public class DingTalkWebHook implements IWebHook<DingTalkWebHook.RobotSendReques
             throw new MicroErrorException(e.getMessage(), e);
         }
 
-        if (this.checkCode(response)) {
+        if (200 != response.statusCode()) {
+            log.warn("Network error:[code:{},message:{}]", response.statusCode(), response.statusMessage());
+            return false;
+        } else {
             String responseBody = response.charset(StandardCharsets.UTF_8.name()).body();
             log.debug("Ding Talk response body:{}", responseBody);
             JSONObject jsonObject = JSON.parseObject(responseBody);
@@ -76,11 +78,9 @@ public class DingTalkWebHook implements IWebHook<DingTalkWebHook.RobotSendReques
             }
 
             return RESPONSE_CODE_OK == jsonObject.getInteger(RESPONSE_CODE_KEY);
-
         }
-
-        return false;
     }
+
 
     /**
      * 相关人的@功能
@@ -104,7 +104,7 @@ public class DingTalkWebHook implements IWebHook<DingTalkWebHook.RobotSendReques
     @Data
     @ToString
     @AllArgsConstructor
-    public static class RobotSendRequest implements IRobotSendRequest {
+    public static class RobotSendRequest implements Serializable {
         /**
          * 消息类型
          */
