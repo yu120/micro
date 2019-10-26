@@ -194,7 +194,7 @@ public class DingTalkWebHook implements Serializable {
     }
 
     /**
-     * FeedCard
+     * Text
      *
      * @author lry
      */
