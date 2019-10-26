@@ -25,30 +25,24 @@ public class BearyChatWebHook implements Serializable {
     private static final String RESPONSE_CODE_KEY = "code";
     private static final String CONTENT_TYPE_KEY = "Content-Type";
     private static final String CONTENT_TYPE = "application/json";
-    private static final String SERVER_URL = "https://hook.bearychat.com/=bwCqE/incoming/";
-
-    private String accessToken;
-
-    public BearyChatWebHook(String accessToken) {
-        this.accessToken = accessToken;
-    }
+    private static final String SERVER_URL = "https://hook.bearychat.com/=bwCqE/incoming/%s";
 
     public static void main(String[] args) throws Exception {
-        BearyChatWebHook bearyChatWebHook = new BearyChatWebHook("fe3901f23862dca2e15f4695bf845bdd");
         RobotSendRequest robotSendRequest = new RobotSendRequest();
         robotSendRequest.setText("看看快快快dddddd22222");
-        boolean flag = bearyChatWebHook.push(robotSendRequest);
+        boolean flag = BearyChatWebHook.push("fe3901f23862dca2e15f4695bf845bdd", robotSendRequest);
         System.out.println(flag);
     }
 
     /**
      * Send push to 3th
      *
+     * @param accessToken      access token
      * @param robotSendRequest {@link RobotSendRequest}
      * @return success true
      */
-    public boolean push(RobotSendRequest robotSendRequest) {
-        String url = SERVER_URL + accessToken;
+    public static boolean push(String accessToken, RobotSendRequest robotSendRequest) {
+        String url = String.format(SERVER_URL, accessToken);
         Connection.Response response;
         try {
             Connection connection = HttpConnection.connect(url).ignoreContentType(true);

@@ -2,6 +2,7 @@ package cn.micro.biz.pubsrv.sms;
 
 import java.util.Date;
 
+import cn.micro.biz.pubsrv.webhook.DingTalkWebHook;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -19,6 +20,9 @@ import java.util.Map;
 public class SmsFactoryService {
 
     private static final String KEY_TEMP = "%s:%s";
+    private static final String SMS_PARAM_TEMP = "${%s}";
+    private static final String SMS_MESSAGE_TEMP = "接收人:%s\n%s";
+
     private Map<String, List<SmsSendConfig>> smsSendConfigMap = new HashMap<>();
 
     public void send(SmsSendParam smsSendParam) {
@@ -58,12 +62,27 @@ public class SmsFactoryService {
                 smsSendLog.setSuccess(false);
                 log.error(e.getMessage(), e);
             }
-            log.info("SMS send:{}", smsSendLog);
+            log.info("Send sms:{}", smsSendLog);
         }
 
         // 需要发送钉钉
         if (smsSendConfig.getSendDingTalk()) {
+            // 拼接短信内容
+            String message = smsSendConfig.getTemplateMessage();
+            if (smsSendParam.getParams() != null) {
+                for (Map.Entry<String, Object> entry : smsSendParam.getParams().entrySet()) {
+                    String paramKey = String.format(SMS_PARAM_TEMP, entry.getKey());
+                    if (message.contains(paramKey)) {
+                        message = message.replace(paramKey, String.valueOf(entry.getValue()));
+                    }
+                }
+            }
+            message = String.format(SMS_MESSAGE_TEMP, smsSendParam.getMobile(), message);
 
+            DingTalkWebHook.RobotSendRequestText robotSendRequestText = new DingTalkWebHook.RobotSendRequestText();
+            robotSendRequestText.setText(new DingTalkWebHook.Text(message));
+            boolean successDingTalk = DingTalkWebHook.push(smsSendConfig.getDingTalkToken(), robotSendRequestText);
+            log.info("Send Ding Talk:{}", successDingTalk);
         }
     }
 

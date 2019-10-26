@@ -24,31 +24,25 @@ public class DingTalkWebHook implements Serializable {
     private static final String RESPONSE_CODE_KEY = "errcode";
     private static final String CONTENT_TYPE_KEY = "Content-Type";
     private static final String CONTENT_TYPE = "application/json";
-    private static final String SERVER_URL = "https://oapi.dingtalk.com/robot/send?access_token=";
-
-    private String accessToken;
-
-    public DingTalkWebHook(String accessToken) {
-        this.accessToken = accessToken;
-    }
+    private static final String SERVER_URL = "https://oapi.dingtalk.com/robot/send?access_token=%s";
 
     public static void main(String[] args) throws Exception {
-        DingTalkWebHook dingTalkWebHook = new DingTalkWebHook("0044bea6737e89921d27495e5d57592ccd10a74ab04a4b39b1ec7ff87db6106c");
         RobotSendRequestText robotSendRequestText = new RobotSendRequestText();
         robotSendRequestText.setText(new Text("测试机器人功能的消息201905"));
         robotSendRequestText.setAt(new At(null, true));
-        boolean flag = dingTalkWebHook.push(robotSendRequestText);
+        boolean flag = DingTalkWebHook.push("0044bea6737e89921d27495e5d57592ccd10a74ab04a4b39b1ec7ff87db6106c", robotSendRequestText);
         System.out.println(flag);
     }
 
     /**
      * Send push to 3th
      *
+     * @param accessToken      access token
      * @param robotSendRequest {@link RobotSendRequest}
      * @return success true
      */
-    public boolean push(RobotSendRequest robotSendRequest) {
-        String url = SERVER_URL + accessToken;
+    public static boolean push(String accessToken, RobotSendRequest robotSendRequest) {
+        String url = String.format(SERVER_URL, accessToken);
         Connection.Response response;
         try {
             Connection connection = HttpConnection.connect(url).ignoreContentType(true);
@@ -80,7 +74,6 @@ public class DingTalkWebHook implements Serializable {
             return RESPONSE_CODE_OK == jsonObject.getInteger(RESPONSE_CODE_KEY);
         }
     }
-
 
     /**
      * 相关人的@功能
