@@ -13,9 +13,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
- * Ding Talk Web Hook
+ * 企业 WeChat Web Hook
  * <p>
- * 每个机器人每分钟最多发送20条。
+ * 每个机器人发送的消息不能超过20条/分钟。
+ * https://work.weixin.qq.com/api/doc?notreplace=true#90000/90136/91770
  *
  * @author lry
  */
@@ -48,12 +49,12 @@ public class WeChatWebHook implements Serializable {
         try {
             Connection connection = HttpConnection.connect(url).ignoreContentType(true);
             Connection.Request request = connection.request();
+            request.method(Connection.Method.POST);
             request.header(CONTENT_TYPE_KEY, CONTENT_TYPE);
             request.postDataCharset(StandardCharsets.UTF_8.name());
-            request.method(Connection.Method.POST);
             request.requestBody(JSON.toJSONString(robotSendRequest));
 
-            log.debug("Ding Talk request url:[{}], method:[{}], headers:[{}], body:[{}]",
+            log.debug("WeChat request url:[{}], method:[{}], headers:[{}], body:[{}]",
                     url, request.method(), request.headers(), request.requestBody());
             response = connection.execute();
         } catch (Exception e) {
@@ -66,10 +67,10 @@ public class WeChatWebHook implements Serializable {
                     response.statusCode() + ":" + response.statusMessage(), response.body());
         } else {
             String responseBody = response.charset(StandardCharsets.UTF_8.name()).body();
-            log.debug("Ding Talk response body:{}", responseBody);
+            log.debug("WeChat response body:{}", responseBody);
             JSONObject jsonObject = JSON.parseObject(responseBody);
             if (jsonObject == null) {
-                log.warn("Ding Talk send fail, response body:{}", responseBody);
+                log.warn("WeChat send fail, response body:{}", responseBody);
                 return new WebHookResult(false, "response body is null", responseBody);
             }
 
@@ -111,6 +112,54 @@ public class WeChatWebHook implements Serializable {
     }
 
     /**
+     * Markdown
+     *
+     * @author lry
+     */
+    @Data
+    @ToString(callSuper = true)
+    @EqualsAndHashCode(callSuper = true)
+    public static class RobotSendRequestMarkdown extends RobotSendRequest {
+        private Markdown markdown;
+
+        public RobotSendRequestMarkdown() {
+            super("markdown");
+        }
+    }
+
+    /**
+     * Image
+     *
+     * @author lry
+     */
+    @Data
+    @ToString(callSuper = true)
+    @EqualsAndHashCode(callSuper = true)
+    public static class RobotSendRequestImage extends RobotSendRequest {
+        private Image image;
+
+        public RobotSendRequestImage() {
+            super("image");
+        }
+    }
+
+    /**
+     * News
+     *
+     * @author lry
+     */
+    @Data
+    @ToString(callSuper = true)
+    @EqualsAndHashCode(callSuper = true)
+    public static class RobotSendRequestNews extends RobotSendRequest {
+        private News news;
+
+        public RobotSendRequestNews() {
+            super("news");
+        }
+    }
+
+    /**
      * Text
      *
      * @author lry
@@ -132,6 +181,86 @@ public class WeChatWebHook implements Serializable {
          * 手机号列表，提醒手机号对应的群成员(@某个成员)，@all表示提醒所有人
          */
         private String mentioned_mobile_list;
+    }
+
+    /**
+     * Markdown
+     *
+     * @author lry
+     */
+    @Data
+    @ToString
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Markdown implements Serializable {
+        /**
+         * markdown内容，最长不超过4096个字节，必须是utf8编码
+         */
+        private String content;
+    }
+
+    /**
+     * Image
+     *
+     * @author lry
+     */
+    @Data
+    @ToString
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Image implements Serializable {
+        /**
+         * 图片内容的base64编码
+         */
+        private String base64;
+        /**
+         * 图片内容（base64编码前）的md5值
+         */
+        private String md5;
+    }
+
+    /**
+     * News
+     *
+     * @author lry
+     */
+    @Data
+    @ToString
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class News implements Serializable {
+        /**
+         * 图文消息，一个图文消息支持1到8条图文
+         */
+        private List<Article> articles;
+    }
+
+    /**
+     * Article
+     *
+     * @author lry
+     */
+    @Data
+    @ToString
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Article implements Serializable {
+        /**
+         * 标题，不超过128个字节，超过会自动截断
+         */
+        private String title;
+        /**
+         * 描述，不超过512个字节，超过会自动截断
+         */
+        private String description;
+        /**
+         * 点击后跳转的链接。
+         */
+        private String url;
+        /**
+         * 图文消息的图片链接，支持JPG、PNG格式，较好的效果为大图 1068*455，小图150*150。
+         */
+        private String picurl;
     }
 
 }
