@@ -1,4 +1,4 @@
-package cn.micro.biz.pubsrv.webhook;
+package cn.micro.biz.pubsrv.hook;
 
 import cn.micro.biz.commons.exception.support.MicroErrorException;
 import com.alibaba.fastjson.JSON;

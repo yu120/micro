@@ -2,7 +2,7 @@ package cn.micro.biz.pubsrv.sms;
 
 import java.util.Date;
 
-import cn.micro.biz.pubsrv.webhook.DingTalkWebHook;
+import cn.micro.biz.pubsrv.hook.DingTalkWebHook;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
