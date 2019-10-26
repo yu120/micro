@@ -14,12 +14,15 @@ import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Sms Service
@@ -31,7 +34,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @EnableConfigurationProperties(AliYunSmsProperties.class)
 @ConditionalOnProperty(prefix = "micro.sms.ali-yun", name = "enable", havingValue = "true")
-public class AliYunSmsService implements InitializingBean, DisposableBean {
+public class AliYunSmsService implements ISmsService, InitializingBean, DisposableBean {
 
     private final AliYunSmsProperties properties;
     private IAcsClient acsClient;
@@ -57,6 +60,21 @@ public class AliYunSmsService implements InitializingBean, DisposableBean {
 
         profile.setHttpClientConfig(httpClientConfig);
         this.acsClient = new DefaultAcsClient(profile);
+    }
+
+    @Override
+    public SmsSendResult send(SmsSendConfig smsSendConfig, SmsSendParam smsSendParam) throws Exception {
+        SendSmsRequest request = new SendSmsRequest();
+        request.setMethod(MethodType.POST);
+        request.setPhoneNumbers(smsSendParam.getMobile());
+        request.setSignName(smsSendConfig.getSignName());
+        request.setTemplateCode(smsSendConfig.getTemplateCode());
+        request.setTemplateParam(JSON.toJSONString(smsSendParam.getParams()));
+        SendSmsResponse sendSmsResponse = acsClient.getAcsResponse(request);
+
+        boolean success = sendSmsResponse.getCode() == null || !"OK".equals(sendSmsResponse.getCode());
+        String resultJson = JSON.toJSONString(sendSmsResponse);
+        return new SmsSendResult(success, resultJson);
     }
 
     @Trace

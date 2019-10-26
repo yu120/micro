@@ -40,7 +40,7 @@ public class SmsSendLog implements Serializable {
      * 短信类别: 验证码、通知
      */
     private String category;
-    
+
     /**
      * 短信服务商代码
      */
@@ -79,10 +79,6 @@ public class SmsSendLog implements Serializable {
      * 钉钉群号
      */
     private String dingTalkNo;
-    /**
-     * 钉钉群Token
-     */
-    private String dingTalkToken;
 
 
     // === 请求参数
@@ -100,8 +96,16 @@ public class SmsSendLog implements Serializable {
      */
     private String mobile;
     /**
-     * 参数KEY-VALUE JSON
+     * 请求参数KEY-VALUE JSON
      */
     private String paramsJson;
+    /**
+     * 发送结果状态,true表示成功
+     */
+    private boolean success = false;
+    /**
+     * 结果JSON参数
+     */
+    private String resultJson;
 
 }

@@ -35,7 +35,7 @@ public class SmsSendParam implements Serializable {
      */
     private String mobile;
     /**
-     * 参数KEY-VALUE
+     * 请求参数KEY-VALUE
      */
     private Map<String, Object> params;
 
