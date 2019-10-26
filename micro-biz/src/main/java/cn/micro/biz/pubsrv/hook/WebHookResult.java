@@ -1,4 +1,4 @@
-package cn.micro.biz.pubsrv.sms;
+package cn.micro.biz.pubsrv.hook;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,14 +7,14 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- * 短信发送结果
+ * WebHook Result
  *
  * @author lry
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SmsSendResult implements Serializable {
+public class WebHookResult implements Serializable {
 
     /**
      * true表示成功

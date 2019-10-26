@@ -3,6 +3,7 @@ package cn.micro.biz.pubsrv.sms;
 import java.util.Date;
 
 import cn.micro.biz.pubsrv.hook.DingTalkWebHook;
+import cn.micro.biz.pubsrv.hook.WebHookResult;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -57,9 +58,11 @@ public class SmsFactoryService {
             try {
                 SmsSendResult smsSendResult = smsService.send(smsSendConfig, smsSendParam);
                 smsSendLog.setSuccess(smsSendResult.getSuccess());
-                smsSendLog.setResultJson(smsSendResult.getResultJson());
+                smsSendLog.setMsg(smsSendResult.getMsg());
+                smsSendLog.setPlain(smsSendResult.getPlain());
             } catch (Exception e) {
                 smsSendLog.setSuccess(false);
+                smsSendLog.setMsg(e.getMessage());
                 log.error(e.getMessage(), e);
             }
             log.info("Send sms:{}", smsSendLog);
@@ -81,8 +84,8 @@ public class SmsFactoryService {
 
             DingTalkWebHook.RobotSendRequestText robotSendRequestText = new DingTalkWebHook.RobotSendRequestText();
             robotSendRequestText.setText(new DingTalkWebHook.Text(message));
-            boolean successDingTalk = DingTalkWebHook.push(smsSendConfig.getDingTalkToken(), robotSendRequestText);
-            log.info("Send Ding Talk:{}", successDingTalk);
+            WebHookResult webHookResult = DingTalkWebHook.push(smsSendConfig.getDingTalkToken(), robotSendRequestText);
+            log.info("Send Ding Talk:{}", webHookResult);
         }
     }
 

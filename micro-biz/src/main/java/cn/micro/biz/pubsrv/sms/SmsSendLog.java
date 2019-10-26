@@ -104,8 +104,12 @@ public class SmsSendLog implements Serializable {
      */
     private Boolean success = false;
     /**
-     * 结果JSON参数
+     * 描述信息
      */
-    private String resultJson;
+    private String msg;
+    /**
+     * 原始报文
+     */
+    private String plain;
 
 }

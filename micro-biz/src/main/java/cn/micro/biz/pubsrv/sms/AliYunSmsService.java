@@ -74,7 +74,7 @@ public class AliYunSmsService implements ISmsService, InitializingBean, Disposab
 
         boolean success = sendSmsResponse.getCode() == null || !"OK".equals(sendSmsResponse.getCode());
         String resultJson = JSON.toJSONString(sendSmsResponse);
-        return new SmsSendResult(success, resultJson);
+        return new SmsSendResult(success, sendSmsResponse.getMessage(), resultJson);
     }
 
     @Trace

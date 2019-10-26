@@ -22,6 +22,7 @@ public class DingTalkWebHook implements Serializable {
 
     private static final int RESPONSE_CODE_OK = 0;
     private static final String RESPONSE_CODE_KEY = "errcode";
+    private static final String RESPONSE_MSG_KEY = "errmsg";
     private static final String CONTENT_TYPE_KEY = "Content-Type";
     private static final String CONTENT_TYPE = "application/json";
     private static final String SERVER_URL = "https://oapi.dingtalk.com/robot/send?access_token=%s";
@@ -30,8 +31,9 @@ public class DingTalkWebHook implements Serializable {
         RobotSendRequestText robotSendRequestText = new RobotSendRequestText();
         robotSendRequestText.setText(new Text("测试机器人功能的消息201905"));
         robotSendRequestText.setAt(new At(null, true));
-        boolean flag = DingTalkWebHook.push("0044bea6737e89921d27495e5d57592ccd10a74ab04a4b39b1ec7ff87db6106c", robotSendRequestText);
-        System.out.println(flag);
+        WebHookResult webHookResult = DingTalkWebHook.push(
+                "0044bea6737e89921d27495e5d57592ccd10a74ab04a4b39b1ec7ff87db6106c", robotSendRequestText);
+        System.out.println(webHookResult);
     }
 
     /**
@@ -41,7 +43,7 @@ public class DingTalkWebHook implements Serializable {
      * @param robotSendRequest {@link RobotSendRequest}
      * @return success true
      */
-    public static boolean push(String accessToken, RobotSendRequest robotSendRequest) {
+    public static WebHookResult push(String accessToken, RobotSendRequest robotSendRequest) {
         String url = String.format(SERVER_URL, accessToken);
         Connection.Response response;
         try {
@@ -61,17 +63,20 @@ public class DingTalkWebHook implements Serializable {
 
         if (200 != response.statusCode()) {
             log.warn("Network error:[code:{},message:{}]", response.statusCode(), response.statusMessage());
-            return false;
+            return new WebHookResult(false,
+                    response.statusCode() + ":" + response.statusMessage(), response.body());
         } else {
             String responseBody = response.charset(StandardCharsets.UTF_8.name()).body();
             log.debug("Ding Talk response body:{}", responseBody);
             JSONObject jsonObject = JSON.parseObject(responseBody);
-            if (jsonObject == null || !jsonObject.containsKey(RESPONSE_CODE_KEY)) {
+            if (jsonObject == null) {
                 log.warn("Ding Talk send fail, response body:{}", responseBody);
-                return false;
+                return new WebHookResult(false, "response body is null", responseBody);
             }
 
-            return RESPONSE_CODE_OK == jsonObject.getInteger(RESPONSE_CODE_KEY);
+            int code = jsonObject.getInteger(RESPONSE_CODE_KEY);
+            String msg = jsonObject.getString(RESPONSE_MSG_KEY);
+            return new WebHookResult(RESPONSE_CODE_OK == code, msg, responseBody);
         }
     }
 
