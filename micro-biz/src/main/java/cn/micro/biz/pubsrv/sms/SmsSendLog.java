@@ -61,16 +61,16 @@ public class SmsSendLog implements Serializable {
     /**
      * true表示需要同步发送
      */
-    private boolean syncSend = false;
+    private Boolean syncSend = false;
     /**
      * true表示为调试模式，不会真正发送短信(测试时用)
      */
-    private boolean debug = false;
+    private Boolean debug = false;
 
     /**
      * true表示需要发送至钉钉消息群(测试时用)
      */
-    private boolean sendDingTalk = false;
+    private Boolean sendDingTalk = false;
     /**
      * 钉钉群名称
      */
@@ -102,7 +102,7 @@ public class SmsSendLog implements Serializable {
     /**
      * 发送结果状态,true表示成功
      */
-    private boolean success = false;
+    private Boolean success = false;
     /**
      * 结果JSON参数
      */
