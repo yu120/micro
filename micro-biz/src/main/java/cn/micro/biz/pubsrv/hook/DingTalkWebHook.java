@@ -30,9 +30,9 @@ public class DingTalkWebHook implements Serializable {
     private static final String SERVER_URL = "https://oapi.dingtalk.com/robot/send?access_token=%s";
 
     public static void main(String[] args) throws Exception {
-        RobotSendRequestText robotSendRequestText = new RobotSendRequestText();
-        robotSendRequestText.setText(new Text("测试机器人功能的消息201905"));
-        robotSendRequestText.setAt(new At(null, true));
+        DingTalkWebHookTextRequest robotSendRequestText = new DingTalkWebHookTextRequest();
+        robotSendRequestText.setText(new DingTalkWebHookText("测试机器人功能的消息201905"));
+        robotSendRequestText.setAt(new DingTalkWebHookAt(null, true));
         WebHookResult webHookResult = DingTalkWebHook.push(
                 "0044bea6737e89921d27495e5d57592ccd10a74ab04a4b39b1ec7ff87db6106c", robotSendRequestText);
         System.out.println(webHookResult);
@@ -42,10 +42,10 @@ public class DingTalkWebHook implements Serializable {
      * Send push to 3th
      *
      * @param accessToken      access token
-     * @param robotSendRequest {@link RobotSendRequest}
+     * @param robotSendRequest {@link DingTalkWebHookRequest}
      * @return success true
      */
-    public static WebHookResult push(String accessToken, RobotSendRequest robotSendRequest) {
+    public static WebHookResult push(String accessToken, DingTalkWebHookRequest robotSendRequest) {
         String url = String.format(SERVER_URL, accessToken);
         Connection.Response response;
         try {
@@ -85,26 +85,26 @@ public class DingTalkWebHook implements Serializable {
     /**
      * 相关人的@功能
      *
-     * @param request   {@link RobotSendRequest}
+     * @param request   {@link DingTalkWebHookRequest}
      * @param atMobiles at mobiles list
      */
-    private void wrapperAtMobiles(RobotSendRequest request, List<String> atMobiles) {
+    private void wrapperAtMobiles(DingTalkWebHookRequest request, List<String> atMobiles) {
         if (atMobiles != null && !atMobiles.isEmpty()) {
-            At at = new At();
+            DingTalkWebHookAt at = new DingTalkWebHookAt();
             at.setAtMobiles(atMobiles);
             request.setAt(at);
         }
     }
 
     /**
-     * Robot Send Request
+     * Ding Talk Web Hook Request
      *
      * @author lry
      */
     @Data
     @ToString
     @AllArgsConstructor
-    public static class RobotSendRequest implements Serializable {
+    public static class DingTalkWebHookRequest implements Serializable {
         /**
          * 消息类型
          */
@@ -112,7 +112,7 @@ public class DingTalkWebHook implements Serializable {
         /**
          * 被@人的手机号
          */
-        private At at;
+        private DingTalkWebHookAt at;
     }
 
     /**
@@ -123,10 +123,10 @@ public class DingTalkWebHook implements Serializable {
     @Data
     @ToString(callSuper = true)
     @EqualsAndHashCode(callSuper = true)
-    public static class RobotSendRequestText extends RobotSendRequest {
-        private Text text;
+    public static class DingTalkWebHookTextRequest extends DingTalkWebHookRequest {
+        private DingTalkWebHookText text;
 
-        public RobotSendRequestText() {
+        public DingTalkWebHookTextRequest() {
             super("text", null);
         }
     }
@@ -139,10 +139,10 @@ public class DingTalkWebHook implements Serializable {
     @Data
     @ToString(callSuper = true)
     @EqualsAndHashCode(callSuper = true)
-    public static class RobotSendRequestLink extends RobotSendRequest {
-        private Link link;
+    public static class DingTalkWebHookLinkRequest extends DingTalkWebHookRequest {
+        private DingTalkWebHookLink link;
 
-        public RobotSendRequestLink() {
+        public DingTalkWebHookLinkRequest() {
             super("link", null);
         }
     }
@@ -155,10 +155,10 @@ public class DingTalkWebHook implements Serializable {
     @Data
     @ToString(callSuper = true)
     @EqualsAndHashCode(callSuper = true)
-    public static class RobotSendRequestFeedCard extends RobotSendRequest {
-        private FeedCard feedCard;
+    public static class DingTalkWebHookFeedCardRequest extends DingTalkWebHookRequest {
+        private DingTalkWebHookFeedCard feedCard;
 
-        public RobotSendRequestFeedCard() {
+        public DingTalkWebHookFeedCardRequest() {
             super("feedCard", null);
         }
     }
@@ -171,10 +171,10 @@ public class DingTalkWebHook implements Serializable {
     @Data
     @ToString(callSuper = true)
     @EqualsAndHashCode(callSuper = true)
-    public static class RobotSendRequestMarkdown extends RobotSendRequest {
-        private Markdown markdown;
+    public static class DingTalkWebHookMarkdownRequest extends DingTalkWebHookRequest {
+        private DingTalkWebHookMarkdown markdown;
 
-        public RobotSendRequestMarkdown() {
+        public DingTalkWebHookMarkdownRequest() {
             super("markdown", null);
         }
     }
@@ -185,13 +185,15 @@ public class DingTalkWebHook implements Serializable {
     @Data
     @ToString(callSuper = true)
     @EqualsAndHashCode(callSuper = true)
-    public static class RobotSendRequestActionCard extends RobotSendRequest {
-        private ActionCard actionCard;
+    public static class DingTalkWebHookActionCardRequest extends DingTalkWebHookRequest {
+        private DingTalkWebHookActionCard actionCard;
 
-        public RobotSendRequestActionCard() {
+        public DingTalkWebHookActionCardRequest() {
             super("actionCard", null);
         }
     }
+
+    // === 以下为支持模型
 
     /**
      * Text
@@ -202,7 +204,7 @@ public class DingTalkWebHook implements Serializable {
     @ToString
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Text implements Serializable {
+    public static class DingTalkWebHookText implements Serializable {
         private String content;
     }
 
@@ -215,7 +217,7 @@ public class DingTalkWebHook implements Serializable {
     @ToString
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class At implements Serializable {
+    public static class DingTalkWebHookAt implements Serializable {
         private List<String> atMobiles;
         /**
          * @ 所有人时:true,否则为:false
@@ -223,11 +225,16 @@ public class DingTalkWebHook implements Serializable {
         private Boolean isAtAll;
     }
 
+    /**
+     * Link
+     *
+     * @author lry
+     */
     @Data
     @ToString
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Link implements Serializable {
+    public static class DingTalkWebHookLink implements Serializable {
         /**
          * 点击消息跳转的URL
          */
@@ -246,11 +253,16 @@ public class DingTalkWebHook implements Serializable {
         private String title;
     }
 
+    /**
+     * Markdown
+     *
+     * @author lry
+     */
     @Data
     @ToString
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Markdown implements Serializable {
+    public static class DingTalkWebHookMarkdown implements Serializable {
         /**
          * markdown格式的消息
          */
@@ -261,11 +273,16 @@ public class DingTalkWebHook implements Serializable {
         private String title;
     }
 
+    /**
+     * Btn
+     *
+     * @author lry
+     */
     @Data
     @ToString
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Btns implements Serializable {
+    public static class DingTalkWebHookBtn implements Serializable {
         /**
          * 按钮方案，
          */
@@ -276,11 +293,16 @@ public class DingTalkWebHook implements Serializable {
         private String title;
     }
 
+    /**
+     * ActionCard
+     *
+     * @author lry
+     */
     @Data
     @ToString
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ActionCard implements Serializable {
+    public static class DingTalkWebHookActionCard implements Serializable {
         /**
          * 0-按钮竖直排列，1-按钮横向排列
          */
@@ -288,7 +310,7 @@ public class DingTalkWebHook implements Serializable {
         /**
          * 按钮的信息
          */
-        private List<Btns> btns;
+        private List<DingTalkWebHookBtn> btns;
         /**
          * 0-正常发消息者头像,1-隐藏发消息者头像
          */
@@ -311,11 +333,29 @@ public class DingTalkWebHook implements Serializable {
         private String title;
     }
 
+    /**
+     * FeedCard
+     *
+     * @author lry
+     */
     @Data
     @ToString
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Links implements Serializable {
+    public static class DingTalkWebHookFeedCard implements Serializable {
+        private List<DingTalkWebHookLinks> links;
+    }
+
+    /**
+     * Links
+     *
+     * @author lry
+     */
+    @Data
+    @ToString
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DingTalkWebHookLinks implements Serializable {
         /**
          * 点击单条信息到跳转链接
          */
@@ -328,14 +368,6 @@ public class DingTalkWebHook implements Serializable {
          * 单条信息后面图片的URL
          */
         private String title;
-    }
-
-    @Data
-    @ToString
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class FeedCard implements Serializable {
-        private List<Links> links;
     }
 
 }

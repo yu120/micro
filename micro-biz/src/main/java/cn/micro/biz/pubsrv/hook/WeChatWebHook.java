@@ -31,9 +31,9 @@ public class WeChatWebHook implements Serializable {
     private static final String SERVER_URL = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=%s";
 
     public static void main(String[] args) throws Exception {
-        RobotSendRequestText robotSendRequest = new RobotSendRequestText();
-        robotSendRequest.setText(new Text("你好呀", null, null));
-        WebHookResult webHookResult = WeChatWebHook.push("916d230b-8050-41ad-8bf4-859f76a27eaf", robotSendRequest);
+        WeChatWebHookTextRequest weChatWebHookTextRequest = new WeChatWebHookTextRequest();
+        weChatWebHookTextRequest.setText(new WeChatWebHookText("你好呀", null, null));
+        WebHookResult webHookResult = WeChatWebHook.push("916d230b-8050-41ad-8bf4-859f76a27eaf", weChatWebHookTextRequest);
         System.out.println(webHookResult);
     }
 
@@ -43,7 +43,7 @@ public class WeChatWebHook implements Serializable {
      * @param accessToken access token
      * @return success true
      */
-    public static WebHookResult push(String accessToken, RobotSendRequest robotSendRequest) {
+    public static WebHookResult push(String accessToken, WeChatWebHookRequest robotSendRequest) {
         String url = String.format(SERVER_URL, accessToken);
         Connection.Response response;
         try {
@@ -81,14 +81,14 @@ public class WeChatWebHook implements Serializable {
     }
 
     /**
-     * Robot Send Request
+     * WeChat Web Hook Request
      *
      * @author lry
      */
     @Data
     @ToString
     @AllArgsConstructor
-    public static class RobotSendRequest implements Serializable {
+    public static class WeChatWebHookRequest implements Serializable {
         /**
          * 消息类型
          */
@@ -96,17 +96,17 @@ public class WeChatWebHook implements Serializable {
     }
 
     /**
-     * 文本消息 (text)
+     * Text
      *
      * @author lry
      */
     @Data
     @ToString(callSuper = true)
     @EqualsAndHashCode(callSuper = true)
-    public static class RobotSendRequestText extends RobotSendRequest {
-        private Text text;
+    public static class WeChatWebHookTextRequest extends WeChatWebHookRequest {
+        private WeChatWebHookText text;
 
-        public RobotSendRequestText() {
+        public WeChatWebHookTextRequest() {
             super("text");
         }
     }
@@ -119,10 +119,10 @@ public class WeChatWebHook implements Serializable {
     @Data
     @ToString(callSuper = true)
     @EqualsAndHashCode(callSuper = true)
-    public static class RobotSendRequestMarkdown extends RobotSendRequest {
-        private Markdown markdown;
+    public static class WeChatWebHookMarkdownRequest extends WeChatWebHookRequest {
+        private WeChatWebHookMarkdown markdown;
 
-        public RobotSendRequestMarkdown() {
+        public WeChatWebHookMarkdownRequest() {
             super("markdown");
         }
     }
@@ -135,10 +135,10 @@ public class WeChatWebHook implements Serializable {
     @Data
     @ToString(callSuper = true)
     @EqualsAndHashCode(callSuper = true)
-    public static class RobotSendRequestImage extends RobotSendRequest {
-        private Image image;
+    public static class WeChatWebHookImageRequest extends WeChatWebHookRequest {
+        private WeChatWebHookImage image;
 
-        public RobotSendRequestImage() {
+        public WeChatWebHookImageRequest() {
             super("image");
         }
     }
@@ -151,13 +151,15 @@ public class WeChatWebHook implements Serializable {
     @Data
     @ToString(callSuper = true)
     @EqualsAndHashCode(callSuper = true)
-    public static class RobotSendRequestNews extends RobotSendRequest {
-        private News news;
+    public static class WeChatWebHookNewsRequest extends WeChatWebHookRequest {
+        private WeChatWebHookNews news;
 
-        public RobotSendRequestNews() {
+        public WeChatWebHookNewsRequest() {
             super("news");
         }
     }
+
+    // === 以下为支持模型
 
     /**
      * Text
@@ -168,13 +170,15 @@ public class WeChatWebHook implements Serializable {
     @ToString
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Text implements Serializable {
+    public static class WeChatWebHookText implements Serializable {
         /**
          * 文本内容，最长不超过2048个字节，必须是utf8编码
          */
         private String content;
         /**
-         * userid的列表，提醒群中的指定成员(@某个成员)，@all表示提醒所有人，如果开发者获取不到userid，可以使用mentioned_mobile_list
+         * userid的列表，提醒群中的指定成员(@某个成员)，@all表示提醒所有人
+         * <p>
+         * 如果开发者获取不到userid，可以使用mentioned_mobile_list
          */
         private String mentioned_list;
         /**
@@ -192,7 +196,7 @@ public class WeChatWebHook implements Serializable {
     @ToString
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Markdown implements Serializable {
+    public static class WeChatWebHookMarkdown implements Serializable {
         /**
          * markdown内容，最长不超过4096个字节，必须是utf8编码
          */
@@ -208,7 +212,7 @@ public class WeChatWebHook implements Serializable {
     @ToString
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Image implements Serializable {
+    public static class WeChatWebHookImage implements Serializable {
         /**
          * 图片内容的base64编码
          */
@@ -228,11 +232,11 @@ public class WeChatWebHook implements Serializable {
     @ToString
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class News implements Serializable {
+    public static class WeChatWebHookNews implements Serializable {
         /**
          * 图文消息，一个图文消息支持1到8条图文
          */
-        private List<Article> articles;
+        private List<WeChatWebHookArticle> articles;
     }
 
     /**
@@ -244,7 +248,7 @@ public class WeChatWebHook implements Serializable {
     @ToString
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Article implements Serializable {
+    public static class WeChatWebHookArticle implements Serializable {
         /**
          * 标题，不超过128个字节，超过会自动截断
          */

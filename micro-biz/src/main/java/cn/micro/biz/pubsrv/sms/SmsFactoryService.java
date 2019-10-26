@@ -82,8 +82,8 @@ public class SmsFactoryService {
             }
             message = String.format(SMS_MESSAGE_TEMP, smsSendParam.getMobile(), message);
 
-            DingTalkWebHook.RobotSendRequestText robotSendRequestText = new DingTalkWebHook.RobotSendRequestText();
-            robotSendRequestText.setText(new DingTalkWebHook.Text(message));
+            DingTalkWebHook.DingTalkWebHookTextRequest robotSendRequestText = new DingTalkWebHook.DingTalkWebHookTextRequest();
+            robotSendRequestText.setText(new DingTalkWebHook.DingTalkWebHookText(message));
             WebHookResult webHookResult = DingTalkWebHook.push(smsSendConfig.getDingTalkToken(), robotSendRequestText);
             log.info("Send Ding Talk:{}", webHookResult);
         }
