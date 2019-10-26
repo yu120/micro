@@ -6,6 +6,7 @@ import java.util.Date;
 
 /**
  * 短信发送日志
+ * https://gitbook.cn/books/5bdbde731475c63d08c1f4f4/index.html
  *
  * @author lry
  */
