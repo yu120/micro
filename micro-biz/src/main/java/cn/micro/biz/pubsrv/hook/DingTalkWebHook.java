@@ -14,6 +14,8 @@ import java.util.List;
 
 /**
  * Ding Talk Web Hook
+ * <p>
+ * 每个机器人每分钟最多发送20条。
  *
  * @author lry
  */
@@ -113,71 +115,89 @@ public class DingTalkWebHook implements Serializable {
         private At at;
     }
 
+    /**
+     * 文本消息 (text)
+     *
+     * @author lry
+     */
     @Data
     @ToString(callSuper = true)
     @EqualsAndHashCode(callSuper = true)
     public static class RobotSendRequestText extends RobotSendRequest {
-
         private Text text;
 
         public RobotSendRequestText() {
             super("text", null);
         }
-
     }
 
+    /**
+     * 链接 (link)
+     *
+     * @author lry
+     */
     @Data
     @ToString(callSuper = true)
     @EqualsAndHashCode(callSuper = true)
     public static class RobotSendRequestLink extends RobotSendRequest {
-
         private Link link;
 
         public RobotSendRequestLink() {
             super("link", null);
         }
-
     }
 
+    /**
+     * FeedCard
+     *
+     * @author lry
+     */
     @Data
     @ToString(callSuper = true)
     @EqualsAndHashCode(callSuper = true)
     public static class RobotSendRequestFeedCard extends RobotSendRequest {
-
         private FeedCard feedCard;
 
         public RobotSendRequestFeedCard() {
             super("feedCard", null);
         }
-
     }
 
+    /**
+     * Markdown
+     *
+     * @author lry
+     */
     @Data
     @ToString(callSuper = true)
     @EqualsAndHashCode(callSuper = true)
     public static class RobotSendRequestMarkdown extends RobotSendRequest {
-
         private Markdown markdown;
 
         public RobotSendRequestMarkdown() {
             super("markdown", null);
         }
-
     }
 
+    /**
+     * ActionCard
+     */
     @Data
     @ToString(callSuper = true)
     @EqualsAndHashCode(callSuper = true)
     public static class RobotSendRequestActionCard extends RobotSendRequest {
-
         private ActionCard actionCard;
 
         public RobotSendRequestActionCard() {
             super("actionCard", null);
         }
-
     }
 
+    /**
+     * FeedCard
+     *
+     * @author lry
+     */
     @Data
     @ToString
     @NoArgsConstructor
@@ -186,6 +206,11 @@ public class DingTalkWebHook implements Serializable {
         private String content;
     }
 
+    /**
+     * At
+     *
+     * @author lry
+     */
     @Data
     @ToString
     @NoArgsConstructor
