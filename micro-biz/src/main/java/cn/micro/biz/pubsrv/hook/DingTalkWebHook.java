@@ -42,10 +42,10 @@ public class DingTalkWebHook implements Serializable {
      * Send push to 3th
      *
      * @param accessToken      access token
-     * @param robotSendRequest {@link DingTalkWebHookRequest}
+     * @param dingTalkWebHookRequest {@link DingTalkWebHookRequest}
      * @return success true
      */
-    public static WebHookResult push(String accessToken, DingTalkWebHookRequest robotSendRequest) {
+    public static WebHookResult push(String accessToken, DingTalkWebHookRequest dingTalkWebHookRequest) {
         String url = String.format(SERVER_URL, accessToken);
         Connection.Response response;
         try {
@@ -54,7 +54,7 @@ public class DingTalkWebHook implements Serializable {
             request.header(CONTENT_TYPE_KEY, CONTENT_TYPE);
             request.postDataCharset(StandardCharsets.UTF_8.name());
             request.method(Connection.Method.POST);
-            request.requestBody(JSON.toJSONString(robotSendRequest));
+            request.requestBody(JSON.toJSONString(dingTalkWebHookRequest));
 
             log.debug("Ding Talk request url:[{}], method:[{}], headers:[{}], body:[{}]",
                     url, request.method(), request.headers(), request.requestBody());

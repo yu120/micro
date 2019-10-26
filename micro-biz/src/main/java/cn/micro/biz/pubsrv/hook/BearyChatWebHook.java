@@ -29,7 +29,7 @@ public class BearyChatWebHook implements Serializable {
     private static final String SERVER_URL = "https://hook.bearychat.com/=bwCqE/incoming/%s";
 
     public static void main(String[] args) throws Exception {
-        RobotSendRequest robotSendRequest = new RobotSendRequest();
+        BearyChatWebHookRequest robotSendRequest = new BearyChatWebHookRequest();
         robotSendRequest.setText("看看快快快dddddd22222");
         WebHookResult webHookResult = BearyChatWebHook.push("fe3901f23862dca2e15f4695bf845bdd", robotSendRequest);
         System.out.println(webHookResult);
@@ -38,11 +38,11 @@ public class BearyChatWebHook implements Serializable {
     /**
      * Send push to 3th
      *
-     * @param accessToken      access token
-     * @param robotSendRequest {@link RobotSendRequest}
+     * @param accessToken             access token
+     * @param bearyChatWebHookRequest {@link BearyChatWebHookRequest}
      * @return success true
      */
-    public static WebHookResult push(String accessToken, RobotSendRequest robotSendRequest) {
+    public static WebHookResult push(String accessToken, BearyChatWebHookRequest bearyChatWebHookRequest) {
         String url = String.format(SERVER_URL, accessToken);
         Connection.Response response;
         try {
@@ -51,7 +51,7 @@ public class BearyChatWebHook implements Serializable {
             request.header(CONTENT_TYPE_KEY, CONTENT_TYPE);
             request.method(Connection.Method.POST);
             request.postDataCharset(StandardCharsets.UTF_8.name());
-            request.requestBody(JSON.toJSONString(robotSendRequest));
+            request.requestBody(JSON.toJSONString(bearyChatWebHookRequest));
 
             log.debug("Beary Chat request url:[{}], method:[{}], headers:[{}], body:[{}]",
                     url, request.method(), request.headers(), request.requestBody());
@@ -81,7 +81,7 @@ public class BearyChatWebHook implements Serializable {
 
     @Data
     @ToString
-    public static class RobotSendRequest implements Serializable {
+    public static class BearyChatWebHookRequest implements Serializable {
         /**
          * 必须字段。支持 inline md 的文本内容
          */
@@ -106,17 +106,19 @@ public class BearyChatWebHook implements Serializable {
         /**
          * 可选字段，一系列附件
          */
-        private List<Attachments> attachments;
+        private List<BearyChatWebHookAttachmentRequest> attachments;
     }
 
     /**
+     * Attachment
+     * <p>
      * title和text字段必须有一个
      *
      * @author lry
      */
     @Data
     @ToString
-    public static class Attachments implements Serializable {
+    public static class BearyChatWebHookAttachmentRequest implements Serializable {
         /**
          * 可选
          */
@@ -139,12 +141,17 @@ public class BearyChatWebHook implements Serializable {
          * 可能造成请求响应时间增加。另外如果两次推送的图片地址都一样，那么第二次的响应
          * 时间会显著降低，因为服务器会对请求进行缓存至少一天，所以如果需要不同的图片请使用不同地址。
          */
-        private List<ImagesUrl> images;
+        private List<BearyChatWebHookImagesUrlRequest> images;
     }
 
+    /**
+     * Images Url
+     *
+     * @author lry
+     */
     @Data
     @ToString
-    public static class ImagesUrl implements Serializable {
+    public static class BearyChatWebHookImagesUrlRequest implements Serializable {
         private String url;
     }
 

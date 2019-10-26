@@ -40,10 +40,11 @@ public class WeChatWebHook implements Serializable {
     /**
      * Send push to 3th
      *
-     * @param accessToken access token
+     * @param accessToken          access token
+     * @param weChatWebHookRequest {@link WeChatWebHookRequest}
      * @return success true
      */
-    public static WebHookResult push(String accessToken, WeChatWebHookRequest robotSendRequest) {
+    public static WebHookResult push(String accessToken, WeChatWebHookRequest weChatWebHookRequest) {
         String url = String.format(SERVER_URL, accessToken);
         Connection.Response response;
         try {
@@ -52,7 +53,7 @@ public class WeChatWebHook implements Serializable {
             request.method(Connection.Method.POST);
             request.header(CONTENT_TYPE_KEY, CONTENT_TYPE);
             request.postDataCharset(StandardCharsets.UTF_8.name());
-            request.requestBody(JSON.toJSONString(robotSendRequest));
+            request.requestBody(JSON.toJSONString(weChatWebHookRequest));
 
             log.debug("WeChat request url:[{}], method:[{}], headers:[{}], body:[{}]",
                     url, request.method(), request.headers(), request.requestBody());
