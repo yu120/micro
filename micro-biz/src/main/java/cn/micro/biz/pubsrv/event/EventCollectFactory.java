@@ -2,6 +2,7 @@ package cn.micro.biz.pubsrv.event;
 
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import com.google.common.eventbus.SubscriberExceptionHandler;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -29,13 +30,15 @@ public class EventCollectFactory {
     private ThreadPoolExecutor threadPoolExecutor;
     private EventBus eventBus;
     private AsyncEventBus asyncEventBus;
+    private final List<Object> eventBusBean = new ArrayList<>();
 
-    /**
-     * The initialize event collect factory
-     */
-    public void initialize() {
+    public EventCollectFactory() {
         int coreThread = Runtime.getRuntime().availableProcessors();
         initialize(2 * coreThread, 2 * coreThread, 10 * coreThread);
+    }
+
+    public EventCollectFactory(int coreThread, int maxThread, int queueSize) {
+        initialize(coreThread, maxThread, queueSize);
     }
 
     /**
@@ -45,7 +48,7 @@ public class EventCollectFactory {
      * @param maxThread  max thread
      * @param queueSize  queue size
      */
-    public void initialize(int coreThread, int maxThread, int queueSize) {
+    private void initialize(int coreThread, int maxThread, int queueSize) {
         exceptionLoggerHandler = (exception, context) -> {
             Method method = context.getSubscriberMethod();
             String message = String.format("Exception thrown by subscriber method %s(%s) " +
@@ -78,15 +81,54 @@ public class EventCollectFactory {
     }
 
     /**
-     * The  publish event
+     * The register event bus
      *
-     * @param guavaEvent {@link MicroEvent}
-     * @param className
-     * @param methodName
-     * @param args
-     * @param result
+     * @param object object
      */
-    public void publishEvent(MicroEvent guavaEvent, String className, String methodName, Object[] args, Object result) {
+    public void register(Object object) {
+        Method[] methods = object.getClass().getDeclaredMethods();
+        if (methods.length == 0) {
+            return;
+        }
+
+        for (Method method : methods) {
+            Subscribe subscribe = method.getAnnotation(Subscribe.class);
+            if (subscribe == null) {
+                continue;
+            }
+
+            eventBus.register(object);
+            asyncEventBus.register(object);
+            eventBusBean.add(object);
+            return;
+        }
+    }
+
+    /**
+     * The register event bus list
+     *
+     * @param objects object list
+     */
+    public void registers(List<Object> objects) {
+        for (Object object : objects) {
+            register(object);
+        }
+    }
+
+    /**
+     * The publish aop event
+     *
+     * @param microEvent {@link MicroEvent}
+     * @param className  class name
+     * @param methodName method name
+     * @param args       arg list
+     * @param result     result
+     */
+    public void publishEvent(MicroEvent microEvent, String className, String methodName, Object[] args, Object result) {
+        if (!microEvent.enable()) {
+            return;
+        }
+
         List<Object> data = new ArrayList<>();
         if (args != null) {
             Collections.addAll(data, args);
@@ -97,13 +139,56 @@ public class EventCollectFactory {
         event.setMethodName(methodName);
         event.setArgs(data);
         event.setResult(result);
-        event.setTitle(guavaEvent.value());
-        event.setDesc(guavaEvent.desc());
+        event.setTitle(microEvent.value());
+        event.setDesc(microEvent.desc());
 
-        if (guavaEvent.async()) {
-            asyncEventBus.post(event);
-        } else {
-            eventBus.post(event);
+        publishEvent(microEvent.enable(), microEvent.async(), event);
+    }
+
+    /**
+     * The publish event
+     *
+     * @param enable enable
+     * @param async  async
+     * @param object object
+     */
+    public void publishEvent(boolean enable, boolean async, Object object) {
+        if (enable) {
+            if (async) {
+                asyncEventBus.post(object);
+            } else {
+                eventBus.post(object);
+            }
+        }
+    }
+
+    /**
+     * The unregister event bus
+     *
+     * @param object object
+     */
+    public void unregister(Object object) {
+        eventBus.unregister(object);
+        asyncEventBus.unregister(object);
+    }
+
+    /**
+     * The unregister event bus list
+     *
+     * @param objects object list
+     */
+    public void unregisters(List<Object> objects) {
+        for (Object bean : eventBusBean) {
+            this.unregister(bean);
+        }
+    }
+
+    /**
+     * The unregister all event bus list
+     */
+    public void unregisterAll() {
+        for (Object bean : eventBusBean) {
+            this.unregister(bean);
         }
     }
 
@@ -111,6 +196,7 @@ public class EventCollectFactory {
      * The destroy event collect factory
      */
     public void destroy() {
+        unregisterAll();
         if (threadPoolExecutor != null) {
             threadPoolExecutor.shutdown();
         }

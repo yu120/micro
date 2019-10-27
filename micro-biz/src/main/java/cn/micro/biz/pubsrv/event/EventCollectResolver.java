@@ -27,25 +27,21 @@ public class EventCollectResolver {
     public void pointcutService() {
     }
 
-    @Before(value = "pointcutService()&& @annotation(guavaEvent)")
-    public void handlerEventBefore(JoinPoint joinPoint, MicroEvent guavaEvent) {
-        if (guavaEvent.enable()) {
-            if (MicroEvent.EventPost.BEFORE.equals(guavaEvent.advice())) {
-                MethodSignature ms = (MethodSignature) joinPoint.getSignature();
-                Method method = ms.getMethod();
-                asyncEventFactory.publishEvent(guavaEvent, method.getName(), method.getName(), joinPoint.getArgs(), null);
-            }
+    @Before(value = "pointcutService()&& @annotation(microEvent)")
+    public void handlerEventBefore(JoinPoint joinPoint, MicroEvent microEvent) {
+        if (MicroEvent.EventPost.BEFORE.equals(microEvent.advice())) {
+            MethodSignature ms = (MethodSignature) joinPoint.getSignature();
+            Method method = ms.getMethod();
+            asyncEventFactory.publishEvent(microEvent, method.getName(), method.getName(), joinPoint.getArgs(), null);
         }
     }
 
-    @AfterReturning(value = "pointcutService()&& @annotation(guavaEvent)", returning = "result")
-    public void handlerEventAfter(JoinPoint joinPoint, MicroEvent guavaEvent, Object result) {
-        if (guavaEvent.enable()) {
-            if (MicroEvent.EventPost.AFTER.equals(guavaEvent.advice())) {
-                MethodSignature ms = (MethodSignature) joinPoint.getSignature();
-                Method method = ms.getMethod();
-                asyncEventFactory.publishEvent(guavaEvent, method.getName(), method.getName(), joinPoint.getArgs(), result);
-            }
+    @AfterReturning(value = "pointcutService()&& @annotation(microEvent)", returning = "result")
+    public void handlerEventAfter(JoinPoint joinPoint, MicroEvent microEvent, Object result) {
+        if (MicroEvent.EventPost.AFTER.equals(microEvent.advice())) {
+            MethodSignature ms = (MethodSignature) joinPoint.getSignature();
+            Method method = ms.getMethod();
+            asyncEventFactory.publishEvent(microEvent, method.getName(), method.getName(), joinPoint.getArgs(), result);
         }
     }
 
