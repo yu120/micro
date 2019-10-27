@@ -70,7 +70,7 @@ public class EventCollectFactory {
                     @Override
                     public Thread newThread(Runnable r) {
                         Thread thread = new Thread(r);
-                        thread.setName("event-task-" + (threadIndex.incrementAndGet()));
+                        thread.setName("event-collect-" + (threadIndex.incrementAndGet()));
                         thread.setDaemon(true);
                         return thread;
                     }
