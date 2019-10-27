@@ -47,6 +47,19 @@ public @interface MicroEvent {
      */
     EventPost advice() default EventPost.AFTER;
 
+    /**
+     * Collect method name
+     *
+     * @return true is collect method name
+     */
+    boolean methodName() default false;
+
+    /**
+     * Collect class name
+     *
+     * @return true is collect class name
+     */
+    boolean className() default false;
 
     /**
      * Event Post
