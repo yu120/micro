@@ -4,11 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.parser.Feature;
 import com.alicp.jetcache.support.AbstractValueDecoder;
 
-public class FastjsonValueDecoder extends AbstractValueDecoder {
+public class FastJsonValueDecoder extends AbstractValueDecoder {
 
-    public static final FastjsonValueDecoder INSTANCE = new FastjsonValueDecoder(true);
+    public static final FastJsonValueDecoder INSTANCE = new FastJsonValueDecoder(true);
 
-    public FastjsonValueDecoder(boolean useIdentityNumber) {
+    public FastJsonValueDecoder(boolean useIdentityNumber) {
         super(useIdentityNumber);
     }
 

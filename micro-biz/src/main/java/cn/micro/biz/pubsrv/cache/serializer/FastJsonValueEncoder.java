@@ -9,11 +9,11 @@ import com.alicp.jetcache.support.AbstractValueEncoder;
  *
  * @author lry
  */
-public class FastjsonValueEncoder extends AbstractValueEncoder {
+public class FastJsonValueEncoder extends AbstractValueEncoder {
 
-    public static final FastjsonValueEncoder INSTANCE = new FastjsonValueEncoder(true);
+    public static final FastJsonValueEncoder INSTANCE = new FastJsonValueEncoder(true);
 
-    public FastjsonValueEncoder(boolean useIdentityNumber) {
+    public FastJsonValueEncoder(boolean useIdentityNumber) {
         super(useIdentityNumber);
     }
 

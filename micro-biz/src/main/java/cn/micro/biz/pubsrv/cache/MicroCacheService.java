@@ -4,8 +4,8 @@ import cn.micro.biz.commons.auth.MicroAuthContext;
 import cn.micro.biz.commons.exception.support.MicroErrorException;
 import cn.micro.biz.pubsrv.cache.support.MicroCacheProperties;
 import cn.micro.biz.pubsrv.cache.support.MicroCacheRuleProperties;
-import cn.micro.biz.pubsrv.cache.serializer.FastjsonValueDecoder;
-import cn.micro.biz.pubsrv.cache.serializer.FastjsonValueEncoder;
+import cn.micro.biz.pubsrv.cache.serializer.FastJsonValueDecoder;
+import cn.micro.biz.pubsrv.cache.serializer.FastJsonValueEncoder;
 import cn.micro.biz.pubsrv.cache.support.MicroCacheType;
 import com.alicp.jetcache.Cache;
 import com.alicp.jetcache.MultiLevelCacheBuilder;
@@ -63,8 +63,8 @@ public class MicroCacheService implements InitializingBean, DisposableBean {
                 valueDecoder = KryoValueDecoder.INSTANCE;
                 break;
             case FASTJSON:
-                valueEncoder = FastjsonValueEncoder.INSTANCE;
-                valueDecoder = FastjsonValueDecoder.INSTANCE;
+                valueEncoder = FastJsonValueEncoder.INSTANCE;
+                valueDecoder = FastJsonValueDecoder.INSTANCE;
                 break;
             default:
         }
