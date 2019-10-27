@@ -16,6 +16,7 @@ import java.util.List;
  * Ding Talk Web Hook
  * <p>
  * 每个机器人每分钟最多发送20条。
+ * https://ding-doc.dingtalk.com/doc#/serverapi2/qf2nxq
  *
  * @author lry
  */
@@ -41,7 +42,7 @@ public class DingTalkWebHook implements Serializable {
     /**
      * Send push to 3th
      *
-     * @param accessToken      access token
+     * @param accessToken            access token
      * @param dingTalkWebHookRequest {@link DingTalkWebHookRequest}
      * @return success true
      */
@@ -83,20 +84,6 @@ public class DingTalkWebHook implements Serializable {
     }
 
     /**
-     * 相关人的@功能
-     *
-     * @param request   {@link DingTalkWebHookRequest}
-     * @param atMobiles at mobiles list
-     */
-    private void wrapperAtMobiles(DingTalkWebHookRequest request, List<String> atMobiles) {
-        if (atMobiles != null && !atMobiles.isEmpty()) {
-            DingTalkWebHookAt at = new DingTalkWebHookAt();
-            at.setAtMobiles(atMobiles);
-            request.setAt(at);
-        }
-    }
-
-    /**
      * Ding Talk Web Hook Request
      *
      * @author lry
@@ -110,13 +97,33 @@ public class DingTalkWebHook implements Serializable {
          */
         private String msgtype;
         /**
-         * 被@人的手机号
+         * 被@人的规则
          */
         private DingTalkWebHookAt at;
     }
 
     /**
-     * 文本消息 (text)
+     * At
+     *
+     * @author lry
+     */
+    @Data
+    @ToString
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DingTalkWebHookAt implements Serializable {
+        /**
+         * 被@人的手机号(在text内容里要有@手机号)
+         */
+        private List<String> atMobiles;
+        /**
+         * @ 所有人时:true,否则为:false
+         */
+        private Boolean isAtAll;
+    }
+
+    /**
+     * Text
      *
      * @author lry
      */
@@ -132,7 +139,7 @@ public class DingTalkWebHook implements Serializable {
     }
 
     /**
-     * 链接 (link)
+     * Link
      *
      * @author lry
      */
@@ -209,23 +216,6 @@ public class DingTalkWebHook implements Serializable {
     }
 
     /**
-     * At
-     *
-     * @author lry
-     */
-    @Data
-    @ToString
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class DingTalkWebHookAt implements Serializable {
-        private List<String> atMobiles;
-        /**
-         * @ 所有人时:true,否则为:false
-         */
-        private Boolean isAtAll;
-    }
-
-    /**
      * Link
      *
      * @author lry
@@ -284,13 +274,13 @@ public class DingTalkWebHook implements Serializable {
     @AllArgsConstructor
     public static class DingTalkWebHookBtn implements Serializable {
         /**
-         * 按钮方案，
-         */
-        private String actionURL;
-        /**
-         * 点击按钮触发的URL此消息类型为固定feedCard
+         * 按钮标题
          */
         private String title;
+        /**
+         * 按钮连接
+         */
+        private String actionURL;
     }
 
     /**
