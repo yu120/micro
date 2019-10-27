@@ -32,7 +32,7 @@ public class EventCollectResolver {
             String methodName = collectMethodName(joinPoint, microEvent);
             // collect class name
             String className = collectClassName(joinPoint, microEvent);
-            asyncEventFactory.publishEvent(microEvent, className, methodName, joinPoint.getArgs(), null);
+            asyncEventFactory.publish(microEvent, className, methodName, joinPoint.getArgs(), null);
         }
     }
 
@@ -43,7 +43,7 @@ public class EventCollectResolver {
             String methodName = collectMethodName(joinPoint, microEvent);
             // collect class name
             String className = collectClassName(joinPoint, microEvent);
-            asyncEventFactory.publishEvent(microEvent, className, methodName, joinPoint.getArgs(), result);
+            asyncEventFactory.publish(microEvent, className, methodName, joinPoint.getArgs(), result);
         }
     }
 

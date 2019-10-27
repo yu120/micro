@@ -124,7 +124,7 @@ public class EventCollectFactory {
      * @param args       arg list
      * @param result     result
      */
-    public void publishEvent(MicroEvent microEvent, String className, String methodName, Object[] args, Object result) {
+    public void publish(MicroEvent microEvent, String className, String methodName, Object[] args, Object result) {
         if (!microEvent.enable()) {
             return;
         }
@@ -142,7 +142,7 @@ public class EventCollectFactory {
         event.setTitle(microEvent.value());
         event.setDesc(microEvent.desc());
 
-        publishEvent(microEvent.enable(), microEvent.async(), event);
+        publish(microEvent.enable(), microEvent.async(), event);
     }
 
     /**
@@ -152,7 +152,7 @@ public class EventCollectFactory {
      * @param async  async
      * @param object object
      */
-    public void publishEvent(boolean enable, boolean async, Object object) {
+    public void publish(boolean enable, boolean async, Object object) {
         if (enable) {
             if (async) {
                 asyncEventBus.post(object);
