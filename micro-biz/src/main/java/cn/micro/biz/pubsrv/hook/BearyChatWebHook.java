@@ -15,6 +15,8 @@ import java.util.List;
 
 /**
  * Beary Chat Web Hook
+ * <p>
+ * https://i-micro.bearychat.com/dashboard/robots/=bwJ57?type=outgoing
  *
  * @author lry
  */
@@ -77,19 +79,6 @@ public class BearyChatWebHook implements Serializable {
             String msg = jsonObject.getString(RESPONSE_RESULT_KEY);
             return new WebHookResult(RESPONSE_CODE_OK == code, msg, responseBody);
         }
-    }
-
-    /**
-     * The outgoing notify
-     *
-     * @param body notify body
-     * @return success true
-     */
-    public static BearyChatWebHookOutgoingResponse outgoing(String body) {
-        BearyChatWebHookOutgoingRequest request = JSON.parseObject(body, BearyChatWebHookOutgoingRequest.class);
-        BearyChatWebHookOutgoingResponse response = new BearyChatWebHookOutgoingResponse();
-        response.setText("这是请求内容：" + request.getText());
-        return response;
     }
 
     @Data
@@ -168,65 +157,4 @@ public class BearyChatWebHook implements Serializable {
         private String url;
     }
 
-    // === Outgoing 模型
-
-    /**
-     * Outgoing 机器人请求消息体
-     *
-     * @author lry
-     */
-    @Data
-    @ToString
-    public static class BearyChatWebHookOutgoingRequest implements Serializable {
-        /**
-         * 外部服务可以通过验证请求数据中的token是否为指定token来判断请求有效性
-         */
-        private String token;
-        private Long ts;
-        private String text;
-        /**
-         * 触发词
-         */
-        private String trigger_word;
-        private String subdomain;
-        private String channel_name;
-        private String user_name;
-    }
-
-    /**
-     * Outgoing 机器人响应消息体
-     *
-     * @author lry
-     */
-    @Data
-    @ToString
-    public static class BearyChatWebHookOutgoingResponse implements Serializable {
-        private String text;
-        private List<BearyChatWebHookOutgoingAttachment> attachment;
-    }
-
-    /**
-     * Outgoing Attachment
-     *
-     * @author lry
-     */
-    @Data
-    @ToString
-    public static class BearyChatWebHookOutgoingAttachment implements Serializable {
-        private String title;
-        private String text;
-        private String color;
-        private List<BearyChatWebHookOutgoingImage> images;
-    }
-
-    /**
-     * Outgoing Image
-     *
-     * @author lry
-     */
-    @Data
-    @ToString
-    public static class BearyChatWebHookOutgoingImage implements Serializable {
-        private String url;
-    }
 }
