@@ -40,7 +40,7 @@ public class BearyChatOutgoing implements Serializable {
     /**
      * Send push to 3th
      *
-     * @param accessToken             access token
+     * @param accessToken              access token
      * @param bearyChatOutgoingRequest {@link BearyChatOutgoingRequest}
      * @return success true
      */
