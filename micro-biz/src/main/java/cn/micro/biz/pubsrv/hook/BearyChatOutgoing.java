@@ -31,9 +31,9 @@ public class BearyChatOutgoing implements Serializable {
     private static final String SERVER_URL = "https://hook.bearychat.com/=bwCqE/incoming/%s";
 
     public static void main(String[] args) throws Exception {
-        BearyChatOutgoingRequest robotSendRequest = new BearyChatOutgoingRequest();
-        robotSendRequest.setText("看看快快快dddddd22222");
-        OutgoingResult outgoingResult = BearyChatOutgoing.push("fe3901f23862dca2e15f4695bf845bdd", robotSendRequest);
+        BearyChatOutgoingRequest bearyChatOutgoingRequest = new BearyChatOutgoingRequest();
+        bearyChatOutgoingRequest.setText("看看快快快dddddd22222");
+        OutgoingResult outgoingResult = BearyChatOutgoing.push("fe3901f23862dca2e15f4695bf845bdd", bearyChatOutgoingRequest);
         System.out.println(outgoingResult);
     }
 

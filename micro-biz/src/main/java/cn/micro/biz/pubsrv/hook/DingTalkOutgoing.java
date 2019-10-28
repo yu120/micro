@@ -31,11 +31,11 @@ public class DingTalkOutgoing implements Serializable {
     private static final String SERVER_URL = "https://oapi.dingtalk.com/robot/send?access_token=%s";
 
     public static void main(String[] args) throws Exception {
-        DingTalkOutgoingTextRequest robotSendRequestText = new DingTalkOutgoingTextRequest();
-        robotSendRequestText.setText(new DingTalkOutgoingText("测试机器人功能的消息201905"));
-        robotSendRequestText.setAt(new DingTalkOutgoingAt(null, true));
+        DingTalkOutgoingTextRequest dingTalkOutgoingTextRequest = new DingTalkOutgoingTextRequest();
+        dingTalkOutgoingTextRequest.setText(new DingTalkOutgoingText("测试机器人功能的消息201905"));
+        dingTalkOutgoingTextRequest.setAt(new DingTalkOutgoingAt(null, true));
         OutgoingResult outgoingResult = DingTalkOutgoing.push(
-                "0044bea6737e89921d27495e5d57592ccd10a74ab04a4b39b1ec7ff87db6106c", robotSendRequestText);
+                "0044bea6737e89921d27495e5d57592ccd10a74ab04a4b39b1ec7ff87db6106c", dingTalkOutgoingTextRequest);
         System.out.println(outgoingResult);
     }
 
