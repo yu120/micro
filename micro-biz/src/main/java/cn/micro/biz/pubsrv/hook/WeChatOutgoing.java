@@ -13,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
- * 企业 WeChat Web Hook
+ * 企业 WeChat Outgoing
  * <p>
  * 每个机器人发送的消息不能超过20条/分钟。
  * https://work.weixin.qq.com/api/doc?notreplace=true#90000/90136/91770

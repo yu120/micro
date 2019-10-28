@@ -14,7 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
- * Beary Chat Web Hook
+ * Beary Chat Outgoing
  * <p>
  * https://i-micro.bearychat.com/dashboard/robots/=bwJ57?type=outgoing
  *

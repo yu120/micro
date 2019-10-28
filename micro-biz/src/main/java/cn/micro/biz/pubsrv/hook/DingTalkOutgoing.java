@@ -13,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
- * Ding Talk Web Hook
+ * Ding Talk Outgoing
  * <p>
  * 每个机器人每分钟最多发送20条。
  * https://ding-doc.dingtalk.com/doc#/serverapi2/qf2nxq

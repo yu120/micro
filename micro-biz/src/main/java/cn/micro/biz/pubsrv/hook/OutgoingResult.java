@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- * WebHook Result
+ * Outgoing Result
  *
  * @author lry
  */
