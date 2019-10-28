@@ -21,7 +21,7 @@ import java.util.List;
  * @author lry
  */
 @Slf4j
-public class DingTalkWebHook implements Serializable {
+public class DingTalkOutgoing implements Serializable {
 
     private static final int RESPONSE_CODE_OK = 0;
     private static final String RESPONSE_CODE_KEY = "errcode";
@@ -31,22 +31,22 @@ public class DingTalkWebHook implements Serializable {
     private static final String SERVER_URL = "https://oapi.dingtalk.com/robot/send?access_token=%s";
 
     public static void main(String[] args) throws Exception {
-        DingTalkWebHookTextRequest robotSendRequestText = new DingTalkWebHookTextRequest();
-        robotSendRequestText.setText(new DingTalkWebHookText("测试机器人功能的消息201905"));
-        robotSendRequestText.setAt(new DingTalkWebHookAt(null, true));
-        WebHookResult webHookResult = DingTalkWebHook.push(
+        DingTalkOutgoingTextRequest robotSendRequestText = new DingTalkOutgoingTextRequest();
+        robotSendRequestText.setText(new DingTalkOutgoingText("测试机器人功能的消息201905"));
+        robotSendRequestText.setAt(new DingTalkOutgoingAt(null, true));
+        OutgoingResult outgoingResult = DingTalkOutgoing.push(
                 "0044bea6737e89921d27495e5d57592ccd10a74ab04a4b39b1ec7ff87db6106c", robotSendRequestText);
-        System.out.println(webHookResult);
+        System.out.println(outgoingResult);
     }
 
     /**
      * Send push to 3th
      *
      * @param accessToken            access token
-     * @param dingTalkWebHookRequest {@link DingTalkWebHookRequest}
+     * @param dingTalkOutgoingRequest {@link DingTalkOutgoingRequest}
      * @return success true
      */
-    public static WebHookResult push(String accessToken, DingTalkWebHookRequest dingTalkWebHookRequest) {
+    public static OutgoingResult push(String accessToken, DingTalkOutgoingRequest dingTalkOutgoingRequest) {
         String url = String.format(SERVER_URL, accessToken);
         Connection.Response response;
         try {
@@ -55,7 +55,7 @@ public class DingTalkWebHook implements Serializable {
             request.header(CONTENT_TYPE_KEY, CONTENT_TYPE);
             request.postDataCharset(StandardCharsets.UTF_8.name());
             request.method(Connection.Method.POST);
-            request.requestBody(JSON.toJSONString(dingTalkWebHookRequest));
+            request.requestBody(JSON.toJSONString(dingTalkOutgoingRequest));
 
             log.debug("Ding Talk request url:[{}], method:[{}], headers:[{}], body:[{}]",
                     url, request.method(), request.headers(), request.requestBody());
@@ -66,7 +66,7 @@ public class DingTalkWebHook implements Serializable {
 
         if (200 != response.statusCode()) {
             log.warn("Network error:[code:{},message:{}]", response.statusCode(), response.statusMessage());
-            return new WebHookResult(false,
+            return new OutgoingResult(false,
                     response.statusCode() + ":" + response.statusMessage(), response.body());
         } else {
             String responseBody = response.charset(StandardCharsets.UTF_8.name()).body();
@@ -74,12 +74,12 @@ public class DingTalkWebHook implements Serializable {
             JSONObject jsonObject = JSON.parseObject(responseBody);
             if (jsonObject == null) {
                 log.warn("Ding Talk send fail, response body:{}", responseBody);
-                return new WebHookResult(false, "response body is null", responseBody);
+                return new OutgoingResult(false, "response body is null", responseBody);
             }
 
             int code = jsonObject.getInteger(RESPONSE_CODE_KEY);
             String msg = jsonObject.getString(RESPONSE_MSG_KEY);
-            return new WebHookResult(RESPONSE_CODE_OK == code, msg, responseBody);
+            return new OutgoingResult(RESPONSE_CODE_OK == code, msg, responseBody);
         }
     }
 
@@ -91,7 +91,7 @@ public class DingTalkWebHook implements Serializable {
     @Data
     @ToString
     @AllArgsConstructor
-    public static class DingTalkWebHookRequest implements Serializable {
+    public static class DingTalkOutgoingRequest implements Serializable {
         /**
          * 消息类型
          */
@@ -99,7 +99,7 @@ public class DingTalkWebHook implements Serializable {
         /**
          * 被@人的规则
          */
-        private DingTalkWebHookAt at;
+        private DingTalkOutgoingAt at;
     }
 
     /**
@@ -111,7 +111,7 @@ public class DingTalkWebHook implements Serializable {
     @ToString
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class DingTalkWebHookAt implements Serializable {
+    public static class DingTalkOutgoingAt implements Serializable {
         /**
          * 被@人的手机号(在text内容里要有@手机号)
          */
@@ -130,10 +130,10 @@ public class DingTalkWebHook implements Serializable {
     @Data
     @ToString(callSuper = true)
     @EqualsAndHashCode(callSuper = true)
-    public static class DingTalkWebHookTextRequest extends DingTalkWebHookRequest {
-        private DingTalkWebHookText text;
+    public static class DingTalkOutgoingTextRequest extends DingTalkOutgoingRequest {
+        private DingTalkOutgoingText text;
 
-        public DingTalkWebHookTextRequest() {
+        public DingTalkOutgoingTextRequest() {
             super("text", null);
         }
     }
@@ -146,10 +146,10 @@ public class DingTalkWebHook implements Serializable {
     @Data
     @ToString(callSuper = true)
     @EqualsAndHashCode(callSuper = true)
-    public static class DingTalkWebHookLinkRequest extends DingTalkWebHookRequest {
-        private DingTalkWebHookLink link;
+    public static class DingTalkOutgoingLinkRequest extends DingTalkOutgoingRequest {
+        private DingTalkOutgoingLink link;
 
-        public DingTalkWebHookLinkRequest() {
+        public DingTalkOutgoingLinkRequest() {
             super("link", null);
         }
     }
@@ -162,10 +162,10 @@ public class DingTalkWebHook implements Serializable {
     @Data
     @ToString(callSuper = true)
     @EqualsAndHashCode(callSuper = true)
-    public static class DingTalkWebHookFeedCardRequest extends DingTalkWebHookRequest {
-        private DingTalkWebHookFeedCard feedCard;
+    public static class DingTalkOutgoingFeedCardRequest extends DingTalkOutgoingRequest {
+        private DingTalkOutgoingFeedCard feedCard;
 
-        public DingTalkWebHookFeedCardRequest() {
+        public DingTalkOutgoingFeedCardRequest() {
             super("feedCard", null);
         }
     }
@@ -178,10 +178,10 @@ public class DingTalkWebHook implements Serializable {
     @Data
     @ToString(callSuper = true)
     @EqualsAndHashCode(callSuper = true)
-    public static class DingTalkWebHookMarkdownRequest extends DingTalkWebHookRequest {
-        private DingTalkWebHookMarkdown markdown;
+    public static class DingTalkOutgoingMarkdownRequest extends DingTalkOutgoingRequest {
+        private DingTalkOutgoingMarkdown markdown;
 
-        public DingTalkWebHookMarkdownRequest() {
+        public DingTalkOutgoingMarkdownRequest() {
             super("markdown", null);
         }
     }
@@ -192,10 +192,10 @@ public class DingTalkWebHook implements Serializable {
     @Data
     @ToString(callSuper = true)
     @EqualsAndHashCode(callSuper = true)
-    public static class DingTalkWebHookActionCardRequest extends DingTalkWebHookRequest {
-        private DingTalkWebHookActionCard actionCard;
+    public static class DingTalkOutgoingActionCardRequest extends DingTalkOutgoingRequest {
+        private DingTalkOutgoingActionCard actionCard;
 
-        public DingTalkWebHookActionCardRequest() {
+        public DingTalkOutgoingActionCardRequest() {
             super("actionCard", null);
         }
     }
@@ -211,7 +211,7 @@ public class DingTalkWebHook implements Serializable {
     @ToString
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class DingTalkWebHookText implements Serializable {
+    public static class DingTalkOutgoingText implements Serializable {
         private String content;
     }
 
@@ -224,7 +224,7 @@ public class DingTalkWebHook implements Serializable {
     @ToString
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class DingTalkWebHookLink implements Serializable {
+    public static class DingTalkOutgoingLink implements Serializable {
         /**
          * 点击消息跳转的URL
          */
@@ -252,7 +252,7 @@ public class DingTalkWebHook implements Serializable {
     @ToString
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class DingTalkWebHookMarkdown implements Serializable {
+    public static class DingTalkOutgoingMarkdown implements Serializable {
         /**
          * markdown格式的消息
          */
@@ -272,7 +272,7 @@ public class DingTalkWebHook implements Serializable {
     @ToString
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class DingTalkWebHookBtn implements Serializable {
+    public static class DingTalkOutgoingBtn implements Serializable {
         /**
          * 按钮标题
          */
@@ -292,7 +292,7 @@ public class DingTalkWebHook implements Serializable {
     @ToString
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class DingTalkWebHookActionCard implements Serializable {
+    public static class DingTalkOutgoingActionCard implements Serializable {
         /**
          * 0-按钮竖直排列，1-按钮横向排列
          */
@@ -300,7 +300,7 @@ public class DingTalkWebHook implements Serializable {
         /**
          * 按钮的信息
          */
-        private List<DingTalkWebHookBtn> btns;
+        private List<DingTalkOutgoingBtn> btns;
         /**
          * 0-正常发消息者头像,1-隐藏发消息者头像
          */
@@ -332,8 +332,8 @@ public class DingTalkWebHook implements Serializable {
     @ToString
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class DingTalkWebHookFeedCard implements Serializable {
-        private List<DingTalkWebHookLinks> links;
+    public static class DingTalkOutgoingFeedCard implements Serializable {
+        private List<DingTalkOutgoingLinks> links;
     }
 
     /**
@@ -345,7 +345,7 @@ public class DingTalkWebHook implements Serializable {
     @ToString
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class DingTalkWebHookLinks implements Serializable {
+    public static class DingTalkOutgoingLinks implements Serializable {
         /**
          * 点击单条信息到跳转链接
          */

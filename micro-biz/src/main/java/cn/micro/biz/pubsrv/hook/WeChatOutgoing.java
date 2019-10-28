@@ -21,7 +21,7 @@ import java.util.List;
  * @author lry
  */
 @Slf4j
-public class WeChatWebHook implements Serializable {
+public class WeChatOutgoing implements Serializable {
 
     private static final int RESPONSE_CODE_OK = 0;
     private static final String RESPONSE_CODE_KEY = "errcode";
@@ -31,20 +31,20 @@ public class WeChatWebHook implements Serializable {
     private static final String SERVER_URL = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=%s";
 
     public static void main(String[] args) throws Exception {
-        WeChatWebHookTextRequest weChatWebHookTextRequest = new WeChatWebHookTextRequest();
-        weChatWebHookTextRequest.setText(new WeChatWebHookText("你好呀", null, null));
-        WebHookResult webHookResult = WeChatWebHook.push("916d230b-8050-41ad-8bf4-859f76a27eaf", weChatWebHookTextRequest);
-        System.out.println(webHookResult);
+        WeChatOutgoingTextRequest weChatOutgoingTextRequest = new WeChatOutgoingTextRequest();
+        weChatOutgoingTextRequest.setText(new WeChatOutgoingText("你好呀", null, null));
+        OutgoingResult outgoingResult = WeChatOutgoing.push("916d230b-8050-41ad-8bf4-859f76a27eaf", weChatOutgoingTextRequest);
+        System.out.println(outgoingResult);
     }
 
     /**
      * Send push to 3th
      *
      * @param accessToken          access token
-     * @param weChatWebHookRequest {@link WeChatWebHookRequest}
+     * @param weChatOutgoingRequest {@link WeChatOutgoingRequest}
      * @return success true
      */
-    public static WebHookResult push(String accessToken, WeChatWebHookRequest weChatWebHookRequest) {
+    public static OutgoingResult push(String accessToken, WeChatOutgoingRequest weChatOutgoingRequest) {
         String url = String.format(SERVER_URL, accessToken);
         Connection.Response response;
         try {
@@ -53,7 +53,7 @@ public class WeChatWebHook implements Serializable {
             request.method(Connection.Method.POST);
             request.header(CONTENT_TYPE_KEY, CONTENT_TYPE);
             request.postDataCharset(StandardCharsets.UTF_8.name());
-            request.requestBody(JSON.toJSONString(weChatWebHookRequest));
+            request.requestBody(JSON.toJSONString(weChatOutgoingRequest));
 
             log.debug("WeChat request url:[{}], method:[{}], headers:[{}], body:[{}]",
                     url, request.method(), request.headers(), request.requestBody());
@@ -64,7 +64,7 @@ public class WeChatWebHook implements Serializable {
 
         if (200 != response.statusCode()) {
             log.warn("Network error:[code:{},message:{}]", response.statusCode(), response.statusMessage());
-            return new WebHookResult(false,
+            return new OutgoingResult(false,
                     response.statusCode() + ":" + response.statusMessage(), response.body());
         } else {
             String responseBody = response.charset(StandardCharsets.UTF_8.name()).body();
@@ -72,12 +72,12 @@ public class WeChatWebHook implements Serializable {
             JSONObject jsonObject = JSON.parseObject(responseBody);
             if (jsonObject == null) {
                 log.warn("WeChat send fail, response body:{}", responseBody);
-                return new WebHookResult(false, "response body is null", responseBody);
+                return new OutgoingResult(false, "response body is null", responseBody);
             }
 
             int code = jsonObject.getInteger(RESPONSE_CODE_KEY);
             String msg = jsonObject.getString(RESPONSE_MSG_KEY);
-            return new WebHookResult(RESPONSE_CODE_OK == code, msg, responseBody);
+            return new OutgoingResult(RESPONSE_CODE_OK == code, msg, responseBody);
         }
     }
 
@@ -89,7 +89,7 @@ public class WeChatWebHook implements Serializable {
     @Data
     @ToString
     @AllArgsConstructor
-    public static class WeChatWebHookRequest implements Serializable {
+    public static class WeChatOutgoingRequest implements Serializable {
         /**
          * 消息类型
          */
@@ -104,10 +104,10 @@ public class WeChatWebHook implements Serializable {
     @Data
     @ToString(callSuper = true)
     @EqualsAndHashCode(callSuper = true)
-    public static class WeChatWebHookTextRequest extends WeChatWebHookRequest {
-        private WeChatWebHookText text;
+    public static class WeChatOutgoingTextRequest extends WeChatOutgoingRequest {
+        private WeChatOutgoingText text;
 
-        public WeChatWebHookTextRequest() {
+        public WeChatOutgoingTextRequest() {
             super("text");
         }
     }
@@ -120,10 +120,10 @@ public class WeChatWebHook implements Serializable {
     @Data
     @ToString(callSuper = true)
     @EqualsAndHashCode(callSuper = true)
-    public static class WeChatWebHookMarkdownRequest extends WeChatWebHookRequest {
-        private WeChatWebHookMarkdown markdown;
+    public static class WeChatOutgoingMarkdownRequest extends WeChatOutgoingRequest {
+        private WeChatOutgoingMarkdown markdown;
 
-        public WeChatWebHookMarkdownRequest() {
+        public WeChatOutgoingMarkdownRequest() {
             super("markdown");
         }
     }
@@ -136,10 +136,10 @@ public class WeChatWebHook implements Serializable {
     @Data
     @ToString(callSuper = true)
     @EqualsAndHashCode(callSuper = true)
-    public static class WeChatWebHookImageRequest extends WeChatWebHookRequest {
-        private WeChatWebHookImage image;
+    public static class WeChatOutgoingImageRequest extends WeChatOutgoingRequest {
+        private WeChatOutgoingImage image;
 
-        public WeChatWebHookImageRequest() {
+        public WeChatOutgoingImageRequest() {
             super("image");
         }
     }
@@ -152,10 +152,10 @@ public class WeChatWebHook implements Serializable {
     @Data
     @ToString(callSuper = true)
     @EqualsAndHashCode(callSuper = true)
-    public static class WeChatWebHookNewsRequest extends WeChatWebHookRequest {
-        private WeChatWebHookNews news;
+    public static class WeChatOutgoingNewsRequest extends WeChatOutgoingRequest {
+        private WeChatOutgoingNews news;
 
-        public WeChatWebHookNewsRequest() {
+        public WeChatOutgoingNewsRequest() {
             super("news");
         }
     }
@@ -171,7 +171,7 @@ public class WeChatWebHook implements Serializable {
     @ToString
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class WeChatWebHookText implements Serializable {
+    public static class WeChatOutgoingText implements Serializable {
         /**
          * 文本内容，最长不超过2048个字节，必须是utf8编码
          */
@@ -197,7 +197,7 @@ public class WeChatWebHook implements Serializable {
     @ToString
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class WeChatWebHookMarkdown implements Serializable {
+    public static class WeChatOutgoingMarkdown implements Serializable {
         /**
          * markdown内容，最长不超过4096个字节，必须是utf8编码
          */
@@ -213,7 +213,7 @@ public class WeChatWebHook implements Serializable {
     @ToString
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class WeChatWebHookImage implements Serializable {
+    public static class WeChatOutgoingImage implements Serializable {
         /**
          * 图片内容的base64编码
          */
@@ -233,11 +233,11 @@ public class WeChatWebHook implements Serializable {
     @ToString
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class WeChatWebHookNews implements Serializable {
+    public static class WeChatOutgoingNews implements Serializable {
         /**
          * 图文消息，一个图文消息支持1到8条图文
          */
-        private List<WeChatWebHookArticle> articles;
+        private List<WeChatOutgoingArticle> articles;
     }
 
     /**
@@ -249,7 +249,7 @@ public class WeChatWebHook implements Serializable {
     @ToString
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class WeChatWebHookArticle implements Serializable {
+    public static class WeChatOutgoingArticle implements Serializable {
         /**
          * 标题，不超过128个字节，超过会自动截断
          */

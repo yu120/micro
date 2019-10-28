@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author lry
  */
-public class MicroWebHook {
+public class MicroIncoming {
 
     private ConcurrentHashMap<String, String> token = new ConcurrentHashMap<>();
 
@@ -29,26 +29,26 @@ public class MicroWebHook {
     }
 
     /**
-     * The outgoing notify
+     * The incoming notify
      *
      * @param body notify body
      * @return success true
      */
     public String bearyChat(String body) {
-        BearyChatWebHookOutgoingRequest request = JSON.parseObject(body, BearyChatWebHookOutgoingRequest.class);
-        BearyChatWebHookOutgoingResponse response = new BearyChatWebHookOutgoingResponse();
+        BearyChatIncomingRequest request = JSON.parseObject(body, BearyChatIncomingRequest.class);
+        BearyChatIncomingResponse response = new BearyChatIncomingResponse();
         response.setText("这是请求内容：" + request.getText());
         return JSON.toJSONString(response);
     }
 
     /**
-     * Outgoing 机器人请求消息体
+     * Incoming 机器人请求消息体
      *
      * @author lry
      */
     @Data
     @ToString
-    public static class BearyChatWebHookOutgoingRequest implements Serializable {
+    public static class BearyChatIncomingRequest implements Serializable {
         /**
          * 外部服务可以通过验证请求数据中的token是否为指定token来判断请求有效性
          */
@@ -65,39 +65,39 @@ public class MicroWebHook {
     }
 
     /**
-     * Outgoing 机器人响应消息体
+     * Incoming 机器人响应消息体
      *
      * @author lry
      */
     @Data
     @ToString
-    public static class BearyChatWebHookOutgoingResponse implements Serializable {
+    public static class BearyChatIncomingResponse implements Serializable {
         private String text;
-        private List<BearyChatWebHookOutgoingAttachment> attachment;
+        private List<BearyChatIncomingAttachment> attachment;
     }
 
     /**
-     * Outgoing Attachment
+     * Incoming Attachment
      *
      * @author lry
      */
     @Data
     @ToString
-    public static class BearyChatWebHookOutgoingAttachment implements Serializable {
+    public static class BearyChatIncomingAttachment implements Serializable {
         private String title;
         private String text;
         private String color;
-        private List<BearyChatWebHookOutgoingImage> images;
+        private List<BearyChatIncomingImage> images;
     }
 
     /**
-     * Outgoing Image
+     * Incoming Image
      *
      * @author lry
      */
     @Data
     @ToString
-    public static class BearyChatWebHookOutgoingImage implements Serializable {
+    public static class BearyChatIncomingImage implements Serializable {
         private String url;
     }
 

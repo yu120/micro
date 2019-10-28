@@ -21,7 +21,7 @@ import java.util.List;
  * @author lry
  */
 @Slf4j
-public class BearyChatWebHook implements Serializable {
+public class BearyChatOutgoing implements Serializable {
 
     private static final int RESPONSE_CODE_OK = 0;
     private static final String RESPONSE_CODE_KEY = "code";
@@ -31,20 +31,20 @@ public class BearyChatWebHook implements Serializable {
     private static final String SERVER_URL = "https://hook.bearychat.com/=bwCqE/incoming/%s";
 
     public static void main(String[] args) throws Exception {
-        BearyChatWebHookRequest robotSendRequest = new BearyChatWebHookRequest();
+        BearyChatOutgoingRequest robotSendRequest = new BearyChatOutgoingRequest();
         robotSendRequest.setText("看看快快快dddddd22222");
-        WebHookResult webHookResult = BearyChatWebHook.push("fe3901f23862dca2e15f4695bf845bdd", robotSendRequest);
-        System.out.println(webHookResult);
+        OutgoingResult outgoingResult = BearyChatOutgoing.push("fe3901f23862dca2e15f4695bf845bdd", robotSendRequest);
+        System.out.println(outgoingResult);
     }
 
     /**
      * Send push to 3th
      *
      * @param accessToken             access token
-     * @param bearyChatWebHookRequest {@link BearyChatWebHookRequest}
+     * @param bearyChatOutgoingRequest {@link BearyChatOutgoingRequest}
      * @return success true
      */
-    public static WebHookResult push(String accessToken, BearyChatWebHookRequest bearyChatWebHookRequest) {
+    public static OutgoingResult push(String accessToken, BearyChatOutgoingRequest bearyChatOutgoingRequest) {
         String url = String.format(SERVER_URL, accessToken);
         Connection.Response response;
         try {
@@ -53,7 +53,7 @@ public class BearyChatWebHook implements Serializable {
             request.header(CONTENT_TYPE_KEY, CONTENT_TYPE);
             request.method(Connection.Method.POST);
             request.postDataCharset(StandardCharsets.UTF_8.name());
-            request.requestBody(JSON.toJSONString(bearyChatWebHookRequest));
+            request.requestBody(JSON.toJSONString(bearyChatOutgoingRequest));
 
             log.debug("Beary Chat request url:[{}], method:[{}], headers:[{}], body:[{}]",
                     url, request.method(), request.headers(), request.requestBody());
@@ -64,7 +64,7 @@ public class BearyChatWebHook implements Serializable {
 
         if (200 != response.statusCode()) {
             log.warn("Network error:[code:{},message:{}]", response.statusCode(), response.statusMessage());
-            return new WebHookResult(false,
+            return new OutgoingResult(false,
                     response.statusCode() + ":" + response.statusMessage(), response.body());
         } else {
             String responseBody = response.charset(StandardCharsets.UTF_8.name()).body();
@@ -72,18 +72,18 @@ public class BearyChatWebHook implements Serializable {
             JSONObject jsonObject = JSON.parseObject(responseBody);
             if (jsonObject == null) {
                 log.warn("Beary Chat send fail, response body:{}", responseBody);
-                return new WebHookResult(false, "response body is null", responseBody);
+                return new OutgoingResult(false, "response body is null", responseBody);
             }
 
             int code = jsonObject.getInteger(RESPONSE_CODE_KEY);
             String msg = jsonObject.getString(RESPONSE_RESULT_KEY);
-            return new WebHookResult(RESPONSE_CODE_OK == code, msg, responseBody);
+            return new OutgoingResult(RESPONSE_CODE_OK == code, msg, responseBody);
         }
     }
 
     @Data
     @ToString
-    public static class BearyChatWebHookRequest implements Serializable {
+    public static class BearyChatOutgoingRequest implements Serializable {
         /**
          * 必须字段。支持 inline md 的文本内容
          */
@@ -108,7 +108,7 @@ public class BearyChatWebHook implements Serializable {
         /**
          * 可选字段，一系列附件
          */
-        private List<BearyChatWebHookAttachmentRequest> attachments;
+        private List<BearyChatOutgoingAttachmentRequest> attachments;
     }
 
     /**
@@ -120,7 +120,7 @@ public class BearyChatWebHook implements Serializable {
      */
     @Data
     @ToString
-    public static class BearyChatWebHookAttachmentRequest implements Serializable {
+    public static class BearyChatOutgoingAttachmentRequest implements Serializable {
         /**
          * 可选
          */
@@ -143,7 +143,7 @@ public class BearyChatWebHook implements Serializable {
          * 可能造成请求响应时间增加。另外如果两次推送的图片地址都一样，那么第二次的响应
          * 时间会显著降低，因为服务器会对请求进行缓存至少一天，所以如果需要不同的图片请使用不同地址。
          */
-        private List<BearyChatWebHookImagesUrlRequest> images;
+        private List<BearyChatOutgoingImagesUrlRequest> images;
     }
 
     /**
@@ -153,7 +153,7 @@ public class BearyChatWebHook implements Serializable {
      */
     @Data
     @ToString
-    public static class BearyChatWebHookImagesUrlRequest implements Serializable {
+    public static class BearyChatOutgoingImagesUrlRequest implements Serializable {
         private String url;
     }
 

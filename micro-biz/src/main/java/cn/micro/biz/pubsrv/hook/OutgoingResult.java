@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WebHookResult implements Serializable {
+public class OutgoingResult implements Serializable {
 
     /**
      * true表示成功

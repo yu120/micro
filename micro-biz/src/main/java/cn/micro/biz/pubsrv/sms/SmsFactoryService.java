@@ -2,8 +2,8 @@ package cn.micro.biz.pubsrv.sms;
 
 import java.util.Date;
 
-import cn.micro.biz.pubsrv.hook.DingTalkWebHook;
-import cn.micro.biz.pubsrv.hook.WebHookResult;
+import cn.micro.biz.pubsrv.hook.DingTalkOutgoing;
+import cn.micro.biz.pubsrv.hook.OutgoingResult;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -82,9 +82,9 @@ public class SmsFactoryService {
             }
             message = String.format(SMS_MESSAGE_TEMP, smsSendParam.getMobile(), message);
 
-            DingTalkWebHook.DingTalkWebHookTextRequest robotSendRequestText = new DingTalkWebHook.DingTalkWebHookTextRequest();
-            robotSendRequestText.setText(new DingTalkWebHook.DingTalkWebHookText(message));
-            WebHookResult webHookResult = DingTalkWebHook.push(smsSendConfig.getDingTalkToken(), robotSendRequestText);
+            DingTalkOutgoing.DingTalkOutgoingTextRequest request = new DingTalkOutgoing.DingTalkOutgoingTextRequest();
+            request.setText(new DingTalkOutgoing.DingTalkOutgoingText(message));
+            OutgoingResult webHookResult = DingTalkOutgoing.push(smsSendConfig.getDingTalkToken(), request);
             log.info("Send Ding Talk:{}", webHookResult);
         }
     }
