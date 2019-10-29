@@ -1,4 +1,4 @@
-package cn.micro.biz.entity.like;
+package cn.micro.biz.entity.action;
 
 import cn.micro.biz.commons.mybatis.MicroEntity;
 import cn.micro.biz.model.like.OwnerAction;
@@ -7,10 +7,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 /**
- * Micro Like Entity
+ * Micro Like Log Entity
  * <p>
- * Index：owner_type,owner_id,target_type,target_id
- * Praise是该系统的核心，承载核心业务逻辑。
+ * 主要用于记录用户操作日志，不参与业务逻辑, 可用于分析用户行为。
  *
  * @author lry
  */
@@ -19,13 +18,13 @@ import lombok.*;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@TableName("micro_like")
-public class MicroLike extends MicroEntity<MicroLike> {
+@TableName("micro_like_log")
+public class ActionLog extends MicroEntity<ActionLog> {
 
     /**
-     * 点赞状态
+     * 点赞
      * <p>
-     * {@link cn.micro.biz.type.like.ActionTypeEnum}
+     * {@link cn.micro.biz.type.action.ActionTypeEnum}
      */
     private Integer status;
     /**
@@ -35,7 +34,7 @@ public class MicroLike extends MicroEntity<MicroLike> {
     /**
      * 点赞发起者类型
      * <p>
-     * {@link cn.micro.biz.type.like.OwnerTypeEnum}
+     * {@link cn.micro.biz.type.action.OwnerTypeEnum}
      */
     private Integer ownerType;
     /**
@@ -45,11 +44,11 @@ public class MicroLike extends MicroEntity<MicroLike> {
     /**
      * 点赞目标类型
      * <p>
-     * {@link cn.micro.biz.type.like.TargetTypeEnum}
+     * {@link cn.micro.biz.type.action.TargetTypeEnum}
      */
     private Integer targetType;
 
-    public MicroLike(OwnerAction ownerAction, TargetAction targetAction) {
+    public ActionLog(OwnerAction ownerAction, TargetAction targetAction) {
         this.ownerId = ownerAction.getOwnerId();
         this.ownerType = ownerAction.getOwnerType();
         this.targetId = targetAction.getTargetId();

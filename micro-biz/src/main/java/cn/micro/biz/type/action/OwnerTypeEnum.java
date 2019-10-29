@@ -1,22 +1,22 @@
-package cn.micro.biz.type.like;
+package cn.micro.biz.type.action;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 
 /**
- * 业务类型
+ * 点赞发起者类型
  *
  * @author lry
  */
 @Getter
 @ToString
 @AllArgsConstructor
-public enum TargetTypeEnum {
+public enum OwnerTypeEnum {
 
     // ===
 
-    NEWS(0, "新闻");
+    USER(0, "一般用户");
 
     private final int value;
     private final String title;

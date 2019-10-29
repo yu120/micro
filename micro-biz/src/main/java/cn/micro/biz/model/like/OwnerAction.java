@@ -14,7 +14,7 @@ public class OwnerAction implements Serializable {
     /**
      * 点赞发起者类型
      * <p>
-     * {@link cn.micro.biz.type.like.OwnerTypeEnum}
+     * {@link cn.micro.biz.type.action.OwnerTypeEnum}
      */
     private Integer ownerType;
 

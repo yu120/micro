@@ -14,7 +14,7 @@ public class TargetAction implements Serializable {
     /**
      * 点赞目标类型
      * <p>
-     * {@link cn.micro.biz.type.like.TargetTypeEnum}
+     * {@link cn.micro.biz.type.action.TargetTypeEnum}
      */
     private Integer targetType;
 

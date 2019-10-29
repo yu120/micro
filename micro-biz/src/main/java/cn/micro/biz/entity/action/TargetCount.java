@@ -1,4 +1,4 @@
-package cn.micro.biz.entity.like;
+package cn.micro.biz.entity.action;
 
 import cn.micro.biz.commons.mybatis.MicroEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -16,7 +16,7 @@ import lombok.*;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @TableName("micro_target_count")
-public class MicroTargetCount extends MicroEntity<MicroTargetCount> {
+public class TargetCount extends MicroEntity<TargetCount> {
 
     /**
      * 点赞目标ID
@@ -25,7 +25,7 @@ public class MicroTargetCount extends MicroEntity<MicroTargetCount> {
     /**
      * 点赞目标类型
      * <p>
-     * {@link cn.micro.biz.type.like.TargetTypeEnum}
+     * {@link cn.micro.biz.type.action.TargetTypeEnum}
      */
     private Integer targetType;
     /**

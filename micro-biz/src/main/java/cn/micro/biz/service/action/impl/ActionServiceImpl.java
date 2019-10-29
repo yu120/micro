@@ -1,14 +1,14 @@
-package cn.micro.biz.service.like.impl;
+package cn.micro.biz.service.action.impl;
 
-import cn.micro.biz.entity.like.MicroLikeLog;
-import cn.micro.biz.type.like.ActionTypeEnum;
+import cn.micro.biz.entity.action.ActionLog;
+import cn.micro.biz.type.action.ActionTypeEnum;
 
 import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
-import cn.micro.biz.entity.like.MicroLike;
-import cn.micro.biz.mapper.like.IMicroLikeMapper;
+import cn.micro.biz.entity.action.Action;
+import cn.micro.biz.mapper.action.ActionMapper;
 import cn.micro.biz.model.like.OwnerAction;
 import cn.micro.biz.model.like.TargetAction;
-import cn.micro.biz.service.like.IMicroLikeService;
+import cn.micro.biz.service.action.IActionService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
  * @author lry
  */
 @Service
-public class MicroLikeServiceImpl extends MicroServiceImpl<IMicroLikeMapper, MicroLike> implements IMicroLikeService {
+public class ActionServiceImpl extends MicroServiceImpl<ActionMapper, Action> implements IActionService {
 
     @Override
     public boolean click(OwnerAction ownerAction, TargetAction targetAction) {
@@ -30,8 +30,8 @@ public class MicroLikeServiceImpl extends MicroServiceImpl<IMicroLikeMapper, Mic
      * 当用户未点赞时触发
      */
     private void submit(OwnerAction ownerAction, TargetAction targetAction) {
-        MicroLike microLike = new MicroLike(ownerAction, targetAction);
-        microLike.setStatus(ActionTypeEnum.LIKE.getValue());
+        Action action = new Action(ownerAction, targetAction);
+        action.setStatus(ActionTypeEnum.LIKE.getValue());
     }
 
     /**
@@ -40,8 +40,8 @@ public class MicroLikeServiceImpl extends MicroServiceImpl<IMicroLikeMapper, Mic
      * 当用户已经点赞时触发
      */
     private void cancel(OwnerAction ownerAction, TargetAction targetAction) {
-        MicroLike microLike = new MicroLike(ownerAction, targetAction);
-        microLike.setStatus(ActionTypeEnum.CANCEL.getValue());
+        Action action = new Action(ownerAction, targetAction);
+        action.setStatus(ActionTypeEnum.CANCEL.getValue());
     }
 
 
@@ -49,16 +49,16 @@ public class MicroLikeServiceImpl extends MicroServiceImpl<IMicroLikeMapper, Mic
      * 创建点赞日志
      */
     public void createLikeLog(OwnerAction ownerAction, TargetAction targetAction) {
-        MicroLikeLog microLikeLog = new MicroLikeLog(ownerAction, targetAction);
-        microLikeLog.setStatus(ActionTypeEnum.LIKE.getValue());
+        ActionLog actionLog = new ActionLog(ownerAction, targetAction);
+        actionLog.setStatus(ActionTypeEnum.LIKE.getValue());
     }
 
     /**
      * 创建取消点赞日志
      */
     public void createCancelLog(OwnerAction ownerAction, TargetAction targetAction) {
-        MicroLikeLog microLikeLog = new MicroLikeLog(ownerAction, targetAction);
-        microLikeLog.setStatus(ActionTypeEnum.CANCEL.getValue());
+        ActionLog actionLog = new ActionLog(ownerAction, targetAction);
+        actionLog.setStatus(ActionTypeEnum.CANCEL.getValue());
     }
 
     /**

@@ -12,10 +12,10 @@ public class XssHttpServletRequest extends HttpServletRequestWrapper {
 
     private static final String BAD_SQL_STR = "'|and|exec|execute|insert|select|delete|update|" +
             "count|drop|%|chr|mid|master|truncate|char|declare|sitename|net user|" +
-            "xp_cmdshell|;|or|-|+|,|like'|and|exec|execute|insert|create|drop|" +
+            "xp_cmdshell|;|or|-|+|,|action'|and|exec|execute|insert|create|drop|" +
             "table|from|grant|use|group_concat|column_name|information_schema.columns|" +
             "table_schema|union|where|select|delete|update|order|by|count|" +
-            "chr|mid|master|truncate|char|declare|or|;|-|--|,|like|//|/|%|#";
+            "chr|mid|master|truncate|char|declare|or|;|-|--|,|action|//|/|%|#";
 
     public XssHttpServletRequest(HttpServletRequest servletRequest) {
         super(servletRequest);
