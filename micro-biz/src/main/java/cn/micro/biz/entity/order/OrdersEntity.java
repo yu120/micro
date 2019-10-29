@@ -18,8 +18,8 @@ import java.util.Date;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@TableName("order")
-public class OrderEntity extends MicroEntity<OrderEntity> {
+@TableName("orders")
+public class OrdersEntity extends MicroEntity<OrdersEntity> {
 
     private static final long serialVersionUID = 1L;
 
@@ -38,13 +38,13 @@ public class OrderEntity extends MicroEntity<OrderEntity> {
     /**
      * Order logistics id
      *
-     * @see OrderLogisticsEntity#id
+     * @see OrdersLogisticsEntity#id
      **/
     private Long logisticsId;
     /**
      * Order invoice id
      *
-     * @see OrderInvoiceEntity#id
+     * @see OrdersInvoiceEntity#id
      **/
     private Long invoiceId;
 

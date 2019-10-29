@@ -19,13 +19,13 @@ import java.util.Date;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@TableName("oder_return")
-public class OrderReturnEntity extends MicroEntity<OrderReturnEntity> {
+@TableName("orders_return")
+public class OrdersReturnEntity extends MicroEntity<OrdersReturnEntity> {
 
     /**
      * Order id
      *
-     * @see OrderEntity#id
+     * @see OrdersEntity#id
      **/
     private Long orderId;
 

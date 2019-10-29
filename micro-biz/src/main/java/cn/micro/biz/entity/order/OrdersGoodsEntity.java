@@ -21,15 +21,15 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@TableName("order_goods")
-public class OrderGoodsEntity extends MicroEntity<OrderGoodsEntity> {
+@TableName("orders_goods")
+public class OrdersGoodsEntity extends MicroEntity<OrdersGoodsEntity> {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * Order id
      *
-     * @see OrderEntity#id
+     * @see OrdersEntity#id
      **/
     private Long orderId;
     /**

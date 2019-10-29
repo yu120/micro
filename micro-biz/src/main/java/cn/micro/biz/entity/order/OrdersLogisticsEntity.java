@@ -17,15 +17,15 @@ import java.util.Date;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@TableName("order_logistics")
-public class OrderLogisticsEntity extends MicroEntity<OrderLogisticsEntity> {
+@TableName("orders_logistics")
+public class OrdersLogisticsEntity extends MicroEntity<OrdersLogisticsEntity> {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * Order id
      *
-     * @see OrderEntity#id
+     * @see OrdersEntity#id
      **/
     private Long orderId;
 

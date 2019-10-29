@@ -17,15 +17,15 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@TableName("order_invoice")
-public class OrderInvoiceEntity extends MicroEntity<OrderInvoiceEntity> {
+@TableName("orders_invoice")
+public class OrdersInvoiceEntity extends MicroEntity<OrdersInvoiceEntity> {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * Order id
      *
-     * @see OrderEntity#id
+     * @see OrdersEntity#id
      **/
     private Long orderId;
 
