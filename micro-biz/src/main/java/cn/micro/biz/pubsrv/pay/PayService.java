@@ -1,9 +1,9 @@
 package cn.micro.biz.pubsrv.pay;
 
 import cn.micro.biz.commons.exception.support.MicroBadRequestException;
-import cn.micro.biz.entity.order.OrdersGoodsEntity;
+import cn.micro.biz.entity.orders.OrdersGoodsEntity;
 import cn.micro.biz.pubsrv.pay.ali.AliPayService;
-import cn.micro.biz.entity.order.OrdersEntity;
+import cn.micro.biz.entity.orders.OrdersEntity;
 import cn.micro.biz.pubsrv.pay.wx.WXPayService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

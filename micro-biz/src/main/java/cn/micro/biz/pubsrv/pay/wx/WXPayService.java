@@ -3,10 +3,10 @@ package cn.micro.biz.pubsrv.pay.wx;
 import cn.micro.biz.commons.auth.MicroAuthContext;
 import cn.micro.biz.commons.exception.support.MicroBadRequestException;
 import cn.micro.biz.commons.exception.support.MicroErrorException;
-import cn.micro.biz.entity.order.OrdersEntity;
-import cn.micro.biz.entity.order.OrdersGoodsEntity;
+import cn.micro.biz.entity.orders.OrdersEntity;
+import cn.micro.biz.entity.orders.OrdersGoodsEntity;
 import cn.micro.biz.pubsrv.pay.PayChannelEnum;
-import cn.micro.biz.type.order.OrderStatusEnum;
+import cn.micro.biz.type.orders.OrdersStatusEnum;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.wxpay.sdk.WXPay;
@@ -150,7 +150,7 @@ public class WXPayService {
             }
 
             OrdersEntity orders = new OrdersEntity();
-            orders.setOrderStatus(OrderStatusEnum.TRADE_SUCCESS);
+            orders.setOrderStatus(OrdersStatusEnum.TRADE_SUCCESS);
             orders.setOutTradeNo(resp.get("transaction_id"));
 
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");

@@ -1,9 +1,9 @@
 package cn.micro.biz.pubsrv.pay.ali;
 
 import cn.micro.biz.commons.exception.support.MicroErrorException;
-import cn.micro.biz.entity.order.OrdersEntity;
-import cn.micro.biz.entity.order.OrdersGoodsEntity;
-import cn.micro.biz.type.order.OrderStatusEnum;
+import cn.micro.biz.entity.orders.OrdersEntity;
+import cn.micro.biz.entity.orders.OrdersGoodsEntity;
+import cn.micro.biz.type.orders.OrdersStatusEnum;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.NameFilter;
 import com.alipay.api.AlipayApiException;
@@ -78,7 +78,7 @@ public class AliPayService {
      *
      * @param params {@link Map<String, String>}
      * @return success true
-     * @throws AlipayApiException Ali order Api Exception
+     * @throws AlipayApiException Ali orders Api Exception
      */
     public boolean check(Map<String, String> params) throws AlipayApiException {
         return AlipaySignature.rsaCheckV1(params, aliPayProperties.getAliPayPublicKey(), CHARSET, SIGN_TYPE);
@@ -106,11 +106,11 @@ public class AliPayService {
                     orders.setOutTradeNo(response.getTradeNo());
                     orders.setPayTime(new Timestamp(response.getSendPayDate().getTime()));
                     if ("TRADE_SUCCESS".equals(response.getTradeStatus())) {
-                        orders.setOrderStatus(OrderStatusEnum.TRADE_SUCCESS);
+                        orders.setOrderStatus(OrdersStatusEnum.TRADE_SUCCESS);
                     } else if ("TRADE_FINISHED".equals(response.getTradeStatus())) {
-                        orders.setOrderStatus(OrderStatusEnum.TRADE_FINISHED);
+                        orders.setOrderStatus(OrdersStatusEnum.TRADE_FINISHED);
                     } else if ("TRADE_CLOSED".equals(response.getTradeStatus())) {
-                        orders.setOrderStatus(OrderStatusEnum.TRADE_CLOSED);
+                        orders.setOrderStatus(OrdersStatusEnum.TRADE_CLOSED);
                     }
 
                     return orders;
