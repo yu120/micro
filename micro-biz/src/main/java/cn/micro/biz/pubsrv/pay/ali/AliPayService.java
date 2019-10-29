@@ -1,8 +1,8 @@
 package cn.micro.biz.pubsrv.pay.ali;
 
 import cn.micro.biz.commons.exception.support.MicroErrorException;
-import cn.micro.biz.entity.order.Order;
-import cn.micro.biz.entity.order.OrderGoods;
+import cn.micro.biz.entity.order.OrderEntity;
+import cn.micro.biz.entity.order.OrderGoodsEntity;
 import cn.micro.biz.type.order.OrderStatusEnum;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.NameFilter;
@@ -47,11 +47,11 @@ public class AliPayService {
     /**
      * 支付宝支付
      *
-     * @param order      {@link Order}
-     * @param orderGoods {@link OrderGoods}
+     * @param order      {@link OrderEntity}
+     * @param orderGoods {@link OrderGoodsEntity}
      * @return {@link Map<String, String>}
      */
-    public Map<String, String> pay(Order order, OrderGoods orderGoods) {
+    public Map<String, String> pay(OrderEntity order, OrderGoodsEntity orderGoods) {
         AlipayTradeWapPayModel model = new AlipayTradeWapPayModel();
         model.setOutTradeNo(order.getOrderNo());
         model.setTotalAmount(order.getOrderAmountTotal().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
@@ -88,9 +88,9 @@ public class AliPayService {
      * 支付宝订单查询
      *
      * @param outTradeNo out trade no
-     * @return {@link Order}
+     * @return {@link OrderEntity}
      */
-    public Order tradeQuery(String outTradeNo) {
+    public OrderEntity tradeQuery(String outTradeNo) {
         try {
             AlipayTradeQueryModel model = new AlipayTradeQueryModel();
             model.setOutTradeNo(outTradeNo);
@@ -102,7 +102,7 @@ public class AliPayService {
                 if ("TRADE_SUCCESS".equals(response.getTradeStatus())
                         || "TRADE_FINISHED".equals(response.getTradeStatus())
                         || "TRADE_CLOSED".equals(response.getTradeStatus())) {
-                    Order orders = new Order();
+                    OrderEntity orders = new OrderEntity();
                     orders.setOutTradeNo(response.getTradeNo());
                     orders.setPayTime(new Timestamp(response.getSendPayDate().getTime()));
                     if ("TRADE_SUCCESS".equals(response.getTradeStatus())) {

@@ -1,13 +1,13 @@
 package cn.micro.biz.mapper.goods;
 
 import cn.micro.biz.commons.mybatis.extension.IMicroMapper;
-import cn.micro.biz.entity.goods.GoodsCart;
+import cn.micro.biz.entity.goods.GoodsCartEntity;
 
 /**
  * Goods Cart Mapper
  *
  * @author lry
  */
-public interface IGoodsCartMapper extends IMicroMapper<GoodsCart> {
+public interface IGoodsCartMapper extends IMicroMapper<GoodsCartEntity> {
 
 }

@@ -1,6 +1,6 @@
 package cn.micro.biz.service.spider.support;
 
-import cn.micro.biz.entity.spider.SpiderGoods;
+import cn.micro.biz.entity.spider.SpiderGoodsEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -35,7 +35,7 @@ public enum SpiderApp {
 
     static {
         try {
-            Field[] fields = SpiderGoods.class.getDeclaredFields();
+            Field[] fields = SpiderGoodsEntity.class.getDeclaredFields();
             for (Field field : fields) {
                 SpiderAttrs attrs = field.getDeclaredAnnotation(SpiderAttrs.class);
                 if (attrs != null) {

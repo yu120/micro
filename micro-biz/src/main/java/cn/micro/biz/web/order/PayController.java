@@ -3,7 +3,7 @@ package cn.micro.biz.web.order;
 import cn.micro.biz.commons.auth.PreAuth;
 import cn.micro.biz.pubsrv.pay.*;
 import cn.micro.biz.pubsrv.pay.PayChannelEnum;
-import cn.micro.biz.entity.order.Order;
+import cn.micro.biz.entity.order.OrderEntity;
 import cn.micro.biz.pubsrv.pay.wx.WxPayConstants;
 import cn.micro.biz.pubsrv.pay.wx.WXPayService;
 import cn.micro.biz.type.order.OrderStatusEnum;
@@ -71,7 +71,7 @@ public class PayController {
                 return;
             }
 
-            Order orders = payOrderService.selectPayOrderByOrderNo(orderNo);
+            OrderEntity orders = payOrderService.selectPayOrderByOrderNo(orderNo);
             if (orders == null) {
                 log.warn("非法订单-订单不存在: orderNo={}", orderNo);
                 this.responseAliPayNotify(false, response);
@@ -97,7 +97,7 @@ public class PayController {
             String buyerLogonId = params.get(WxPayConstants.BUYER_LOGON_ID);
 
             // 更新订单信息
-            Order updateOrders = new Order();
+            OrderEntity updateOrders = new OrderEntity();
             updateOrders.setId(orders.getId());
             updateOrders.setOutTradeNo(tradeNo);
 
@@ -144,7 +144,7 @@ public class PayController {
             }
             totalFee = WXPayService.changeF2Y(totalFee);
 
-            Order orders = payOrderService.selectPayOrderByOrderNo(orderNo);
+            OrderEntity orders = payOrderService.selectPayOrderByOrderNo(orderNo);
             if (orders == null) {
                 log.warn("非法订单-订单不存在: orderNo={}", orderNo);
                 this.responseWxPayNotify(false, response);
@@ -172,7 +172,7 @@ public class PayController {
             }
 
             // 更新订单信息
-            Order updateOrders = new Order();
+            OrderEntity updateOrders = new OrderEntity();
             updateOrders.setId(orders.getId());
             updateOrders.setOutTradeNo(tradeNo);
             updateOrders.setOrderStatus(OrderStatusEnum.TRADE_SUCCESS);

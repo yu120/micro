@@ -3,7 +3,7 @@ package cn.micro.biz.web.member;
 import cn.micro.biz.commons.auth.PreAuth;
 import cn.micro.biz.commons.mybatis.MicroEntity;
 import cn.micro.biz.commons.mybatis.PageQuery;
-import cn.micro.biz.entity.member.MemberRole;
+import cn.micro.biz.entity.member.MemberRoleEntity;
 import cn.micro.biz.service.member.IMemberRoleService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -33,7 +33,7 @@ public class MemberRoleController {
 
     @Transactional(rollbackFor = Exception.class)
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public boolean addMemberRole(@RequestBody @Size(min = 1, message = "至少添加1条记录") List<MemberRole> memberRoles) {
+    public boolean addMemberRole(@RequestBody @Size(min = 1, message = "至少添加1条记录") List<MemberRoleEntity> memberRoles) {
         return memberRoleService.saveBatch(memberRoles);
     }
 
@@ -43,21 +43,21 @@ public class MemberRoleController {
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.PUT)
-    public boolean editMemberRoleById(@RequestBody MemberRole memberRole) {
+    public boolean editMemberRoleById(@RequestBody MemberRoleEntity memberRole) {
         return memberRoleService.updateById(memberRole);
     }
 
     @RequestMapping(value = "page", method = RequestMethod.POST)
-    public Page<MemberRole> pageMemberRole(
+    public Page<MemberRoleEntity> pageMemberRole(
             @RequestParam(value = "roleId", required = false) Long roleId,
             @RequestParam(value = "memberId", required = false) Long memberId,
             @RequestBody PageQuery query) {
-        Page<MemberRole> page = new Page<>(query.getCurrent(), query.getSize());
+        Page<MemberRoleEntity> page = new Page<>(query.getCurrent(), query.getSize());
         page.setDesc(MicroEntity.EDITED_FIELD);
 
-        QueryWrapper<MemberRole> entityWrapper = new QueryWrapper<>();
+        QueryWrapper<MemberRoleEntity> entityWrapper = new QueryWrapper<>();
         if (roleId != null || memberId != null) {
-            MemberRole memberRole = new MemberRole();
+            MemberRoleEntity memberRole = new MemberRoleEntity();
             memberRole.setRoleId(roleId);
             memberRole.setMemberId(memberId);
             entityWrapper.setEntity(memberRole);
@@ -65,7 +65,7 @@ public class MemberRoleController {
 
         page.setTotal(memberRoleService.count(entityWrapper));
         if (page.getTotal() > 0) {
-            IPage<MemberRole> tempPage = new Page<>((query.getCurrent() - 1) * query.getSize(), query.getSize());
+            IPage<MemberRoleEntity> tempPage = new Page<>((query.getCurrent() - 1) * query.getSize(), query.getSize());
             page.setRecords(memberRoleService.page(tempPage, entityWrapper).getRecords());
         }
 

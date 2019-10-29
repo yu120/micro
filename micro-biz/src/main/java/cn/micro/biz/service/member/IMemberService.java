@@ -1,7 +1,7 @@
 package cn.micro.biz.service.member;
 
 import cn.micro.biz.commons.mybatis.extension.IMicroService;
-import cn.micro.biz.entity.member.Member;
+import cn.micro.biz.entity.member.MemberEntity;
 import cn.micro.biz.model.edit.EditMemberInfo;
 
 /**
@@ -9,14 +9,14 @@ import cn.micro.biz.model.edit.EditMemberInfo;
  *
  * @author lry
  */
-public interface IMemberService extends IMicroService<Member> {
+public interface IMemberService extends IMicroService<MemberEntity> {
 
     /**
      * The get current member info
      *
-     * @return {@link Member}
+     * @return {@link MemberEntity}
      */
-    Member info();
+    MemberEntity info();
 
     /**
      * Edit Member Info

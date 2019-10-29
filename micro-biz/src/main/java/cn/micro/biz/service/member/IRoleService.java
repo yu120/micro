@@ -1,7 +1,7 @@
 package cn.micro.biz.service.member;
 
 import cn.micro.biz.commons.mybatis.extension.IMicroService;
-import cn.micro.biz.entity.member.Role;
+import cn.micro.biz.entity.member.RoleEntity;
 
 
 /**
@@ -9,6 +9,6 @@ import cn.micro.biz.entity.member.Role;
  *
  * @author lry
  */
-public interface IRoleService extends IMicroService<Role> {
+public interface IRoleService extends IMicroService<RoleEntity> {
 
 }

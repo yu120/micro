@@ -2,7 +2,7 @@ package cn.micro.biz.web.member;
 
 import cn.micro.biz.commons.auth.MicroToken;
 import cn.micro.biz.commons.auth.PreAuth;
-import cn.micro.biz.entity.unified.LoginLog;
+import cn.micro.biz.entity.unified.LoginLogEntity;
 import cn.micro.biz.model.add.RegisterAccount;
 import cn.micro.biz.model.edit.ChangeEmailOrMobile;
 import cn.micro.biz.model.edit.ChangePassword;
@@ -31,7 +31,7 @@ public class AccountController {
     private final ILoginLogService loginLogService;
 
     @RequestMapping(value = "log", method = RequestMethod.PUT)
-    public Boolean log(@RequestBody @Validated LoginLog loginLog) {
+    public Boolean log(@RequestBody @Validated LoginLogEntity loginLog) {
         return loginLogService.updateById(loginLog);
     }
 

@@ -1,6 +1,6 @@
 package cn.micro.biz.service.member.impl;
 
-import cn.micro.biz.entity.member.MemberRole;
+import cn.micro.biz.entity.member.MemberRoleEntity;
 import cn.micro.biz.mapper.member.IMemberGroupMemberMapper;
 import cn.micro.biz.mapper.member.IMemberRoleMapper;
 import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
@@ -19,7 +19,7 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class MemberRoleServiceImpl extends MicroServiceImpl<IMemberRoleMapper, MemberRole> implements IMemberRoleService {
+public class MemberRoleServiceImpl extends MicroServiceImpl<IMemberRoleMapper, MemberRoleEntity> implements IMemberRoleService {
 
     private final IMemberGroupMemberMapper memberGroupMemberMapper;
 

@@ -1,7 +1,7 @@
 package cn.micro.biz.service.spider.impl;
 
 import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
-import cn.micro.biz.entity.spider.SpiderGoods;
+import cn.micro.biz.entity.spider.SpiderGoodsEntity;
 import cn.micro.biz.mapper.spider.ISpiderGoodsMapper;
 import cn.micro.biz.service.spider.ISpiderGoodsService;
 import cn.micro.biz.service.spider.support.SpiderApp;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-public class SpiderGoodsServiceImpl extends MicroServiceImpl<ISpiderGoodsMapper, SpiderGoods> implements ISpiderGoodsService {
+public class SpiderGoodsServiceImpl extends MicroServiceImpl<ISpiderGoodsMapper, SpiderGoodsEntity> implements ISpiderGoodsService {
 
     private static final String REGEX = "g_page_config = \\{(.*?)\\}\\;";
     private static final Double START_PRICE = 10.00;
@@ -117,17 +117,17 @@ public class SpiderGoodsServiceImpl extends MicroServiceImpl<ISpiderGoodsMapper,
     @Override
     public Boolean spider(Integer appCategory) {
         for (String categoryName : CATEGORY_NAMES) {
-            List<SpiderGoods> goodsList = processor(appCategory, categoryName, 1);
+            List<SpiderGoodsEntity> goodsList = processor(appCategory, categoryName, 1);
             if (CollectionUtils.isNotEmpty(goodsList)) {
-                List<String> unifiedIds = goodsList.stream().map(SpiderGoods::getUnifiedId).collect(Collectors.toList());
-                List<SpiderGoods> dbGoodsList = this.listIn(SpiderGoods::getUnifiedId, unifiedIds);
+                List<String> unifiedIds = goodsList.stream().map(SpiderGoodsEntity::getUnifiedId).collect(Collectors.toList());
+                List<SpiderGoodsEntity> dbGoodsList = this.listIn(SpiderGoodsEntity::getUnifiedId, unifiedIds);
                 List<String> hasUnifiedIds = new ArrayList<>();
                 if (CollectionUtils.isNotEmpty(goodsList)) {
-                    hasUnifiedIds.addAll(dbGoodsList.stream().map(SpiderGoods::getUnifiedId).collect(Collectors.toList()));
+                    hasUnifiedIds.addAll(dbGoodsList.stream().map(SpiderGoodsEntity::getUnifiedId).collect(Collectors.toList()));
                 }
 
-                List<SpiderGoods> resultList = new ArrayList<>();
-                for (SpiderGoods goods : goodsList) {
+                List<SpiderGoodsEntity> resultList = new ArrayList<>();
+                for (SpiderGoodsEntity goods : goodsList) {
                     System.out.println(goods.getDetailUrl());
                     if (hasUnifiedIds.contains(goods.getUnifiedId())) {
                         continue;
@@ -143,11 +143,11 @@ public class SpiderGoodsServiceImpl extends MicroServiceImpl<ISpiderGoodsMapper,
         return true;
     }
 
-    public List<SpiderGoods> processor(Integer appCategory, String categoryName, Integer page) {
+    public List<SpiderGoodsEntity> processor(Integer appCategory, String categoryName, Integer page) {
         SpiderApp spiderApp = SpiderApp.parse(appCategory);
-        List<SpiderGoods> resultList = new ArrayList<>();
-        List<SpiderGoods> goodsList = parse(spiderApp, TAO_BAO_COOKIE, categoryName, START_PRICE, END_PRICE, page);
-        for (SpiderGoods goods : goodsList) {
+        List<SpiderGoodsEntity> resultList = new ArrayList<>();
+        List<SpiderGoodsEntity> goodsList = parse(spiderApp, TAO_BAO_COOKIE, categoryName, START_PRICE, END_PRICE, page);
+        for (SpiderGoodsEntity goods : goodsList) {
             if (goods.getViewSales() < VIEW_SALES) {
                 continue;
             }
@@ -159,7 +159,7 @@ public class SpiderGoodsServiceImpl extends MicroServiceImpl<ISpiderGoodsMapper,
         return resultList;
     }
 
-    public List<SpiderGoods> parse(SpiderApp app, String cookie, String keywords, Double startPrice, Double endPrice, Integer page) {
+    public List<SpiderGoodsEntity> parse(SpiderApp app, String cookie, String keywords, Double startPrice, Double endPrice, Integer page) {
         try {
             String json = parseJson(app, cookie, keywords, startPrice, endPrice, page);
             JSONObject jsonObject = JSON.parseObject(json);
@@ -217,7 +217,7 @@ public class SpiderGoodsServiceImpl extends MicroServiceImpl<ISpiderGoodsMapper,
                 jsonObjectList.add(goodsJson);
             }
 
-            return JSON.parseArray(JSON.toJSONString(jsonObjectList), SpiderGoods.class);
+            return JSON.parseArray(JSON.toJSONString(jsonObjectList), SpiderGoodsEntity.class);
         } catch (Exception e) {
             log.error("商品解析失败", e);
             return Collections.emptyList();

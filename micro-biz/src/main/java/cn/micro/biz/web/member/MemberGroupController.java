@@ -4,7 +4,7 @@ import cn.micro.biz.commons.auth.PreAuth;
 import cn.micro.biz.commons.exception.support.MicroBadRequestException;
 import cn.micro.biz.commons.mybatis.MicroEntity;
 import cn.micro.biz.commons.mybatis.PageQuery;
-import cn.micro.biz.entity.member.MemberGroup;
+import cn.micro.biz.entity.member.MemberGroupEntity;
 import cn.micro.biz.service.member.IMemberGroupService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -35,8 +35,8 @@ public class MemberGroupController {
     private final IMemberGroupService memberGroupService;
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public boolean addMemberGroup(@RequestBody MemberGroup memberGroup) {
-        MemberGroup queryMemberGroup = memberGroupService.getOne(MemberGroup::getCode, memberGroup.getCode());
+    public boolean addMemberGroup(@RequestBody MemberGroupEntity memberGroup) {
+        MemberGroupEntity queryMemberGroup = memberGroupService.getOne(MemberGroupEntity::getCode, memberGroup.getCode());
         if (queryMemberGroup != null) {
             throw new MicroBadRequestException("用户组CODE已存在");
         }
@@ -50,8 +50,8 @@ public class MemberGroupController {
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.PUT)
-    public boolean editMemberGroupById(@RequestBody MemberGroup memberGroup) {
-        MemberGroup queryMemberGroup = memberGroupService.getOne(MemberGroup::getCode, memberGroup.getCode());
+    public boolean editMemberGroupById(@RequestBody MemberGroupEntity memberGroup) {
+        MemberGroupEntity queryMemberGroup = memberGroupService.getOne(MemberGroupEntity::getCode, memberGroup.getCode());
         if (queryMemberGroup != null) {
             if (!queryMemberGroup.getId().equals(memberGroup.getId())) {
                 throw new MicroBadRequestException("用户组CODE已存在");
@@ -62,12 +62,12 @@ public class MemberGroupController {
     }
 
     @RequestMapping(value = "page", method = RequestMethod.POST)
-    public Page<MemberGroup> pageMemberGroup(@RequestBody PageQuery query) {
-        Page<MemberGroup> page = new Page<>(query.getCurrent(), query.getSize());
+    public Page<MemberGroupEntity> pageMemberGroup(@RequestBody PageQuery query) {
+        Page<MemberGroupEntity> page = new Page<>(query.getCurrent(), query.getSize());
         page.setDesc(MicroEntity.EDITED_FIELD);
         page.setTotal(memberGroupService.count(new QueryWrapper<>()));
         if (page.getTotal() > 0) {
-            IPage<MemberGroup> tempPage = new Page<>((query.getCurrent() - 1) * query.getSize(), query.getSize());
+            IPage<MemberGroupEntity> tempPage = new Page<>((query.getCurrent() - 1) * query.getSize(), query.getSize());
             page.setRecords(memberGroupService.page(tempPage, new QueryWrapper<>()).getRecords());
         }
 

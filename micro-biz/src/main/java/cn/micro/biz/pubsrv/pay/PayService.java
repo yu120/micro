@@ -1,9 +1,9 @@
 package cn.micro.biz.pubsrv.pay;
 
 import cn.micro.biz.commons.exception.support.MicroBadRequestException;
-import cn.micro.biz.entity.order.OrderGoods;
+import cn.micro.biz.entity.order.OrderGoodsEntity;
 import cn.micro.biz.pubsrv.pay.ali.AliPayService;
-import cn.micro.biz.entity.order.Order;
+import cn.micro.biz.entity.order.OrderEntity;
 import cn.micro.biz.pubsrv.pay.wx.WXPayService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +40,7 @@ public class PayService implements InitializingBean {
         this.wxPayService = new WXPayService(payProperties.getWxPay());
     }
 
-    public Map<String, String> pay(Order order, String code, OrderGoods orderGoods) throws Exception {
+    public Map<String, String> pay(OrderEntity order, String code, OrderGoodsEntity orderGoods) throws Exception {
         if (PayChannelEnum.ALIPAY.getStatus() == order.getPayChannel()) {
             return alipayService.pay(order, orderGoods);
         } else if (PayChannelEnum.WECHAT.getStatus() == order.getPayChannel()
@@ -61,7 +61,7 @@ public class PayService implements InitializingBean {
         }
     }
 
-    public Order tradeQuery(PayChannelEnum payBy, String outTradeNo) {
+    public OrderEntity tradeQuery(PayChannelEnum payBy, String outTradeNo) {
         if (PayChannelEnum.ALIPAY.getStatus() == payBy.getStatus()) {
             return alipayService.tradeQuery(outTradeNo);
         } else if (PayChannelEnum.WECHAT.getStatus() == payBy.getStatus()) {

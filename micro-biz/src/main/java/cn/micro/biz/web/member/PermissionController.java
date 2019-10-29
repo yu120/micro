@@ -4,7 +4,7 @@ import cn.micro.biz.commons.auth.PreAuth;
 import cn.micro.biz.commons.exception.support.MicroBadRequestException;
 import cn.micro.biz.commons.mybatis.MicroEntity;
 import cn.micro.biz.commons.mybatis.PageQuery;
-import cn.micro.biz.entity.member.Permission;
+import cn.micro.biz.entity.member.PermissionEntity;
 import cn.micro.biz.service.member.IPermissionService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -35,8 +35,8 @@ public class PermissionController {
     private final IPermissionService permissionService;
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public boolean addPermission(@RequestBody Permission permission) {
-        Permission queryPermission = permissionService.getOne(Permission::getCode, permission.getCode());
+    public boolean addPermission(@RequestBody PermissionEntity permission) {
+        PermissionEntity queryPermission = permissionService.getOne(PermissionEntity::getCode, permission.getCode());
         if (queryPermission != null) {
             throw new MicroBadRequestException("权限CODE已存在");
         }
@@ -50,17 +50,17 @@ public class PermissionController {
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.PUT)
-    public boolean editPermissionById(@RequestBody Permission permission) {
+    public boolean editPermissionById(@RequestBody PermissionEntity permission) {
         return permissionService.updateById(permission);
     }
 
     @RequestMapping(value = "page", method = RequestMethod.POST)
-    public Page<Permission> pagePermission(@RequestBody PageQuery query) {
-        Page<Permission> page = new Page<>(query.getCurrent(), query.getSize());
+    public Page<PermissionEntity> pagePermission(@RequestBody PageQuery query) {
+        Page<PermissionEntity> page = new Page<>(query.getCurrent(), query.getSize());
         page.setDesc(MicroEntity.EDITED_FIELD);
         page.setTotal(permissionService.count(new QueryWrapper<>()));
         if (page.getTotal() > 0) {
-            IPage<Permission> tempPermission = new Page<>((query.getCurrent() - 1) * query.getSize(), query.getSize());
+            IPage<PermissionEntity> tempPermission = new Page<>((query.getCurrent() - 1) * query.getSize(), query.getSize());
             page.setRecords(permissionService.page(tempPermission, new QueryWrapper<>()).getRecords());
         }
 

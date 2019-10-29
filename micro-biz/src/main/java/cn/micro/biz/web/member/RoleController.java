@@ -4,7 +4,7 @@ import cn.micro.biz.commons.auth.PreAuth;
 import cn.micro.biz.commons.exception.support.MicroBadRequestException;
 import cn.micro.biz.commons.mybatis.MicroEntity;
 import cn.micro.biz.commons.mybatis.PageQuery;
-import cn.micro.biz.entity.member.Role;
+import cn.micro.biz.entity.member.RoleEntity;
 import cn.micro.biz.service.member.IRoleService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -35,8 +35,8 @@ public class RoleController {
     private final IRoleService roleService;
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public boolean addRole(@RequestBody Role role) {
-        Role queryRole = roleService.getOne(Role::getCode, role.getCode());
+    public boolean addRole(@RequestBody RoleEntity role) {
+        RoleEntity queryRole = roleService.getOne(RoleEntity::getCode, role.getCode());
         if (queryRole != null) {
             throw new MicroBadRequestException("角色CODE已存在");
         }
@@ -50,8 +50,8 @@ public class RoleController {
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.PUT)
-    public boolean editRoleById(@RequestBody Role role) {
-        Role queryRole = roleService.getOne(Role::getCode, role.getCode());
+    public boolean editRoleById(@RequestBody RoleEntity role) {
+        RoleEntity queryRole = roleService.getOne(RoleEntity::getCode, role.getCode());
         if (queryRole != null) {
             if (!queryRole.getId().equals(role.getId())) {
                 throw new MicroBadRequestException("角色CODE已存在");
@@ -62,12 +62,12 @@ public class RoleController {
     }
 
     @RequestMapping(value = "page", method = RequestMethod.POST)
-    public Page<Role> pageRole(@RequestBody PageQuery query) {
-        Page<Role> page = new Page<>(query.getCurrent(), query.getSize());
+    public Page<RoleEntity> pageRole(@RequestBody PageQuery query) {
+        Page<RoleEntity> page = new Page<>(query.getCurrent(), query.getSize());
         page.setDesc(MicroEntity.EDITED_FIELD);
         page.setTotal(roleService.count(new QueryWrapper<>()));
         if (page.getTotal() > 0) {
-            IPage<Role> tempPage = new Page<>((query.getCurrent() - 1) * query.getSize(), query.getSize());
+            IPage<RoleEntity> tempPage = new Page<>((query.getCurrent() - 1) * query.getSize(), query.getSize());
             page.setRecords(roleService.page(tempPage, new QueryWrapper<>()).getRecords());
         }
 

@@ -3,7 +3,7 @@ package cn.micro.biz.web.member;
 import cn.micro.biz.commons.auth.PreAuth;
 import cn.micro.biz.commons.mybatis.MicroEntity;
 import cn.micro.biz.commons.mybatis.PageQuery;
-import cn.micro.biz.entity.member.MemberGroupMember;
+import cn.micro.biz.entity.member.MemberGroupMemberEntity;
 import cn.micro.biz.service.member.IMemberGroupMemberService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -33,7 +33,7 @@ public class MemberGroupMemberController {
 
     @Transactional(rollbackFor = Exception.class)
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public boolean addMemberGroupMember(@RequestBody @Size(min = 1, message = "至少添加1条记录") List<MemberGroupMember> remberGroupMembers) {
+    public boolean addMemberGroupMember(@RequestBody @Size(min = 1, message = "至少添加1条记录") List<MemberGroupMemberEntity> remberGroupMembers) {
         return remberGroupMemberService.saveBatch(remberGroupMembers);
     }
 
@@ -43,21 +43,21 @@ public class MemberGroupMemberController {
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.PUT)
-    public boolean editMemberGroupMemberById(@RequestBody MemberGroupMember remberGroupMember) {
+    public boolean editMemberGroupMemberById(@RequestBody MemberGroupMemberEntity remberGroupMember) {
         return remberGroupMemberService.updateById(remberGroupMember);
     }
 
     @RequestMapping(value = "page", method = RequestMethod.POST)
-    public Page<MemberGroupMember> pageMemberGroupMember(
+    public Page<MemberGroupMemberEntity> pageMemberGroupMember(
             @RequestParam(value = "memberId", required = false) Long memberId,
             @RequestParam(value = "memberGroupId", required = false) Long memberGroupId,
             @RequestBody PageQuery query) {
-        Page<MemberGroupMember> page = new Page<>(query.getCurrent(), query.getSize());
+        Page<MemberGroupMemberEntity> page = new Page<>(query.getCurrent(), query.getSize());
         page.setDesc(MicroEntity.EDITED_FIELD);
 
-        QueryWrapper<MemberGroupMember> entityWrapper = new QueryWrapper<>();
+        QueryWrapper<MemberGroupMemberEntity> entityWrapper = new QueryWrapper<>();
         if (memberId != null || memberGroupId != null) {
-            MemberGroupMember remberGroupMember = new MemberGroupMember();
+            MemberGroupMemberEntity remberGroupMember = new MemberGroupMemberEntity();
             remberGroupMember.setMemberId(memberId);
             remberGroupMember.setMemberGroupId(memberGroupId);
             entityWrapper.setEntity(remberGroupMember);
@@ -65,7 +65,7 @@ public class MemberGroupMemberController {
 
         page.setTotal(remberGroupMemberService.count(entityWrapper));
         if (page.getTotal() > 0) {
-            IPage<MemberGroupMember> tempPage = new Page<>((query.getCurrent() - 1) * query.getSize(), query.getSize());
+            IPage<MemberGroupMemberEntity> tempPage = new Page<>((query.getCurrent() - 1) * query.getSize(), query.getSize());
             page.setRecords(remberGroupMemberService.page(tempPage, entityWrapper).getRecords());
         }
 

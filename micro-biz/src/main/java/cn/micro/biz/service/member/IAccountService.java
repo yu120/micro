@@ -2,7 +2,7 @@ package cn.micro.biz.service.member;
 
 import cn.micro.biz.commons.auth.MicroToken;
 import cn.micro.biz.commons.mybatis.extension.IMicroService;
-import cn.micro.biz.entity.member.Account;
+import cn.micro.biz.entity.member.AccountEntity;
 import cn.micro.biz.model.add.RegisterAccount;
 import cn.micro.biz.model.edit.ChangeEmailOrMobile;
 import cn.micro.biz.model.edit.ChangePassword;
@@ -15,7 +15,7 @@ import cn.micro.biz.pubsrv.wx.WxAuthCode2Session;
  *
  * @author lry
  */
-public interface IAccountService extends IMicroService<Account> {
+public interface IAccountService extends IMicroService<AccountEntity> {
 
     /**
      * 通用账号注册

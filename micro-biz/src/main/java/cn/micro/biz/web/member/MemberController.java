@@ -1,7 +1,7 @@
 package cn.micro.biz.web.member;
 
 import cn.micro.biz.commons.auth.PreAuth;
-import cn.micro.biz.entity.member.Member;
+import cn.micro.biz.entity.member.MemberEntity;
 import cn.micro.biz.model.edit.EditMemberInfo;
 import cn.micro.biz.service.member.IMemberService;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class MemberController {
     private final IMemberService memberService;
 
     @RequestMapping(value = "info", method = RequestMethod.GET)
-    public Member info() {
+    public MemberEntity info() {
         return memberService.info();
     }
 

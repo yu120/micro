@@ -1,10 +1,10 @@
 package cn.micro.biz.service.action.impl;
 
-import cn.micro.biz.entity.action.ActionLog;
+import cn.micro.biz.entity.action.ActionEntity;
+import cn.micro.biz.entity.action.ActionLogEntity;
 import cn.micro.biz.type.action.ActionTypeEnum;
 
 import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
-import cn.micro.biz.entity.action.Action;
 import cn.micro.biz.mapper.action.ActionMapper;
 import cn.micro.biz.model.like.OwnerAction;
 import cn.micro.biz.model.like.TargetAction;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
  * @author lry
  */
 @Service
-public class ActionServiceImpl extends MicroServiceImpl<ActionMapper, Action> implements IActionService {
+public class ActionServiceImpl extends MicroServiceImpl<ActionMapper, ActionEntity> implements IActionService {
 
     @Override
     public boolean operate(OwnerAction ownerAction, TargetAction targetAction) {
@@ -30,7 +30,7 @@ public class ActionServiceImpl extends MicroServiceImpl<ActionMapper, Action> im
      * 当用户未点赞时触发
      */
     private void submit(OwnerAction ownerAction, TargetAction targetAction) {
-        Action action = new Action(ownerAction, targetAction);
+        ActionEntity action = new ActionEntity(ownerAction, targetAction);
         action.setStatus(ActionTypeEnum.LIKE.getValue());
     }
 
@@ -40,7 +40,7 @@ public class ActionServiceImpl extends MicroServiceImpl<ActionMapper, Action> im
      * 当用户已经点赞时触发
      */
     private void cancel(OwnerAction ownerAction, TargetAction targetAction) {
-        Action action = new Action(ownerAction, targetAction);
+        ActionEntity action = new ActionEntity(ownerAction, targetAction);
         action.setStatus(ActionTypeEnum.CANCEL.getValue());
     }
 
@@ -49,7 +49,7 @@ public class ActionServiceImpl extends MicroServiceImpl<ActionMapper, Action> im
      * 创建点赞日志
      */
     public void createLikeLog(OwnerAction ownerAction, TargetAction targetAction) {
-        ActionLog actionLog = new ActionLog(ownerAction, targetAction);
+        ActionLogEntity actionLog = new ActionLogEntity(ownerAction, targetAction);
         actionLog.setStatus(ActionTypeEnum.LIKE.getValue());
     }
 
@@ -57,7 +57,7 @@ public class ActionServiceImpl extends MicroServiceImpl<ActionMapper, Action> im
      * 创建取消点赞日志
      */
     public void createCancelLog(OwnerAction ownerAction, TargetAction targetAction) {
-        ActionLog actionLog = new ActionLog(ownerAction, targetAction);
+        ActionLogEntity actionLog = new ActionLogEntity(ownerAction, targetAction);
         actionLog.setStatus(ActionTypeEnum.CANCEL.getValue());
     }
 

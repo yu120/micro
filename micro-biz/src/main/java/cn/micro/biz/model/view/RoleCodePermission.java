@@ -1,6 +1,7 @@
 package cn.micro.biz.model.view;
 
-import cn.micro.biz.entity.member.Permission;
+import cn.micro.biz.entity.member.PermissionEntity;
+import cn.micro.biz.entity.member.RoleEntity;
 import lombok.*;
 
 /**
@@ -13,12 +14,12 @@ import lombok.*;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class RoleCodePermission extends Permission {
+public class RoleCodePermission extends PermissionEntity {
 
     /**
      * Member id
      * <p>
-     * {@link cn.micro.biz.entity.member.Role#code}
+     * {@link RoleEntity#code}
      */
     private String roleCode;
 

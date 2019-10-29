@@ -1,7 +1,7 @@
 package cn.micro.biz.service.action;
 
 import cn.micro.biz.commons.mybatis.extension.IMicroService;
-import cn.micro.biz.entity.action.Action;
+import cn.micro.biz.entity.action.ActionEntity;
 import cn.micro.biz.model.like.OwnerAction;
 import cn.micro.biz.model.like.TargetAction;
 
@@ -17,7 +17,7 @@ import cn.micro.biz.model.like.TargetAction;
  *
  * @author lry
  */
-public interface IActionService extends IMicroService<Action> {
+public interface IActionService extends IMicroService<ActionEntity> {
 
     /**
      * 用户点击行为

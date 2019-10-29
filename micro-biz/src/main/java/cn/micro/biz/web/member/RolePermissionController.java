@@ -3,7 +3,7 @@ package cn.micro.biz.web.member;
 import cn.micro.biz.commons.auth.PreAuth;
 import cn.micro.biz.commons.mybatis.MicroEntity;
 import cn.micro.biz.commons.mybatis.PageQuery;
-import cn.micro.biz.entity.member.RolePermission;
+import cn.micro.biz.entity.member.RolePermissionEntity;
 import cn.micro.biz.service.member.IRolePermissionService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -33,7 +33,7 @@ public class RolePermissionController {
 
     @Transactional(rollbackFor = Exception.class)
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public boolean addRolePermission(@RequestBody @Size(min = 1, message = "至少添加1条记录") List<RolePermission> rolePermissions) {
+    public boolean addRolePermission(@RequestBody @Size(min = 1, message = "至少添加1条记录") List<RolePermissionEntity> rolePermissions) {
         return rolePermissionService.saveBatch(rolePermissions);
     }
 
@@ -43,21 +43,21 @@ public class RolePermissionController {
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.PUT)
-    public boolean editRolePermissionById(@RequestBody RolePermission rolePermission) {
+    public boolean editRolePermissionById(@RequestBody RolePermissionEntity rolePermission) {
         return rolePermissionService.updateById(rolePermission);
     }
 
     @RequestMapping(value = "page", method = RequestMethod.POST)
-    public Page<RolePermission> pageRolePermission(
+    public Page<RolePermissionEntity> pageRolePermission(
             @RequestParam(value = "roleId", required = false) Long roleId,
             @RequestParam(value = "permissionId", required = false) Long permissionId,
             @RequestBody PageQuery query) {
-        Page<RolePermission> page = new Page<>(query.getCurrent(), query.getSize());
+        Page<RolePermissionEntity> page = new Page<>(query.getCurrent(), query.getSize());
         page.setDesc(MicroEntity.EDITED_FIELD);
 
-        QueryWrapper<RolePermission> entityWrapper = new QueryWrapper<>();
+        QueryWrapper<RolePermissionEntity> entityWrapper = new QueryWrapper<>();
         if (roleId != null || permissionId != null) {
-            RolePermission rolePermission = new RolePermission();
+            RolePermissionEntity rolePermission = new RolePermissionEntity();
             rolePermission.setRoleId(roleId);
             rolePermission.setPermissionId(permissionId);
             entityWrapper.setEntity(rolePermission);
@@ -65,7 +65,7 @@ public class RolePermissionController {
 
         page.setTotal(rolePermissionService.count(entityWrapper));
         if (page.getTotal() > 0) {
-            IPage<RolePermission> tempPage = new Page<>((query.getCurrent() - 1) * query.getSize(), query.getSize());
+            IPage<RolePermissionEntity> tempPage = new Page<>((query.getCurrent() - 1) * query.getSize(), query.getSize());
             page.setRecords(rolePermissionService.page(tempPage, entityWrapper).getRecords());
         }
 

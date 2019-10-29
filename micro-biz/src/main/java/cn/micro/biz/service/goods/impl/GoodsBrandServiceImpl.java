@@ -1,7 +1,7 @@
 package cn.micro.biz.service.goods.impl;
 
 import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
-import cn.micro.biz.entity.goods.GoodsBrand;
+import cn.micro.biz.entity.goods.GoodsBrandEntity;
 import cn.micro.biz.mapper.goods.IGoodsBrandMapper;
 import cn.micro.biz.service.goods.IGoodsBrandService;
 import org.springframework.stereotype.Service;
@@ -13,6 +13,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class GoodsBrandServiceImpl extends MicroServiceImpl<IGoodsBrandMapper,
-        GoodsBrand> implements IGoodsBrandService {
+        GoodsBrandEntity> implements IGoodsBrandService {
 
 }

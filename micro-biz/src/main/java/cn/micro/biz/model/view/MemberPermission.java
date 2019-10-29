@@ -1,7 +1,7 @@
 package cn.micro.biz.model.view;
 
-import cn.micro.biz.entity.member.Member;
-import cn.micro.biz.entity.member.Permission;
+import cn.micro.biz.entity.member.MemberEntity;
+import cn.micro.biz.entity.member.PermissionEntity;
 import lombok.*;
 
 /**
@@ -14,12 +14,12 @@ import lombok.*;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class MemberPermission extends Permission {
+public class MemberPermission extends PermissionEntity {
 
     /**
      * Member id
      *
-     * @see Member#id
+     * @see MemberEntity#id
      */
     private Long memberId;
 

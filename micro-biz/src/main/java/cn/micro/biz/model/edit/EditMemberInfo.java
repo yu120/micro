@@ -1,6 +1,6 @@
 package cn.micro.biz.model.edit;
 
-import cn.micro.biz.entity.unified.Area;
+import cn.micro.biz.entity.unified.AreaEntity;
 import cn.micro.biz.type.member.SexEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
@@ -57,49 +57,49 @@ public class EditMemberInfo implements Serializable {
     /**
      * Province code
      * <p>
-     * {@link Area#code}
+     * {@link AreaEntity#code}
      */
     private String provinceCode;
     /**
      * Province name
      * <p>
-     * {@link Area#name}
+     * {@link AreaEntity#name}
      */
     private String provinceName;
     /**
      * City code
      * <p>
-     * {@link Area#code}
+     * {@link AreaEntity#code}
      */
     private String cityCode;
     /**
      * City name
      * <p>
-     * {@link Area#name}
+     * {@link AreaEntity#name}
      */
     private String cityName;
     /**
      * District code
      * <p>
-     * {@link Area#code}
+     * {@link AreaEntity#code}
      */
     private String districtCode;
     /**
      * District name
      * <p>
-     * {@link Area#name}
+     * {@link AreaEntity#name}
      */
     private String districtName;
     /**
      * Town code
      * <p>
-     * {@link Area#code}
+     * {@link AreaEntity#code}
      */
     private String townCode;
     /**
      * Town name
      * <p>
-     * {@link Area#name}
+     * {@link AreaEntity#name}
      */
     private String townName;
 

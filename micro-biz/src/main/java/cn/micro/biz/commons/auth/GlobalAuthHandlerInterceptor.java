@@ -1,7 +1,7 @@
 package cn.micro.biz.commons.auth;
 
 import cn.micro.biz.commons.exception.support.MicroPermissionException;
-import cn.micro.biz.entity.member.Permission;
+import cn.micro.biz.entity.member.PermissionEntity;
 import cn.micro.biz.mapper.member.IRolePermissionMapper;
 import cn.micro.biz.model.view.RoleCodePermission;
 import lombok.RequiredArgsConstructor;
@@ -114,7 +114,7 @@ public class GlobalAuthHandlerInterceptor extends HandlerInterceptorAdapter impl
                 continue;
             }
 
-            for (Permission permission : permissions) {
+            for (PermissionEntity permission : permissions) {
                 if (ANT_PATH_MATCHER.match(permission.getCode(), servletPath)) {
                     return super.preHandle(request, response, handler);
                 }

@@ -2,7 +2,7 @@ package cn.micro.biz.service.unified.impl;
 
 import cn.micro.biz.commons.exception.support.MicroBadRequestException;
 import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
-import cn.micro.biz.entity.unified.UnionCode;
+import cn.micro.biz.entity.unified.UnionCodeEntity;
 import cn.micro.biz.mapper.unified.IUnionCodeMapper;
 import cn.micro.biz.pubsrv.email.EmailMessage;
 import cn.micro.biz.pubsrv.email.EmailService;
@@ -24,20 +24,20 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class UnionCodeServiceImpl extends MicroServiceImpl<IUnionCodeMapper, UnionCode> implements IUnionCodeService {
+public class UnionCodeServiceImpl extends MicroServiceImpl<IUnionCodeMapper, UnionCodeEntity> implements IUnionCodeService {
 
     private final EmailService emailService;
 
     @Override
     public void checkCode(UnionCodeCategoryEnum unionCodeCategoryEnum, String account, String code) {
-        UnionCode unionCode = super.getOne(UnionCode::getCategory, unionCodeCategoryEnum.getValue(),
-                UnionCode::getAccount, account);
+        UnionCodeEntity unionCode = super.getOne(UnionCodeEntity::getCategory, unionCodeCategoryEnum.getValue(),
+                UnionCodeEntity::getAccount, account);
         if (unionCode == null) {
             throw new MicroBadRequestException("验证码不存在");
         }
         if (!unionCode.getCode().equals(code)) {
             // 验证失败，则失败次数+1
-            UnionCode updateUnionCode = new UnionCode();
+            UnionCodeEntity updateUnionCode = new UnionCodeEntity();
             updateUnionCode.setId(unionCode.getId());
             updateUnionCode.setFailTimes(unionCode.getFailTimes() + 1);
             super.updateById(updateUnionCode);
@@ -60,14 +60,14 @@ public class UnionCodeServiceImpl extends MicroServiceImpl<IUnionCodeMapper, Uni
         EmailCategoryEnum emailCategoryEnum = EmailCategoryEnum.get(unionCodeCategoryEnum.getCategory());
 
         // 清理历史验证码
-        List<UnionCode> unionCodeList = super.list(UnionCode::getCategory, category, UnionCode::getAccount, email);
+        List<UnionCodeEntity> unionCodeList = super.list(UnionCodeEntity::getCategory, category, UnionCodeEntity::getAccount, email);
         if (CollectionUtils.isNotEmpty(unionCodeList)) {
-            super.removeByIds(unionCodeList.stream().map(UnionCode::getId).collect(Collectors.toList()));
+            super.removeByIds(unionCodeList.stream().map(UnionCodeEntity::getId).collect(Collectors.toList()));
         }
 
         try {
             String captcha = this.getFixLengthCode(6);
-            UnionCode unionCode = new UnionCode();
+            UnionCodeEntity unionCode = new UnionCodeEntity();
             unionCode.setAccount(email);
             unionCode.setCode(captcha);
             unionCode.setMaxTimes(unionCodeCategoryEnum.getMaxTimes());

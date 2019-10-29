@@ -1,7 +1,7 @@
 package cn.micro.biz.service.advertisement.impl;
 
 import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
-import cn.micro.biz.entity.advertisement.Comments;
+import cn.micro.biz.entity.advertisement.CommentsEntity;
 import cn.micro.biz.mapper.advertisement.ICommentsMapper;
 import cn.micro.biz.service.advertisement.ICommentsService;
 import org.springframework.stereotype.Service;
@@ -12,6 +12,6 @@ import org.springframework.stereotype.Service;
  * @author lry
  */
 @Service
-public class CommentsServiceImpl extends MicroServiceImpl<ICommentsMapper, Comments> implements ICommentsService {
+public class CommentsServiceImpl extends MicroServiceImpl<ICommentsMapper, CommentsEntity> implements ICommentsService {
 
 }

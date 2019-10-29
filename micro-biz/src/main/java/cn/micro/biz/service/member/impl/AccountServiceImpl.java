@@ -8,10 +8,10 @@ import cn.micro.biz.commons.exception.support.MicroBadRequestException;
 import cn.micro.biz.commons.exception.support.MicroErrorException;
 import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
 import cn.micro.biz.commons.utils.RsaUtils;
-import cn.micro.biz.entity.member.Account;
-import cn.micro.biz.entity.member.Member;
-import cn.micro.biz.entity.member.MemberGroupMember;
-import cn.micro.biz.entity.unified.LoginLog;
+import cn.micro.biz.entity.member.AccountEntity;
+import cn.micro.biz.entity.member.MemberEntity;
+import cn.micro.biz.entity.member.MemberGroupMemberEntity;
+import cn.micro.biz.entity.unified.LoginLogEntity;
 import cn.micro.biz.mapper.member.IAccountMapper;
 import cn.micro.biz.mapper.member.IMemberGroupMemberMapper;
 import cn.micro.biz.mapper.member.IMemberMapper;
@@ -51,7 +51,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account> implements IAccountService {
+public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, AccountEntity> implements IAccountService {
 
     private final IMemberMapper memberMapper;
     private final ILoginLogMapper loginLogMapper;
@@ -67,17 +67,17 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
     @Override
     public Boolean doRegister(RegisterAccount registerAccount) {
         // 1.账号唯一性校验
-        Account account = super.getOne(Account::getCategory, registerAccount.getCategory(),
-                Account::getCode, registerAccount.getAccount());
+        AccountEntity account = super.getOne(AccountEntity::getCategory, registerAccount.getCategory(),
+                AccountEntity::getCode, registerAccount.getAccount());
 
         // 2.检查账号是否存在用户信息
-        Member addOrUpdateMember = new Member();
+        MemberEntity addOrUpdateMember = new MemberEntity();
         if (AccountEnum.WX_AUTO_LOGIN == registerAccount.getCategory()) {
             // 2.1.微信自动登录
             if (account != null) {
                 addOrUpdateMember = memberMapper.selectById(account.getMemberId());
                 if (addOrUpdateMember == null) {
-                    addOrUpdateMember = new Member();
+                    addOrUpdateMember = new MemberEntity();
                 }
             }
         } else {
@@ -85,12 +85,12 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
             if (account != null) {
                 throw new MicroBadRequestException("账号已存在");
             }
-            Member member;
+            MemberEntity member;
             if (AccountEnum.MOBILE == registerAccount.getCategory()) {
-                member = memberMapper.selectOne(Member::getMobile, registerAccount.getAccount());
+                member = memberMapper.selectOne(MemberEntity::getMobile, registerAccount.getAccount());
                 addOrUpdateMember.setMobile(registerAccount.getAccount());
             } else if (AccountEnum.EMAIL == registerAccount.getCategory()) {
-                member = memberMapper.selectOne(Member::getEmail, registerAccount.getAccount());
+                member = memberMapper.selectOne(MemberEntity::getEmail, registerAccount.getAccount());
                 addOrUpdateMember.setEmail(registerAccount.getAccount());
             } else {
                 throw new MicroBadRequestException("非法账号类型");
@@ -115,7 +115,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
             }
 
             // 4.注册账号
-            Account addAccount = new Account();
+            AccountEntity addAccount = new AccountEntity();
             addAccount.setMemberId(addOrUpdateMember.getId());
             addAccount.setCode(registerAccount.getAccount());
             addAccount.setCategory(IEnum.parse(AccountEnum.class, registerAccount.getCategory()));
@@ -124,7 +124,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
             }
 
             // 5.分配用户组
-            MemberGroupMember addMemberGroupMember = new MemberGroupMember();
+            MemberGroupMemberEntity addMemberGroupMember = new MemberGroupMemberEntity();
             addMemberGroupMember.setMemberId(addOrUpdateMember.getId());
             addMemberGroupMember.setMemberGroupId(MemberGroupEnum.MEMBER.getValue());
             if (memberGroupMemberMapper.insert(addMemberGroupMember) <= 0) {
@@ -138,7 +138,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
     @Override
     public MicroToken doLogin(LoginAccount loginAccount) {
         // 记录登录信息
-        LoginLog loginLog = new LoginLog();
+        LoginLogEntity loginLog = new LoginLogEntity();
         loginLog.setResult(LoginResultEnum.SUCCESS);
         loginLog.setIp(MicroAuthContext.getRequestIPAddress());
         loginLog.setAccount(loginAccount.getAccount());
@@ -146,14 +146,14 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
 
         try {
             // 1.校验账号信息
-            Account account = baseMapper.selectOne(Account::getCode, loginAccount.getAccount());
+            AccountEntity account = baseMapper.selectOne(AccountEntity::getCode, loginAccount.getAccount());
             if (account == null) {
                 throw new MicroBadRequestException("账号不存在");
             }
             loginLog.setCategory(account.getCategory());
 
             // 2.查询用户信息
-            Member member = memberMapper.selectById(account.getMemberId());
+            MemberEntity member = memberMapper.selectById(account.getMemberId());
             if (member == null) {
                 throw new MicroBadRequestException("未找到用户");
             }
@@ -192,8 +192,8 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
         if (wxAuthCode2Session != null) {
             if (StringUtils.isNotBlank(wxAuthCode2Session.getUnionId())) {
                 // 判断账号是否已被注册
-                Account account = super.getOne(Account::getCategory, AccountEnum.WX_AUTO_LOGIN.getValue(),
-                        Account::getCode, wxAuthCode2Session.getUnionId());
+                AccountEntity account = super.getOne(AccountEntity::getCategory, AccountEnum.WX_AUTO_LOGIN.getValue(),
+                        AccountEntity::getCode, wxAuthCode2Session.getUnionId());
                 if (account != null) {
                     wxAuthCode2Session.setHasAccount(true);
                 } else if (register) {
@@ -218,7 +218,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
         MicroTokenBody microTokenBody = MicroAuthContext.getContextRefreshToken();
 
         // refresh data
-        Member member = memberMapper.selectById(microTokenBody.getMemberId());
+        MemberEntity member = memberMapper.selectById(microTokenBody.getMemberId());
         if (member == null) {
             throw new MicroBadRequestException("用户不存在");
         }
@@ -248,13 +248,13 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
                 forgetPassword.getAccount(), forgetPassword.getCode());
 
         // 查询账号信息
-        Member member = memberMapper.selectOne(Member::getEmail, forgetPassword.getAccount());
+        MemberEntity member = memberMapper.selectOne(MemberEntity::getEmail, forgetPassword.getAccount());
         if (member == null) {
             throw new MicroBadRequestException("账号不存在");
         }
 
         // 重置密码
-        Member updateMember = new Member();
+        MemberEntity updateMember = new MemberEntity();
         updateMember.setId(member.getId());
         updateMember.setPwd(RsaUtils.encryptPwd(forgetPassword.getPassword(), member.getSalt()));
         updateMember.setPassword(RsaUtils.encryptPassword(updateMember.getPwd()));
@@ -269,7 +269,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
     public Boolean doChangePassword(ChangePassword changePassword) {
         // 查询当前用户信息
         Long memberId = MicroAuthContext.getMemberId();
-        Member member = memberMapper.selectById(memberId);
+        MemberEntity member = memberMapper.selectById(memberId);
         if (member == null) {
             throw new MicroBadRequestException("当前用户不可用");
         }
@@ -280,7 +280,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
         }
 
         // 修改密码
-        Member updateMember = new Member();
+        MemberEntity updateMember = new MemberEntity();
         updateMember.setId(memberId);
         updateMember.setPwd(RsaUtils.encryptPwd(changePassword.getNewPassword(), member.getSalt()));
         updateMember.setPassword(RsaUtils.encryptPassword(updateMember.getPwd()));
@@ -306,20 +306,20 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
         unionCodeService.checkCode(unionCodeCategoryEnum, changeEmailOrMobile.getAccount(), changeEmailOrMobile.getCode());
 
         // 2.检查账号信息中的邮箱地址
-        Account account = super.getOne(Account::getCategory, changeEmailOrMobile.getCategory(),
-                Account::getCode, changeEmailOrMobile.getAccount());
+        AccountEntity account = super.getOne(AccountEntity::getCategory, changeEmailOrMobile.getCategory(),
+                AccountEntity::getCode, changeEmailOrMobile.getAccount());
         if (account != null) {
             throw new MicroBadRequestException("该邮箱地址已被占用");
         }
 
         // 3.检查用户信息中的邮箱地址或手机号是否已被占用
         if (AccountEnum.EMAIL == changeEmailOrMobile.getCategory()) {
-            Member member = memberMapper.selectOne(Member::getEmail, changeEmailOrMobile.getAccount());
+            MemberEntity member = memberMapper.selectOne(MemberEntity::getEmail, changeEmailOrMobile.getAccount());
             if (member != null) {
                 throw new MicroBadRequestException("该邮箱地址已被占用");
             }
         } else if (AccountEnum.MOBILE == changeEmailOrMobile.getCategory()) {
-            Member member = memberMapper.selectOne(Member::getMobile, changeEmailOrMobile.getAccount());
+            MemberEntity member = memberMapper.selectOne(MemberEntity::getMobile, changeEmailOrMobile.getAccount());
             if (member != null) {
                 throw new MicroBadRequestException("该手机号已被占用");
             }
@@ -327,11 +327,11 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
 
         // 4.查询当前用户需要修改的账号记录
         Long currentMemberId = MicroAuthContext.getMemberId();
-        Account currentAccount = super.getOne(Account::getMemberId, currentMemberId,
-                Account::getCategory, changeEmailOrMobile.getCategory());
+        AccountEntity currentAccount = super.getOne(AccountEntity::getMemberId, currentMemberId,
+                AccountEntity::getCategory, changeEmailOrMobile.getCategory());
         if (currentAccount == null) {
             // 5.1.新增登录账号
-            Account addAccount = new Account();
+            AccountEntity addAccount = new AccountEntity();
             addAccount.setMemberId(currentMemberId);
             addAccount.setCategory(IEnum.parse(AccountEnum.class, changeEmailOrMobile.getCategory()));
             addAccount.setCode(changeEmailOrMobile.getAccount());
@@ -340,7 +340,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
             }
 
             // 6.1.修改用户信息中的邮箱地址
-            Member updateMember = new Member();
+            MemberEntity updateMember = new MemberEntity();
             updateMember.setId(currentMemberId);
             updateMember.setEmail(changeEmailOrMobile.getAccount());
             if (memberMapper.updateById(updateMember) > 0) {
@@ -348,7 +348,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
             }
         } else {
             // 5.2.修改登录账号
-            Account updateAccount = new Account();
+            AccountEntity updateAccount = new AccountEntity();
             updateAccount.setId(currentAccount.getId());
             updateAccount.setCategory(IEnum.parse(AccountEnum.class, changeEmailOrMobile.getCategory()));
             updateAccount.setCode(changeEmailOrMobile.getAccount());
@@ -357,7 +357,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
             }
 
             // 6.2.修改用户信息中的手机号码
-            Member updateMember = new Member();
+            MemberEntity updateMember = new MemberEntity();
             updateMember.setId(currentMemberId);
             updateMember.setMobile(changeEmailOrMobile.getAccount());
             if (memberMapper.updateById(updateMember) > 0) {
@@ -370,7 +370,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
 
     @Override
     public Boolean doRegistered(String account) {
-        return super.getOne(Account::getCode, account) != null;
+        return super.getOne(AccountEntity::getCode, account) != null;
     }
 
 }

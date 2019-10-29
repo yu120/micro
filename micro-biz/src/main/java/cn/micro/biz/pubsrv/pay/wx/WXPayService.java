@@ -3,8 +3,8 @@ package cn.micro.biz.pubsrv.pay.wx;
 import cn.micro.biz.commons.auth.MicroAuthContext;
 import cn.micro.biz.commons.exception.support.MicroBadRequestException;
 import cn.micro.biz.commons.exception.support.MicroErrorException;
-import cn.micro.biz.entity.order.Order;
-import cn.micro.biz.entity.order.OrderGoods;
+import cn.micro.biz.entity.order.OrderEntity;
+import cn.micro.biz.entity.order.OrderGoodsEntity;
 import cn.micro.biz.pubsrv.pay.PayChannelEnum;
 import cn.micro.biz.type.order.OrderStatusEnum;
 import com.alibaba.fastjson.JSON;
@@ -42,7 +42,7 @@ public class WXPayService {
         }
     }
 
-    public Map<String, String> mWebPay(Order order, String code, OrderGoods orderGoods) throws Exception {
+    public Map<String, String> mWebPay(OrderEntity order, String code, OrderGoodsEntity orderGoods) throws Exception {
         // 创建统一下单数据
         Map<String, String> data = new HashMap<>();
         // 货币类型
@@ -134,7 +134,7 @@ public class WXPayService {
      * @param outTradeNo
      * @return
      */
-    public Order tradeQuery(String outTradeNo) {
+    public OrderEntity tradeQuery(String outTradeNo) {
         Map<String, String> request = new HashMap<>();
         request.put("out_trade_no", outTradeNo);
 
@@ -149,7 +149,7 @@ public class WXPayService {
                 throw new MicroErrorException("查询微信订单失败");
             }
 
-            Order orders = new Order();
+            OrderEntity orders = new OrderEntity();
             orders.setOrderStatus(OrderStatusEnum.TRADE_SUCCESS);
             orders.setOutTradeNo(resp.get("transaction_id"));
 
