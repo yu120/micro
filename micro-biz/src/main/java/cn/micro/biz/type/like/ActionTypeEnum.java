@@ -1,4 +1,4 @@
-package cn.micro.biz.type.praise;
+package cn.micro.biz.type.like;
 
 import cn.micro.biz.commons.enums.IEnum;
 import lombok.AllArgsConstructor;
@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * Praise Action Type
+ * Micro Like Action Type
  *
  * @author lry
  */
