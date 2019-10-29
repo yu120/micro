@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 public class ActionServiceImpl extends MicroServiceImpl<ActionMapper, Action> implements IActionService {
 
     @Override
-    public boolean click(OwnerAction ownerAction, TargetAction targetAction) {
+    public boolean operate(OwnerAction ownerAction, TargetAction targetAction) {
         return false;
     }
 

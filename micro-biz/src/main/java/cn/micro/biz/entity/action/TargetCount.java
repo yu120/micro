@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 /**
- * Micro Target Count Entity
+ * 目标统计
  * <p>
  *
  * @author lry
@@ -19,18 +19,18 @@ import lombok.*;
 public class TargetCount extends MicroEntity<TargetCount> {
 
     /**
-     * 点赞目标ID
+     * 目标ID
      */
     private Long targetId;
     /**
-     * 点赞目标类型
+     * 目标类型
      * <p>
      * {@link cn.micro.biz.type.action.TargetTypeEnum}
      */
     private Integer targetType;
     /**
-     * 被点赞次数
+     * 目标统计数量
      */
-    private Integer times;
+    private Integer countNum;
 
 }

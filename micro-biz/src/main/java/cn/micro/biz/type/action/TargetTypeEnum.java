@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * 业务类型
+ * 目标类型
  *
  * @author lry
  */

@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 /**
- * Micro Like Log Entity
+ * 行为动作日志
  * <p>
  * 主要用于记录用户操作日志，不参与业务逻辑, 可用于分析用户行为。
  *
@@ -18,35 +18,35 @@ import lombok.*;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@TableName("micro_like_log")
+@TableName("action_log")
 public class ActionLog extends MicroEntity<ActionLog> {
 
     /**
-     * 点赞
+     * 操作状态
      * <p>
      * {@link cn.micro.biz.type.action.ActionTypeEnum}
      */
     private Integer status;
     /**
-     * 点赞发起者ID
-     */
-    private Long ownerId;
-    /**
-     * 点赞发起者类型
+     * 发起者类型
      * <p>
      * {@link cn.micro.biz.type.action.OwnerTypeEnum}
      */
     private Integer ownerType;
     /**
-     * 点赞目标ID
+     * 发起者ID
      */
-    private Long targetId;
+    private Long ownerId;
     /**
-     * 点赞目标类型
+     * 目标类型
      * <p>
      * {@link cn.micro.biz.type.action.TargetTypeEnum}
      */
     private Integer targetType;
+    /**
+     * 目标ID
+     */
+    private Long targetId;
 
     public ActionLog(OwnerAction ownerAction, TargetAction targetAction) {
         this.ownerId = ownerAction.getOwnerId();

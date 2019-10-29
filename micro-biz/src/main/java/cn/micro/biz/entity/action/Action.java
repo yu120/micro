@@ -7,10 +7,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 /**
- * Action Entity
+ * 行为动作
  * <p>
  * Index：owner_type,owner_id,target_type,target_id
- * Praise是该系统的核心，承载核心业务逻辑。
  *
  * @author lry
  */
@@ -29,31 +28,31 @@ public class Action extends MicroEntity<Action> {
      */
     private Integer status;
     /**
-     * 点赞发起者ID
-     */
-    private Long ownerId;
-    /**
-     * 点赞发起者类型
+     * 发起者类型
      * <p>
      * {@link cn.micro.biz.type.action.OwnerTypeEnum}
      */
     private Integer ownerType;
     /**
-     * 点赞目标ID
+     * 发起者ID
      */
-    private Long targetId;
+    private Long ownerId;
     /**
-     * 点赞目标类型
+     * 目标类型
      * <p>
      * {@link cn.micro.biz.type.action.TargetTypeEnum}
      */
     private Integer targetType;
+    /**
+     * 目标ID
+     */
+    private Long targetId;
 
     public Action(OwnerAction ownerAction, TargetAction targetAction) {
-        this.ownerId = ownerAction.getOwnerId();
         this.ownerType = ownerAction.getOwnerType();
-        this.targetId = targetAction.getTargetId();
+        this.ownerId = ownerAction.getOwnerId();
         this.targetType = targetAction.getTargetType();
+        this.targetId = targetAction.getTargetId();
     }
 
 }

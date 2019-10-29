@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * 点赞发起者类型
+ * 发起者类型
  *
  * @author lry
  */

@@ -28,6 +28,6 @@ public interface IActionService extends IMicroService<Action> {
      * @param targetAction {@link TargetAction}
      * @return true is success
      */
-    boolean click(OwnerAction ownerAction, TargetAction targetAction);
+    boolean operate(OwnerAction ownerAction, TargetAction targetAction);
 
 }
