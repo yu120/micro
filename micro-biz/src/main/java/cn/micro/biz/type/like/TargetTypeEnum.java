@@ -5,19 +5,18 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * 点赞状态
+ * 业务类型
  *
  * @author lry
  */
 @Getter
 @ToString
 @AllArgsConstructor
-public enum ActionTypeEnum {
+public enum TargetTypeEnum {
 
     // ===
 
-    CANCEL(0, "取消"),
-    LIKE(1, "点赞");
+    NEWS(0, "新闻");
 
     private final int value;
     private final String title;
