@@ -1,5 +1,8 @@
 package cn.micro.biz.pubsrv.dingtalk;
 
+import cn.micro.biz.pubsrv.dingtalk.message.DingTalkMsg;
+import cn.micro.biz.pubsrv.dingtalk.message.DingTalkMsgType;
+import cn.micro.biz.pubsrv.dingtalk.message.DingTalkText;
 import cn.micro.biz.pubsrv.dingtalk.request.*;
 import cn.micro.biz.pubsrv.dingtalk.response.*;
 import lombok.extern.slf4j.Slf4j;
@@ -24,12 +27,12 @@ public class OpenDingTalk extends AbstractOpenDingTalk {
     public static void main(String[] args) {
         OpenDingTalk openDingTalk = new OpenDingTalk();
 //         System.out.println(openDingTalk.getToken());
-
+//
 //        DingTalkMessageAsyncRequest request = new DingTalkMessageAsyncRequest();
 //        request.setToAllUser(true);
-//        DingTalkMessageAsyncRequest.Msg msg = new DingTalkMessageAsyncRequest.Msg();
-//        msg.setMsgType(DingTalkMessageAsyncRequest.MsgType.TEXT);
-//        msg.setText(new DingTalkMessageAsyncRequest.Text("你好呀"));
+//        DingTalkMsg msg = new DingTalkMsg();
+//        msg.setMsgType(DingTalkMsgType.TEXT);
+//        msg.setText(new DingTalkText("你好呀"));
 //        request.setMsg(msg);
 //        System.out.println(openDingTalk.messageAsync(request));
 
