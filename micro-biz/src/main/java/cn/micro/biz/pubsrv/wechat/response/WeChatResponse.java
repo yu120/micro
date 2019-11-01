@@ -1,4 +1,4 @@
-package cn.micro.biz.pubsrv.wechat;
+package cn.micro.biz.pubsrv.wechat.response;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.AllArgsConstructor;

@@ -1,7 +1,12 @@
 package cn.micro.biz.pubsrv.wechat;
 
 import cn.micro.biz.commons.utils.HttpUtils;
+import cn.micro.biz.pubsrv.wechat.request.WeChatCode2SessionRequest;
+import cn.micro.biz.pubsrv.wechat.request.WeChatRequest;
+import cn.micro.biz.pubsrv.wechat.response.WeChatCode2SessionResponse;
+import cn.micro.biz.pubsrv.wechat.response.WeChatResponse;
 import com.alibaba.fastjson.JSON;
+import lombok.AllArgsConstructor;
 
 /**
  * WeChat Mini Program
@@ -10,9 +15,13 @@ import com.alibaba.fastjson.JSON;
  *
  * @author lry
  */
+@AllArgsConstructor
 public class WeChatMiniProgram {
 
     private static final int RESPONSE_CODE_OK = 0;
+
+    private final String appId;
+    private final String appSecret;
 
     /**
      * Sent request
@@ -23,7 +32,7 @@ public class WeChatMiniProgram {
      * @param <RES> {@link WeChatResponse}
      * @return {@link RES}
      */
-    <REQ extends WeChatRequest, RES extends WeChatResponse> RES sendRequest(REQ req, Class<RES> clazz) {
+    private <REQ extends WeChatRequest, RES extends WeChatResponse> RES sendRequest(REQ req, Class<RES> clazz) {
         String responseBody = HttpUtils.sendRequest(req.getMethod(), req.getUrl(), req);
         RES res = JSON.parseObject(responseBody, clazz);
         if (RESPONSE_CODE_OK != res.getErrCode()) {
@@ -33,8 +42,20 @@ public class WeChatMiniProgram {
         return res;
     }
 
-    public void s() {
-
+    /**
+     * 登录凭证校验
+     * <p>
+     * 调用auth.code2Session接口，换取用户唯一标识OpenID和会话密钥session_key
+     *
+     * @param jsCode 调用wx.login()获取临时登录凭证code，并回传到开发者服务器。
+     * @return {@link WeChatCode2SessionResponse}
+     */
+    public WeChatCode2SessionResponse authCode2Session(String jsCode) {
+        WeChatCode2SessionRequest request = new WeChatCode2SessionRequest();
+        request.setAppId(appId);
+        request.setSecret(appSecret);
+        request.setJsCode(jsCode);
+        return sendRequest(request, WeChatCode2SessionResponse.class);
     }
 
 }
