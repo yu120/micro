@@ -47,8 +47,8 @@ public class OpenDingTalk extends AbstractOpenDingTalk {
      */
     public DingTalkGetTokenResponse getToken() {
         DingTalkGetTokenRequest request = new DingTalkGetTokenRequest();
-        request.setAppkey(APP_KEY);
-        request.setAppsecret(APP_SECRET);
+        request.setAppKey(APP_KEY);
+        request.setAppSecret(APP_SECRET);
         request.setHttpMethod(HttpMethod.GET);
         request.setUrl(String.format(request.getUrl(), APP_KEY, APP_SECRET));
         return sendRequest(request, DingTalkGetTokenResponse.class);

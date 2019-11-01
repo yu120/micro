@@ -20,6 +20,7 @@ public class DingTalkMessageAsyncRequest extends DingTalkRequest {
     private Long agentId;
     @JSONField(name = "dept_id_list")
     private String deptIdList;
+    @JSONField(name = "msg")
     private Msg msg;
     @JSONField(name = "to_all_user")
     private Boolean toAllUser;
