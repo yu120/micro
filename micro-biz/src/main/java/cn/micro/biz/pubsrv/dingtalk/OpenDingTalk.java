@@ -1,14 +1,8 @@
 package cn.micro.biz.pubsrv.dingtalk;
 
 import cn.micro.biz.commons.exception.support.MicroErrorException;
-import cn.micro.biz.pubsrv.dingtalk.request.DingTalkGetTokenRequest;
-import cn.micro.biz.pubsrv.dingtalk.request.DingTalkMessageAsyncRequest;
-import cn.micro.biz.pubsrv.dingtalk.request.DingTalkMessageGetSendResultRequest;
-import cn.micro.biz.pubsrv.dingtalk.request.DingTalkRequest;
-import cn.micro.biz.pubsrv.dingtalk.response.DingTalkGetTokenResponse;
-import cn.micro.biz.pubsrv.dingtalk.response.DingTalkMessageAsyncResponse;
-import cn.micro.biz.pubsrv.dingtalk.response.DingTalkMessageGetSendResultResponse;
-import cn.micro.biz.pubsrv.dingtalk.response.DingTalkResponse;
+import cn.micro.biz.pubsrv.dingtalk.request.*;
+import cn.micro.biz.pubsrv.dingtalk.response.*;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -52,7 +46,7 @@ public class OpenDingTalk {
 
         DingTalkMessageGetSendResultRequest request = new DingTalkMessageGetSendResultRequest();
         request.setTaskId(54302353656L);
-        System.out.println(openDingTalk.getSendResult(request));
+        System.out.println(openDingTalk.messageGetSendResult(request));
     }
 
     /**
@@ -83,6 +77,7 @@ public class OpenDingTalk {
      * 5.该接口是异步发送消息，接口返回成功并不表示用户一定会收到消息，需要通过“查询工作通知消息的发送结果”接口查询是否给用户发送成功。
      * 6.消息类型和样例可参考消息类型文档。
      *
+     * @param request {@link DingTalkMessageAsyncRequest}
      * @return {@link DingTalkMessageAsyncRequest}
      */
     public DingTalkMessageAsyncResponse messageAsync(DingTalkMessageAsyncRequest request) {
@@ -103,12 +98,25 @@ public class OpenDingTalk {
      * 5.该接口是异步发送消息，接口返回成功并不表示用户一定会收到消息，需要通过“查询工作通知消息的发送结果”接口查询是否给用户发送成功。
      * 6.消息类型和样例可参考消息类型文档。
      *
-     * @return {@link DingTalkMessageAsyncRequest}
+     * @param request {@link DingTalkMessageGetSendResultRequest}
+     * @return {@link DingTalkMessageGetSendResultResponse}
      */
-    public DingTalkMessageGetSendResultResponse getSendResult(DingTalkMessageGetSendResultRequest request) {
+    public DingTalkMessageGetSendResultResponse messageGetSendResult(DingTalkMessageGetSendResultRequest request) {
         String url = String.format(DingTalkMessageGetSendResultRequest.URL, ACCESS_TOKEN);
         request.setAgentId(AGENT_ID);
         return sendRequest(url, request, DingTalkMessageGetSendResultResponse.class);
+    }
+
+    /**
+     * 工作通知消息撤回
+     *
+     * @param request {@link DingTalkMessageRecallRequest}
+     * @return {@link DingTalkMessageRecallResponse}
+     */
+    public DingTalkMessageRecallResponse messageRecall(DingTalkMessageRecallRequest request) {
+        String url = String.format(DingTalkMessageRecallRequest.URL, ACCESS_TOKEN);
+        request.setAgentId(AGENT_ID);
+        return sendRequest(url, request, DingTalkMessageRecallResponse.class);
     }
 
     private <REQ extends DingTalkRequest, RES extends DingTalkResponse> RES sendRequest(String url, REQ req, Class<RES> clazz) {
