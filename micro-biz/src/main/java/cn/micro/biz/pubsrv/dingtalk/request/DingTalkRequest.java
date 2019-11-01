@@ -12,8 +12,8 @@ import java.io.Serializable;
 public class DingTalkRequest implements Serializable {
 
     @JSONField(serialize = false, deserialize = false)
-    private String url;
-    @JSONField(serialize = false, deserialize = false)
     private AbstractOpenDingTalk.HttpMethod httpMethod;
+    @JSONField(serialize = false, deserialize = false)
+    private String url;
 
 }

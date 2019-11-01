@@ -14,7 +14,8 @@ import lombok.EqualsAndHashCode;
 public class DingTalkGetTokenRequest extends DingTalkRequest {
 
     public DingTalkGetTokenRequest() {
-        super("https://oapi.dingtalk.com/gettoken?appkey=%s&appsecret=%s", AbstractOpenDingTalk.HttpMethod.GET);
+        super(AbstractOpenDingTalk.HttpMethod.GET,
+                "https://oapi.dingtalk.com/gettoken?appkey=%s&appsecret=%s");
     }
 
     private String appkey;

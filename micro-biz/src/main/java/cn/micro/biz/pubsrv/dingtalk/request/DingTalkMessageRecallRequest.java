@@ -20,7 +20,8 @@ public class DingTalkMessageRecallRequest extends DingTalkRequest {
     private Long msgTaskId;
 
     public DingTalkMessageRecallRequest() {
-        super("https://oapi.dingtalk.com/topapi/message/corpconversation/recall?access_token=%s", AbstractOpenDingTalk.HttpMethod.POST);
+        super(AbstractOpenDingTalk.HttpMethod.POST,
+                "https://oapi.dingtalk.com/topapi/message/corpconversation/recall?access_token=%s");
     }
 
 }

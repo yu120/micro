@@ -19,7 +19,8 @@ public class DingTalkMessageGetSendResultRequest extends DingTalkRequest {
     private Long taskId;
 
     public DingTalkMessageGetSendResultRequest() {
-        super("https://oapi.dingtalk.com/topapi/message/corpconversation/getsendresult?access_token=%s", AbstractOpenDingTalk.HttpMethod.POST);
+        super(AbstractOpenDingTalk.HttpMethod.POST,
+                "https://oapi.dingtalk.com/topapi/message/corpconversation/getsendresult?access_token=%s");
     }
 
 }

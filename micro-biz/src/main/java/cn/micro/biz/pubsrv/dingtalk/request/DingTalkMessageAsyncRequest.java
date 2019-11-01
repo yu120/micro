@@ -27,7 +27,8 @@ public class DingTalkMessageAsyncRequest extends DingTalkRequest {
     private String useridList;
 
     public DingTalkMessageAsyncRequest() {
-        super("https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2?access_token=%s", AbstractOpenDingTalk.HttpMethod.POST);
+        super(AbstractOpenDingTalk.HttpMethod.POST,
+                "https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2?access_token=%s");
     }
 
     public void setDeptIdList(List<String> deptIdList) {
