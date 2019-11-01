@@ -16,6 +16,9 @@ public class WeChatCode2SessionResponse extends WeChatResponse {
     private String openId;
     /**
      * 会话密钥
+     * <p>
+     * 会话密钥 session_key 是对用户数据进行 加密签名 的密钥。为了应用自身的数据安全，
+     * 开发者服务器不应该把会话密钥下发到小程序，也不应该对外提供这个密钥。
      */
     @JSONField(name = "session_key")
     private String sessionKey;

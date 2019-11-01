@@ -21,6 +21,8 @@ public class WeChatCode2SessionRequest extends WeChatRequest {
     private String secret;
     /**
      * 登录时获取的 code
+     * <p>
+     * 临时登录凭证 code 只能使用一次
      */
     @JSONField(name = "js_code")
     private String jsCode;
