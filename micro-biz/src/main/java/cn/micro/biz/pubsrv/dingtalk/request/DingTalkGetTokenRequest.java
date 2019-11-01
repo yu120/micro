@@ -1,5 +1,6 @@
 package cn.micro.biz.pubsrv.dingtalk.request;
 
+import cn.micro.biz.pubsrv.dingtalk.HttpMethod;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -12,7 +13,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class DingTalkGetTokenRequest extends DingTalkRequest {
 
-    public static final String URL = "https://oapi.dingtalk.com/gettoken?appkey=%s&appsecret=%s";
+    public DingTalkGetTokenRequest() {
+        super("https://oapi.dingtalk.com/gettoken?appkey=%s&appsecret=%s", HttpMethod.GET);
+    }
 
     private String appkey;
     private String appsecret;

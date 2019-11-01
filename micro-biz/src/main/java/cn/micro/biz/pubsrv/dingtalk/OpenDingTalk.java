@@ -1,15 +1,8 @@
 package cn.micro.biz.pubsrv.dingtalk;
 
-import cn.micro.biz.commons.exception.support.MicroErrorException;
 import cn.micro.biz.pubsrv.dingtalk.request.*;
 import cn.micro.biz.pubsrv.dingtalk.response.*;
-import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.jsoup.Connection;
-import org.jsoup.helper.HttpConnection;
-
-import java.nio.charset.StandardCharsets;
 
 /**
  * Open Ding Talk
@@ -17,20 +10,16 @@ import java.nio.charset.StandardCharsets;
  * @author lry
  */
 @Slf4j
-public class OpenDingTalk {
-
-    private static final int HTTP_RESPONSE_CODE_OK = 200;
-    private static final int RESPONSE_CODE_OK = 0;
-    private static final String RESPONSE_CODE_KEY = "errcode";
-    private static final String RESPONSE_MSG_KEY = "errmsg";
-    private static final String CONTENT_TYPE_KEY = "Content-Type";
-    private static final String CONTENT_TYPE = "application/json";
+public class OpenDingTalk extends AbstractOpenDingTalk {
 
     private static final Long AGENT_ID = 311005612L;
     private static final String APP_KEY = "dingc2fnubihvoqkfsxd";
     private static final String APP_SECRET = "_OxP_nTCNqMs_qkYdqa8ffRHopqehtb-wCITeIcuptbqCee42enCko8VyN5_cO9J";
     private static final String ACCESS_TOKEN = "d350d87a70453e18ab1cbe138441aa3b";
 
+    public OpenDingTalk() {
+        super(ACCESS_TOKEN);
+    }
 
     public static void main(String[] args) {
         OpenDingTalk openDingTalk = new OpenDingTalk();
@@ -57,12 +46,12 @@ public class OpenDingTalk {
      * @return {@link DingTalkGetTokenResponse}
      */
     public DingTalkGetTokenResponse getToken() {
-        String url = String.format(DingTalkGetTokenRequest.URL, APP_KEY, APP_SECRET);
         DingTalkGetTokenRequest request = new DingTalkGetTokenRequest();
         request.setAppkey(APP_KEY);
         request.setAppsecret(APP_SECRET);
         request.setHttpMethod(HttpMethod.GET);
-        return sendRequest(url, request, DingTalkGetTokenResponse.class);
+        request.setUrl(String.format(request.getUrl(), APP_KEY, APP_SECRET));
+        return sendRequest(request, DingTalkGetTokenResponse.class);
     }
 
     /**
@@ -81,9 +70,8 @@ public class OpenDingTalk {
      * @return {@link DingTalkMessageAsyncRequest}
      */
     public DingTalkMessageAsyncResponse messageAsync(DingTalkMessageAsyncRequest request) {
-        String url = String.format(DingTalkMessageAsyncRequest.URL, ACCESS_TOKEN);
         request.setAgentId(AGENT_ID);
-        return sendRequest(url, request, DingTalkMessageAsyncResponse.class);
+        return sendRequest(request, DingTalkMessageAsyncResponse.class);
     }
 
     /**
@@ -102,9 +90,8 @@ public class OpenDingTalk {
      * @return {@link DingTalkMessageGetSendResultResponse}
      */
     public DingTalkMessageGetSendResultResponse messageGetSendResult(DingTalkMessageGetSendResultRequest request) {
-        String url = String.format(DingTalkMessageGetSendResultRequest.URL, ACCESS_TOKEN);
         request.setAgentId(AGENT_ID);
-        return sendRequest(url, request, DingTalkMessageGetSendResultResponse.class);
+        return sendRequest(request, DingTalkMessageGetSendResultResponse.class);
     }
 
     /**
@@ -114,55 +101,8 @@ public class OpenDingTalk {
      * @return {@link DingTalkMessageRecallResponse}
      */
     public DingTalkMessageRecallResponse messageRecall(DingTalkMessageRecallRequest request) {
-        String url = String.format(DingTalkMessageRecallRequest.URL, ACCESS_TOKEN);
         request.setAgentId(AGENT_ID);
-        return sendRequest(url, request, DingTalkMessageRecallResponse.class);
-    }
-
-    private <REQ extends DingTalkRequest, RES extends DingTalkResponse> RES sendRequest(String url, REQ req, Class<RES> clazz) {
-        Connection.Response response;
-        try {
-            Connection connection = HttpConnection.connect(url).ignoreContentType(true);
-            Connection.Request request = connection.request();
-            request.header(CONTENT_TYPE_KEY, CONTENT_TYPE);
-            request.postDataCharset(StandardCharsets.UTF_8.name());
-            if (req.getHttpMethod() == HttpMethod.GET) {
-                request.method(Connection.Method.GET);
-            } else {
-                request.method(Connection.Method.POST);
-                String requestBody = JSON.toJSONString(req);
-                System.out.println(requestBody);
-                if (StringUtils.isNotBlank(requestBody)) {
-                    request.requestBody(requestBody);
-                }
-            }
-
-            log.debug("Ding Talk request url:[{}], method:[{}], headers:[{}], body:[{}]",
-                    url, request.method(), request.headers(), request.requestBody());
-            response = connection.execute();
-        } catch (Exception e) {
-            throw new MicroErrorException(e.getMessage(), e);
-        }
-
-        if (HTTP_RESPONSE_CODE_OK != response.statusCode()) {
-            log.warn("Network error:[code:{},message:{}]", response.statusCode(), response.statusMessage());
-            throw new RuntimeException(response.statusCode() + "->" + response.statusMessage());
-        } else {
-            String responseBody = response.charset(StandardCharsets.UTF_8.name()).body();
-            System.out.println(responseBody);
-            log.debug("Ding Talk response body:{}", responseBody);
-            RES res = JSON.parseObject(responseBody, clazz);
-            if (res == null) {
-                log.warn("Ding Talk send fail, response body:{}", responseBody);
-                throw new RuntimeException(response.statusCode() + "->" + response.statusMessage());
-            }
-
-            if (RESPONSE_CODE_OK != res.getErrCode()) {
-                throw new RuntimeException(res.getErrCode() + "->" + res.getErrMsg());
-            }
-
-            return res;
-        }
+        return sendRequest(request, DingTalkMessageRecallResponse.class);
     }
 
 }

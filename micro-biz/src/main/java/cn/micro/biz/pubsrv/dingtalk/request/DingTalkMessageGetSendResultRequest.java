@@ -1,5 +1,6 @@
 package cn.micro.biz.pubsrv.dingtalk.request;
 
+import cn.micro.biz.pubsrv.dingtalk.HttpMethod;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.*;
 
@@ -12,11 +13,13 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 public class DingTalkMessageGetSendResultRequest extends DingTalkRequest {
 
-    public static final String URL = "https://oapi.dingtalk.com/topapi/message/corpconversation/getsendresult?access_token=%s";
-
     @JSONField(name = "agent_id")
     private Long agentId;
     @JSONField(name = "task_id")
     private Long taskId;
+
+    public DingTalkMessageGetSendResultRequest() {
+        super("https://oapi.dingtalk.com/topapi/message/corpconversation/getsendresult?access_token=%s", HttpMethod.POST);
+    }
 
 }

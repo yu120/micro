@@ -1,5 +1,6 @@
 package cn.micro.biz.pubsrv.dingtalk.request;
 
+import cn.micro.biz.pubsrv.dingtalk.HttpMethod;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.dingtalk.api.request.OapiMessageCorpconversationAsyncsendV2Request;
 import com.dingtalk.api.response.OapiMessageCorpconversationAsyncsendV2Response;
@@ -17,8 +18,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class DingTalkMessageAsyncRequest extends DingTalkRequest {
 
-    public static final String URL = "https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2?access_token=%s";
-
     @JSONField(name = "agent_id")
     private Long agentId;
     @JSONField(name = "dept_id_list")
@@ -28,6 +27,10 @@ public class DingTalkMessageAsyncRequest extends DingTalkRequest {
     private Boolean toAllUser;
     @JSONField(name = "userid_list")
     private String useridList;
+
+    public DingTalkMessageAsyncRequest() {
+        super("https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2?access_token=%s", HttpMethod.POST);
+    }
 
     public void setDeptIdList(List<String> deptIdList) {
         this.deptIdList = String.join(",", deptIdList.toArray(new String[0]));
