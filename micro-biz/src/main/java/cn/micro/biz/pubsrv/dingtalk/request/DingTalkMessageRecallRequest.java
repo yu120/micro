@@ -1,6 +1,6 @@
 package cn.micro.biz.pubsrv.dingtalk.request;
 
-import cn.micro.biz.pubsrv.dingtalk.HttpMethod;
+import cn.micro.biz.pubsrv.dingtalk.AbstractOpenDingTalk;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,7 +20,7 @@ public class DingTalkMessageRecallRequest extends DingTalkRequest {
     private Long msgTaskId;
 
     public DingTalkMessageRecallRequest() {
-        super("https://oapi.dingtalk.com/topapi/message/corpconversation/recall?access_token=%s", HttpMethod.POST);
+        super("https://oapi.dingtalk.com/topapi/message/corpconversation/recall?access_token=%s", AbstractOpenDingTalk.HttpMethod.POST);
     }
 
 }

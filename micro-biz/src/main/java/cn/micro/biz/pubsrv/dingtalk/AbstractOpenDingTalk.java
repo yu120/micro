@@ -91,4 +91,17 @@ public class AbstractOpenDingTalk {
         }
     }
 
+    /**
+     * Http Method
+     *
+     * @author lry
+     */
+    public enum HttpMethod {
+
+        // ===
+
+        GET, POST;
+
+    }
+
 }

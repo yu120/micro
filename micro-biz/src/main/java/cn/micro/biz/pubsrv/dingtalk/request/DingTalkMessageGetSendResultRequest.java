@@ -1,6 +1,6 @@
 package cn.micro.biz.pubsrv.dingtalk.request;
 
-import cn.micro.biz.pubsrv.dingtalk.HttpMethod;
+import cn.micro.biz.pubsrv.dingtalk.AbstractOpenDingTalk;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.*;
 
@@ -19,7 +19,7 @@ public class DingTalkMessageGetSendResultRequest extends DingTalkRequest {
     private Long taskId;
 
     public DingTalkMessageGetSendResultRequest() {
-        super("https://oapi.dingtalk.com/topapi/message/corpconversation/getsendresult?access_token=%s", HttpMethod.POST);
+        super("https://oapi.dingtalk.com/topapi/message/corpconversation/getsendresult?access_token=%s", AbstractOpenDingTalk.HttpMethod.POST);
     }
 
 }

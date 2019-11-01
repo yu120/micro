@@ -1,6 +1,6 @@
 package cn.micro.biz.pubsrv.dingtalk.request;
 
-import cn.micro.biz.pubsrv.dingtalk.HttpMethod;
+import cn.micro.biz.pubsrv.dingtalk.AbstractOpenDingTalk;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,6 +14,6 @@ public class DingTalkRequest implements Serializable {
     @JSONField(serialize = false, deserialize = false)
     private String url;
     @JSONField(serialize = false, deserialize = false)
-    private HttpMethod httpMethod;
+    private AbstractOpenDingTalk.HttpMethod httpMethod;
 
 }

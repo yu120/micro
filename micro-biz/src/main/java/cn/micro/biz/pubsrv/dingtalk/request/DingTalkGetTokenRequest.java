@@ -1,6 +1,6 @@
 package cn.micro.biz.pubsrv.dingtalk.request;
 
-import cn.micro.biz.pubsrv.dingtalk.HttpMethod;
+import cn.micro.biz.pubsrv.dingtalk.AbstractOpenDingTalk;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
 public class DingTalkGetTokenRequest extends DingTalkRequest {
 
     public DingTalkGetTokenRequest() {
-        super("https://oapi.dingtalk.com/gettoken?appkey=%s&appsecret=%s", HttpMethod.GET);
+        super("https://oapi.dingtalk.com/gettoken?appkey=%s&appsecret=%s", AbstractOpenDingTalk.HttpMethod.GET);
     }
 
     private String appkey;

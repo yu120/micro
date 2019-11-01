@@ -1,9 +1,7 @@
 package cn.micro.biz.pubsrv.dingtalk.request;
 
-import cn.micro.biz.pubsrv.dingtalk.HttpMethod;
+import cn.micro.biz.pubsrv.dingtalk.AbstractOpenDingTalk;
 import com.alibaba.fastjson.annotation.JSONField;
-import com.dingtalk.api.request.OapiMessageCorpconversationAsyncsendV2Request;
-import com.dingtalk.api.response.OapiMessageCorpconversationAsyncsendV2Response;
 import lombok.*;
 
 import java.io.Serializable;
@@ -29,7 +27,7 @@ public class DingTalkMessageAsyncRequest extends DingTalkRequest {
     private String useridList;
 
     public DingTalkMessageAsyncRequest() {
-        super("https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2?access_token=%s", HttpMethod.POST);
+        super("https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2?access_token=%s", AbstractOpenDingTalk.HttpMethod.POST);
     }
 
     public void setDeptIdList(List<String> deptIdList) {
