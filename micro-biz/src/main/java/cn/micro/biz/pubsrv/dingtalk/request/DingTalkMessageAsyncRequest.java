@@ -1,9 +1,9 @@
 package cn.micro.biz.pubsrv.dingtalk.request;
 
-import cn.micro.biz.pubsrv.dingtalk.AbstractOpenDingTalk;
 import cn.micro.biz.pubsrv.dingtalk.message.DingTalkMsg;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.*;
+import org.jsoup.Connection;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ public class DingTalkMessageAsyncRequest extends DingTalkRequest {
     private String useridList;
 
     public DingTalkMessageAsyncRequest() {
-        super(AbstractOpenDingTalk.HttpMethod.POST,
+        super(Connection.Method.POST.name(),
                 "https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2?access_token=%s");
     }
 

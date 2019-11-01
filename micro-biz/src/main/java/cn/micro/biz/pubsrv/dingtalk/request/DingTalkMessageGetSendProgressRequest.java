@@ -1,9 +1,9 @@
 package cn.micro.biz.pubsrv.dingtalk.request;
 
-import cn.micro.biz.pubsrv.dingtalk.AbstractOpenDingTalk;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.jsoup.Connection;
 
 /**
  * 查询工作通知消息的发送进度请求
@@ -20,7 +20,7 @@ public class DingTalkMessageGetSendProgressRequest extends DingTalkRequest {
     private Long taskId;
 
     public DingTalkMessageGetSendProgressRequest() {
-        super(AbstractOpenDingTalk.HttpMethod.POST,
+        super(Connection.Method.POST.name(),
                 "https://oapi.dingtalk.com/topapi/message/corpconversation/getsendprogress?access_token=%s");
     }
 

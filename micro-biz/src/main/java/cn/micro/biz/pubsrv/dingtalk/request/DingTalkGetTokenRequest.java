@@ -1,9 +1,9 @@
 package cn.micro.biz.pubsrv.dingtalk.request;
 
-import cn.micro.biz.pubsrv.dingtalk.AbstractOpenDingTalk;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.jsoup.Connection;
 
 /**
  * 获取access_token请求
@@ -15,7 +15,7 @@ import lombok.EqualsAndHashCode;
 public class DingTalkGetTokenRequest extends DingTalkRequest {
 
     public DingTalkGetTokenRequest() {
-        super(AbstractOpenDingTalk.HttpMethod.GET,
+        super(Connection.Method.GET.name(),
                 "https://oapi.dingtalk.com/gettoken?appkey=%s&appsecret=%s");
     }
 
