@@ -7,6 +7,11 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+/**
+ * WeChat Response
+ *
+ * @author lry
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

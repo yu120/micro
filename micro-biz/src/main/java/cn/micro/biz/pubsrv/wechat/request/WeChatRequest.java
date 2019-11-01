@@ -3,10 +3,14 @@ package cn.micro.biz.pubsrv.wechat.request;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+/**
+ * WeChat Request
+ *
+ * @author lry
+ */
 @Data
 @AllArgsConstructor
 public class WeChatRequest implements Serializable {

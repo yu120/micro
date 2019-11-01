@@ -4,7 +4,11 @@ import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-
+/**
+ * WeChat Code2Session Response
+ *
+ * @author lry
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class WeChatCode2SessionResponse extends WeChatResponse {
