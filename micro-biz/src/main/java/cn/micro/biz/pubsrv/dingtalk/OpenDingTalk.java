@@ -75,6 +75,17 @@ public class OpenDingTalk extends AbstractOpenDingTalk {
     }
 
     /**
+     * 查询工作通知消息的发送进度
+     *
+     * @param request {@link DingTalkMessageGetSendProgressRequest}
+     * @return {@link DingTalkMessageGetSendProgressResponse}
+     */
+    public DingTalkMessageGetSendProgressResponse messageGetSendResult(DingTalkMessageGetSendProgressRequest request) {
+        request.setAgentId(AGENT_ID);
+        return sendRequest(request, DingTalkMessageGetSendProgressResponse.class);
+    }
+
+    /**
      * 发送工作通知消息
      * <p>
      * 发送工作通知消息需要注意以下事项：
