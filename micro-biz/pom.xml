@@ -404,6 +404,13 @@
             <scope>system</scope>
             <systemPath>${java.home}/../lib/tools.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>com.dingtalk</groupId>
+            <artifactId>dingtank</artifactId>
+            <version>1.0.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/taobao-sdk-java-auto_1479188381469-20191101.jar</systemPath>
+        </dependency>
     </dependencies>
 
     <build>

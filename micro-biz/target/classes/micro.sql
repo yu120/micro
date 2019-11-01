@@ -437,7 +437,7 @@ CREATE TABLE `member_role`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户角色' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Table structure for order
+-- Table structure for orders
 -- ----------------------------
 DROP TABLE IF EXISTS `order`;
 CREATE TABLE `order`  (
