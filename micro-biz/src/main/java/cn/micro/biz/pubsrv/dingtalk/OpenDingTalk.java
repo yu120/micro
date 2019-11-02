@@ -37,6 +37,8 @@ public class OpenDingTalk extends AbstractOpenDingTalk {
         System.out.println(openDingTalk.messageAsync(request));
     }
 
+    // === 工作通知消息
+
     /**
      * 获取access_token
      * <p>
@@ -167,6 +169,18 @@ public class OpenDingTalk extends AbstractOpenDingTalk {
     public DingTalkChatGetResponse chatGet(DingTalkChatGetRequest request) {
         request.setUrl(String.format(request.getUrl(), ACCESS_TOKEN, request.getChatId()));
         return sendRequest(request, DingTalkChatGetResponse.class);
+    }
+
+    // === 发送普通消息
+
+    /**
+     * 发送普通消息
+     *
+     * @param request {@link DingTalkMessageSendRequest}
+     * @return {@link DingTalkMessageSendResponse}
+     */
+    public DingTalkMessageSendResponse messageSend(DingTalkMessageSendRequest request) {
+        return sendRequest(request, DingTalkMessageSendResponse.class);
     }
 
 }
