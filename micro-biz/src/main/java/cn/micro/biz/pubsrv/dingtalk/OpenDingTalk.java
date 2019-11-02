@@ -26,19 +26,15 @@ public class OpenDingTalk extends AbstractOpenDingTalk {
 
     public static void main(String[] args) {
         OpenDingTalk openDingTalk = new OpenDingTalk();
-//         System.out.println(openDingTalk.getToken());
-//
-//        DingTalkMessageAsyncRequest request = new DingTalkMessageAsyncRequest();
-//        request.setToAllUser(true);
-//        DingTalkMsg msg = new DingTalkMsg();
-//        msg.setMsgType(DingTalkMsgType.TEXT);
-//        msg.setText(new DingTalkText("你好呀"));
-//        request.setMsg(msg);
-//        System.out.println(openDingTalk.messageAsync(request));
+        System.out.println(openDingTalk.getToken());
 
-        DingTalkMessageGetSendResultRequest request = new DingTalkMessageGetSendResultRequest();
-        request.setTaskId(54302353656L);
-        System.out.println(openDingTalk.messageGetSendResult(request));
+        DingTalkMessageAsyncRequest request = new DingTalkMessageAsyncRequest();
+        request.setToAllUser(true);
+        DingTalkMsg msg = new DingTalkMsg();
+        msg.setMsgType(DingTalkMsgType.TEXT);
+        msg.setText(new DingTalkText("你好呀"));
+        request.setMsg(msg);
+        System.out.println(openDingTalk.messageAsync(request));
     }
 
     /**
@@ -140,6 +136,37 @@ public class OpenDingTalk extends AbstractOpenDingTalk {
         request.setUrl(String.format(request.getUrl(), ACCESS_TOKEN,
                 request.getMessageId(), request.getCursor(), request.getSize()));
         return sendRequest(request, DingTalkChatGetReadListResponse.class);
+    }
+
+    /**
+     * 创建会话
+     *
+     * @param request {@link DingTalkChatCreateRequest}
+     * @return {@link DingTalkChatGetReadListResponse}
+     */
+    public DingTalkChatCreateResponse chatCreate(DingTalkChatCreateRequest request) {
+        return sendRequest(request, DingTalkChatCreateResponse.class);
+    }
+
+    /**
+     * 修改会话
+     *
+     * @param request {@link DingTalkChatUpdateRequest}
+     * @return {@link DingTalkChatUpdateResponse}
+     */
+    public DingTalkChatUpdateResponse chatUpdate(DingTalkChatUpdateRequest request) {
+        return sendRequest(request, DingTalkChatUpdateResponse.class);
+    }
+
+    /**
+     * 获取会话
+     *
+     * @param request {@link DingTalkChatGetRequest}
+     * @return {@link DingTalkChatGetResponse}
+     */
+    public DingTalkChatGetResponse chatGet(DingTalkChatGetRequest request) {
+        request.setUrl(String.format(request.getUrl(), ACCESS_TOKEN, request.getChatId()));
+        return sendRequest(request, DingTalkChatGetResponse.class);
     }
 
 }
