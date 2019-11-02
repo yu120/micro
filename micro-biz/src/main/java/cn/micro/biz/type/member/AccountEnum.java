@@ -19,7 +19,7 @@ public enum AccountEnum implements IEnum<Integer> {
 
     MOBILE(0, "手机"),
     EMAIL(1, "邮箱"),
-    WX_AUTO_LOGIN(2, "微信自动登录");
+    WE_CHAT(2, "微信");
 
     private final Integer value;
     private final String title;

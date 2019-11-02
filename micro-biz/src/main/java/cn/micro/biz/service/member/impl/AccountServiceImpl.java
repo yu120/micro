@@ -21,8 +21,9 @@ import cn.micro.biz.model.edit.ChangeEmailOrMobile;
 import cn.micro.biz.model.edit.ChangePassword;
 import cn.micro.biz.model.edit.ForgetPassword;
 import cn.micro.biz.model.query.LoginAccount;
-import cn.micro.biz.pubsrv.wx.MicroWxService;
-import cn.micro.biz.pubsrv.wx.WxAuthCode2Session;
+import cn.micro.biz.pubsrv.wechat.WeChatMiniProgram;
+import cn.micro.biz.pubsrv.wechat.response.WeChatCode2SessionResponse;
+import cn.micro.biz.pubsrv.wechat.MicroWxProperties;
 import cn.micro.biz.service.member.IAccountService;
 import cn.micro.biz.service.member.IMemberRoleService;
 import cn.micro.biz.service.unified.IUnionCodeService;
@@ -32,12 +33,13 @@ import cn.micro.biz.type.member.MemberGroupEnum;
 import cn.micro.biz.type.member.MemberStatusEnum;
 import cn.micro.biz.type.member.PlatformEnum;
 import cn.micro.biz.type.unified.LoginResultEnum;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -50,13 +52,14 @@ import java.util.List;
  */
 @Slf4j
 @Service
+@EnableConfigurationProperties(MicroWxProperties.class)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, AccountEntity> implements IAccountService {
 
     private final IMemberMapper memberMapper;
     private final ILoginLogMapper loginLogMapper;
     private final IMemberGroupMemberMapper memberGroupMemberMapper;
-    private final MicroWxService microWxService;
+    private final MicroWxProperties properties;
 
     @Resource
     private IMemberRoleService memberRoleService;
@@ -72,7 +75,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
 
         // 2.检查账号是否存在用户信息
         MemberEntity addOrUpdateMember = new MemberEntity();
-        if (AccountEnum.WX_AUTO_LOGIN == registerAccount.getCategory()) {
+        if (AccountEnum.WE_CHAT == registerAccount.getCategory()) {
             // 2.1.微信自动登录
             if (account != null) {
                 addOrUpdateMember = memberMapper.selectById(account.getMemberId());
@@ -187,29 +190,26 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
     }
 
     @Override
-    public WxAuthCode2Session wxLogin(String code, boolean register) {
-        WxAuthCode2Session wxAuthCode2Session = microWxService.wxLogin(code);
-        if (wxAuthCode2Session != null) {
-            if (StringUtils.isNotBlank(wxAuthCode2Session.getUnionId())) {
-                // 判断账号是否已被注册
-                AccountEntity account = super.getOne(AccountEntity::getCategory, AccountEnum.WX_AUTO_LOGIN.getValue(),
-                        AccountEntity::getCode, wxAuthCode2Session.getUnionId());
-                if (account != null) {
-                    wxAuthCode2Session.setHasAccount(true);
-                } else if (register) {
-                    RegisterAccount registerAccount = new RegisterAccount();
-                    registerAccount.setAccount(wxAuthCode2Session.getUnionId());
-                    registerAccount.setCategory(AccountEnum.WX_AUTO_LOGIN);
-                    registerAccount.setPlatform(PlatformEnum.WX);
-                    registerAccount.setPassword(RsaUtils.encryptByPublicKeyHex(wxAuthCode2Session.getUnionId()));
-                    if (this.doRegister(registerAccount)) {
-                        wxAuthCode2Session.setHasAccount(true);
-                    }
-                }
-            }
+    public WeChatCode2SessionResponse weChatLogin(String code) {
+        WeChatMiniProgram weChatMiniProgram = new WeChatMiniProgram(properties.getAppId(), properties.getSecret());
+        WeChatCode2SessionResponse response = weChatMiniProgram.authCode2Session(code);
+
+        // 查询账号是否已创建
+        AccountEntity queryAccountEntity = new AccountEntity();
+        queryAccountEntity.setCategory(AccountEnum.WE_CHAT);
+        queryAccountEntity.setCode(response.getUnionId());
+        AccountEntity account = baseMapper.selectOne(new QueryWrapper<>(queryAccountEntity));
+
+        RegisterAccount registerAccount = new RegisterAccount();
+        registerAccount.setAccount(response.getUnionId());
+        registerAccount.setCategory(AccountEnum.WE_CHAT);
+        registerAccount.setPlatform(PlatformEnum.WX);
+        registerAccount.setPassword(RsaUtils.encryptByPublicKeyHex(response.getUnionId()));
+        if (this.doRegister(registerAccount)) {
+
         }
 
-        return wxAuthCode2Session;
+        return response;
     }
 
     @Override

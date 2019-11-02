@@ -1,4 +1,4 @@
-package cn.micro.biz.pubsrv.wx;
+package cn.micro.biz.pubsrv.wechat;
 
 import lombok.Data;
 import lombok.ToString;

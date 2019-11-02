@@ -8,7 +8,7 @@ import cn.micro.biz.model.edit.ChangeEmailOrMobile;
 import cn.micro.biz.model.edit.ChangePassword;
 import cn.micro.biz.model.edit.ForgetPassword;
 import cn.micro.biz.model.query.LoginAccount;
-import cn.micro.biz.pubsrv.wx.WxAuthCode2Session;
+import cn.micro.biz.pubsrv.wechat.response.WeChatCode2SessionResponse;
 import cn.micro.biz.service.member.IAccountService;
 import cn.micro.biz.service.unified.ILoginLogService;
 import lombok.RequiredArgsConstructor;
@@ -61,15 +61,12 @@ public class AccountController {
      * {@see https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/login.html}
      * {@see https://developers.weixin.qq.com/community/develop/doc/0006026b3c83c0e244573a0025bc08}
      *
-     * @param code     code
-     * @param register 默认为true,表示会自动注册账号和用户信息
-     * @return {@link WxAuthCode2Session}
+     * @param code code
+     * @return {@link WeChatCode2SessionResponse}
      */
     @RequestMapping(value = "wx-login", method = RequestMethod.PUT)
-    public WxAuthCode2Session wxLogin(
-            @RequestParam("code") String code,
-            @RequestParam(value = "register", required = false, defaultValue = "true") Boolean register) {
-        return accountService.wxLogin(code, register);
+    public WeChatCode2SessionResponse wxLogin(@RequestParam("code") String code) {
+        return accountService.weChatLogin(code);
     }
 
     @RequestMapping(value = "refresh-token", method = RequestMethod.POST)

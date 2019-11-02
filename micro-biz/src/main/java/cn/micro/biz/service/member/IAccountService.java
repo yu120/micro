@@ -8,7 +8,7 @@ import cn.micro.biz.model.edit.ChangeEmailOrMobile;
 import cn.micro.biz.model.edit.ChangePassword;
 import cn.micro.biz.model.edit.ForgetPassword;
 import cn.micro.biz.model.query.LoginAccount;
-import cn.micro.biz.pubsrv.wx.WxAuthCode2Session;
+import cn.micro.biz.pubsrv.wechat.response.WeChatCode2SessionResponse;
 
 /**
  * Account Service
@@ -37,10 +37,9 @@ public interface IAccountService extends IMicroService<AccountEntity> {
      * 微信代理登录
      *
      * @param code     js_code
-     * @param register true表示自动注册
-     * @return {@link WxAuthCode2Session}
+     * @return {@link WeChatCode2SessionResponse}
      */
-    WxAuthCode2Session wxLogin(String code, boolean register);
+    WeChatCode2SessionResponse weChatLogin(String code);
 
     /**
      * 刷新Token
