@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AbstractOpenDingTalk {
 
     private static final int RESPONSE_CODE_OK = 0;
-    private static final String ACCESS_TOKEN = "access_token";
+    private static final String ACCESS_TOKEN = "access_token=%s";
 
     private final String accessToken;
 

@@ -52,7 +52,6 @@ public class OpenDingTalk extends AbstractOpenDingTalk {
         DingTalkGetTokenRequest request = new DingTalkGetTokenRequest();
         request.setAppKey(APP_KEY);
         request.setAppSecret(APP_SECRET);
-        request.setHttpMethod(HttpMethod.GET);
         request.setUrl(String.format(request.getUrl(), APP_KEY, APP_SECRET));
         return sendRequest(request, DingTalkGetTokenResponse.class);
     }
@@ -117,6 +116,30 @@ public class OpenDingTalk extends AbstractOpenDingTalk {
     public DingTalkMessageRecallResponse messageRecall(DingTalkMessageRecallRequest request) {
         request.setAgentId(AGENT_ID);
         return sendRequest(request, DingTalkMessageRecallResponse.class);
+    }
+
+    // === 发送群消息
+
+    /**
+     * 发送群消息
+     *
+     * @param request {@link DingTalkChatSendRequest}
+     * @return {@link DingTalkChatSendResponse}
+     */
+    public DingTalkChatSendResponse chatSend(DingTalkChatSendRequest request) {
+        return sendRequest(request, DingTalkChatSendResponse.class);
+    }
+
+    /**
+     * 查询群消息已读人员列表
+     *
+     * @param request {@link DingTalkChatGetReadListRequest}
+     * @return {@link DingTalkChatGetReadListResponse}
+     */
+    public DingTalkChatGetReadListResponse chatGetReadList(DingTalkChatGetReadListRequest request) {
+        request.setUrl(String.format(request.getUrl(), ACCESS_TOKEN,
+                request.getMessageId(), request.getCursor(), request.getSize()));
+        return sendRequest(request, DingTalkChatGetReadListResponse.class);
     }
 
 }
