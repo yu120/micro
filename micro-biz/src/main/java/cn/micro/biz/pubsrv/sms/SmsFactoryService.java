@@ -84,7 +84,8 @@ public class SmsFactoryService {
 
             DingTalkOutgoing.DingTalkOutgoingTextRequest request = new DingTalkOutgoing.DingTalkOutgoingTextRequest();
             request.setText(new DingTalkOutgoing.DingTalkOutgoingText(message));
-            OutgoingResult webHookResult = DingTalkOutgoing.push(smsSendConfig.getDingTalkToken(), request);
+            OutgoingResult webHookResult = DingTalkOutgoing.push(
+                    smsSendConfig.getDingTalkSecret(), smsSendConfig.getDingTalkAccessToken(), request);
             log.info("Send Ding Talk:{}", webHookResult);
         }
     }

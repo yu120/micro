@@ -66,8 +66,12 @@ public class SmsSendConfig implements Serializable {
      */
     private String dingTalkNo;
     /**
-     * 钉钉群Token
+     * 钉钉群Secret
      */
-    private String dingTalkToken;
+    private String dingTalkSecret;
+    /**
+     * 钉钉群AccessToken
+     */
+    private String dingTalkAccessToken;
 
 }

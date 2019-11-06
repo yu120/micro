@@ -8,8 +8,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Connection;
 import org.jsoup.helper.HttpConnection;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.Serializable;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 
 /**
@@ -23,31 +27,37 @@ import java.util.List;
 @Slf4j
 public class DingTalkOutgoing implements Serializable {
 
+    private static final String SECRET_KEY = "HmacSHA256";
     private static final int RESPONSE_CODE_OK = 0;
     private static final String RESPONSE_CODE_KEY = "errcode";
     private static final String RESPONSE_MSG_KEY = "errmsg";
     private static final String CONTENT_TYPE_KEY = "Content-Type";
     private static final String CONTENT_TYPE = "application/json";
-    private static final String SERVER_URL = "https://oapi.dingtalk.com/robot/send?access_token=%s";
+    private static final String SERVER_URL = "https://oapi.dingtalk.com/robot/send?access_token=%s&timestamp=%s&sign=%s";
 
     public static void main(String[] args) throws Exception {
         DingTalkOutgoingTextRequest dingTalkOutgoingTextRequest = new DingTalkOutgoingTextRequest();
         dingTalkOutgoingTextRequest.setText(new DingTalkOutgoingText("测试机器人功能的消息201905"));
         dingTalkOutgoingTextRequest.setAt(new DingTalkOutgoingAt(null, true));
         OutgoingResult outgoingResult = DingTalkOutgoing.push(
-                "0044bea6737e89921d27495e5d57592ccd10a74ab04a4b39b1ec7ff87db6106c", dingTalkOutgoingTextRequest);
+                "SECe6439e9c8d5ddde21cc271f6c83f205f635bd8cb63bb2af893b6019a93d4ef80",
+                "cf0cd4f757a3c5e0cba3e05ddd7edbe5212be0b14ad9ecf5990a934b83cd84c0",
+                dingTalkOutgoingTextRequest);
         System.out.println(outgoingResult);
     }
 
     /**
      * Send push to 3th
      *
-     * @param accessToken            access token
+     * @param secret                  secret
+     * @param accessToken             access token
      * @param dingTalkOutgoingRequest {@link DingTalkOutgoingRequest}
      * @return success true
      */
-    public static OutgoingResult push(String accessToken, DingTalkOutgoingRequest dingTalkOutgoingRequest) {
-        String url = String.format(SERVER_URL, accessToken);
+    public static OutgoingResult push(String secret, String accessToken, DingTalkOutgoingRequest dingTalkOutgoingRequest) {
+        long timestamp = System.currentTimeMillis();
+        String sign = buildSign(timestamp, secret);
+        String url = String.format(SERVER_URL, accessToken, timestamp, sign);
         Connection.Response response;
         try {
             Connection connection = HttpConnection.connect(url).ignoreContentType(true);
@@ -80,6 +90,25 @@ public class DingTalkOutgoing implements Serializable {
             int code = jsonObject.getInteger(RESPONSE_CODE_KEY);
             String msg = jsonObject.getString(RESPONSE_MSG_KEY);
             return new OutgoingResult(RESPONSE_CODE_OK == code, msg, responseBody);
+        }
+    }
+
+    /**
+     * 获取请求签名
+     *
+     * @param timestamp current timestamp
+     * @param secret    secret
+     * @return sign
+     */
+    private static String buildSign(long timestamp, String secret) {
+        try {
+            String stringToSign = timestamp + "\n" + secret;
+            Mac mac = Mac.getInstance(SECRET_KEY);
+            mac.init(new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), SECRET_KEY));
+            byte[] signData = mac.doFinal(stringToSign.getBytes(StandardCharsets.UTF_8));
+            return URLEncoder.encode(new String(Base64.getEncoder().encode(signData)), StandardCharsets.UTF_8.name());
+        } catch (Exception e) {
+            throw new RuntimeException("The sign exception", e);
         }
     }
 

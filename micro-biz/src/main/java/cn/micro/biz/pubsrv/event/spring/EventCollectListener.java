@@ -1,5 +1,6 @@
-package cn.micro.biz.pubsrv.event;
+package cn.micro.biz.pubsrv.event.spring;
 
+import cn.micro.biz.pubsrv.event.EventCollect;
 import com.google.common.eventbus.Subscribe;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

@@ -1,5 +1,6 @@
-package cn.micro.biz.pubsrv.event;
+package cn.micro.biz.pubsrv.event.spring;
 
+import cn.micro.biz.pubsrv.event.EventCollectFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.config.BeanPostProcessor;
