@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class EventCollectListener {
+public class MicroEventCollectListener {
 
     @Subscribe
     public void notify(EventCollect eventCollect) {

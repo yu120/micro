@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Configuration;
 @Aspect
 @Configuration
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class EventCollectResolver {
+public class MicroEventCollectResolver {
 
     private final EventCollectFactory asyncEventFactory;
 
