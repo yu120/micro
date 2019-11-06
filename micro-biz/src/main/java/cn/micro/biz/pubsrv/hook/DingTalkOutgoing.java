@@ -27,12 +27,13 @@ import java.util.List;
 @Slf4j
 public class DingTalkOutgoing implements Serializable {
 
-    private static final String SECRET_KEY = "HmacSHA256";
     private static final int RESPONSE_CODE_OK = 0;
     private static final String RESPONSE_CODE_KEY = "errcode";
     private static final String RESPONSE_MSG_KEY = "errmsg";
     private static final String CONTENT_TYPE_KEY = "Content-Type";
     private static final String CONTENT_TYPE = "application/json";
+
+    private static final String SECRET_KEY = "HmacSHA256";
     private static final String SERVER_URL = "https://oapi.dingtalk.com/robot/send?access_token=%s&timestamp=%s&sign=%s";
 
     public static void main(String[] args) throws Exception {
