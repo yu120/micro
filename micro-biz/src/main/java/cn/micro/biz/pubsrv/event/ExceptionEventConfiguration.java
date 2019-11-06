@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * Exception Event Configuration
  *
@@ -38,8 +40,9 @@ public class ExceptionEventConfiguration implements InitializingBean {
     }
 
     @RequestMapping(value = "event-info", method = RequestMethod.GET)
-    public ExceptionEventAlarm.ExceptionEventInfo getEventInfo(@RequestParam("eventKey") String eventKey) {
-        return exceptionEventAlarm.getEventInfo(eventKey);
+    public void getEventInfo(@RequestParam("eventKey") String eventKey, HttpServletResponse response) throws Exception {
+        ExceptionEventAlarm.ExceptionEventInfo exceptionEventInfo = exceptionEventAlarm.getEventInfo(eventKey);
+        response.getWriter().println(exceptionEventInfo.getStackTrace());
     }
 
 }
