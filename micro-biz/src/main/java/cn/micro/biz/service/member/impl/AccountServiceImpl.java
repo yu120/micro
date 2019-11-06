@@ -69,6 +69,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
     @GlobalTransactional
     @Override
     public Boolean doRegister(RegisterAccount registerAccount) {
+        int i = 1 / 0;
         // 1.账号唯一性校验
         AccountEntity account = super.getOne(AccountEntity::getCategory, registerAccount.getCategory(),
                 AccountEntity::getCode, registerAccount.getAccount());

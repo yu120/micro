@@ -23,9 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 public class GlobalExceptionHandler {
 
     private final MicroProperties microProperties;
-    ExceptionEventAlarm exceptionEventAlarm = new ExceptionEventAlarm(
-            "SECe6439e9c8d5ddde21cc271f6c83f205f635bd8cb63bb2af893b6019a93d4ef80",
-            "cf0cd4f757a3c5e0cba3e05ddd7edbe5212be0b14ad9ecf5990a934b83cd84c0");
+    private final ExceptionEventAlarm exceptionEventAlarm;
 
     @ResponseBody
     @ExceptionHandler(value = Throwable.class)
