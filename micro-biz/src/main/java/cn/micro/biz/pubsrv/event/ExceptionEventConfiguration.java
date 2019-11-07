@@ -30,7 +30,7 @@ public class ExceptionEventConfiguration implements InitializingBean {
         exceptionEventAlarm.initialize(
                 "SECe6439e9c8d5ddde21cc271f6c83f205f635bd8cb63bb2af893b6019a93d4ef80",
                 "cf0cd4f757a3c5e0cba3e05ddd7edbe5212be0b14ad9ecf5990a934b83cd84c0",
-                "http://localhost:7777/event-info?eventKey=%s");
+                "http://localhost:7777/event-info?eventKey=%s", null, null);
         return exceptionEventAlarm;
     }
 
