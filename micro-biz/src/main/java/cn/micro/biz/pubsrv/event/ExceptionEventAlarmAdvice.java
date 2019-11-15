@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
- * 异常告警
+ * Exception Event Alarm Advice
  *
  * @author lry
  */
@@ -35,16 +36,17 @@ import java.util.*;
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @EnableConfigurationProperties(ExceptionEventAlarmAdvice.AlarmProperties.class)
-@ConditionalOnProperty(prefix = ExceptionEventAlarmAdvice.AlarmProperties.CACHE_PREFIX, name = "enable", havingValue = "true")
-public class ExceptionEventAlarmAdvice implements InitializingBean {
+@ConditionalOnProperty(prefix = ExceptionEventAlarmAdvice.CACHE_PREFIX, name = "enable", havingValue = "true")
+public class ExceptionEventAlarmAdvice implements InitializingBean, DisposableBean {
 
+    public static final String CACHE_PREFIX = "micro.alarm";
     private ExceptionEventAlarm exceptionEventAlarm = new ExceptionEventAlarm();
-
 
     @Value("${spring.profiles.active}")
     private String active;
-    @Value("${info.build.name}")
+    @Value("${spring.profiles.application}")
     private String application;
+
     private final AlarmProperties alarmProperties;
 
     @Override
@@ -52,12 +54,12 @@ public class ExceptionEventAlarmAdvice implements InitializingBean {
         exceptionEventAlarm.initialize(alarmProperties.getSecret(), alarmProperties.getAccessToken(), null, null);
     }
 
-    @RequestMapping(value = "api/alarm/event/without_token", method = RequestMethod.GET)
+    @RequestMapping(value = "alarm/event", method = RequestMethod.GET)
     public void exceptionInfo(@RequestParam("id") String id, HttpServletResponse response) throws Exception {
-        ExceptionEventAlarm.EventInfo eventInfo = exceptionEventAlarm.getEventInfo(id);
+        ExceptionEventAlarm.AlarmEventInfo info = exceptionEventAlarm.getAlarmEventInfo(id);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setContentType("text/html;charset=utf-8");
-        response.getWriter().println(String.format(alarmProperties.getDocument(), eventInfo.getTitle(), eventInfo.getStackTrace()));
+        response.getWriter().println(String.format(alarmProperties.getDocument(), info.getTitle(), info.getStackTrace()));
     }
 
     @Around("within(@org.springframework.web.bind.annotation.RestController *)")
@@ -68,15 +70,21 @@ public class ExceptionEventAlarmAdvice implements InitializingBean {
             String exceptionName = t.getClass().getSimpleName();
             String message = t.getMessage();
 
-            ExceptionEventAlarm.EventInfo eventInfo = new ExceptionEventAlarm.EventInfo();
-            eventInfo.setId(UUID.randomUUID().toString());
-            eventInfo.setAt(null);
-            eventInfo.setTitle(exceptionName);
-            eventInfo.setMessage(message);
-            eventInfo.setStackTrace(this.getStackTrace(t));
-            exceptionEventAlarm.eventCollect(eventInfo);
+            ExceptionEventAlarm.AlarmEventInfo alarmEventInfo = new ExceptionEventAlarm.AlarmEventInfo();
+            alarmEventInfo.setId(UUID.randomUUID().toString());
+            alarmEventInfo.setAt(null);
+            alarmEventInfo.setTitle(exceptionName);
+            alarmEventInfo.setMessage(message);
+            alarmEventInfo.setStackTrace(this.getStackTrace(t));
+            alarmEventInfo.setT(t);
+            exceptionEventAlarm.eventCollect(alarmEventInfo);
             throw t;
         }
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        exceptionEventAlarm.destroy();
     }
 
     /**
@@ -95,21 +103,19 @@ public class ExceptionEventAlarmAdvice implements InitializingBean {
     }
 
     @Data
-    @ToString
-    @ConfigurationProperties(prefix = AlarmProperties.CACHE_PREFIX)
+    @ConfigurationProperties(prefix = ExceptionEventAlarmAdvice.CACHE_PREFIX)
     public static class AlarmProperties implements Serializable {
-
-        public static final String CACHE_PREFIX = "micro.alarm";
 
         private boolean enable;
         private String secret = "SEC43de7f16e35ccbc6f7a8f085222f9cfdf1d975845d4b6a32e0925db6f1ca59c6";
         private String accessToken = "7fc60693d8ff1e1876d2dfb7d2a656c917a34d15901089e12406f21e63236079";
-        private String uri = "http://api.test.sxw.cn/sxt/api/alarm/event/without_token?id=%s";
+
+        private Map<String, String> developer = new HashMap<>();
+        private String uri = "http://localhost:7777/alarm/event?id=%s";
         private String document = "<!DOCTYPE html><html><head><title>%s</title>" +
                 "<link href=\"https://prismjs.com/themes/prism.css\" rel=\"stylesheet\" />" +
                 "<script src=\"https://prismjs.com/prism.js\"></script>" +
                 "</head><body><pre><code class=\"language-css\">%s</code></pre></body></html>";
-        private Map<String, String> developer = new HashMap<>();
 
     }
 
