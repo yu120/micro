@@ -111,14 +111,6 @@ public class ExceptionEventAlarmAdvice implements InitializingBean {
                 "</head><body><pre><code class=\"language-css\">%s</code></pre></body></html>";
         private Map<String, String> developer = new HashMap<>();
 
-        public AlarmProperties() {
-            developer.put("冯强", "13666189663");
-            developer.put("吴昂", "13980961985");
-            developer.put("李茹钰", "15828252029");
-            developer.put("李珺嘉", "18882026073");
-        }
-
-
     }
 
 }
