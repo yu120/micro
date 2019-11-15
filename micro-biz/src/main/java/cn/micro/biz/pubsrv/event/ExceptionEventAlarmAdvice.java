@@ -54,14 +54,6 @@ public class ExceptionEventAlarmAdvice implements InitializingBean, DisposableBe
         exceptionEventAlarm.initialize(alarmProperties.getSecret(), alarmProperties.getAccessToken(), null, null);
     }
 
-    @RequestMapping(value = "alarm/event", method = RequestMethod.GET)
-    public void exceptionInfo(@RequestParam("id") String id, HttpServletResponse response) throws Exception {
-        ExceptionEventAlarm.AlarmEventInfo info = exceptionEventAlarm.getAlarmEventInfo(id);
-        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-        response.setContentType("text/html;charset=utf-8");
-        response.getWriter().println(String.format(alarmProperties.getDocument(), info.getTitle(), info.getStackTrace()));
-    }
-
     @Around("within(@org.springframework.web.bind.annotation.RestController *)")
     private Object around(ProceedingJoinPoint pjp) throws Throwable {
         try {
@@ -102,12 +94,20 @@ public class ExceptionEventAlarmAdvice implements InitializingBean, DisposableBe
         return stringWriter.toString();
     }
 
+    @RequestMapping(value = "alarm/event", method = RequestMethod.GET)
+    public void exceptionInfo(@RequestParam("id") String id, HttpServletResponse response) throws Exception {
+        ExceptionEventAlarm.AlarmEventInfo info = exceptionEventAlarm.getAlarmEventInfo(id);
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        response.setContentType("text/html;charset=utf-8");
+        response.getWriter().println(String.format(alarmProperties.getDocument(), info.getTitle(), info.getStackTrace()));
+    }
+
     @Data
     @ConfigurationProperties(prefix = ExceptionEventAlarmAdvice.CACHE_PREFIX)
     public static class AlarmProperties implements Serializable {
 
         private boolean enable;
-        private String secret ;
+        private String secret;
         private String accessToken;
 
         private Map<String, String> developer = new HashMap<>();
