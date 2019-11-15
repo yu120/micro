@@ -107,8 +107,8 @@ public class ExceptionEventAlarmAdvice implements InitializingBean, DisposableBe
     public static class AlarmProperties implements Serializable {
 
         private boolean enable;
-        private String secret = "SEC43de7f16e35ccbc6f7a8f085222f9cfdf1d975845d4b6a32e0925db6f1ca59c6";
-        private String accessToken = "7fc60693d8ff1e1876d2dfb7d2a656c917a34d15901089e12406f21e63236079";
+        private String secret ;
+        private String accessToken;
 
         private Map<String, String> developer = new HashMap<>();
         private String uri = "http://localhost:7777/alarm/event?id=%s";
