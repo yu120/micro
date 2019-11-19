@@ -2,7 +2,6 @@ package cn.micro.biz.commons.mdc;
 
 import com.netflix.hystrix.strategy.concurrency.HystrixConcurrencyStrategy;
 import org.slf4j.MDC;
-import org.springframework.web.context.request.RequestContextHolder;
 
 import java.util.concurrent.Callable;
 
@@ -28,7 +27,7 @@ public class MdcHystrixConcurrencyStrategy extends HystrixConcurrencyStrategy {
 
     @Override
     public <T> Callable<T> wrapCallable(Callable<T> callable) {
-        return new MdcAwareCallable<>(callable, MDC.getCopyOfContextMap(), RequestContextHolder.getRequestAttributes());
+        return new MdcAwareCallable<>(callable, MDC.getCopyOfContextMap());
     }
 
 }
