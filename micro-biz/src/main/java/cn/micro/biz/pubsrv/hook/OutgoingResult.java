@@ -16,17 +16,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class OutgoingResult implements Serializable {
 
-    /**
-     * true表示成功
-     */
-    private Boolean success;
-    /**
-     * 描述信息
-     */
+    private boolean success;
     private String msg;
-    /**
-     * 原始报文
-     */
     private String plain;
 
 }

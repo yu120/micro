@@ -1,12 +1,10 @@
 package cn.micro.biz.pubsrv.hook;
 
-import cn.micro.biz.commons.exception.support.MicroErrorException;
+import cn.micro.biz.commons.utils.HttpUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.Connection;
-import org.jsoup.helper.HttpConnection;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -59,39 +57,17 @@ public class DingTalkOutgoing implements Serializable {
         long timestamp = System.currentTimeMillis();
         String sign = buildSign(timestamp, secret);
         String url = String.format(SERVER_URL, accessToken, timestamp, sign);
-        Connection.Response response;
-        try {
-            Connection connection = HttpConnection.connect(url).ignoreContentType(true);
-            Connection.Request request = connection.request();
-            request.header(CONTENT_TYPE_KEY, CONTENT_TYPE);
-            request.postDataCharset(StandardCharsets.UTF_8.name());
-            request.method(Connection.Method.POST);
-            request.requestBody(JSON.toJSONString(dingTalkOutgoingRequest));
-
-            log.debug("Ding Talk request url:[{}], method:[{}], headers:[{}], body:[{}]",
-                    url, request.method(), request.headers(), request.requestBody());
-            response = connection.execute();
-        } catch (Exception e) {
-            throw new MicroErrorException(e.getMessage(), e);
+        String responseBody = HttpUtils.sendRequest("POST", url, dingTalkOutgoingRequest);
+        log.debug("Ding Talk response body:{}", responseBody);
+        JSONObject jsonObject = JSON.parseObject(responseBody);
+        if (jsonObject == null) {
+            log.warn("Ding Talk send fail, response body:{}", responseBody);
+            return new OutgoingResult(false, "response body is null", responseBody);
         }
 
-        if (200 != response.statusCode()) {
-            log.warn("Network error:[code:{},message:{}]", response.statusCode(), response.statusMessage());
-            return new OutgoingResult(false,
-                    response.statusCode() + ":" + response.statusMessage(), response.body());
-        } else {
-            String responseBody = response.charset(StandardCharsets.UTF_8.name()).body();
-            log.debug("Ding Talk response body:{}", responseBody);
-            JSONObject jsonObject = JSON.parseObject(responseBody);
-            if (jsonObject == null) {
-                log.warn("Ding Talk send fail, response body:{}", responseBody);
-                return new OutgoingResult(false, "response body is null", responseBody);
-            }
-
-            int code = jsonObject.getInteger(RESPONSE_CODE_KEY);
-            String msg = jsonObject.getString(RESPONSE_MSG_KEY);
-            return new OutgoingResult(RESPONSE_CODE_OK == code, msg, responseBody);
-        }
+        int code = jsonObject.getInteger(RESPONSE_CODE_KEY);
+        String msg = jsonObject.getString(RESPONSE_MSG_KEY);
+        return new OutgoingResult(RESPONSE_CODE_OK == code, msg, responseBody);
     }
 
     /**

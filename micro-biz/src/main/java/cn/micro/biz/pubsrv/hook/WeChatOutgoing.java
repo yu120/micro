@@ -1,6 +1,7 @@
 package cn.micro.biz.pubsrv.hook;
 
 import cn.micro.biz.commons.exception.support.MicroErrorException;
+import cn.micro.biz.commons.utils.HttpUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import lombok.*;
@@ -40,45 +41,23 @@ public class WeChatOutgoing implements Serializable {
     /**
      * Send push to 3th
      *
-     * @param accessToken          access token
+     * @param accessToken           access token
      * @param weChatOutgoingRequest {@link WeChatOutgoingRequest}
      * @return success true
      */
     public static OutgoingResult push(String accessToken, WeChatOutgoingRequest weChatOutgoingRequest) {
         String url = String.format(SERVER_URL, accessToken);
-        Connection.Response response;
-        try {
-            Connection connection = HttpConnection.connect(url).ignoreContentType(true);
-            Connection.Request request = connection.request();
-            request.method(Connection.Method.POST);
-            request.header(CONTENT_TYPE_KEY, CONTENT_TYPE);
-            request.postDataCharset(StandardCharsets.UTF_8.name());
-            request.requestBody(JSON.toJSONString(weChatOutgoingRequest));
-
-            log.debug("WeChat request url:[{}], method:[{}], headers:[{}], body:[{}]",
-                    url, request.method(), request.headers(), request.requestBody());
-            response = connection.execute();
-        } catch (Exception e) {
-            throw new MicroErrorException(e.getMessage(), e);
+        String responseBody = HttpUtils.sendRequest("POST", url, weChatOutgoingRequest);
+        log.debug("WeChat response body:{}", responseBody);
+        JSONObject jsonObject = JSON.parseObject(responseBody);
+        if (jsonObject == null) {
+            log.warn("WeChat send fail, response body:{}", responseBody);
+            return new OutgoingResult(false, "response body is null", responseBody);
         }
 
-        if (200 != response.statusCode()) {
-            log.warn("Network error:[code:{},message:{}]", response.statusCode(), response.statusMessage());
-            return new OutgoingResult(false,
-                    response.statusCode() + ":" + response.statusMessage(), response.body());
-        } else {
-            String responseBody = response.charset(StandardCharsets.UTF_8.name()).body();
-            log.debug("WeChat response body:{}", responseBody);
-            JSONObject jsonObject = JSON.parseObject(responseBody);
-            if (jsonObject == null) {
-                log.warn("WeChat send fail, response body:{}", responseBody);
-                return new OutgoingResult(false, "response body is null", responseBody);
-            }
-
-            int code = jsonObject.getInteger(RESPONSE_CODE_KEY);
-            String msg = jsonObject.getString(RESPONSE_MSG_KEY);
-            return new OutgoingResult(RESPONSE_CODE_OK == code, msg, responseBody);
-        }
+        int code = jsonObject.getInteger(RESPONSE_CODE_KEY);
+        String msg = jsonObject.getString(RESPONSE_MSG_KEY);
+        return new OutgoingResult(RESPONSE_CODE_OK == code, msg, responseBody);
     }
 
     /**
