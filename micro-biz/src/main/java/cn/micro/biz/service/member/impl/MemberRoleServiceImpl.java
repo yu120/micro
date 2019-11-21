@@ -3,8 +3,8 @@ package cn.micro.biz.service.member.impl;
 import cn.micro.biz.entity.member.MemberRoleEntity;
 import cn.micro.biz.mapper.member.IMemberGroupMemberMapper;
 import cn.micro.biz.mapper.member.IMemberRoleMapper;
-import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
 import cn.micro.biz.service.member.IMemberRoleService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class MemberRoleServiceImpl extends MicroServiceImpl<IMemberRoleMapper, MemberRoleEntity> implements IMemberRoleService {
+public class MemberRoleServiceImpl extends ServiceImpl<IMemberRoleMapper, MemberRoleEntity> implements IMemberRoleService {
 
     private final IMemberGroupMemberMapper memberGroupMemberMapper;
 

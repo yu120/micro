@@ -1,23 +1,16 @@
 package cn.micro.biz.commons.mybatis;
 
-import cn.micro.biz.commons.enums.EnumTypeHandler;
 import cn.micro.biz.commons.exception.support.MicroErrorException;
-import cn.micro.biz.commons.mybatis.extension.MicroTenantSqlParser;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.injector.DefaultSqlInjector;
 import com.baomidou.mybatisplus.core.parser.ISqlParser;
-import com.baomidou.mybatisplus.core.parser.SqlParserHelper;
 import com.baomidou.mybatisplus.extension.parsers.BlockAttackSqlParser;
-import com.baomidou.mybatisplus.extension.plugins.OptimisticLockerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
-import io.seata.rm.datasource.DataSourceProxy;
-import io.seata.spring.annotation.GlobalTransactionScanner;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.builder.xml.XMLMapperEntityResolver;
-import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.parsing.XNode;
 import org.apache.ibatis.parsing.XPathParser;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
@@ -28,14 +21,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import javax.annotation.Nullable;
 import javax.sql.DataSource;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -64,7 +55,7 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
      * @param env {@link Environment}
      */
     @Override
-    public void setEnvironment(@Nullable Environment env) {
+    public void setEnvironment(Environment env) {
         if (env == null) {
             return;
         }
@@ -124,17 +115,6 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
     }
 
     /**
-     * Micro tenant properties
-     *
-     * @return {@link MicroTenantProperties}
-     */
-    @Bean
-    @ConfigurationProperties(prefix = "micro.tenant")
-    public MicroTenantProperties microTenantProperties() {
-        return new MicroTenantProperties();
-    }
-
-    /**
      * Micro transaction properties
      *
      * @return {@link MicroTransactionProperties}
@@ -157,19 +137,6 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
     }
 
     /**
-     * Data source data source.
-     *
-     * @param druidDataSource the druid data source
-     * @return the data source
-     */
-    @Primary
-    @Bean("dataSource")
-    @ConditionalOnProperty(prefix = "micro.transaction", name = "enable", havingValue = "true")
-    public DataSource dataSource(DruidDataSource druidDataSource) {
-        return new DataSourceProxy(druidDataSource);
-    }
-
-    /**
      * Global transaction configuration
      *
      * @param druidDataSource            {@link DataSource}
@@ -187,19 +154,6 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
     }
 
     /**
-     * Global transaction scanner
-     *
-     * @param microTransactionProperties {@link MicroTransactionProperties}
-     * @return global transaction scanner
-     */
-    @Bean
-    @ConditionalOnProperty(prefix = "micro.transaction", name = "seata", havingValue = "true")
-    public GlobalTransactionScanner globalTransactionScanner(MicroTransactionProperties microTransactionProperties) {
-        return new GlobalTransactionScanner(microTransactionProperties.getApplicationId(),
-                microTransactionProperties.getTxServiceGroup());
-    }
-
-    /**
      * Mybatis Mapper Scanner Configurer
      *
      * @param mybatisPlusProperties {@link MybatisPlusProperties}
@@ -208,7 +162,6 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
     @Bean
     public MapperScannerConfigurer mapperScannerConfigurer(MybatisPlusProperties mybatisPlusProperties) {
         MybatisConfiguration mybatisConfiguration = new MybatisConfiguration();
-        mybatisConfiguration.setDefaultEnumTypeHandler(EnumTypeHandler.class);
         mybatisPlusProperties.setConfiguration(mybatisConfiguration);
 
         MapperScannerConfigurer scannerConfigurer = new MapperScannerConfigurer();
@@ -233,42 +186,22 @@ public class MybatisPlusConfiguration implements EnvironmentAware {
     /**
      * Pagination interceptor
      *
-     * @param microTenantProperties {@link MicroTenantProperties}
+     * @param microMybatisProperties {@link MicroMybatisProperties}
      * @return {@link PaginationInterceptor}
      */
     @Bean
-    public PaginationInterceptor paginationInterceptor(
-            MicroMybatisProperties microMybatisProperties,
-            MicroTenantProperties microTenantProperties) {
+    public PaginationInterceptor paginationInterceptor(MicroMybatisProperties microMybatisProperties) {
         PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
         List<ISqlParser> sqlParserList = new ArrayList<>();
         if (microMybatisProperties.isBlockAttack()) {
             // 攻击 SQL 阻断解析器、加入解析链
             sqlParserList.add(new BlockAttackSqlParser());
         }
-        if (microTenantProperties.isEnable()) {
-            sqlParserList.add(new MicroTenantSqlParser(microTenantProperties));
-            paginationInterceptor.setSqlParserFilter(metaObject -> {
-                MappedStatement mappedStatement = SqlParserHelper.getMappedStatement(metaObject);
-                return microTenantProperties.getSkipMapperIds().contains(mappedStatement.getId());
-            });
-        }
-
         if (sqlParserList.size() > 0) {
             paginationInterceptor.setSqlParserList(sqlParserList);
         }
-        return paginationInterceptor;
-    }
 
-    /**
-     * Optimistic Locker Interceptor
-     *
-     * @return {@link OptimisticLockerInterceptor}
-     */
-    @Bean
-    @ConditionalOnProperty(prefix = "micro.mybatis", name = {"optimisticLocker", "optimistic-locker"}, havingValue = "true")
-    public OptimisticLockerInterceptor optimisticLockerInterceptor() {
-        return new OptimisticLockerInterceptor();
+        return paginationInterceptor;
     }
 
 }

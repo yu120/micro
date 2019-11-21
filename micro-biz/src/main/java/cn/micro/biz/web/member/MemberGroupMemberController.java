@@ -52,7 +52,7 @@ public class MemberGroupMemberController {
             @RequestParam(value = "memberId", required = false) Long memberId,
             @RequestParam(value = "memberGroupId", required = false) Long memberGroupId,
             @RequestBody PageQuery query) {
-        Page<MemberGroupMemberEntity> page = new Page<>(query.getCurrent(), query.getSize());
+        Page<MemberGroupMemberEntity> page = new Page<>(query.getPageNo(), query.getPageSize());
         page.setDesc(MicroEntity.EDITED_FIELD);
 
         QueryWrapper<MemberGroupMemberEntity> entityWrapper = new QueryWrapper<>();
@@ -65,7 +65,7 @@ public class MemberGroupMemberController {
 
         page.setTotal(remberGroupMemberService.count(entityWrapper));
         if (page.getTotal() > 0) {
-            IPage<MemberGroupMemberEntity> tempPage = new Page<>((query.getCurrent() - 1) * query.getSize(), query.getSize());
+            IPage<MemberGroupMemberEntity> tempPage = new Page<>((query.getPageNo() - 1) * query.getPageSize(), query.getPageSize());
             page.setRecords(remberGroupMemberService.page(tempPage, entityWrapper).getRecords());
         }
 

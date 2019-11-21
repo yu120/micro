@@ -1,8 +1,6 @@
 package cn.micro.biz.commons.mybatis;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -12,14 +10,32 @@ import java.io.Serializable;
  * @author lry
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class PageQuery implements Serializable {
 
-    private String field;
-    private int size = 10;
-    private String keyword;
-    private int current = 1;
-    private boolean asc = false;
+    /**
+     * The search keywords
+     */
+    private String keywords;
+
+    /**
+     * The page no
+     */
+    private int pageNo = 1;
+    /**
+     * The page size
+     */
+    private int pageSize = 10;
+
+    /**
+     * The page index
+     */
+    private int pageIndex = 0;
+
+    public void copy(PageQuery pageQuery) {
+        this.keywords = pageQuery.getKeywords();
+        this.pageNo = pageQuery.getPageNo();
+        this.pageSize = pageQuery.getPageSize();
+        this.pageIndex = pageQuery.getPageIndex();
+    }
 
 }

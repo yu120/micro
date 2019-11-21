@@ -32,11 +32,11 @@ public class MicroAutoFillHandler implements MetaObjectHandler {
 
     private String getOperator() {
         MicroTokenBody tokenInfo = MicroAuthContext.getContextAccessToken();
-        if (tokenInfo == null || tokenInfo.getMemberId() == null) {
+        if (tokenInfo == null || tokenInfo.getMembersId() == null) {
             return MicroAuthContext.getRequestIPAddress();
         }
 
-        return String.valueOf(tokenInfo.getMemberId());
+        return String.valueOf(tokenInfo.getMembersId());
     }
 
 }

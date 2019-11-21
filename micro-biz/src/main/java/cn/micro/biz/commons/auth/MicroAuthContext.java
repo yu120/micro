@@ -1,8 +1,6 @@
 package cn.micro.biz.commons.auth;
 
 import cn.micro.biz.commons.exception.support.*;
-import cn.micro.biz.commons.mybatis.MicroTenantProperties;
-import cn.micro.biz.pubsrv.redis.RedisService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.JWTVerifier;
@@ -58,15 +56,12 @@ public class MicroAuthContext implements InitializingBean {
     private static Algorithm ALGORITHM;
     private static JWTVerifier VERIFIER;
     private static MicroAuthProperties properties;
-    private static Long DEFAULT_TENANT_VALUE;
 
     private final MicroAuthProperties microAuthProperties;
-    private final MicroTenantProperties microTenantProperties;
 
     @Override
     public void afterPropertiesSet() {
         MicroAuthContext.properties = microAuthProperties;
-        MicroAuthContext.DEFAULT_TENANT_VALUE = microTenantProperties.getDefaultValue();
 
         try {
             ALGORITHM = Algorithm.HMAC256(SECRET);
@@ -76,9 +71,8 @@ public class MicroAuthContext implements InitializingBean {
         }
     }
 
-    public static MicroToken build(
-            Long tenantId, Long memberId, String memberName,
-            Integer platform, List<String> authorities, Map<String, Object> others) {
+    public static MicroToken build(Long membersId, String membersName, Integer platform,
+                                   List<String> authorities, Map<String, Object> others) {
         try {
             String jti = UUID.randomUUID().toString();
 
@@ -88,9 +82,8 @@ public class MicroAuthContext implements InitializingBean {
             builder.withArrayClaim(SCOPE, SCOPE_TYPES);
             builder.withExpiresAt(new Date(System.currentTimeMillis() + properties.getTokenExpires().toMillis()));
 
-            builder.withClaim(MicroTokenBody.TENANT_ID, tenantId);
-            builder.withClaim(MicroTokenBody.MEMBER_ID, memberId);
-            builder.withClaim(MicroTokenBody.MEMBER_NAME, memberName);
+            builder.withClaim(MicroTokenBody.MEMBERS_ID, membersId);
+            builder.withClaim(MicroTokenBody.MEMBERS_NAME, membersName);
             builder.withClaim(MicroTokenBody.PLATFORM, platform);
             builder.withClaim(MicroTokenBody.IP, MicroAuthContext.getRequestIPAddress());
             builder.withClaim(MicroTokenBody.TIME, System.currentTimeMillis());
@@ -102,17 +95,6 @@ public class MicroAuthContext implements InitializingBean {
             builder.withClaim(ATI_KEY, UUID.randomUUID().toString());
             builder.withExpiresAt(new Date(System.currentTimeMillis() + properties.getRefreshToken().toMillis()));
             String refreshTokenStr = builder.sign(ALGORITHM);
-
-            if (properties.isTokenExpire()) {
-                try {
-                    RedisService.commandSetSec(MicroAuthContext.buildAccessTokenKey(memberId),
-                            accessTokenStr, properties.getTokenExpires().getSeconds());
-                    RedisService.commandSetSec(MicroAuthContext.buildRefreshTokenKey(memberId),
-                            refreshTokenStr, properties.getRefreshToken().getSeconds());
-                } catch (Exception e) {
-                    log.error(e.getMessage(), e);
-                }
-            }
 
             return new MicroToken(BEARER_TYPE, accessTokenStr, properties.getTokenExpires().getSeconds(),
                     refreshTokenStr, properties.getRefreshToken().getSeconds(), SCOPE_TYPE, jti);
@@ -138,12 +120,6 @@ public class MicroAuthContext implements InitializingBean {
         }
         if (properties.isCheckSign()) {
             verifyClientRequestSign(timestamp, token, sign);
-        }
-        if (properties.isRequestExpire()) {
-            verifyServerRequestExpire(path, sign);
-        }
-        if (properties.isTokenExpire()) {
-            verifyServerTokenExpire(MicroAuthContext.getContextAccessToken().getMemberId(), token);
         }
     }
 
@@ -189,12 +165,12 @@ public class MicroAuthContext implements InitializingBean {
         return refreshAccessTokenValue;
     }
 
-    private static String buildAccessTokenKey(Long memberId) {
-        return CACHE_ACCESS_TOKEN_KEY + memberId;
+    private static String buildAccessTokenKey(Long membersId) {
+        return CACHE_ACCESS_TOKEN_KEY + membersId;
     }
 
-    private static String buildRefreshTokenKey(Long memberId) {
-        return CACHE_REFRESH_TOKEN_KEY + memberId;
+    private static String buildRefreshTokenKey(Long membersId) {
+        return CACHE_REFRESH_TOKEN_KEY + membersId;
     }
 
     private static void verifyTokenExpiredSignature(String token) {
@@ -254,40 +230,6 @@ public class MicroAuthContext implements InitializingBean {
         }
     }
 
-    /**
-     * 基于Redis实现重复请求校验
-     *
-     * @param path request path
-     * @param sign sign
-     * @throws Exception throw exception
-     */
-    private static void verifyServerRequestExpire(String path, String sign) throws Exception {
-        String key = DigestUtils.md5Hex(sign + path);
-        String tempSign = RedisService.commandGet(key);
-        if (tempSign == null || tempSign.length() == 0) {
-            RedisService.commandSet(key, sign, properties.getFaultTolerant().getSeconds());
-        } else {
-            throw new MicroBadRequestException("Repeated requests");
-        }
-    }
-
-    /**
-     * 基于Redis实现Token过期过滤
-     *
-     * @param memberId member id
-     * @param token    token
-     * @throws Exception throw exception
-     */
-    private static void verifyServerTokenExpire(Long memberId, String token) throws Exception {
-        String tokenStr = RedisService.commandGet(MicroAuthContext.buildAccessTokenKey(memberId));
-        if (tokenStr == null || tokenStr.length() == 0) {
-            throw new MicroTokenExpiredException("Server token has expired");
-        }
-        if (!tokenStr.equals(token)) {
-            throw new MicroBadRequestException("Illegal token");
-        }
-    }
-
     private static JWTCreator.Builder build(Map<String, Object> others) {
         JWTCreator.Builder builder = JWT.create();
         if (!(others == null || others.isEmpty())) {
@@ -307,8 +249,8 @@ public class MicroAuthContext implements InitializingBean {
         try {
             DecodedJWT decodedJWT = JWT.decode(token);
             MicroTokenBody microTokenBody = new MicroTokenBody();
-            microTokenBody.setMemberId(decodedJWT.getClaim(MicroTokenBody.MEMBER_ID).asLong());
-            microTokenBody.setMemberName(decodedJWT.getClaim(MicroTokenBody.MEMBER_NAME).asString());
+            microTokenBody.setMembersId(decodedJWT.getClaim(MicroTokenBody.MEMBERS_ID).asLong());
+            microTokenBody.setMembersName(decodedJWT.getClaim(MicroTokenBody.MEMBERS_NAME).asString());
             microTokenBody.setDeviceType(decodedJWT.getClaim(MicroTokenBody.PLATFORM).asInt());
             microTokenBody.setAuthorities(decodedJWT.getClaim(MicroTokenBody.AUTHORITIES).asList(String.class));
             microTokenBody.setOthers(decodedJWT.getClaim(MicroTokenBody.OTHERS).asMap());
@@ -347,30 +289,16 @@ public class MicroAuthContext implements InitializingBean {
         return MicroAuthContext.parseToken(refreshTokenValue);
     }
 
-    public static Long getMemberId() {
-        return getContextAccessToken().getMemberId();
+    public static Long getMembersId() {
+        return getContextAccessToken().getMembersId();
     }
 
-    public static Long getNonMemberId() {
+    public static Long getNonMembersId() {
         try {
-            return getMemberId();
+            return getMembersId();
         } catch (Exception e) {
             return null;
         }
-    }
-
-    public static Long getTenantId() {
-        MicroTokenBody microTokenBody;
-        try {
-            microTokenBody = getContextAccessToken();
-            if (microTokenBody == null) {
-                return DEFAULT_TENANT_VALUE;
-            }
-        } catch (Exception e) {
-            return DEFAULT_TENANT_VALUE;
-        }
-
-        return microTokenBody.getTenantId();
     }
 
     public static List<String> getAuthorities() {
@@ -401,6 +329,11 @@ public class MicroAuthContext implements InitializingBean {
         }
     }
 
+    /**
+     * The get request IP address
+     *
+     * @return ip
+     */
     public static String getRequestIPAddress() {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         if (requestAttributes == null) {
@@ -414,6 +347,12 @@ public class MicroAuthContext implements InitializingBean {
         }
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
         }
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getRemoteAddr();

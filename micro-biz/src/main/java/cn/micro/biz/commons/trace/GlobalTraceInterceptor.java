@@ -19,17 +19,10 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
-import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -44,15 +37,12 @@ import java.util.concurrent.TimeUnit;
 public class GlobalTraceInterceptor implements InitializingBean, DisposableBean, WebMvcConfigurer, HandlerInterceptor {
 
     private static final PathMatcher PATH_MATCHER = new AntPathMatcher();
-    private static final Map<String, RequestMappingInfo> REQUEST_MAPPING_INFO_MAP = new ConcurrentHashMap<>();
 
     @Getter
     private static Cache<String, String> cache;
 
     @Resource
     private TraceProperties properties;
-    @Resource
-    private RequestMappingHandlerMapping requestMappingHandlerMapping;
 
     @Override
     public void afterPropertiesSet() {
@@ -65,11 +55,6 @@ public class GlobalTraceInterceptor implements InitializingBean, DisposableBean,
         TraceStackContext.initialize(properties);
         TraceStatistic.INSTANCE.initialize(properties);
         log.info("[Initialize Global Trace Interceptor]: {}", this.getClass().getName());
-
-        Map<RequestMappingInfo, HandlerMethod> mapRet = requestMappingHandlerMapping.getHandlerMethods();
-        for (Map.Entry<RequestMappingInfo, HandlerMethod> entry : mapRet.entrySet()) {
-            REQUEST_MAPPING_INFO_MAP.put(entry.getValue().getMethod().toString(), entry.getKey());
-        }
     }
 
     @Override
@@ -131,7 +116,7 @@ public class GlobalTraceInterceptor implements InitializingBean, DisposableBean,
         Pair<String, Long> duration = TraceStackContext.stopAndPrint();
         if (duration != null) {
             if (cache != null) {
-                String requestId = response.getHeader(GlobalExceptionFilter.X_TRACE_ID);
+                String requestId = response.getHeader(GlobalExceptionFilter.X_TRACE);
                 if (requestId != null && requestId.length() > 0) {
                     cache.put(requestId, duration.getKey());
                 }
@@ -143,18 +128,6 @@ public class GlobalTraceInterceptor implements InitializingBean, DisposableBean,
     }
 
     private String getPatternRequestURI(HttpServletRequest request, Object handler) {
-        if (handler instanceof HandlerMethod) {
-            RequestMappingInfo requestMappingInfo = REQUEST_MAPPING_INFO_MAP.get(((HandlerMethod) handler).getMethod().toString());
-            if (requestMappingInfo != null) {
-                PatternsRequestCondition patternsRequestCondition = requestMappingInfo.getPatternsCondition();
-                Set<String> urlPatterns = patternsRequestCondition.getPatterns();
-                Iterator<String> iterator = urlPatterns.iterator();
-                if (iterator.hasNext()) {
-                    return request.getMethod() + "@" + iterator.next();
-                }
-            }
-        }
-
         return request.getMethod() + "@" + request.getRequestURI();
     }
 

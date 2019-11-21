@@ -1,13 +1,13 @@
 package cn.micro.biz.mapper.orders;
 
-import cn.micro.biz.commons.mybatis.extension.IMicroMapper;
 import cn.micro.biz.entity.orders.AliPayNotifyEntity;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
  * Ali Pay Notify Mapper
  *
  * @author lry
  */
-public interface IAliPayNotifyMapper extends IMicroMapper<AliPayNotifyEntity> {
+public interface IAliPayNotifyMapper extends BaseMapper<AliPayNotifyEntity> {
 
 }

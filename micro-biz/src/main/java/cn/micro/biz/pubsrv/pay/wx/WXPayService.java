@@ -33,6 +33,12 @@ public class WXPayService {
     private WXPay wxpay;
     private WXPayProperties wxPayProperties;
 
+    public static void main(String[] args) throws Exception {
+        String url = String.format(WXPayService.ACCESS_TOKEN_URL, "wx70786ff0e385406a", "6753e1839fc95902f15841ddc78b6c5d", "061rERX30XKevJ1p91Y30h29Y30rERXY");
+        Document doc = Jsoup.connect(url).get();
+        System.out.println(doc.text());
+    }
+
     public WXPayService(WXPayProperties wxPayProperties) {
         this.wxPayProperties = wxPayProperties;
         try {

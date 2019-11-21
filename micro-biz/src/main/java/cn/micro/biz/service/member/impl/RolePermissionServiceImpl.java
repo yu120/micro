@@ -1,9 +1,9 @@
 package cn.micro.biz.service.member.impl;
 
-import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
 import cn.micro.biz.entity.member.RolePermissionEntity;
 import cn.micro.biz.mapper.member.IRolePermissionMapper;
 import cn.micro.biz.service.member.IRolePermissionService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +15,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class RolePermissionServiceImpl extends MicroServiceImpl<IRolePermissionMapper, RolePermissionEntity> implements IRolePermissionService {
+public class RolePermissionServiceImpl extends ServiceImpl<IRolePermissionMapper, RolePermissionEntity> implements IRolePermissionService {
 
 }

@@ -29,8 +29,10 @@ public class UnionCodeEntity extends MicroEntity<UnionCodeEntity> {
     private String account;
     /**
      * Union code category
+     *
+     * @see UnionCodeCategoryEnum
      */
-    private UnionCodeCategoryEnum category;
+    private Integer category;
     /**
      * Union code value
      */

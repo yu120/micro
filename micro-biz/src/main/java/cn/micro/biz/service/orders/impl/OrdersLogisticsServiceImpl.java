@@ -1,9 +1,9 @@
 package cn.micro.biz.service.orders.impl;
 
-import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
 import cn.micro.biz.entity.orders.OrdersLogisticsEntity;
 import cn.micro.biz.mapper.orders.IOrdersLogisticsMapper;
 import cn.micro.biz.service.orders.IOrdersLogisticsService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,6 +12,6 @@ import org.springframework.stereotype.Service;
  * @author lry
  */
 @Service
-public class OrdersLogisticsServiceImpl extends MicroServiceImpl<IOrdersLogisticsMapper, OrdersLogisticsEntity> implements IOrdersLogisticsService {
+public class OrdersLogisticsServiceImpl extends ServiceImpl<IOrdersLogisticsMapper, OrdersLogisticsEntity> implements IOrdersLogisticsService {
 
 }

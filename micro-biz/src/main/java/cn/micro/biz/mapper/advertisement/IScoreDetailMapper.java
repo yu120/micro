@@ -1,13 +1,13 @@
 package cn.micro.biz.mapper.advertisement;
 
-import cn.micro.biz.commons.mybatis.extension.IMicroMapper;
 import cn.micro.biz.entity.advertisement.ScoreDetailEntity;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
  * Score Detail Mapper
  *
  * @author lry
  */
-public interface IScoreDetailMapper extends IMicroMapper<ScoreDetailEntity> {
+public interface IScoreDetailMapper extends BaseMapper<ScoreDetailEntity> {
 
 }

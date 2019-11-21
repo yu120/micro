@@ -52,7 +52,7 @@ public class MemberRoleController {
             @RequestParam(value = "roleId", required = false) Long roleId,
             @RequestParam(value = "memberId", required = false) Long memberId,
             @RequestBody PageQuery query) {
-        Page<MemberRoleEntity> page = new Page<>(query.getCurrent(), query.getSize());
+        Page<MemberRoleEntity> page = new Page<>(query.getPageNo(), query.getPageSize());
         page.setDesc(MicroEntity.EDITED_FIELD);
 
         QueryWrapper<MemberRoleEntity> entityWrapper = new QueryWrapper<>();
@@ -65,7 +65,7 @@ public class MemberRoleController {
 
         page.setTotal(memberRoleService.count(entityWrapper));
         if (page.getTotal() > 0) {
-            IPage<MemberRoleEntity> tempPage = new Page<>((query.getCurrent() - 1) * query.getSize(), query.getSize());
+            IPage<MemberRoleEntity> tempPage = new Page<>((query.getPageNo() - 1) * query.getPageSize(), query.getPageSize());
             page.setRecords(memberRoleService.page(tempPage, entityWrapper).getRecords());
         }
 

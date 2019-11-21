@@ -1,12 +1,11 @@
 package cn.micro.biz.commons.exception;
 
-import cn.micro.biz.commons.configuration.MicroSpringConfiguration;
+import cn.micro.biz.commons.configuration.MicroSpringUtils;
 import cn.micro.biz.commons.exception.support.*;
 import cn.micro.biz.commons.response.MetaData;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.jdbc.BadSqlGrammarException;
@@ -29,7 +28,6 @@ import java.util.Iterator;
  */
 @Slf4j
 @Getter
-@ToString
 @AllArgsConstructor
 public enum MicroStatusCode {
 
@@ -39,12 +37,12 @@ public enum MicroStatusCode {
     MICRO_BAD_REQUEST_EXCEPTION(400, "Bad Request", MicroBadRequestException.class),
     MICRO_PERMISSION_EXCEPTION(401, "Unauthorized", MicroPermissionException.class),
     MICRO_TOKEN_NOT_FOUND_EXCEPTION(402, "Not Logged On", MicroTokenNotFoundException.class),
-    MICRO_TOKEN_EXPIRED_EXCEPTION(403, "Token Has Expired", MicroTokenExpiredException.class),
+    MICRO_TOKEN_EXPIRED_EXCEPTION(403, "Forbidden, Token Has Expired", MicroTokenExpiredException.class),
     MICRO_ERROR_EXCEPTION(500, "Internal Server Error", MicroErrorException.class),
     ABSTRACT_MICRO_EXCEPTION(null, null, AbstractMicroException.class) {
         @Override
-        protected MetaData wrapper(Object traceId, Throwable t) {
-            MetaData metaData = super.wrapper(traceId, t);
+        protected MetaData wrapper(Throwable t) {
+            MetaData metaData = super.wrapper(t);
             AbstractMicroException ex = (AbstractMicroException) t;
             metaData.setCode(ex.getCode());
             metaData.setMessage(ex.getMessage());
@@ -70,8 +68,8 @@ public enum MicroStatusCode {
     HTTP_MESSAGE_NOT_READABLE_EXCEPTION(400, "Message Not Readable", HttpMessageNotReadableException.class),
     CONSTRAINT_VIOLATION_EXCEPTION(400, "Bad Request Parameter", ConstraintViolationException.class) {
         @Override
-        protected MetaData wrapper(Object traceId, Throwable t) {
-            MetaData metaData = super.wrapper(traceId, t);
+        protected MetaData wrapper(Throwable t) {
+            MetaData metaData = super.wrapper(t);
             Iterator<ConstraintViolation<?>> iterator = ((ConstraintViolationException) t).getConstraintViolations().iterator();
             if (iterator.hasNext()) {
                 metaData.setMessage(iterator.next().getMessageTemplate());
@@ -82,8 +80,8 @@ public enum MicroStatusCode {
     },
     METHOD_ARGUMENT_NOT_VALID_EXCEPTION(400, "Method Argument Not Valid", MethodArgumentNotValidException.class) {
         @Override
-        protected MetaData wrapper(Object traceId, Throwable t) {
-            MetaData metaData = super.wrapper(traceId, t);
+        protected MetaData wrapper(Throwable t) {
+            MetaData metaData = super.wrapper(t);
             Iterator<ObjectError> iterator = ((MethodArgumentNotValidException) t).getBindingResult().getAllErrors().iterator();
             if (iterator.hasNext()) {
                 metaData.setMessage(iterator.next().getDefaultMessage());
@@ -92,14 +90,14 @@ public enum MicroStatusCode {
             return metaData;
         }
     },
-    NO_HANDLER_FOUND_EXCEPTION(404, "Not Found Handler", NoHandlerFoundException.class),
+    NO_HANDLER_FOUND_EXCEPTION(404, "Not Found", NoHandlerFoundException.class),
     HTTP_REQUEST_METHOD_NOT_SUPPORTED_EXCEPTION(405, "Method Not Allowed", HttpRequestMethodNotSupportedException.class),
     METHOD_ARGUMENT_TYPE_MISMATCH_EXCEPTION(406, "Not Acceptable Argument Type", MethodArgumentTypeMismatchException.class),
     MAX_UPLOAD_SIZE_EXCEEDED_EXCEPTION(413, "Upload Max Exceeded", MaxUploadSizeExceededException.class),
     BAD_SQL_GRAMMAR_EXCEPTION(500, "Unknown Bad SQL Exception", BadSqlGrammarException.class) {
         @Override
-        protected MetaData wrapper(Object traceId, Throwable t) {
-            MetaData metaData = super.wrapper(traceId, t);
+        protected MetaData wrapper(Throwable t) {
+            MetaData metaData = super.wrapper(t);
             if (t.getCause() != null) {
                 // SQL Syntax Error Exception
                 if (t.getCause() instanceof SQLException) {
@@ -121,34 +119,32 @@ public enum MicroStatusCode {
     private final String message;
     private final Class<? extends Exception> error;
 
-    MetaData wrapper(Object traceId, Throwable t) {
-        return MetaData.build(traceId, this.code, this.message, t.getMessage());
+    MetaData wrapper(Throwable t) {
+        return new MetaData(this.code, this.message, t.getMessage());
     }
 
     /**
      * The build success {@link MetaData}
      *
-     * @param traceId trace id
-     * @param obj     response body
+     * @param obj response body
      * @return {@link MetaData}
      */
-    public static MetaData buildSuccess(Object traceId, Object obj) {
-        return MetaData.build(traceId, SUCCESS.getCode(), SUCCESS.getMessage(), obj);
+    public static MetaData buildSuccess(Object obj) {
+        return new MetaData(SUCCESS.getCode(), SUCCESS.getMessage(), obj);
     }
 
     /**
      * The build success {@link MetaData}
      *
      * @param exceptionDebug exception debug switch
-     * @param traceId        trace id
      * @param t              {@link Throwable}
      * @return {@link MetaData}
      */
-    public static String buildFailureJSON(boolean exceptionDebug, Object traceId, Throwable t) {
-        MetaData metaData = buildFailure(exceptionDebug, traceId, t);
+    public static String buildFailureJson(boolean exceptionDebug, Throwable t) {
+        MetaData metaData = buildFailure(exceptionDebug, t);
 
         try {
-            return MicroSpringConfiguration.getObjectMapper().writeValueAsString(metaData);
+            return MicroSpringUtils.getObjectMapper().writeValueAsString(metaData);
         } catch (JsonProcessingException e) {
             throw new MicroErrorException("Write to json exception", e);
         }
@@ -158,17 +154,12 @@ public enum MicroStatusCode {
      * The build success {@link MetaData}
      *
      * @param exceptionDebug exception debug switch
-     * @param traceId        trace id
      * @param t              {@link Throwable}
      * @return {@link MetaData}
      */
-    public static MetaData buildFailure(boolean exceptionDebug, Object traceId, Throwable t) {
+    public static MetaData buildFailure(boolean exceptionDebug, Throwable t) {
         if (exceptionDebug) {
-            String stack = t.getMessage();
-            if (t instanceof AbstractMicroException) {
-                stack = ((AbstractMicroException) t).getStack();
-            }
-            log.error("Debug Exception:" + stack, t);
+            log.error("Debug Exception", t);
         }
 
         MetaData metaData = null;
@@ -178,7 +169,7 @@ public enum MicroStatusCode {
             }
 
             if (microStatusCode.getError().isAssignableFrom(t.getClass())) {
-                metaData = microStatusCode.wrapper(traceId, t);
+                metaData = microStatusCode.wrapper(t);
                 break;
             }
         }
@@ -194,7 +185,7 @@ public enum MicroStatusCode {
         }
 
         // Unknown Internal Server Error
-        return MetaData.build(traceId, MICRO_ERROR_EXCEPTION.getCode(),
+        return new MetaData(MICRO_ERROR_EXCEPTION.getCode(),
                 "Unknown Internal Server Error", t.getMessage());
     }
 

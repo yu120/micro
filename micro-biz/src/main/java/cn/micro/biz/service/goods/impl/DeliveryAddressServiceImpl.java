@@ -1,9 +1,9 @@
 package cn.micro.biz.service.goods.impl;
 
-import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
 import cn.micro.biz.entity.goods.DeliveryAddressEntity;
 import cn.micro.biz.mapper.goods.IDeliveryAddressMapper;
 import cn.micro.biz.service.goods.IDeliveryAddressService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
  * @author lry
  */
 @Service
-public class DeliveryAddressServiceImpl extends MicroServiceImpl<IDeliveryAddressMapper,
-        DeliveryAddressEntity> implements IDeliveryAddressService {
+public class DeliveryAddressServiceImpl extends ServiceImpl<IDeliveryAddressMapper, DeliveryAddressEntity> implements IDeliveryAddressService {
 
 }

@@ -8,6 +8,7 @@ import cn.micro.biz.entity.member.PermissionEntity;
 import cn.micro.biz.service.member.IPermissionService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,9 @@ public class PermissionController {
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
     public boolean addPermission(@RequestBody PermissionEntity permission) {
-        PermissionEntity queryPermission = permissionService.getOne(PermissionEntity::getCode, permission.getCode());
+        PermissionEntity queryPermissionEntity = new PermissionEntity();
+        queryPermissionEntity.setCode(permission.getCode());
+        PermissionEntity queryPermission = permissionService.getOne(Wrappers.query(queryPermissionEntity));
         if (queryPermission != null) {
             throw new MicroBadRequestException("权限CODE已存在");
         }
@@ -56,11 +59,11 @@ public class PermissionController {
 
     @RequestMapping(value = "page", method = RequestMethod.POST)
     public Page<PermissionEntity> pagePermission(@RequestBody PageQuery query) {
-        Page<PermissionEntity> page = new Page<>(query.getCurrent(), query.getSize());
+        Page<PermissionEntity> page = new Page<>(query.getPageNo(), query.getPageSize());
         page.setDesc(MicroEntity.EDITED_FIELD);
         page.setTotal(permissionService.count(new QueryWrapper<>()));
         if (page.getTotal() > 0) {
-            IPage<PermissionEntity> tempPermission = new Page<>((query.getCurrent() - 1) * query.getSize(), query.getSize());
+            IPage<PermissionEntity> tempPermission = new Page<>((query.getPageNo() - 1) * query.getPageSize(), query.getPageSize());
             page.setRecords(permissionService.page(tempPermission, new QueryWrapper<>()).getRecords());
         }
 

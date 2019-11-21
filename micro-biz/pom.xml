@@ -34,7 +34,7 @@
         <druid-spring-boot-starter.version>1.1.10</druid-spring-boot-starter.version>
         <mysql-connector-java.version>5.1.46</mysql-connector-java.version>
         <p6spy.version>3.8.2</p6spy.version>
-        <mybatis-plus.version>3.1.1</mybatis-plus.version>
+        <mybatis-plus.version>3.2.0</mybatis-plus.version>
         <seata.version>0.6.1</seata.version>
 
         <qiniu-java-sdk.version>7.2.22</qiniu-java-sdk.version>
@@ -404,13 +404,13 @@
             <scope>system</scope>
             <systemPath>${java.home}/../lib/tools.jar</systemPath>
         </dependency>
-        <dependency>
-            <groupId>com.dingtalk</groupId>
-            <artifactId>dingtank</artifactId>
-            <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/taobao-sdk-java-auto_1479188381469-20191101.jar</systemPath>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.dingtalk</groupId>-->
+<!--            <artifactId>dingtank</artifactId>-->
+<!--            <version>1.0.0</version>-->
+<!--            <scope>system</scope>-->
+<!--            <systemPath>${project.basedir}/lib/taobao-sdk-java-auto_1479188381469-20191101.jar</systemPath>-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>

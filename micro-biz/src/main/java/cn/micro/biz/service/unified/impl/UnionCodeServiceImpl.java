@@ -1,7 +1,6 @@
 package cn.micro.biz.service.unified.impl;
 
 import cn.micro.biz.commons.exception.support.MicroBadRequestException;
-import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
 import cn.micro.biz.entity.unified.UnionCodeEntity;
 import cn.micro.biz.mapper.unified.IUnionCodeMapper;
 import cn.micro.biz.pubsrv.email.EmailMessage;
@@ -9,6 +8,10 @@ import cn.micro.biz.pubsrv.email.EmailService;
 import cn.micro.biz.service.unified.IUnionCodeService;
 import cn.micro.biz.type.unified.EmailCategoryEnum;
 import cn.micro.biz.type.unified.UnionCodeCategoryEnum;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +27,16 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class UnionCodeServiceImpl extends MicroServiceImpl<IUnionCodeMapper, UnionCodeEntity> implements IUnionCodeService {
+public class UnionCodeServiceImpl extends ServiceImpl<IUnionCodeMapper, UnionCodeEntity> implements IUnionCodeService {
 
     private final EmailService emailService;
 
     @Override
     public void checkCode(UnionCodeCategoryEnum unionCodeCategoryEnum, String account, String code) {
-        UnionCodeEntity unionCode = super.getOne(UnionCodeEntity::getCategory, unionCodeCategoryEnum.getValue(),
-                UnionCodeEntity::getAccount, account);
+        UnionCodeEntity queryUnionCodeEntity = new UnionCodeEntity();
+        queryUnionCodeEntity.setCategory(unionCodeCategoryEnum.getValue());
+        queryUnionCodeEntity.setAccount(account);
+        UnionCodeEntity unionCode = super.getOne(Wrappers.query(queryUnionCodeEntity));
         if (unionCode == null) {
             throw new MicroBadRequestException("验证码不存在");
         }
@@ -60,7 +65,11 @@ public class UnionCodeServiceImpl extends MicroServiceImpl<IUnionCodeMapper, Uni
         EmailCategoryEnum emailCategoryEnum = EmailCategoryEnum.get(unionCodeCategoryEnum.getCategory());
 
         // 清理历史验证码
-        List<UnionCodeEntity> unionCodeList = super.list(UnionCodeEntity::getCategory, category, UnionCodeEntity::getAccount, email);
+        QueryWrapper<UnionCodeEntity> lambdaQueryWrapper = Wrappers.query();
+        UnionCodeEntity queryUnionCodeEntity = new UnionCodeEntity();
+        queryUnionCodeEntity.setCategory(category);
+        queryUnionCodeEntity.setAccount(email);
+        List<UnionCodeEntity> unionCodeList = super.list(Wrappers.query(queryUnionCodeEntity));
         if (CollectionUtils.isNotEmpty(unionCodeList)) {
             super.removeByIds(unionCodeList.stream().map(UnionCodeEntity::getId).collect(Collectors.toList()));
         }
@@ -72,7 +81,7 @@ public class UnionCodeServiceImpl extends MicroServiceImpl<IUnionCodeMapper, Uni
             unionCode.setCode(captcha);
             unionCode.setMaxTimes(unionCodeCategoryEnum.getMaxTimes());
             unionCode.setFailTimes(0);
-            unionCode.setCategory(unionCodeCategoryEnum);
+            unionCode.setCategory(category);
             unionCode.setExpire(unionCodeCategoryEnum.getExpire());
             unionCode.setStartTime(new Date());
             if (super.save(unionCode)) {

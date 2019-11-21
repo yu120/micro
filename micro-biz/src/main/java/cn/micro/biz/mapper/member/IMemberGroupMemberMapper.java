@@ -1,7 +1,7 @@
 package cn.micro.biz.mapper.member;
 
-import cn.micro.biz.commons.mybatis.extension.IMicroMapper;
 import cn.micro.biz.entity.member.MemberGroupMemberEntity;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author lry
  */
-public interface IMemberGroupMemberMapper extends IMicroMapper<MemberGroupMemberEntity> {
+public interface IMemberGroupMemberMapper extends BaseMapper<MemberGroupMemberEntity> {
 
     /**
      * 查询用户所属用户组的角色CODE列表

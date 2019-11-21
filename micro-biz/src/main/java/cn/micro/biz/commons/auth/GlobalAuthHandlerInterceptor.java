@@ -1,9 +1,6 @@
 package cn.micro.biz.commons.auth;
 
 import cn.micro.biz.commons.exception.support.MicroPermissionException;
-import cn.micro.biz.entity.member.PermissionEntity;
-import cn.micro.biz.mapper.member.IRolePermissionMapper;
-import cn.micro.biz.model.view.RoleCodePermission;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
@@ -19,12 +16,6 @@ import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Auth Handler Interceptor
@@ -38,28 +29,11 @@ public class GlobalAuthHandlerInterceptor extends HandlerInterceptorAdapter impl
 
     private static final AntPathMatcher ANT_PATH_MATCHER = new AntPathMatcher();
 
-    private final ConcurrentMap<String, List<RoleCodePermission>> rolePermissions = new ConcurrentHashMap<>();
-    private ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = null;
-    private final Object LOCK = new Object();
-
     private final MicroAuthProperties properties;
-    private final IRolePermissionMapper rolePermissionMapper;
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        if (!properties.isAutoAuthRefresh()) {
-            this.refresh();
-            return;
-        }
 
-        this.scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(1, r -> {
-            Thread t = new Thread(r);
-            t.setDaemon(true);
-            t.setName("global-auth-task-executor");
-            return t;
-        });
-        scheduledThreadPoolExecutor.scheduleWithFixedDelay(this::refresh,
-                0, properties.getAuthRefresh().getSeconds(), TimeUnit.SECONDS);
     }
 
     @Override
@@ -107,19 +81,6 @@ public class GlobalAuthHandlerInterceptor extends HandlerInterceptorAdapter impl
         if (microTokenBody.getAuthorities() == null || microTokenBody.getAuthorities().isEmpty()) {
             throw new MicroPermissionException("Unassigned role");
         }
-        String servletPath = request.getServletPath();
-        for (String role : microTokenBody.getAuthorities()) {
-            List<RoleCodePermission> permissions = rolePermissions.get(role);
-            if (permissions == null || permissions.isEmpty()) {
-                continue;
-            }
-
-            for (PermissionEntity permission : permissions) {
-                if (ANT_PATH_MATCHER.match(permission.getCode(), servletPath)) {
-                    return super.preHandle(request, response, handler);
-                }
-            }
-        }
 
         throw new MicroPermissionException("Roles unauthorized");
     }
@@ -138,26 +99,6 @@ public class GlobalAuthHandlerInterceptor extends HandlerInterceptorAdapter impl
 
     @Override
     public void destroy() throws Exception {
-        if (scheduledThreadPoolExecutor != null) {
-            scheduledThreadPoolExecutor.shutdown();
-        }
-    }
-
-    private void refresh() {
-        ConcurrentMap<String, List<RoleCodePermission>> tempRolePermissions = new ConcurrentHashMap<>();
-
-        List<RoleCodePermission> roleCodePermissionList = rolePermissionMapper.selectRoleCodePermissions();
-        // calculation role->permission collection
-        for (RoleCodePermission crp : roleCodePermissionList) {
-            List<RoleCodePermission> tempPermissionList =
-                    tempRolePermissions.computeIfAbsent(crp.getRoleCode(), k -> new ArrayList<>());
-            tempPermissionList.add(crp);
-        }
-
-        synchronized (LOCK) {
-            rolePermissions.clear();
-            rolePermissions.putAll(tempRolePermissions);
-        }
     }
 
 }

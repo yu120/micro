@@ -74,11 +74,6 @@ public class XssHttpServletRequest extends HttpServletRequestWrapper {
         value = value.replaceAll("eval\\((.*)\\)", "");
         value = value.replaceAll("[\\\"\\\'][\\s]*javascript:(.*)[\\\"\\\']", "\"\"");
         value = value.replaceAll("script", "");
-        /*
-         value = value.replaceAll("[*]", "[" + "*]");
-         value = value.replaceAll("[+]", "[" + "+]");
-         value = value.replaceAll("[?]", "[" + "?]");
-         */
 
         // replace sql 这里可以自由发挥
         String[] values = value.split(" ");

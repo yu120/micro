@@ -1,13 +1,13 @@
 package cn.micro.biz.mapper.unified;
 
-import cn.micro.biz.commons.mybatis.extension.IMicroMapper;
 import cn.micro.biz.entity.unified.AuditRecordEntity;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
  * Audit Record Mapper
  *
  * @author lry
  */
-public interface IAuditRecordMapper extends IMicroMapper<AuditRecordEntity> {
+public interface IAuditRecordMapper extends BaseMapper<AuditRecordEntity> {
 
 }

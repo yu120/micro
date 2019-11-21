@@ -1,11 +1,9 @@
 package cn.micro.biz.commons.mybatis;
 
-import cn.micro.biz.type.unified.DeletedEnum;
-import com.alibaba.fastjson.annotation.JSONField;
-import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -13,7 +11,7 @@ import java.sql.Timestamp;
 /**
  * Micro Entity
  * <p>
- * <p>
+ * <
  * -- 添加created: 设置默认时间为CURRENT_TIMESTAMP
  * ALTER TABLE table_name
  * ADD COLUMN  created timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间';
@@ -34,14 +32,10 @@ import java.sql.Timestamp;
  * @author lry
  */
 @Data
-@ToString
-@NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class MicroEntity<T extends Model<T>> extends Model<T> {
 
     public static final String ID_FIELD = "id";
-    public static final String TENANT_ID_FIELD = "tenantId";
     public static final String CREATED_FIELD = "created";
     public static final String CREATOR_FIELD = "creator";
     public static final String EDITED_FIELD = "edited";
@@ -52,15 +46,7 @@ public class MicroEntity<T extends Model<T>> extends Model<T> {
      * Primary key
      */
     @TableId(type = IdType.AUTO)
-    @JSONField(serializeUsing = ToStringSerializer.class)
     protected Long id;
-
-    /**
-     * Tenant ID
-     *
-     * @serial bigint(20) NOT NULL
-     */
-    protected Long tenantId;
 
     /**
      * The created time
@@ -72,7 +58,6 @@ public class MicroEntity<T extends Model<T>> extends Model<T> {
     /**
      * The creator(id/ip/etc)
      */
-    @Deprecated
     @TableField(fill = FieldFill.INSERT)
     protected String creator;
 
@@ -86,7 +71,6 @@ public class MicroEntity<T extends Model<T>> extends Model<T> {
     /**
      * The editor(id/ip/etc)
      */
-    @Deprecated
     @TableField(fill = FieldFill.INSERT_UPDATE)
     protected String editor;
 
@@ -96,7 +80,7 @@ public class MicroEntity<T extends Model<T>> extends Model<T> {
      * @serialField DELETED
      */
     @TableLogic
-    protected DeletedEnum deleted;
+    protected Integer deleted;
 
     @Override
     protected Serializable pkVal() {

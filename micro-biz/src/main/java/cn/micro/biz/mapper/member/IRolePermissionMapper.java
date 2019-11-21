@@ -1,9 +1,9 @@
 package cn.micro.biz.mapper.member;
 
-import cn.micro.biz.commons.mybatis.extension.IMicroMapper;
 import cn.micro.biz.entity.member.RoleEntity;
 import cn.micro.biz.entity.member.RolePermissionEntity;
 import cn.micro.biz.model.view.RoleCodePermission;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author lry
  */
-public interface IRolePermissionMapper extends IMicroMapper<RolePermissionEntity> {
+public interface IRolePermissionMapper extends BaseMapper<RolePermissionEntity> {
 
     /**
      * The select roleCode permission list

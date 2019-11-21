@@ -119,7 +119,7 @@ public class MicroCacheService implements InitializingBean, DisposableBean {
      * @return cache key
      */
     public static String buildKey(MicroCache microCache, Map<String, Object> parameters) {
-        return buildKey(microCache.value(), MicroAuthContext.getMemberId(), microCache.keys(), parameters);
+        return buildKey(microCache.value(), MicroAuthContext.getMembersId(), microCache.keys(), parameters);
     }
 
     /**
@@ -130,7 +130,7 @@ public class MicroCacheService implements InitializingBean, DisposableBean {
      * @return evict cache key
      */
     public static String buildEvictKey(MicroEvictCache microEvictCache, Map<String, Object> parameters) {
-        return buildKey(microEvictCache.value(), MicroAuthContext.getMemberId(), microEvictCache.keys(), parameters);
+        return buildKey(microEvictCache.value(), MicroAuthContext.getMembersId(), microEvictCache.keys(), parameters);
     }
 
     /**

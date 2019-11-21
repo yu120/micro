@@ -1,9 +1,9 @@
 package cn.micro.biz.service.action;
 
-import cn.micro.biz.commons.mybatis.extension.IMicroService;
 import cn.micro.biz.entity.action.ActionEntity;
 import cn.micro.biz.model.like.OwnerAction;
 import cn.micro.biz.model.like.TargetAction;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * 点赞是互联网中常见的交互方式，系统根据用户的点赞操作来跟踪用户的行为，并对用户的喜好进行分析。
@@ -17,7 +17,7 @@ import cn.micro.biz.model.like.TargetAction;
  *
  * @author lry
  */
-public interface IActionService extends IMicroService<ActionEntity> {
+public interface IActionService extends IService<ActionEntity> {
 
     /**
      * 用户点击行为

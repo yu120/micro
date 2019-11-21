@@ -1,6 +1,5 @@
 package cn.micro.biz.service.spider.impl;
 
-import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
 import cn.micro.biz.entity.spider.SpiderGoodsEntity;
 import cn.micro.biz.mapper.spider.ISpiderGoodsMapper;
 import cn.micro.biz.service.spider.ISpiderGoodsService;
@@ -9,6 +8,9 @@ import cn.micro.biz.service.spider.support.SpiderAttr;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.jsoup.Connection;
@@ -30,7 +32,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-public class SpiderGoodsServiceImpl extends MicroServiceImpl<ISpiderGoodsMapper, SpiderGoodsEntity> implements ISpiderGoodsService {
+public class SpiderGoodsServiceImpl extends ServiceImpl<ISpiderGoodsMapper, SpiderGoodsEntity> implements ISpiderGoodsService {
 
     private static final String REGEX = "g_page_config = \\{(.*?)\\}\\;";
     private static final Double START_PRICE = 10.00;
@@ -120,7 +122,9 @@ public class SpiderGoodsServiceImpl extends MicroServiceImpl<ISpiderGoodsMapper,
             List<SpiderGoodsEntity> goodsList = processor(appCategory, categoryName, 1);
             if (CollectionUtils.isNotEmpty(goodsList)) {
                 List<String> unifiedIds = goodsList.stream().map(SpiderGoodsEntity::getUnifiedId).collect(Collectors.toList());
-                List<SpiderGoodsEntity> dbGoodsList = this.listIn(SpiderGoodsEntity::getUnifiedId, unifiedIds);
+                LambdaQueryWrapper<SpiderGoodsEntity> lambdaQueryWrapper = Wrappers.lambdaQuery();
+                lambdaQueryWrapper.in(SpiderGoodsEntity::getUnifiedId, unifiedIds);
+                List<SpiderGoodsEntity> dbGoodsList = this.list(lambdaQueryWrapper);
                 List<String> hasUnifiedIds = new ArrayList<>();
                 if (CollectionUtils.isNotEmpty(goodsList)) {
                     hasUnifiedIds.addAll(dbGoodsList.stream().map(SpiderGoodsEntity::getUnifiedId).collect(Collectors.toList()));

@@ -4,11 +4,11 @@ import cn.micro.biz.entity.action.ActionEntity;
 import cn.micro.biz.entity.action.ActionLogEntity;
 import cn.micro.biz.type.action.ActionTypeEnum;
 
-import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
 import cn.micro.biz.mapper.action.ActionMapper;
 import cn.micro.biz.model.like.OwnerAction;
 import cn.micro.biz.model.like.TargetAction;
 import cn.micro.biz.service.action.IActionService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
  * @author lry
  */
 @Service
-public class ActionServiceImpl extends MicroServiceImpl<ActionMapper, ActionEntity> implements IActionService {
+public class ActionServiceImpl extends ServiceImpl<ActionMapper, ActionEntity> implements IActionService{
 
     @Override
     public boolean operate(OwnerAction ownerAction, TargetAction targetAction) {

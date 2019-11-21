@@ -2,7 +2,6 @@ package cn.micro.biz.commons.exception;
 
 import cn.micro.biz.commons.configuration.MicroProperties;
 import cn.micro.biz.commons.response.MetaData;
-import cn.micro.biz.pubsrv.event.ExceptionEventAlarm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +22,12 @@ import javax.servlet.http.HttpServletRequest;
 public class GlobalExceptionHandler {
 
     private final MicroProperties microProperties;
-    private final ExceptionEventAlarm exceptionEventAlarm;
 
     @ResponseBody
     @ExceptionHandler(value = Throwable.class)
     public MetaData defaultErrorHandler(HttpServletRequest request, Exception e) {
-//        exceptionEventAlarm.eventCollect(e);
-        Object traceId = request.getAttribute(GlobalExceptionFilter.X_TRACE_ID);
         boolean exceptionDebug = microProperties.isExceptionDebug();
-        return MicroStatusCode.buildFailure(exceptionDebug, traceId, e);
+        return MicroStatusCode.buildFailure(exceptionDebug, e);
     }
 
 }

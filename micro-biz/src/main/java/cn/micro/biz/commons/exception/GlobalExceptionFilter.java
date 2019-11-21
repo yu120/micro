@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.annotation.Nullable;
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,36 +33,36 @@ import java.util.UUID;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class GlobalExceptionFilter extends OncePerRequestFilter {
 
-    public static final String X_TRACE_ID = "X-Trace-Id";
+    public static final String X_TRACE = "X-Trace";
 
     private final MicroProperties microProperties;
 
     @Override
     protected void doFilterInternal(
-            @Nullable HttpServletRequest request,
-            @Nullable HttpServletResponse response,
-            @Nullable FilterChain filterChain) throws IOException {
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain) throws IOException {
         if (request == null || response == null || filterChain == null) {
             return;
         }
 
-        // 只要Header中有X-Trace-Id,则自动解析
-        String traceId = request.getHeader(X_TRACE_ID);
-        if (traceId == null || traceId.length() == 0) {
-            traceId = request.getParameter(X_TRACE_ID);
+        // 只要Header中有X-Trace,则自动解析
+        String trace = request.getHeader(X_TRACE);
+        if (trace == null || trace.length() == 0) {
+            trace = request.getParameter(X_TRACE);
         }
-        if (traceId == null || traceId.length() == 0) {
-            traceId = UUID.randomUUID().toString();
+        if (trace == null || trace.length() == 0) {
+            trace = UUID.randomUUID().toString();
         }
 
         // 响应头统一返回请求ID
-        request.setAttribute(X_TRACE_ID, traceId);
-        response.setHeader(X_TRACE_ID, traceId);
+        request.setAttribute(X_TRACE, trace);
+        response.setHeader(X_TRACE, trace);
         wrapperCORS(request, response);
         String ipAddress = MicroAuthContext.getRequestIPAddress();
 
         try {
-            MDC.put(X_TRACE_ID, traceId);
+            MDC.put(X_TRACE, trace);
             log.debug("Request enter: {}", ipAddress);
             filterChain.doFilter(new XssHttpServletRequest(request), response);
         } catch (Throwable t) {
@@ -71,10 +70,10 @@ public class GlobalExceptionFilter extends OncePerRequestFilter {
             response.setStatus(HttpStatus.OK.value());
             response.setCharacterEncoding(StandardCharsets.UTF_8.name());
             response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-            response.getWriter().print(MicroStatusCode.buildFailureJSON(microProperties.isExceptionDebug(), traceId, t));
+            response.getWriter().print(MicroStatusCode.buildFailureJson(microProperties.isExceptionDebug(), t));
         } finally {
             log.debug("Request exist: {}", ipAddress);
-            MDC.remove(X_TRACE_ID);
+            MDC.remove(X_TRACE);
         }
     }
 

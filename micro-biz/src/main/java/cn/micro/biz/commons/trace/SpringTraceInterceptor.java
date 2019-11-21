@@ -1,14 +1,13 @@
 package cn.micro.biz.commons.trace;
 
-import cn.micro.biz.commons.configuration.MicroSpringConfiguration;
-import cn.micro.biz.commons.mybatis.extension.IMicroService;
+import cn.micro.biz.commons.configuration.MicroSpringUtils;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.override.MybatisMapperProxy;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.aspectj.lang.annotation.Aspect;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.framework.ReflectiveMethodInvocation;
@@ -31,7 +30,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Spring Trace Interceptor By {@link Aspect}
+ * Spring Trace Interceptor
  *
  * @author lry
  */
@@ -45,7 +44,6 @@ public class SpringTraceInterceptor implements MethodInterceptor {
     private List<String> expressions = new ArrayList<>();
 
     private final TraceProperties properties;
-    private final MicroSpringConfiguration microSpringConfiguration;
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
@@ -94,9 +92,9 @@ public class SpringTraceInterceptor implements MethodInterceptor {
         if (properties.isDefaultExpressions()) {
             expressions.add("@annotation(" + Trace.class.getName() + ")");
             expressions.add("execution(* " + BaseMapper.class.getName() + ".*(..))");
-            expressions.add("execution(* " + IMicroService.class.getName() + ".*(..))");
+            expressions.add("execution(* " + ServiceImpl.class.getName() + ".*(..))");
 
-            Set<String> packagePrefixes = microSpringConfiguration.copyInstanceBasePackages();
+            Set<String> packagePrefixes = new HashSet<>(MicroSpringUtils.BASE_PACKAGES);
             if (!(properties.getPackagePrefixes() == null || properties.getPackagePrefixes().length == 0)) {
                 packagePrefixes.addAll(Arrays.stream(properties.getPackagePrefixes()).collect(Collectors.toSet()));
             }

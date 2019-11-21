@@ -1,13 +1,13 @@
 package cn.micro.biz.mapper.goods;
 
-import cn.micro.biz.commons.mybatis.extension.IMicroMapper;
 import cn.micro.biz.entity.goods.GoodsAttributeEntity;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
  * Goods Attribute Mapper
  *
  * @author lry
  */
-public interface IGoodsAttributeMapper extends IMicroMapper<GoodsAttributeEntity> {
+public interface IGoodsAttributeMapper extends BaseMapper<GoodsAttributeEntity> {
 
 }

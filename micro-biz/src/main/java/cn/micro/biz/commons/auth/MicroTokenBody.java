@@ -21,18 +21,16 @@ import java.util.Map;
 @AllArgsConstructor
 public class MicroTokenBody {
 
-    public static final String TENANT_ID = "tenant_id";
-    public static final String MEMBER_ID = "member_id";
-    public static final String MEMBER_NAME = "member_name";
+    public static final String MEMBERS_ID = "members_id";
+    public static final String MEMBERS_NAME = "members_name";
     public static final String PLATFORM = "platform";
     public static final String IP = "ip";
     public static final String TIME = "time";
     public static final String AUTHORITIES = "authorities";
     public static final String OTHERS = "others";
 
-    private Long tenantId;
-    private Long memberId;
-    private String memberName;
+    private Long membersId;
+    private String membersName;
     private Integer deviceType;
     private List<String> authorities = new ArrayList<>();
     private Map<String, Object> others = new HashMap<>();

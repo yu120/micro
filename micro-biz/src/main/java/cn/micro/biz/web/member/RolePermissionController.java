@@ -52,7 +52,7 @@ public class RolePermissionController {
             @RequestParam(value = "roleId", required = false) Long roleId,
             @RequestParam(value = "permissionId", required = false) Long permissionId,
             @RequestBody PageQuery query) {
-        Page<RolePermissionEntity> page = new Page<>(query.getCurrent(), query.getSize());
+        Page<RolePermissionEntity> page = new Page<>(query.getPageNo(), query.getPageSize());
         page.setDesc(MicroEntity.EDITED_FIELD);
 
         QueryWrapper<RolePermissionEntity> entityWrapper = new QueryWrapper<>();
@@ -65,7 +65,7 @@ public class RolePermissionController {
 
         page.setTotal(rolePermissionService.count(entityWrapper));
         if (page.getTotal() > 0) {
-            IPage<RolePermissionEntity> tempPage = new Page<>((query.getCurrent() - 1) * query.getSize(), query.getSize());
+            IPage<RolePermissionEntity> tempPage = new Page<>((query.getPageNo() - 1) * query.getPageSize(), query.getPageSize());
             page.setRecords(rolePermissionService.page(tempPage, entityWrapper).getRecords());
         }
 

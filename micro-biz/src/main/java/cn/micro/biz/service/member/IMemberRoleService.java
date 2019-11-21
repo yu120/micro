@@ -2,7 +2,7 @@ package cn.micro.biz.service.member;
 
 import cn.micro.biz.entity.member.MemberEntity;
 import cn.micro.biz.entity.member.MemberRoleEntity;
-import cn.micro.biz.commons.mybatis.extension.IMicroService;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author lry
  */
-public interface IMemberRoleService extends IMicroService<MemberRoleEntity> {
+public interface IMemberRoleService extends IService<MemberRoleEntity> {
 
     /**
      * 查询某个用户的所有角色CODE列表

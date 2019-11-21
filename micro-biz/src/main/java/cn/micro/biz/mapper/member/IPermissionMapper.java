@@ -1,9 +1,9 @@
 package cn.micro.biz.mapper.member;
 
-import cn.micro.biz.commons.mybatis.extension.IMicroMapper;
 import cn.micro.biz.entity.member.MemberEntity;
 import cn.micro.biz.entity.member.PermissionEntity;
 import cn.micro.biz.model.view.MemberPermission;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author lry
  */
-public interface IPermissionMapper extends IMicroMapper<PermissionEntity> {
+public interface IPermissionMapper extends BaseMapper<PermissionEntity> {
 
     /**
      * The query permission list by member id

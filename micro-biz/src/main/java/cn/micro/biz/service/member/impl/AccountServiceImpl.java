@@ -6,7 +6,6 @@ import cn.micro.biz.commons.auth.MicroTokenBody;
 import cn.micro.biz.commons.enums.IEnum;
 import cn.micro.biz.commons.exception.support.MicroBadRequestException;
 import cn.micro.biz.commons.exception.support.MicroErrorException;
-import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
 import cn.micro.biz.commons.utils.RsaUtils;
 import cn.micro.biz.entity.member.AccountEntity;
 import cn.micro.biz.entity.member.MemberEntity;
@@ -34,6 +33,8 @@ import cn.micro.biz.type.member.MemberStatusEnum;
 import cn.micro.biz.type.member.PlatformEnum;
 import cn.micro.biz.type.unified.LoginResultEnum;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +55,7 @@ import java.util.List;
 @Service
 @EnableConfigurationProperties(MicroWxProperties.class)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, AccountEntity> implements IAccountService {
+public class AccountServiceImpl extends ServiceImpl<IAccountMapper, AccountEntity> implements IAccountService {
 
     private final IMemberMapper memberMapper;
     private final ILoginLogMapper loginLogMapper;
@@ -69,10 +70,11 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
     @GlobalTransactional
     @Override
     public Boolean doRegister(RegisterAccount registerAccount) {
-        int i = 1 / 0;
         // 1.账号唯一性校验
-        AccountEntity account = super.getOne(AccountEntity::getCategory, registerAccount.getCategory(),
-                AccountEntity::getCode, registerAccount.getAccount());
+        AccountEntity queryAccountEntity = new AccountEntity();
+        queryAccountEntity.setCategory(registerAccount.getCategory());
+        queryAccountEntity.setCode(registerAccount.getAccount());
+        AccountEntity account = super.getOne(Wrappers.query(queryAccountEntity));
 
         // 2.检查账号是否存在用户信息
         MemberEntity addOrUpdateMember = new MemberEntity();
@@ -91,10 +93,14 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
             }
             MemberEntity member;
             if (AccountEnum.MOBILE == registerAccount.getCategory()) {
-                member = memberMapper.selectOne(MemberEntity::getMobile, registerAccount.getAccount());
+                MemberEntity queryMemberEntity = new MemberEntity();
+                queryMemberEntity.setMobile(registerAccount.getAccount());
+                member = memberMapper.selectOne(Wrappers.query(queryMemberEntity));
                 addOrUpdateMember.setMobile(registerAccount.getAccount());
             } else if (AccountEnum.EMAIL == registerAccount.getCategory()) {
-                member = memberMapper.selectOne(MemberEntity::getEmail, registerAccount.getAccount());
+                MemberEntity queryMemberEntity = new MemberEntity();
+                queryMemberEntity.setEmail(registerAccount.getAccount());
+                member = memberMapper.selectOne(Wrappers.query(queryMemberEntity));
                 addOrUpdateMember.setEmail(registerAccount.getAccount());
             } else {
                 throw new MicroBadRequestException("非法账号类型");
@@ -150,7 +156,9 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
 
         try {
             // 1.校验账号信息
-            AccountEntity account = baseMapper.selectOne(AccountEntity::getCode, loginAccount.getAccount());
+            AccountEntity queryAccountEntity = new AccountEntity();
+            queryAccountEntity.setCode(loginAccount.getAccount());
+            AccountEntity account = baseMapper.selectOne(Wrappers.query(queryAccountEntity));
             if (account == null) {
                 throw new MicroBadRequestException("账号不存在");
             }
@@ -175,7 +183,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
             }
 
             // 5.组装响应模型
-            return MicroAuthContext.build(member.getTenantId(), member.getId(),
+            return MicroAuthContext.build(member.getId(),
                     member.getName(), loginAccount.getPlatform().getValue(), roleCodes, null);
         } catch (MicroBadRequestException e) {
             loginLog.setResult(LoginResultEnum.FAILURE);
@@ -219,7 +227,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
         MicroTokenBody microTokenBody = MicroAuthContext.getContextRefreshToken();
 
         // refresh data
-        MemberEntity member = memberMapper.selectById(microTokenBody.getMemberId());
+        MemberEntity member = memberMapper.selectById(microTokenBody.getMembersId());
         if (member == null) {
             throw new MicroBadRequestException("用户不存在");
         }
@@ -229,14 +237,13 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
         if (CollectionUtils.isEmpty(roleCodes)) {
             throw new MicroBadRequestException("用户未分配角色或用户组");
         }
-        microTokenBody.setMemberName(member.getName());
+        microTokenBody.setMembersName(member.getName());
         microTokenBody.setAuthorities(roleCodes);
 
         // build new token
         return MicroAuthContext.build(
-                microTokenBody.getTenantId(),
-                microTokenBody.getMemberId(),
-                microTokenBody.getMemberName(),
+                microTokenBody.getMembersId(),
+                microTokenBody.getMembersName(),
                 microTokenBody.getDeviceType(),
                 microTokenBody.getAuthorities(),
                 microTokenBody.getOthers());
@@ -249,7 +256,9 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
                 forgetPassword.getAccount(), forgetPassword.getCode());
 
         // 查询账号信息
-        MemberEntity member = memberMapper.selectOne(MemberEntity::getEmail, forgetPassword.getAccount());
+        MemberEntity queryMemberEntity = new MemberEntity();
+        queryMemberEntity.setEmail(forgetPassword.getAccount());
+        MemberEntity member = memberMapper.selectOne(Wrappers.query(queryMemberEntity));
         if (member == null) {
             throw new MicroBadRequestException("账号不存在");
         }
@@ -269,7 +278,7 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
     @Override
     public Boolean doChangePassword(ChangePassword changePassword) {
         // 查询当前用户信息
-        Long memberId = MicroAuthContext.getMemberId();
+        Long memberId = MicroAuthContext.getMembersId();
         MemberEntity member = memberMapper.selectById(memberId);
         if (member == null) {
             throw new MicroBadRequestException("当前用户不可用");
@@ -307,29 +316,37 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
         unionCodeService.checkCode(unionCodeCategoryEnum, changeEmailOrMobile.getAccount(), changeEmailOrMobile.getCode());
 
         // 2.检查账号信息中的邮箱地址
-        AccountEntity account = super.getOne(AccountEntity::getCategory, changeEmailOrMobile.getCategory(),
-                AccountEntity::getCode, changeEmailOrMobile.getAccount());
+        AccountEntity queryAccountEntity = new AccountEntity();
+        queryAccountEntity.setCategory(changeEmailOrMobile.getCategory());
+        queryAccountEntity.setCode(changeEmailOrMobile.getAccount());
+        AccountEntity account = super.getOne(Wrappers.query(queryAccountEntity));
         if (account != null) {
             throw new MicroBadRequestException("该邮箱地址已被占用");
         }
 
         // 3.检查用户信息中的邮箱地址或手机号是否已被占用
         if (AccountEnum.EMAIL == changeEmailOrMobile.getCategory()) {
-            MemberEntity member = memberMapper.selectOne(MemberEntity::getEmail, changeEmailOrMobile.getAccount());
+            MemberEntity queryMemberEntity = new MemberEntity();
+            queryMemberEntity.setEmail(changeEmailOrMobile.getAccount());
+            MemberEntity member = memberMapper.selectOne(Wrappers.query(queryMemberEntity));
             if (member != null) {
                 throw new MicroBadRequestException("该邮箱地址已被占用");
             }
         } else if (AccountEnum.MOBILE == changeEmailOrMobile.getCategory()) {
-            MemberEntity member = memberMapper.selectOne(MemberEntity::getMobile, changeEmailOrMobile.getAccount());
+            MemberEntity queryMemberEntity = new MemberEntity();
+            queryMemberEntity.setMobile(changeEmailOrMobile.getAccount());
+            MemberEntity member = memberMapper.selectOne(Wrappers.query(queryMemberEntity));
             if (member != null) {
                 throw new MicroBadRequestException("该手机号已被占用");
             }
         }
 
         // 4.查询当前用户需要修改的账号记录
-        Long currentMemberId = MicroAuthContext.getMemberId();
-        AccountEntity currentAccount = super.getOne(AccountEntity::getMemberId, currentMemberId,
-                AccountEntity::getCategory, changeEmailOrMobile.getCategory());
+        Long currentMemberId = MicroAuthContext.getMembersId();
+        AccountEntity queryCurrentAccountEntity = new AccountEntity();
+        queryCurrentAccountEntity.setMemberId(currentMemberId);
+        queryCurrentAccountEntity.setCategory(changeEmailOrMobile.getCategory());
+        AccountEntity currentAccount = super.getOne(Wrappers.query(queryCurrentAccountEntity));
         if (currentAccount == null) {
             // 5.1.新增登录账号
             AccountEntity addAccount = new AccountEntity();
@@ -371,7 +388,9 @@ public class AccountServiceImpl extends MicroServiceImpl<IAccountMapper, Account
 
     @Override
     public Boolean doRegistered(String account) {
-        return super.getOne(AccountEntity::getCode, account) != null;
+        AccountEntity queryAccountEntity = new AccountEntity();
+        queryAccountEntity.setCode(account);
+        return super.getOne(Wrappers.query(queryAccountEntity)) != null;
     }
 
 }

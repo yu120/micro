@@ -1,7 +1,6 @@
 package cn.micro.biz.service.member;
 
 import cn.micro.biz.commons.auth.MicroToken;
-import cn.micro.biz.commons.mybatis.extension.IMicroService;
 import cn.micro.biz.entity.member.AccountEntity;
 import cn.micro.biz.model.add.RegisterAccount;
 import cn.micro.biz.model.edit.ChangeEmailOrMobile;
@@ -9,13 +8,14 @@ import cn.micro.biz.model.edit.ChangePassword;
 import cn.micro.biz.model.edit.ForgetPassword;
 import cn.micro.biz.model.query.LoginAccount;
 import cn.micro.biz.pubsrv.wechat.response.WeChatCode2SessionResponse;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * Account Service
  *
  * @author lry
  */
-public interface IAccountService extends IMicroService<AccountEntity> {
+public interface IAccountService extends IService<AccountEntity> {
 
     /**
      * 通用账号注册

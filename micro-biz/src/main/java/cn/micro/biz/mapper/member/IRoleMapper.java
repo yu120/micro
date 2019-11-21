@@ -1,13 +1,13 @@
 package cn.micro.biz.mapper.member;
 
-import cn.micro.biz.commons.mybatis.extension.IMicroMapper;
 import cn.micro.biz.entity.member.RoleEntity;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
  * Role Mapper
  *
  * @author lry
  */
-public interface IRoleMapper extends IMicroMapper<RoleEntity> {
+public interface IRoleMapper extends BaseMapper<RoleEntity> {
 
 }

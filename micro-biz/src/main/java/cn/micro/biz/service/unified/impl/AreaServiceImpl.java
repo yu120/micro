@@ -1,9 +1,9 @@
 package cn.micro.biz.service.unified.impl;
 
-import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
 import cn.micro.biz.entity.unified.AreaEntity;
 import cn.micro.biz.mapper.unified.IAreaMapper;
 import cn.micro.biz.service.unified.IAreaService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,6 +12,6 @@ import org.springframework.stereotype.Service;
  * @author lry
  */
 @Service
-public class AreaServiceImpl extends MicroServiceImpl<IAreaMapper, AreaEntity> implements IAreaService {
+public class AreaServiceImpl extends ServiceImpl<IAreaMapper, AreaEntity> implements IAreaService {
 
 }

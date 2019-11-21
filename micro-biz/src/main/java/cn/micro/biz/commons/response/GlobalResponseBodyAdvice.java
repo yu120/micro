@@ -1,13 +1,11 @@
 package cn.micro.biz.commons.response;
 
 import cn.micro.biz.commons.configuration.MicroProperties;
-import cn.micro.biz.commons.configuration.MicroSpringConfiguration;
-import cn.micro.biz.commons.exception.GlobalExceptionFilter;
+import cn.micro.biz.commons.configuration.MicroSpringUtils;
 import cn.micro.biz.commons.exception.MicroStatusCode;
 import com.alibaba.fastjson.JSON;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
@@ -19,8 +17,8 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-import javax.annotation.Nullable;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -34,13 +32,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class GlobalResponseBodyAdvice implements InitializingBean, ResponseBodyAdvice<Object> {
 
-    private Set<String> metaPackages;
+    private Set<String> metaPackages = new HashSet<>();
 
     private final MicroProperties microProperties;
 
     @Override
     public void afterPropertiesSet() {
-        metaPackages = MicroSpringConfiguration.copyBasePackages();
+        metaPackages.addAll(MicroSpringUtils.BASE_PACKAGES);
         if (!(microProperties.getMetaPackages() == null || microProperties.getMetaPackages().length == 0)) {
             metaPackages.addAll(Arrays.stream(microProperties.getMetaPackages()).collect(Collectors.toSet()));
         }
@@ -48,19 +46,17 @@ public class GlobalResponseBodyAdvice implements InitializingBean, ResponseBodyA
     }
 
     @Override
-    public boolean supports(@Nullable MethodParameter methodParameter,
-                            @Nullable Class<? extends HttpMessageConverter<?>> converterType) {
+    public boolean supports(MethodParameter methodParameter, Class<? extends HttpMessageConverter<?>> converterType) {
         return true;
     }
 
     @Override
     public Object beforeBodyWrite(Object obj,
-                                  @Nullable MethodParameter methodParameter,
-                                  @Nullable MediaType mediaType,
-                                  @Nullable Class<? extends HttpMessageConverter<?>> converterType,
-                                  @Nullable ServerHttpRequest serverHttpRequest,
-                                  @Nullable ServerHttpResponse serverHttpResponse) {
-        Object traceId = MDC.get(GlobalExceptionFilter.X_TRACE_ID);
+                                  MethodParameter methodParameter,
+                                  MediaType mediaType,
+                                  Class<? extends HttpMessageConverter<?>> converterType,
+                                  ServerHttpRequest serverHttpRequest,
+                                  ServerHttpResponse serverHttpResponse) {
         if (methodParameter == null) {
             return obj;
         }
@@ -80,11 +76,11 @@ public class GlobalResponseBodyAdvice implements InitializingBean, ResponseBodyA
 
         // need wrapper metaData data model
         if (converterType == null || !converterType.isAssignableFrom(StringHttpMessageConverter.class)) {
-            return MicroStatusCode.buildSuccess(traceId, obj);
+            return MicroStatusCode.buildSuccess(obj);
         }
 
         // return type is String
-        return JSON.toJSONString(MicroStatusCode.buildSuccess(traceId, obj));
+        return JSON.toJSONString(MicroStatusCode.buildSuccess(obj));
     }
 
 }

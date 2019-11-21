@@ -1,9 +1,9 @@
 package cn.micro.biz.service.orders.impl;
 
-import cn.micro.biz.commons.mybatis.extension.MicroServiceImpl;
 import cn.micro.biz.entity.orders.WxPayNotifyEntity;
 import cn.micro.biz.mapper.orders.IWxPayNotifyMapper;
 import cn.micro.biz.service.orders.IWxPayNotifyService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,6 +12,6 @@ import org.springframework.stereotype.Service;
  * @author lry
  */
 @Service
-public class WxPayNotifyServiceImpl extends MicroServiceImpl<IWxPayNotifyMapper, WxPayNotifyEntity> implements IWxPayNotifyService {
+public class WxPayNotifyServiceImpl extends ServiceImpl<IWxPayNotifyMapper, WxPayNotifyEntity> implements IWxPayNotifyService {
 
 }

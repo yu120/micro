@@ -8,6 +8,7 @@ import cn.micro.biz.entity.member.MemberGroupEntity;
 import cn.micro.biz.service.member.IMemberGroupService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,9 @@ public class MemberGroupController {
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
     public boolean addMemberGroup(@RequestBody MemberGroupEntity memberGroup) {
-        MemberGroupEntity queryMemberGroup = memberGroupService.getOne(MemberGroupEntity::getCode, memberGroup.getCode());
+        MemberGroupEntity queryMemberGroupEntity = new MemberGroupEntity();
+        queryMemberGroupEntity.setCode(memberGroup.getCode());
+        MemberGroupEntity queryMemberGroup = memberGroupService.getOne(Wrappers.query(queryMemberGroupEntity));
         if (queryMemberGroup != null) {
             throw new MicroBadRequestException("用户组CODE已存在");
         }
@@ -51,7 +54,9 @@ public class MemberGroupController {
 
     @RequestMapping(value = "edit", method = RequestMethod.PUT)
     public boolean editMemberGroupById(@RequestBody MemberGroupEntity memberGroup) {
-        MemberGroupEntity queryMemberGroup = memberGroupService.getOne(MemberGroupEntity::getCode, memberGroup.getCode());
+        MemberGroupEntity queryMemberGroupEntity = new MemberGroupEntity();
+        queryMemberGroupEntity.setCode(memberGroup.getCode());
+        MemberGroupEntity queryMemberGroup = memberGroupService.getOne(Wrappers.query(queryMemberGroupEntity));
         if (queryMemberGroup != null) {
             if (!queryMemberGroup.getId().equals(memberGroup.getId())) {
                 throw new MicroBadRequestException("用户组CODE已存在");
@@ -63,11 +68,11 @@ public class MemberGroupController {
 
     @RequestMapping(value = "page", method = RequestMethod.POST)
     public Page<MemberGroupEntity> pageMemberGroup(@RequestBody PageQuery query) {
-        Page<MemberGroupEntity> page = new Page<>(query.getCurrent(), query.getSize());
+        Page<MemberGroupEntity> page = new Page<>(query.getPageNo(), query.getPageSize());
         page.setDesc(MicroEntity.EDITED_FIELD);
         page.setTotal(memberGroupService.count(new QueryWrapper<>()));
         if (page.getTotal() > 0) {
-            IPage<MemberGroupEntity> tempPage = new Page<>((query.getCurrent() - 1) * query.getSize(), query.getSize());
+            IPage<MemberGroupEntity> tempPage = new Page<>((query.getPageNo() - 1) * query.getPageSize(), query.getPageSize());
             page.setRecords(memberGroupService.page(tempPage, new QueryWrapper<>()).getRecords());
         }
 

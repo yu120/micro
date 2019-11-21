@@ -72,7 +72,8 @@ public enum CodeFactory {
             }
         }
 
-        return MicroDoclet.getDoc(realPathList);
+//        return MicroDoclet.getDoc(realPathList);
+        return null;
     }
 
     private String buildSql(MicroDoclet.MicroClassDoc microClassDoc, String tableName, List<Field> fields) {

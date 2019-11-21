@@ -1,15 +1,15 @@
 package cn.micro.biz.service.unified;
 
-import cn.micro.biz.commons.mybatis.extension.IMicroService;
 import cn.micro.biz.entity.unified.UnionCodeEntity;
 import cn.micro.biz.type.unified.UnionCodeCategoryEnum;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * Union Code Service
  *
  * @author lry
  */
-public interface IUnionCodeService extends IMicroService<UnionCodeEntity> {
+public interface IUnionCodeService extends IService<UnionCodeEntity> {
 
     /**
      * 校验验证码
