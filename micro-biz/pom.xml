@@ -274,6 +274,13 @@
             <version>${aliyun-java-sdk-dysmsapi.version}</version>
         </dependency>
 
+        <!-- Ali VMS -->
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-dyvmsapi</artifactId>
+            <version>1.2.2</version>
+        </dependency>
+
         <!-- Ali Pay -->
         <dependency>
             <groupId>com.alipay.sdk</groupId>
@@ -404,13 +411,13 @@
             <scope>system</scope>
             <systemPath>${java.home}/../lib/tools.jar</systemPath>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.dingtalk</groupId>-->
-<!--            <artifactId>dingtank</artifactId>-->
-<!--            <version>1.0.0</version>-->
-<!--            <scope>system</scope>-->
-<!--            <systemPath>${project.basedir}/lib/taobao-sdk-java-auto_1479188381469-20191101.jar</systemPath>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.dingtalk</groupId>-->
+        <!--            <artifactId>dingtank</artifactId>-->
+        <!--            <version>1.0.0</version>-->
+        <!--            <scope>system</scope>-->
+        <!--            <systemPath>${project.basedir}/lib/taobao-sdk-java-auto_1479188381469-20191101.jar</systemPath>-->
+        <!--        </dependency>-->
     </dependencies>
 
     <build>
