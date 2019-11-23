@@ -12,10 +12,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Ding Talk Outgoing
+ * Mp WeChat Outgoing
  * <p>
- * 每个机器人每分钟最多发送20条。
- * https://ding-doc.dingtalk.com/doc#/serverapi2/qf2nxq
+ * http://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1433751277&token=&lang=zh_CN
  *
  * @author lry
  */
@@ -69,7 +68,6 @@ public class MpWeChatOutgoing implements Serializable {
 
     /**
      * 模板消息.
-     * 参考 http://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1433751277&token=&lang=zh_CN 发送模板消息接口部分
      *
      * @author lry
      */
@@ -88,7 +86,7 @@ public class MpWeChatOutgoing implements Serializable {
         /**
          * 模板跳转链接.
          * <pre>
-         * url和miniprogram都是非必填字段，若都不传则模板无跳转；若都传，会优先跳转至小程序。
+         * url和miniProgram都是非必填字段，若都不传则模板无跳转；若都传，会优先跳转至小程序。
          * 开发者可根据实际需要选择其中一种跳转方式即可。当用户的微信客户端版本不支持跳小程序时，将会跳转至url。
          * </pre>
          */
