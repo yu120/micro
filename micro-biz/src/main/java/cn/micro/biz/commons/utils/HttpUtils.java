@@ -18,7 +18,7 @@ public class HttpUtils {
 
     private static final int HTTP_RESPONSE_CODE_OK = 200;
     private static final String CONTENT_TYPE_KEY = "Content-Type";
-    private static final String CONTENT_TYPE = "application/json";
+    private static final String CONTENT_TYPE = "application/json;charset=UTF-8";
 
     /**
      * Sent request
