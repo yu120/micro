@@ -1,16 +1,12 @@
 package cn.micro.biz.pubsrv.hook;
 
-import cn.micro.biz.commons.exception.support.MicroErrorException;
 import cn.micro.biz.commons.utils.HttpUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.Connection;
-import org.jsoup.helper.HttpConnection;
 
 import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -22,7 +18,7 @@ import java.util.List;
  * @author lry
  */
 @Slf4j
-public class WeChatOutgoing implements Serializable {
+public class CpWeChatOutgoing implements Serializable {
 
     private static final int RESPONSE_CODE_OK = 0;
     private static final String RESPONSE_CODE_KEY = "errcode";
@@ -34,7 +30,7 @@ public class WeChatOutgoing implements Serializable {
     public static void main(String[] args) throws Exception {
         WeChatOutgoingTextRequest weChatOutgoingTextRequest = new WeChatOutgoingTextRequest();
         weChatOutgoingTextRequest.setText(new WeChatOutgoingText("你好呀", null, null));
-        OutgoingResult outgoingResult = WeChatOutgoing.push("916d230b-8050-41ad-8bf4-859f76a27eaf", weChatOutgoingTextRequest);
+        OutgoingResult outgoingResult = CpWeChatOutgoing.push("916d230b-8050-41ad-8bf4-859f76a27eaf", weChatOutgoingTextRequest);
         System.out.println(outgoingResult);
     }
 
