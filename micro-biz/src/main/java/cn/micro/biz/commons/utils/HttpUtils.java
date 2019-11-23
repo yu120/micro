@@ -2,6 +2,7 @@ package cn.micro.biz.commons.utils;
 
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.jsoup.Connection;
 import org.jsoup.helper.HttpConnection;
 
@@ -28,6 +29,27 @@ public class HttpUtils {
      * @return response body
      */
     public static String sendRequest(String method, String url, Object body) {
+        String requestBody = null;
+        if (body != null) {
+            if (body instanceof String) {
+                requestBody = body.toString();
+            } else {
+                requestBody = JSON.toJSONString(body);
+            }
+        }
+
+        return sendRequest(method, url, requestBody);
+    }
+
+    /**
+     * Sent request
+     *
+     * @param method method
+     * @param url    url
+     * @param body   request body
+     * @return response body
+     */
+    public static String sendRequest(String method, String url, String body) {
         Connection.Response response;
         try {
             Connection connection = HttpConnection.connect(url).ignoreContentType(true);
@@ -35,9 +57,8 @@ public class HttpUtils {
             request.header(CONTENT_TYPE_KEY, CONTENT_TYPE);
             request.postDataCharset(StandardCharsets.UTF_8.name());
             request.method(Connection.Method.valueOf(method));
-            if (body != null) {
-                String requestBody = JSON.toJSONString(body);
-                request.requestBody(requestBody);
+            if (Strings.isNotBlank(body)) {
+                request.requestBody(body);
             }
 
             log.debug("Request url:[{}], method:[{}], headers:[{}], body:[{}]",
