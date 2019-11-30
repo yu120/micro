@@ -9,7 +9,9 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.jdbc.BadSqlGrammarException;
+import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -31,7 +33,7 @@ import java.util.Iterator;
 @AllArgsConstructor
 public enum MicroStatusCode {
 
-    // ======= Micro Framework Exception
+    // ======= Micro Framework Exception   BindException.class
 
     SUCCESS(200, "Success", null),
     MICRO_BAD_REQUEST_EXCEPTION(400, "Bad Request", MicroBadRequestException.class),
@@ -65,7 +67,7 @@ public enum MicroStatusCode {
 
     // ======= 3th Framework Exception
 
-    HTTP_MESSAGE_NOT_READABLE_EXCEPTION(400, "Message Not Readable", HttpMessageNotReadableException.class),
+    BIND_EXCEPTION(400, "Bind Exception", BindException.class),
     CONSTRAINT_VIOLATION_EXCEPTION(400, "Bad Request Parameter", ConstraintViolationException.class) {
         @Override
         protected MetaData wrapper(Throwable t) {
@@ -90,8 +92,10 @@ public enum MicroStatusCode {
             return metaData;
         }
     },
+    HTTP_MESSAGE_NOT_READABLE_EXCEPTION(400, "Message Not Readable", HttpMessageNotReadableException.class),
     NO_HANDLER_FOUND_EXCEPTION(404, "Not Found", NoHandlerFoundException.class),
     HTTP_REQUEST_METHOD_NOT_SUPPORTED_EXCEPTION(405, "Method Not Allowed", HttpRequestMethodNotSupportedException.class),
+    HTTP_MEDIA_TYPE_NOT_SUPPORTED_EXCEPTION(405, "MediaType Not Supported", HttpMediaTypeNotSupportedException.class),
     METHOD_ARGUMENT_TYPE_MISMATCH_EXCEPTION(406, "Not Acceptable Argument Type", MethodArgumentTypeMismatchException.class),
     MAX_UPLOAD_SIZE_EXCEEDED_EXCEPTION(413, "Upload Max Exceeded", MaxUploadSizeExceededException.class),
     BAD_SQL_GRAMMAR_EXCEPTION(500, "Unknown Bad SQL Exception", BadSqlGrammarException.class) {
