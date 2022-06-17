@@ -19,7 +19,7 @@
         <maven.version>3.3.3</maven.version>
 
         <guava.version>26.0-jre</guava.version>
-        <fastjson.version>1.2.47</fastjson.version>
+        <fastjson.version>1.2.83</fastjson.version>
         <disruptor.version>3.4.2</disruptor.version>
         <commons-lang3.version>3.7</commons-lang3.version>
         <commons-collections4.version>4.2</commons-collections4.version>
