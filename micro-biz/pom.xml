@@ -48,7 +48,7 @@
         <java-jwt.version>3.3.0</java-jwt.version>
         <jetcache.version>2.5.9</jetcache.version>
         <commons-pool2.version>2.4.3</commons-pool2.version>
-        <poi.version>3.17</poi.version>
+        <poi.version>4.1.1</poi.version>
         <hystrix.version>1.5.2</hystrix.version>
 
         <!-- MQ -->
