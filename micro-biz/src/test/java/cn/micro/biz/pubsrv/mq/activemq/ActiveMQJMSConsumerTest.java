@@ -10,8 +10,8 @@ public class ActiveMQJMSConsumerTest {
     public static void main(String[] args) throws Exception {
         MicroMQProperties properties = new MicroMQProperties();
         properties.setUri("amqp://192.168.2.56:5672");
-        properties.setUsername("sxw_demo");
-        properties.setPassword("sxw_demo");
+        properties.setUsername("xxx_demo");
+        properties.setPassword("xxx_demo");
         MicroMQService microMQService = new MicroMQService(properties);
         microMQService.afterPropertiesSet();
 

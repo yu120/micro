@@ -10,8 +10,8 @@ public class RibbitMQQueueConsumerTest {
         //1.创建连接工厂
         RMQConnectionFactory connectionFactory = new RMQConnectionFactory();
         connectionFactory.setUri("amqp://192.168.2.56:5672");
-        connectionFactory.setUsername("sxw_demo");
-        connectionFactory.setPassword("sxw_demo");
+        connectionFactory.setUsername("xxx_demo");
+        connectionFactory.setPassword("xxx_demo");
         //2.获取连接对象
         Connection connection = connectionFactory.createConnection();
         //3.启动连接

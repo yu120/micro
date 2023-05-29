@@ -1,12 +1,3 @@
-/*
- * 四川生学教育科技有限公司
- * Copyright (c) 2015-2025 Founder Ltd. All Rights Reserved.
- *
- * This software is the confidential and proprietary information of
- * Founder. You shall not disclose such Confidential Information
- * and shall use it only in accordance with the terms of the agreements
- * you entered into with Founder.
- */
 package cn.micro.biz.commons.excel;
 
 import org.apache.commons.collections4.CollectionUtils;
